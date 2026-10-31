@@ -1,13 +1,13 @@
 ROLE = Coding Agent (Initializer completed once in this Session)
 PHASE = P0
 TASK_ID = P0-A
-TASK_STATUS = completed; audit checkpoint pending
+TASK_STATUS = completed; delivery committed; recovery metadata checkpoint follows
 PASSES = true (six source/document acceptance items; business tests NOT RUN)
 AUDIT_DATE = 2026-10-31 (Asia/Taipei)
 BASE_GIT_HEAD = 2a12a62382a8c3ec033fa9a5b19b9b23b8780ab8
 INITIALIZER_COMMIT_HASH = d788492ead34b64390e706d6c95a739bf5c39cd7
-GIT_HEAD_AT_LAST_CHECK = d788492ead34b64390e706d6c95a739bf5c39cd7
-TASK_COMMIT_HASH = pending; never infer or fabricate
+GIT_HEAD_AT_LAST_CHECK = 6fbd7deefbaed209b4b7e73c9d63a7d8f693340a
+TASK_COMMIT_HASH = 6fbd7deefbaed209b4b7e73c9d63a7d8f693340a
 
 COMPLETED_WORK
 - Initialized seven P0 tasks once; initialization checkpoint contains four initialization artifacts only.
@@ -51,9 +51,9 @@ VALIDATION
 
 UNRESOLVED / BLOCKERS
 - Architecture runtime claims (concurrency, disconnect/rollback, model quality, resource usage) remain HYPOTHESIS or BLOCKED, not TEST_VERIFIED.
-- Task checkpoint hash registration pending. Preserve unrelated AGENTS.md, prior guides/images/scripts and test_10_27/.
+- Task delivery commit verified and hash registered. Preserve unrelated AGENTS.md, prior guides/images/scripts and test_10_27/.
 - P0-B..P0-G remain pending/false; no P1?P4 started; no P5 planned.
 
 NEXT_ACTION
-This Session: verify staged paths/evidence, commit only P0-A audit artifacts/state, record real task commit hash in feature-list.json/progress.txt, save a state-only checkpoint, then EXIT. Do not start P0-B here.
+This Session: delivery is committed and its real hash is registered. Commit only feature-list.json/progress.txt as recovery metadata, then EXIT. Do not start P0-B here. The state-only commit is a descendant of TASK_COMMIT_HASH and is identified by git log; a commit cannot contain its own final hash.
 Next NEW Session: read root AGENTS.md, feature-list.json, progress.txt; inspect git status/log and verify task commit/artifacts. First dependency-ready task is P0-B, Memory & Context Audit; complete only P0-B and then exit.
