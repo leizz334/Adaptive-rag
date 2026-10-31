@@ -79,3 +79,15 @@ CHECKPOINT action=register task=P0-D status=completed passes=True
 GIT_HEAD_AT_CHECK=1b301f65e538c9bcb661d7e364d12242f4f7be92
 DELIVERY_COMMIT=1b301f65e538c9bcb661d7e364d12242f4f7be92
 NEXT_ACTION=After checkpoint, continue P0-E; do not rerun completed tasks.
+
+CHECKPOINT action=start task=P0-E status=in_progress passes=False
+GIT_HEAD_AT_CHECK=bdf3037d6740753e687a162e49664e31ac3309cf
+DELIVERY_COMMIT=pending; record only after commit
+NEXT_ACTION=After checkpoint, continue P0-E; do not rerun completed tasks.
+
+CHECKPOINT action=finish task=P0-E status=completed passes=True
+GIT_HEAD_AT_CHECK=bdf3037d6740753e687a162e49664e31ac3309cf
+DELIVERY_COMMIT=pending; record only after commit
+FILES=audits/experience_memory.md, evidence/P0-E-validation.json, feature-list.json, progress.txt
+VALIDATION=PASS (source/static plus isolated probes if present; original pytest and runtime experiments NOT RUN)
+NEXT_ACTION=After checkpoint, continue P0-F; do not rerun completed tasks.

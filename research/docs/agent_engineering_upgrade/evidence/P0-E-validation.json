@@ -1,0 +1,196 @@
+{
+  "task_id": "P0-E",
+  "result": "PASS",
+  "validation_kind": "source_document_and_isolated_AST_validation",
+  "python": "D:\\MiniAnaconda3\\envs\\adaptive-rag\\python.exe",
+  "git_head_at_validation": "bdf3037d6740753e687a162e49664e31ac3309cf",
+  "report_sha256": "4560f311c3635d396c78bc86740591316346a831101b7470d474929a6bd1e7bf",
+  "scope_integrity": {
+    "result": "PASS",
+    "baseline_counts": {
+      "tracked_sha256": 329,
+      "preexisting_untracked_sha256": 19
+    },
+    "authorized_exception": [
+      "AGENTS.md"
+    ],
+    "historical_P0_A_unchanged": true
+  },
+  "local_link_occurrences": 18,
+  "source_references": {
+    "app/agents/nodes/faithfulness.py": {
+      "sha256": "fa0231c0cd5db1ed8b1621125f40060642f513a2175f3db68fe0b3f4684f0221",
+      "anchors": [
+        {
+          "line": 18,
+          "source": "async def self_correct_answer("
+        },
+        {
+          "line": 100,
+          "source": "extra = {\"faithfulness\": result.model_dump(), \"self_corrected\": False}"
+        }
+      ]
+    },
+    "app/services/chat_service.py": {
+      "sha256": "7c36ab5546ea5ddd8989d06b5a8b6e90e00c93ee2f183da4fd05a11241223eba",
+      "anchors": [
+        {
+          "line": 246,
+          "source": "def _to_response("
+        },
+        {
+          "line": 84,
+          "source": "async def stream(self, request: ChatRequest, *, trace_id: str) -> AsyncIterator[dict]:"
+        }
+      ]
+    },
+    "app/repositories/models.py": {
+      "sha256": "08ed89fdb2a18eedf9fcde77c4834b86f8846460da5d0666a51c45b19a597f83",
+      "anchors": [
+        {
+          "line": 79,
+          "source": "class SessionRow(Base):"
+        }
+      ]
+    },
+    "app/skills/loader.py": {
+      "sha256": "c4644037838159fe88f989fb0f10fef2290691ff44a08f6cb2cf29882ee1941c",
+      "anchors": [
+        {
+          "line": 21,
+          "source": "def load_skills() -> list[dict]:"
+        }
+      ]
+    },
+    "app/repositories/session_repository.py": {
+      "sha256": "39a5ffa3077efc62c6d9bd2d816dcd256f50cb94b0f746373241ae96a57b9b31",
+      "anchors": [
+        {
+          "line": 23,
+          "source": "async def recent_messages(self, session_id: str, *, limit: int = 20) -> list[ChatMessage]:"
+        }
+      ]
+    },
+    "app/retrieval/ingest.py": {
+      "sha256": "b7a2c7bde814c686b0a297e9022f11c6179fa25a6b287c43c448d4d09203b5cc",
+      "anchors": [
+        {
+          "line": 68,
+          "source": "class KnowledgeIngestor:"
+        }
+      ]
+    },
+    "app/tools/permissions.py": {
+      "sha256": "b53c1ead77aef642283b7e5509e30277dd968a3d0be2fc36fad3270947fe66ef",
+      "anchors": [
+        {
+          "line": 10,
+          "source": "def assert_permitted(tool: Tool, *, confirmed: bool) -> None:"
+        }
+      ]
+    },
+    "app/retrieval/vector.py": {
+      "sha256": "33afddd3c3229086709b393fb410dd300418b1225cc6d3319089c007556d207a",
+      "anchors": [
+        {
+          "line": 65,
+          "source": "class QdrantVectorStore:"
+        }
+      ]
+    },
+    "app/retrieval/cache.py": {
+      "sha256": "f88652d644e9a09366d94e7c4668562be07ec857420a59f0e04f11447bf9ef44",
+      "anchors": [
+        {
+          "line": 23,
+          "source": "def cache_key(query: str, top_k: int) -> str:"
+        }
+      ]
+    },
+    "app/agents/graph.py": {
+      "sha256": "824c1105d7257c2c2111965c12f93a51b6c74cb7ce5716de606664b9ce4a2661",
+      "anchors": [
+        {
+          "line": 45,
+          "source": "def build_graph("
+        }
+      ]
+    },
+    "app/agents/nodes/planner.py": {
+      "sha256": "c486e81061ed357bc1bd5b1b3ca4e4ade76256569f2612ce535333442e45f426",
+      "anchors": [
+        {
+          "line": 37,
+          "source": "async def create_plan(self, query: str, intent_label: str, summary: str) -> AgentPlan:"
+        }
+      ]
+    },
+    "eval/runner.py": {
+      "sha256": "c1d269eb6af1c18d69848a3692ff56bbaccba64260a281b27ac6a1be4cb0bfea",
+      "anchors": [
+        {
+          "line": 442,
+          "source": "if any(token in row[\"query\"] for token in (\"ORD\", \"库存\", \"取消\")):"
+        }
+      ]
+    },
+    "tests/unit/test_self_correct.py": {
+      "sha256": "619e9b9d0851816d3b32fd72f49d532aa0be41fdae9d58d9e7136097380e88f4",
+      "anchors": [
+        {
+          "line": 27,
+          "source": "async def test_self_correct_rewrites_unsupported_answer() -> None:"
+        }
+      ]
+    },
+    "tests/unit/test_skills.py": {
+      "sha256": "5f6fec31f5d64c525361570c54f4d9bfbde88d2c7dbc51d2d1535ff20f464f2d",
+      "anchors": [
+        {
+          "line": 4,
+          "source": "def test_match_skill_by_trigger() -> None:"
+        }
+      ]
+    }
+  },
+  "test_source_files": [
+    "tests/unit/test_self_correct.py",
+    "tests/unit/test_skills.py"
+  ],
+  "external_primary_references": [
+    "https://arxiv.org/abs/2610.31846",
+    "https://arxiv.org/html/2610.31846v1"
+  ],
+  "isolated_probes": [],
+  "datasets": {},
+  "acceptance_results": [
+    {
+      "criterion": "Verify primary Self-Direction paper; distinguish its adapter training from the project non-training adaptation.",
+      "result": "PASS",
+      "report_marker": "P0-E.1"
+    },
+    {
+      "criterion": "Design Trace -> Evaluation -> Failure Classification -> Reflection -> Candidate Lesson -> Verification -> Approved Experience -> Retrieval -> Context Injection.",
+      "result": "PASS",
+      "report_marker": "P0-E.2"
+    },
+    {
+      "criterion": "Separate conversation/user/experience/business knowledge; specify provenance, state/review/version/expiration/dedup/retrieval/permissions/anti-poisoning.",
+      "result": "PASS",
+      "report_marker": "P0-E.3"
+    },
+    {
+      "criterion": "Assess reusable components and E0/E1/E2/E3 experiments; never auto-promote unverified reflection into production System Prompt.",
+      "result": "PASS",
+      "report_marker": "P0-E.4"
+    }
+  ],
+  "not_run": [
+    "original pytest/TestClient/app imports",
+    "DB operations/migrations/order writes",
+    "paid LLM/model download/training",
+    "trace or business data upload",
+    "proposed M/E experiments and platform integration"
+  ],
+  "evidence_limits": "Isolated AST probes use actual extracted function bodies with in-memory stubs. They do not prove full application, provider, DB, ASGI or model behavior."
+}
