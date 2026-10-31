@@ -1,0 +1,282 @@
+{
+  "task_id": "P0-D",
+  "result": "PASS",
+  "validation_kind": "source_document_and_isolated_AST_validation",
+  "python": "D:\\MiniAnaconda3\\envs\\adaptive-rag\\python.exe",
+  "git_head_at_validation": "5c4d8ca23424fbfc81c6a0f45fa6bc388f4901a7",
+  "report_sha256": "e7747c2ba0d82161bd8b5fe2ba8a441ca9f2199402820c2ceabc82fbba10b804",
+  "scope_integrity": {
+    "result": "PASS",
+    "baseline_counts": {
+      "tracked_sha256": 329,
+      "preexisting_untracked_sha256": 19
+    },
+    "authorized_exception": [
+      "AGENTS.md"
+    ],
+    "historical_P0_A_unchanged": true
+  },
+  "local_link_occurrences": 26,
+  "source_references": {
+    "app/main.py": {
+      "sha256": "286c9bb42b275c05252eb46b56655ad415a63572d428214d65c104ea88b94ef7",
+      "anchors": [
+        {
+          "line": 72,
+          "source": "async def request_context(request: Request, call_next):"
+        }
+      ]
+    },
+    "app/core/ids.py": {
+      "sha256": "e66bf46d21c53829cdd1a8d415b9415d29784a4b54609e8013f90ca8dc2e3eba",
+      "anchors": [
+        {
+          "line": 11,
+          "source": "def new_trace_id() -> str:"
+        }
+      ]
+    },
+    "app/observability/context.py": {
+      "sha256": "de8a011627014052828e83a3302c68a50111d6deca649176731667e9b05eb3b1",
+      "anchors": [
+        {
+          "line": 8,
+          "source": "def bind_request_context(*, trace_id: str, request_id: str) -> tuple[Token, Token]:"
+        }
+      ]
+    },
+    "app/observability/logging.py": {
+      "sha256": "fbdd35a4b60bf06cf50d0d9ff995fede8b619edba3f7b993ffbc94b2503d41f7",
+      "anchors": [
+        {
+          "line": 20,
+          "source": "class ContextFilter(logging.Filter):"
+        },
+        {
+          "line": 22,
+          "source": "record.trace_id = trace_id_var.get()"
+        }
+      ]
+    },
+    "app/services/chat_service.py": {
+      "sha256": "7c36ab5546ea5ddd8989d06b5a8b6e90e00c93ee2f183da4fd05a11241223eba",
+      "anchors": [
+        {
+          "line": 70,
+          "source": "async def chat(self, request: ChatRequest, *, trace_id: str) -> ChatResponse:"
+        },
+        {
+          "line": 271,
+          "source": "def _observe(self, response: ChatResponse, started: float) -> None:"
+        },
+        {
+          "line": 97,
+          "source": "async for update in self._graph.astream(state, stream_mode=\"updates\"):"
+        },
+        {
+          "line": 84,
+          "source": "async def stream(self, request: ChatRequest, *, trace_id: str) -> AsyncIterator[dict]:"
+        }
+      ]
+    },
+    "app/observability/metrics.py": {
+      "sha256": "0bc9e9da50e43f21f232b59b5518dc654b86f1be105287c77886ff13ee070de5",
+      "anchors": [
+        {
+          "line": 5,
+          "source": "REQUESTS = Counter("
+        }
+      ]
+    },
+    "app/agents/graph.py": {
+      "sha256": "824c1105d7257c2c2111965c12f93a51b6c74cb7ce5716de606664b9ce4a2661",
+      "anchors": [
+        {
+          "line": 45,
+          "source": "def build_graph("
+        }
+      ]
+    },
+    "app/providers/deepseek.py": {
+      "sha256": "a298b0e93fa0009771c61fe45fced097ed43911f6d06d93f728a14bf3002dd7d",
+      "anchors": [
+        {
+          "line": 48,
+          "source": "async def generate("
+        }
+      ]
+    },
+    "app/core/retry.py": {
+      "sha256": "708aeb63a3b0defbb0265f2dcc5d72a30ddb58a405f2e789dc4633731ae01b34",
+      "anchors": [
+        {
+          "line": 32,
+          "source": "async def with_exponential_backoff("
+        }
+      ]
+    },
+    "app/retrieval/hybrid.py": {
+      "sha256": "a249ff6d178d7f3333922810bb0c16bcb5be3706d893bbc71eb2da1e38586956",
+      "anchors": [
+        {
+          "line": 37,
+          "source": "async def retrieve(self, query: str, *, top_k: int) -> list[RetrievedChunk]:"
+        }
+      ]
+    },
+    "app/retrieval/vector.py": {
+      "sha256": "33afddd3c3229086709b393fb410dd300418b1225cc6d3319089c007556d207a",
+      "anchors": [
+        {
+          "line": 161,
+          "source": "async def search(self, query: str, *, top_k: int) -> list[RetrievedChunk]:"
+        }
+      ]
+    },
+    "app/providers/reranker.py": {
+      "sha256": "93cd09fe359a32cd9fe1f91b02016460c8cf8cc14e19721db4df0f1ce8d36420",
+      "anchors": [
+        {
+          "line": 107,
+          "source": "async def rerank("
+        }
+      ]
+    },
+    "app/agents/nodes/executor.py": {
+      "sha256": "df1f9c703adb51c554c9210b7f437a59deae750bf09aef405bfae65287ea2bf7",
+      "anchors": [
+        {
+          "line": 95,
+          "source": "async def executor_node("
+        }
+      ]
+    },
+    "app/repositories/order_repository.py": {
+      "sha256": "5834e0ce4b7bf7da71e7caf2e70ce4b3fd41e059570492fb12f9165b1f5c65a2",
+      "anchors": [
+        {
+          "line": 139,
+          "source": "async def write_audit(self, trace_id: str, action: str, order_id: str) -> None:"
+        }
+      ]
+    },
+    "app/agents/nodes/memory.py": {
+      "sha256": "bb6c1f0b38a23158a52af9899deb10100e1b4f49f3df62112fda3b1d5648407f",
+      "anchors": [
+        {
+          "line": 11,
+          "source": "async def memory_node("
+        }
+      ]
+    },
+    "uv.lock": {
+      "sha256": "3ce2c4af9ba36f867d20c41b678b0c0a5f7f381746d3276e33909d66a2f4a8f7",
+      "anchors": []
+    },
+    "pyproject.toml": {
+      "sha256": "08faf1aea120414363f04e434ab9e5e1bd015d6bf849de4c15998ceaaae4d6dd",
+      "anchors": []
+    },
+    "app/core/security.py": {
+      "sha256": "b90065119edf99b6ea3e0a871c0a1ccae7008cc54a2e54639b6b322d1f9a44c7",
+      "anchors": [
+        {
+          "line": 42,
+          "source": "def mask_pii(text: str) -> str:"
+        }
+      ]
+    },
+    "tests/e2e/test_chat_api.py": {
+      "sha256": "abac9eb6b85fced5128011db3cc8e1ed09d195b4e781bf7d9cef4a8511181343",
+      "anchors": [
+        {
+          "line": 14,
+          "source": "def test_health_and_chat_greeting() -> None:"
+        },
+        {
+          "line": 48,
+          "source": "def test_chat_stream_emits_token_and_node_events() -> None:"
+        }
+      ]
+    },
+    "tests/unit/test_retry.py": {
+      "sha256": "a8efe681fbbc259c7555d0d5e175d89164557538ede9888e7a81cc8f6ad7d1e2",
+      "anchors": []
+    },
+    "tests/unit/test_metrics.py": {
+      "sha256": "40ae9412f4d60a30d8a53b6e43cfa2db6e90db4597e78e990bc8a1d39d764d71",
+      "anchors": []
+    }
+  },
+  "test_source_files": [
+    "tests/e2e/test_chat_api.py",
+    "tests/unit/test_metrics.py",
+    "tests/unit/test_retry.py"
+  ],
+  "external_primary_references": [
+    "https://arize-ai.github.io/openinference/python/instrumentation/openinference-instrumentation-langchain/",
+    "https://docs.langchain.com/langsmith/annotate-code",
+    "https://docs.langchain.com/langsmith/mask-inputs-outputs",
+    "https://docs.langchain.com/langsmith/self-hosted",
+    "https://docs.langchain.com/langsmith/trace-generator-functions",
+    "https://docs.langchain.com/langsmith/trace-with-langchain",
+    "https://github.com/Arize-ai/phoenix",
+    "https://langfuse.com/docs/observability/sdk/instrumentation",
+    "https://langfuse.com/integrations/frameworks/langchain",
+    "https://langfuse.com/self-hosting",
+    "https://opentelemetry.io/docs/languages/python/propagation/"
+  ],
+  "isolated_probes": [],
+  "datasets": {},
+  "acceptance_results": [
+    {
+      "criterion": "Audit trace_id, structured logs, Metrics, graph/Provider/Retriever/Executor/Memory/SSE visibility and per-call Span gaps.",
+      "result": "PASS",
+      "report_marker": "P0-D.1"
+    },
+    {
+      "criterion": "Compare LangSmith/Langfuse/Phoenix/OpenTelemetry using primary docs, covering LangGraph/custom HTTP Provider, async/SSE, IDs/tokens/errors/privacy/deployment/eval linkage.",
+      "result": "PASS",
+      "report_marker": "P0-D.2"
+    },
+    {
+      "criterion": "Recommend a minimally invasive tracing boundary and correlation scheme; do not connect services or upload data.",
+      "result": "PASS",
+      "report_marker": "P0-D.3"
+    },
+    {
+      "criterion": "Save precise source/test evidence, external references and explicit compatibility/runtime limitations.",
+      "result": "PASS",
+      "report_marker": "P0-D.4"
+    }
+  ],
+  "not_run": [
+    "original pytest/TestClient/app imports",
+    "DB operations/migrations/order writes",
+    "paid LLM/model download/training",
+    "trace or business data upload",
+    "proposed M/E experiments and platform integration"
+  ],
+  "evidence_limits": "Isolated AST probes use actual extracted function bodies with in-memory stubs. They do not prove full application, provider, DB, ASGI or model behavior.",
+  "environment_readonly": {
+    "installed": {
+      "langgraph": "0.2.76",
+      "langchain-core": "0.3.86",
+      "langsmith": "0.14.12",
+      "langfuse": "not installed",
+      "openinference-instrumentation-langchain": "not installed",
+      "opentelemetry-api": "not installed",
+      "opentelemetry-sdk": "not installed",
+      "httpx": "0.28.1"
+    },
+    "locked": {
+      "httpx": "0.28.1",
+      "langchain-core": "0.3.86",
+      "langgraph": "0.2.76",
+      "langsmith": "0.14.7",
+      "opentelemetry-api": "1.45.1"
+    },
+    "sdk_imported": false,
+    "sdk_connectivity_tested": false
+  }
+}

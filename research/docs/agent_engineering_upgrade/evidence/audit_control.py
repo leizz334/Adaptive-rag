@@ -20,6 +20,8 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+from importlib import metadata
+import tomllib
 from types import SimpleNamespace
 
 EVIDENCE = Path(__file__).resolve().parent
@@ -211,6 +213,13 @@ def validate(task, data):
             datasets[p.name]={'rows':len(rows),'sha256':sha(p)}
         assert {k:v['rows'] for k,v in datasets.items()}=={'e2e_eval.jsonl':16,'intent_100.jsonl':100,'rag_eval.jsonl':65}
     result={'task_id':task,'result':'PASS','validation_kind':'source_document_and_isolated_AST_validation','python':sys.executable,'git_head_at_validation':git('rev-parse','HEAD'),'report_sha256':sha(report),'scope_integrity':scope,'local_link_occurrences':local,'source_references':refs,'test_source_files':sorted(test_files),'external_primary_references':sorted(set(external)),'isolated_probes':probes,'datasets':datasets,'acceptance_results':[{'criterion':c,'result':'PASS','report_marker':f'{task}.{i}'} for i,c in enumerate(current['acceptance_criteria'],1)],'not_run':['original pytest/TestClient/app imports','DB operations/migrations/order writes','paid LLM/model download/training','trace or business data upload','proposed M/E experiments and platform integration'],'evidence_limits':'Isolated AST probes use actual extracted function bodies with in-memory stubs. They do not prove full application, provider, DB, ASGI or model behavior.'}
+    if task=='P0-D':
+        versions={}
+        for package in ['langgraph','langchain-core','langsmith','langfuse','openinference-instrumentation-langchain','opentelemetry-api','opentelemetry-sdk','httpx']:
+            try: versions[package]=metadata.version(package)
+            except metadata.PackageNotFoundError: versions[package]='not installed'
+        lock=tomllib.loads((ROOT/'uv.lock').read_text(encoding='utf-8'))
+        result['environment_readonly']={'installed':versions,'locked':{p['name']:p['version'] for p in lock['package'] if p['name'] in versions},'sdk_imported':False,'sdk_connectivity_tested':False}
     write(EVIDENCE/(task+'-validation.json'),result)
     return result
 
