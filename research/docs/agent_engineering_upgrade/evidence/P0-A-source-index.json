@@ -1,0 +1,3277 @@
+{
+  "task_id": "P0-A",
+  "source_baseline_git_head": "2a12a62382a8c3ec033fa9a5b19b9b23b8780ab8",
+  "evidence_label": "SOURCE_VERIFIED",
+  "files": {
+    "app/services/chat_service.py": {
+      "sha256": "7c36ab5546ea5ddd8989d06b5a8b6e90e00c93ee2f183da4fd05a11241223eba",
+      "line_count": 294,
+      "anchors": [
+        {
+          "line": 43,
+          "text": "def __init__("
+        },
+        {
+          "line": 70,
+          "text": "async def chat(self, request: ChatRequest, *, trace_id: str) -> ChatResponse:"
+        },
+        {
+          "line": 161,
+          "text": "async def _initial_state("
+        },
+        {
+          "line": 232,
+          "text": "async def _persist("
+        },
+        {
+          "line": 246,
+          "text": "def _to_response("
+        },
+        {
+          "line": 271,
+          "text": "def _observe(self, response: ChatResponse, started: float) -> None:"
+        },
+        {
+          "line": 97,
+          "text": "async for update in self._graph.astream(state, stream_mode=\"updates\"):"
+        },
+        {
+          "line": 168,
+          "text": "confirmed_action = self._resolve_confirmation(request, session_id)"
+        },
+        {
+          "line": 256,
+          "text": "return ChatResponse("
+        },
+        {
+          "line": 191,
+          "text": "def _resolve_confirmation(self, request: ChatRequest, session_id: str) -> ActionProposal | None:"
+        },
+        {
+          "line": 84,
+          "text": "async def stream(self, request: ChatRequest, *, trace_id: str) -> AsyncIterator[dict]:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "PendingConfirmation",
+          "line": 35,
+          "end_line": 39
+        },
+        {
+          "name": "ChatService",
+          "line": 42,
+          "end_line": 294
+        },
+        {
+          "name": "__init__",
+          "line": 43,
+          "end_line": 68
+        },
+        {
+          "name": "chat",
+          "line": 70,
+          "end_line": 82
+        },
+        {
+          "name": "stream",
+          "line": 84,
+          "end_line": 154
+        },
+        {
+          "name": "_enforce_rate_limit",
+          "line": 156,
+          "end_line": 159
+        },
+        {
+          "name": "_initial_state",
+          "line": 161,
+          "end_line": 189
+        },
+        {
+          "name": "_resolve_confirmation",
+          "line": 191,
+          "end_line": 202
+        },
+        {
+          "name": "_remember_pending",
+          "line": 204,
+          "end_line": 216
+        },
+        {
+          "name": "_invoke",
+          "line": 218,
+          "end_line": 230
+        },
+        {
+          "name": "_persist",
+          "line": 232,
+          "end_line": 244
+        },
+        {
+          "name": "_to_response",
+          "line": 246,
+          "end_line": 269
+        },
+        {
+          "name": "_observe",
+          "line": 271,
+          "end_line": 294
+        },
+        {
+          "name": "_run_graph",
+          "line": 95,
+          "end_line": 112
+        }
+      ]
+    },
+    "app/agents/graph.py": {
+      "sha256": "824c1105d7257c2c2111965c12f93a51b6c74cb7ce5716de606664b9ce4a2661",
+      "line_count": 110,
+      "anchors": [
+        {
+          "line": 45,
+          "text": "def build_graph("
+        },
+        {
+          "line": 33,
+          "text": "def _route_after_complexity(state: AgentState) -> str:"
+        },
+        {
+          "line": 83,
+          "text": "def _after_guardrail(state: AgentState) -> str:"
+        },
+        {
+          "line": 110,
+          "text": "return graph.compile()"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "_route_after_complexity",
+          "line": 33,
+          "end_line": 42
+        },
+        {
+          "name": "build_graph",
+          "line": 45,
+          "end_line": 110
+        },
+        {
+          "name": "_after_guardrail",
+          "line": 83,
+          "end_line": 84
+        }
+      ]
+    },
+    "app/core/request_scope.py": {
+      "sha256": "03f9e3ea4b79ae521ecd993a40d9dc34417cdb3a5042489df3922ee46a31af95",
+      "line_count": 36,
+      "anchors": [
+        {
+          "line": 28,
+          "text": "async def request_session("
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "get_db_session",
+          "line": 20,
+          "end_line": 24
+        },
+        {
+          "name": "request_session",
+          "line": 28,
+          "end_line": 36
+        }
+      ]
+    },
+    "app/asgi.py": {
+      "sha256": "cdbc3fb8910d1f8f1984019ee8c7623bdb424db0859ef6b349e5541841a1cb73",
+      "line_count": 5,
+      "anchors": [
+        {
+          "line": 5,
+          "text": "app = create_app()"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": []
+    },
+    "app/main.py": {
+      "sha256": "286c9bb42b275c05252eb46b56655ad415a63572d428214d65c104ea88b94ef7",
+      "line_count": 129,
+      "anchors": [
+        {
+          "line": 42,
+          "text": "def create_app(settings: Settings | None = None) -> FastAPI:"
+        },
+        {
+          "line": 30,
+          "text": "async def lifespan(app: FastAPI) -> AsyncIterator[None]:"
+        },
+        {
+          "line": 56,
+          "text": "if settings is not None:"
+        },
+        {
+          "line": 32,
+          "text": "settings = get_settings()"
+        },
+        {
+          "line": 72,
+          "text": "async def request_context(request: Request, call_next):"
+        },
+        {
+          "line": 86,
+          "text": "@app.exception_handler(AppError)"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "lifespan",
+          "line": 30,
+          "end_line": 39
+        },
+        {
+          "name": "create_app",
+          "line": 42,
+          "end_line": 129
+        },
+        {
+          "name": "request_context",
+          "line": 72,
+          "end_line": 84
+        },
+        {
+          "name": "app_error_handler",
+          "line": 87,
+          "end_line": 93
+        },
+        {
+          "name": "validation_handler",
+          "line": 96,
+          "end_line": 104
+        },
+        {
+          "name": "unhandled_handler",
+          "line": 107,
+          "end_line": 118
+        },
+        {
+          "name": "metrics",
+          "line": 121,
+          "end_line": 122
+        }
+      ]
+    },
+    "app/services/container.py": {
+      "sha256": "ef1201fdde868fc0155ec02f8347d704641e9bdf8e19d19cc1e0c7fd18072049",
+      "line_count": 150,
+      "anchors": [
+        {
+          "line": 62,
+          "text": "async def build_infrastructure(settings: Settings):"
+        },
+        {
+          "line": 71,
+          "text": "async def build_retrieval(settings: Settings, redis):"
+        },
+        {
+          "line": 94,
+          "text": "async def build_container(settings: Settings, seed: bool = False) -> AppContainer:"
+        },
+        {
+          "line": 51,
+          "text": "async def aclose(self) -> None:"
+        },
+        {
+          "line": 96,
+          "text": "llm: LLMProvider = ("
+        },
+        {
+          "line": 99,
+          "text": "engine, session_factory, redis = await build_infrastructure(settings)"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "AppContainer",
+          "line": 30,
+          "end_line": 59
+        },
+        {
+          "name": "build_infrastructure",
+          "line": 62,
+          "end_line": 68
+        },
+        {
+          "name": "build_retrieval",
+          "line": 71,
+          "end_line": 91
+        },
+        {
+          "name": "build_container",
+          "line": 94,
+          "end_line": 150
+        },
+        {
+          "name": "__init__",
+          "line": 31,
+          "end_line": 49
+        },
+        {
+          "name": "aclose",
+          "line": 51,
+          "end_line": 59
+        }
+      ]
+    },
+    "app/repositories/db.py": {
+      "sha256": "45caa5545ecd38d62f149e48ebf855a60ad4cbec82292a435486b0fef9f91541",
+      "line_count": 51,
+      "anchors": [
+        {
+          "line": 42,
+          "text": "async def init_schema(engine: AsyncEngine) -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "create_engine",
+          "line": 18,
+          "end_line": 35
+        },
+        {
+          "name": "create_session_factory",
+          "line": 38,
+          "end_line": 39
+        },
+        {
+          "name": "init_schema",
+          "line": 42,
+          "end_line": 44
+        },
+        {
+          "name": "session_scope",
+          "line": 47,
+          "end_line": 51
+        }
+      ]
+    },
+    "app/cli/client.py": {
+      "sha256": "769f8a2c553a84f6a41c72c2a4d4a7c4f30758cf480382afd48def0e97e3a724",
+      "line_count": 234,
+      "anchors": [
+        {
+          "line": 56,
+          "text": "async def setup(self) -> str:"
+        },
+        {
+          "line": 89,
+          "text": "async def _chat_local(self, message: str, *, confirm: str | None) -> dict[str, Any]:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "ChatFailed",
+          "line": 27,
+          "end_line": 28
+        },
+        {
+          "name": "ChatCli",
+          "line": 31,
+          "end_line": 234
+        },
+        {
+          "name": "__init__",
+          "line": 34,
+          "end_line": 54
+        },
+        {
+          "name": "setup",
+          "line": 56,
+          "end_line": 66
+        },
+        {
+          "name": "_api_up",
+          "line": 68,
+          "end_line": 74
+        },
+        {
+          "name": "aclose",
+          "line": 76,
+          "end_line": 81
+        },
+        {
+          "name": "chat",
+          "line": 83,
+          "end_line": 87
+        },
+        {
+          "name": "_chat_local",
+          "line": 89,
+          "end_line": 101
+        },
+        {
+          "name": "_chat_http",
+          "line": 103,
+          "end_line": 114
+        },
+        {
+          "name": "_chat_http_stream",
+          "line": 116,
+          "end_line": 132
+        },
+        {
+          "name": "_consume_events",
+          "line": 134,
+          "end_line": 147
+        },
+        {
+          "name": "_decode_http",
+          "line": 149,
+          "end_line": 159
+        },
+        {
+          "name": "render",
+          "line": 161,
+          "end_line": 185
+        },
+        {
+          "name": "loop",
+          "line": 187,
+          "end_line": 234
+        },
+        {
+          "name": "events",
+          "line": 120,
+          "end_line": 130
+        }
+      ]
+    },
+    "Dockerfile": {
+      "sha256": "1dfebb2adddef16551c3b50da583eeea1b245af2542c43bc9478715497e1b374",
+      "line_count": 33,
+      "anchors": [],
+      "evidence_label": "SOURCE_VERIFIED"
+    },
+    "app/api/routes/chat.py": {
+      "sha256": "ac13e7f1d8fb16480bb18fcfddb91222ee2a4fffecd3d24058d6909090bcf397",
+      "line_count": 36,
+      "anchors": [
+        {
+          "line": 15,
+          "text": "async def chat("
+        },
+        {
+          "line": 14,
+          "text": "@router.post(\"/chat\", response_model=ChatResponse)"
+        },
+        {
+          "line": 25,
+          "text": "async def chat_stream("
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "chat",
+          "line": 15,
+          "end_line": 21
+        },
+        {
+          "name": "chat_stream",
+          "line": 25,
+          "end_line": 36
+        },
+        {
+          "name": "events",
+          "line": 32,
+          "end_line": 34
+        }
+      ]
+    },
+    "app/schemas/chat.py": {
+      "sha256": "92079a5d445990f9a1f0118ea74d123e0e9997ff8c85b59cd6341a5c6092d703",
+      "line_count": 47,
+      "anchors": [
+        {
+          "line": 18,
+          "text": "class ChatRequest(BaseModel):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "ChatMessage",
+          "line": 12,
+          "end_line": 15
+        },
+        {
+          "name": "ChatRequest",
+          "line": 18,
+          "end_line": 24
+        },
+        {
+          "name": "ActionProposal",
+          "line": 27,
+          "end_line": 32
+        },
+        {
+          "name": "ChatResponse",
+          "line": 35,
+          "end_line": 47
+        }
+      ]
+    },
+    "app/agents/nodes/guardrail.py": {
+      "sha256": "6b38f22ed7c67a3f7a95a2be1d95bff37de57149fc93b013827e71bde8b4a5c6",
+      "line_count": 19,
+      "anchors": [
+        {
+          "line": 9,
+          "text": "async def guardrail_node(state: AgentState) -> dict:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "guardrail_node",
+          "line": 9,
+          "end_line": 19
+        }
+      ]
+    },
+    "app/agents/nodes/router.py": {
+      "sha256": "9a8d98bde50f3f4baf92b851f80598192188331f698fd751027e3ed05f69d9ce",
+      "line_count": 48,
+      "anchors": [
+        {
+          "line": 19,
+          "text": "async def intent_node(state: AgentState, classifier: IntentClassifier) -> dict:"
+        },
+        {
+          "line": 27,
+          "text": "async def router_node(state: AgentState, router: AdaptiveRouter) -> dict:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "_latency",
+          "line": 15,
+          "end_line": 16
+        },
+        {
+          "name": "intent_node",
+          "line": 19,
+          "end_line": 24
+        },
+        {
+          "name": "router_node",
+          "line": 27,
+          "end_line": 48
+        }
+      ]
+    },
+    "app/agents/nodes/intent.py": {
+      "sha256": "89c72c66957fab18f4f4adcaeeac57cee11751677cea39430689adffeffad43f",
+      "line_count": 111,
+      "anchors": [
+        {
+          "line": 77,
+          "text": "async def classify(self, query: str) -> IntentResult:"
+        },
+        {
+          "line": 82,
+          "text": "response = await self._llm.generate("
+        },
+        {
+          "line": 100,
+          "text": "except (LLMProviderError, LLMOutputError):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "rule_based_intent",
+          "line": 32,
+          "end_line": 60
+        },
+        {
+          "name": "IntentClassifier",
+          "line": 63,
+          "end_line": 111
+        },
+        {
+          "name": "__init__",
+          "line": 64,
+          "end_line": 75
+        },
+        {
+          "name": "classify",
+          "line": 77,
+          "end_line": 101
+        },
+        {
+          "name": "_maybe_overlay",
+          "line": 103,
+          "end_line": 111
+        }
+      ]
+    },
+    "app/retrieval/adaptive.py": {
+      "sha256": "32781329d8735d823443ec9dac10ce4bb7c570cbf70ff9946dabe38e4ac3835b",
+      "line_count": 166,
+      "anchors": [
+        {
+          "line": 135,
+          "text": "async def route(self, query: str, intent: IntentResult) -> ComplexityResult:"
+        },
+        {
+          "line": 140,
+          "text": "response = await self._llm.generate("
+        },
+        {
+          "line": 165,
+          "text": "except (LLMProviderError, LLMOutputError):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "rule_based_complexity",
+          "line": 52,
+          "end_line": 128
+        },
+        {
+          "name": "AdaptiveRouter",
+          "line": 131,
+          "end_line": 166
+        },
+        {
+          "name": "__init__",
+          "line": 132,
+          "end_line": 133
+        },
+        {
+          "name": "route",
+          "line": 135,
+          "end_line": 166
+        }
+      ]
+    },
+    "app/agents/nodes/retrieval.py": {
+      "sha256": "72d01304c4845d8f4a02ec597b6127127205dd038c92db2f4d7955ed6f8f7e5e",
+      "line_count": 48,
+      "anchors": [
+        {
+          "line": 18,
+          "text": "async def retrieval_node("
+        },
+        {
+          "line": 38,
+          "text": "else:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "retrieval_node",
+          "line": 18,
+          "end_line": 48
+        }
+      ]
+    },
+    "app/agents/nodes/planner.py": {
+      "sha256": "c486e81061ed357bc1bd5b1b3ca4e4ade76256569f2612ce535333442e45f426",
+      "line_count": 265,
+      "anchors": [
+        {
+          "line": 169,
+          "text": "async def planner_node(state: AgentState, planner: Planner) -> dict:"
+        },
+        {
+          "line": 186,
+          "text": "intent = state.get(\"intent\")"
+        },
+        {
+          "line": 47,
+          "text": "response = await self._llm.generate("
+        },
+        {
+          "line": 37,
+          "text": "async def create_plan(self, query: str, intent_label: str, summary: str) -> AgentPlan:"
+        },
+        {
+          "line": 97,
+          "text": "def _sanitize_plan("
+        },
+        {
+          "line": 73,
+          "text": "except (LLMOutputError, LLMProviderError):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "Planner",
+          "line": 24,
+          "end_line": 77
+        },
+        {
+          "name": "_allowed_tools",
+          "line": 80,
+          "end_line": 86
+        },
+        {
+          "name": "_format_skill",
+          "line": 89,
+          "end_line": 94
+        },
+        {
+          "name": "_sanitize_plan",
+          "line": 97,
+          "end_line": 106
+        },
+        {
+          "name": "skill_to_plan",
+          "line": 109,
+          "end_line": 125
+        },
+        {
+          "name": "_tool_arguments",
+          "line": 128,
+          "end_line": 149
+        },
+        {
+          "name": "_knowledge_fallback",
+          "line": 152,
+          "end_line": 166
+        },
+        {
+          "name": "planner_node",
+          "line": 169,
+          "end_line": 229
+        },
+        {
+          "name": "_explicit_write_request",
+          "line": 232,
+          "end_line": 254
+        },
+        {
+          "name": "_action_summary",
+          "line": 257,
+          "end_line": 265
+        },
+        {
+          "name": "__init__",
+          "line": 25,
+          "end_line": 27
+        },
+        {
+          "name": "_tool_catalog",
+          "line": 29,
+          "end_line": 35
+        },
+        {
+          "name": "create_plan",
+          "line": 37,
+          "end_line": 77
+        }
+      ]
+    },
+    "app/agents/nodes/executor.py": {
+      "sha256": "df1f9c703adb51c554c9210b7f437a59deae750bf09aef405bfae65287ea2bf7",
+      "line_count": 174,
+      "anchors": [
+        {
+          "line": 95,
+          "text": "async def executor_node("
+        },
+        {
+          "line": 104,
+          "text": "if state.get(\"pending_action\") and not state.get(\"confirm_action_id\"):"
+        },
+        {
+          "line": 119,
+          "text": "for step in plan.steps:"
+        },
+        {
+          "line": 57,
+          "text": "async def execute_with_fallback("
+        },
+        {
+          "line": 154,
+          "text": "except ToolPermissionError as exc:"
+        },
+        {
+          "line": 132,
+          "text": "idem_key = context.confirmed_action_id or context.idempotency_key"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "_fingerprint",
+          "line": 42,
+          "end_line": 46
+        },
+        {
+          "name": "fallback_arguments",
+          "line": 49,
+          "end_line": 54
+        },
+        {
+          "name": "execute_with_fallback",
+          "line": 57,
+          "end_line": 92
+        },
+        {
+          "name": "executor_node",
+          "line": 95,
+          "end_line": 174
+        }
+      ]
+    },
+    "app/agents/nodes/generate.py": {
+      "sha256": "64b0df6e39892dce0f6fd6ab1c36a8ac76fb8ac2dac229865463723afceb61df",
+      "line_count": 210,
+      "anchors": [
+        {
+          "line": 27,
+          "text": "async def generate_node(state: AgentState, llm: LLMProvider) -> dict:"
+        },
+        {
+          "line": 123,
+          "text": "async def refuse_node(state: AgentState) -> dict:"
+        },
+        {
+          "line": 68,
+          "text": "messages = ["
+        },
+        {
+          "line": 108,
+          "text": "prev_usage = state.get(\"token_usage\") or TokenUsage()"
+        },
+        {
+          "line": 49,
+          "text": "evidence = ("
+        },
+        {
+          "line": 31,
+          "text": "if tools and all(not tool.success for tool in tools):"
+        },
+        {
+          "line": 96,
+          "text": "citations = ["
+        },
+        {
+          "line": 90,
+          "text": "except (LLMProviderError, LLMOutputError):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "AnswerPayload",
+          "line": 21,
+          "end_line": 24
+        },
+        {
+          "name": "generate_node",
+          "line": 27,
+          "end_line": 120
+        },
+        {
+          "name": "refuse_node",
+          "line": 123,
+          "end_line": 128
+        },
+        {
+          "name": "_extractive_fallback",
+          "line": 131,
+          "end_line": 137
+        },
+        {
+          "name": "_offline_answer",
+          "line": 140,
+          "end_line": 210
+        }
+      ]
+    },
+    "app/agents/nodes/faithfulness.py": {
+      "sha256": "fa0231c0cd5db1ed8b1621125f40060642f513a2175f3db68fe0b3f4684f0221",
+      "line_count": 138,
+      "anchors": [
+        {
+          "line": 73,
+          "text": "async def faithfulness_node("
+        },
+        {
+          "line": 33,
+          "text": "response = await llm.generate("
+        },
+        {
+          "line": 52,
+          "text": "rewritten = parse_model(response.content, AnswerPayload).answer"
+        },
+        {
+          "line": 138,
+          "text": "return {\"final_answer\": patched, \"extra\": extra}"
+        },
+        {
+          "line": 104,
+          "text": "if result.rationale == \"checker_unavailable\":"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "self_correct_answer",
+          "line": 18,
+          "end_line": 70
+        },
+        {
+          "name": "faithfulness_node",
+          "line": 73,
+          "end_line": 138
+        }
+      ]
+    },
+    "app/agents/nodes/memory.py": {
+      "sha256": "bb6c1f0b38a23158a52af9899deb10100e1b4f49f3df62112fda3b1d5648407f",
+      "line_count": 32,
+      "anchors": [
+        {
+          "line": 11,
+          "text": "async def memory_node("
+        },
+        {
+          "line": 17,
+          "text": "messages = list(state.get(\"messages\") or [])"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "memory_node",
+          "line": 11,
+          "end_line": 32
+        }
+      ]
+    },
+    "app/agents/state.py": {
+      "sha256": "e7a032338a3584cc9bac131545a8fbd1536648c3acba0f0e65b6e369f33afed9",
+      "line_count": 44,
+      "anchors": [
+        {
+          "line": 12,
+          "text": "class AgentState(TypedDict, total=False):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "AgentState",
+          "line": 12,
+          "end_line": 44
+        }
+      ]
+    },
+    "app/prompts/intent.py": {
+      "sha256": "c291ca78829b78d754c44480f7b9b7b2d54bf52d5e8d9d0158cb549b4a2d157e",
+      "line_count": 74,
+      "anchors": [
+        {
+          "line": 29,
+          "text": "INTENT_SYSTEM = \"\"\"你是电商客服意图分类器。只输出 JSON，不要 Markdown，不要解释。"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": []
+    },
+    "app/prompts/complexity.py": {
+      "sha256": "4f56263d66cec1b26ac69701573a98a992267776660f9bf6ca82455dc596c8c5",
+      "line_count": 21,
+      "anchors": [
+        {
+          "line": 3,
+          "text": "COMPLEXITY_SYSTEM = \"\"\"你是 Adaptive-RAG 复杂度分类器。只输出 JSON。"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": []
+    },
+    "app/prompts/query_rewrite.py": {
+      "sha256": "9c74003d246d78f837bf6c6726cff668357e262eba83206c64f5cc67f276a75b",
+      "line_count": 12,
+      "anchors": [
+        {
+          "line": 3,
+          "text": "REWRITE_SYSTEM = \"\"\"你改写电商检索查询。只输出 JSON。"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": []
+    },
+    "app/retrieval/query_rewrite.py": {
+      "sha256": "d7c16a267e6a965bcdd7d7d740caa8049aea8c2776b5f1121dd82ad295f3b5c8",
+      "line_count": 39,
+      "anchors": [
+        {
+          "line": 16,
+          "text": "async def rewrite(self, query: str, *, missing_aspect: str = \"\") -> list[str]:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "QueryRewriter",
+          "line": 12,
+          "end_line": 39
+        },
+        {
+          "name": "__init__",
+          "line": 13,
+          "end_line": 14
+        },
+        {
+          "name": "rewrite",
+          "line": 16,
+          "end_line": 39
+        }
+      ]
+    },
+    "app/prompts/self_rag.py": {
+      "sha256": "1f375e5bc22974d1048e9eb77e9b9ca7a45ade79552a24d73c5a8de4a84dde97",
+      "line_count": 16,
+      "anchors": [
+        {
+          "line": 3,
+          "text": "GRADE_SYSTEM = \"\"\"你评估检索结果是否足以回答问题。只输出 JSON。"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": []
+    },
+    "app/retrieval/self_rag.py": {
+      "sha256": "65db301dc56a345138cfbbba06d6b8526af488f3fd8e233d2cea34843e5bb525",
+      "line_count": 86,
+      "anchors": [
+        {
+          "line": 72,
+          "text": "async def _grade(self, query: str, chunks: list[RetrievedChunk]) -> GradeResult:"
+        },
+        {
+          "line": 44,
+          "text": "async def retrieve("
+        },
+        {
+          "line": 85,
+          "text": "except (LLMProviderError, LLMOutputError):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "GradeResult",
+          "line": 22,
+          "end_line": 26
+        },
+        {
+          "name": "SelfRAGLoop",
+          "line": 29,
+          "end_line": 86
+        },
+        {
+          "name": "__init__",
+          "line": 30,
+          "end_line": 42
+        },
+        {
+          "name": "retrieve",
+          "line": 44,
+          "end_line": 70
+        },
+        {
+          "name": "_grade",
+          "line": 72,
+          "end_line": 86
+        }
+      ]
+    },
+    "app/prompts/planner.py": {
+      "sha256": "4fbf2f75a8687c9be945bc6ae0b5d5ac0ae345fe01a31b04de7cfdb51b8e2242",
+      "line_count": 24,
+      "anchors": [
+        {
+          "line": 3,
+          "text": "PLANNER_SYSTEM = \"\"\"你是电商客服规划器。把用户问题拆成最少步骤。只输出 JSON。"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": []
+    },
+    "app/prompts/answer.py": {
+      "sha256": "422765f66fcfb00b33f2397e537562f4823a7b82cb59d018241b9954635f9962",
+      "line_count": 28,
+      "anchors": [
+        {
+          "line": 5,
+          "text": "ANSWER_SYSTEM = f\"\"\"你是电商平台客服助手。用简体中文回答，语气克制、可执行。"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": []
+    },
+    "app/prompts/faithfulness.py": {
+      "sha256": "6ff14d617da343fdb52e9c4c2aedaf4820963a55ad087f1e4fc1fa6d8110467c",
+      "line_count": 37,
+      "anchors": [
+        {
+          "line": 3,
+          "text": "FAITHFULNESS_SYSTEM = \"\"\"你检测客服回答是否忠实于证据。只输出 JSON。"
+        },
+        {
+          "line": 21,
+          "text": "SELF_CORRECT_SYSTEM = \"\"\"你是电商客服改写器。上一轮回答含有证据不支持的内容。"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": []
+    },
+    "app/guardrails/hallucination.py": {
+      "sha256": "01563d7977e6956840961d157fde6a06c0e0b8c77c3dbad59b16c95e10a62973",
+      "line_count": 53,
+      "anchors": [
+        {
+          "line": 24,
+          "text": "async def check("
+        },
+        {
+          "line": 52,
+          "text": "except (LLMProviderError, LLMOutputError):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "FaithfulnessResult",
+          "line": 14,
+          "end_line": 17
+        },
+        {
+          "name": "FaithfulnessChecker",
+          "line": 20,
+          "end_line": 53
+        },
+        {
+          "name": "__init__",
+          "line": 21,
+          "end_line": 22
+        },
+        {
+          "name": "check",
+          "line": 24,
+          "end_line": 53
+        }
+      ]
+    },
+    "app/prompts/summary.py": {
+      "sha256": "0a95e5296d8379dac8fe4b347010afe95e4136e3353d633b00c12c45efea7f13",
+      "line_count": 12,
+      "anchors": [
+        {
+          "line": 3,
+          "text": "SUMMARY_SYSTEM = ("
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": []
+    },
+    "app/memory/summarizer.py": {
+      "sha256": "56436bd6002fa6fb1d0b39269a7b40e77be3e78b0829b4904fe3ec6deab8773c",
+      "line_count": 29,
+      "anchors": [
+        {
+          "line": 14,
+          "text": "async def summarize(self, messages: list[ChatMessage]) -> str:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "ConversationSummarizer",
+          "line": 10,
+          "end_line": 29
+        },
+        {
+          "name": "__init__",
+          "line": 11,
+          "end_line": 12
+        },
+        {
+          "name": "summarize",
+          "line": 14,
+          "end_line": 29
+        }
+      ]
+    },
+    "app/providers/deepseek.py": {
+      "sha256": "a298b0e93fa0009771c61fe45fced097ed43911f6d06d93f728a14bf3002dd7d",
+      "line_count": 170,
+      "anchors": [
+        {
+          "line": 27,
+          "text": "def __init__(self, settings: Settings, client: httpx.AsyncClient | None = None) -> None:"
+        },
+        {
+          "line": 48,
+          "text": "async def generate("
+        },
+        {
+          "line": 114,
+          "text": "async def stream("
+        },
+        {
+          "line": 44,
+          "text": "async def ping(self) -> bool:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "DeepSeekProvider",
+          "line": 20,
+          "end_line": 170
+        },
+        {
+          "name": "__init__",
+          "line": 27,
+          "end_line": 38
+        },
+        {
+          "name": "aclose",
+          "line": 40,
+          "end_line": 42
+        },
+        {
+          "name": "ping",
+          "line": 44,
+          "end_line": 46
+        },
+        {
+          "name": "generate",
+          "line": 48,
+          "end_line": 112
+        },
+        {
+          "name": "stream",
+          "line": 114,
+          "end_line": 170
+        },
+        {
+          "name": "_call",
+          "line": 69,
+          "end_line": 106
+        }
+      ]
+    },
+    "app/providers/base.py": {
+      "sha256": "b7525fda61d2fc93a5389f83f8d8ab07bfad5fa3b7af18e1337366e5a31f0fbc",
+      "line_count": 98,
+      "anchors": [
+        {
+          "line": 30,
+          "text": "class LLMProvider(Protocol):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "ChatMessageDict",
+          "line": 9,
+          "end_line": 10
+        },
+        {
+          "name": "LLMResponse",
+          "line": 13,
+          "end_line": 27
+        },
+        {
+          "name": "LLMProvider",
+          "line": 30,
+          "end_line": 70
+        },
+        {
+          "name": "EmbeddingProvider",
+          "line": 73,
+          "end_line": 84
+        },
+        {
+          "name": "RerankProvider",
+          "line": 87,
+          "end_line": 98
+        },
+        {
+          "name": "__init__",
+          "line": 24,
+          "end_line": 27
+        },
+        {
+          "name": "generate",
+          "line": 33,
+          "end_line": 55
+        },
+        {
+          "name": "ping",
+          "line": 57,
+          "end_line": 59
+        },
+        {
+          "name": "stream",
+          "line": 61,
+          "end_line": 70
+        },
+        {
+          "name": "embed",
+          "line": 78,
+          "end_line": 80
+        },
+        {
+          "name": "ping",
+          "line": 82,
+          "end_line": 84
+        },
+        {
+          "name": "rerank",
+          "line": 90,
+          "end_line": 98
+        }
+      ]
+    },
+    "app/providers/json_parser.py": {
+      "sha256": "5ad619950d24353e8105c4e472bb597cb4da75ebc441981efce8510bb8e2e444",
+      "line_count": 51,
+      "anchors": [
+        {
+          "line": 46,
+          "text": "def parse_model(text: str, model_type: type[T]) -> T:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "extract_json_object",
+          "line": 22,
+          "end_line": 43
+        },
+        {
+          "name": "parse_model",
+          "line": 46,
+          "end_line": 51
+        }
+      ]
+    },
+    "app/core/retry.py": {
+      "sha256": "708aeb63a3b0defbb0265f2dcc5d72a30ddb58a405f2e789dc4633731ae01b34",
+      "line_count": 83,
+      "anchors": [
+        {
+          "line": 32,
+          "text": "async def with_exponential_backoff("
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "is_retryable_status",
+          "line": 28,
+          "end_line": 29
+        },
+        {
+          "name": "with_exponential_backoff",
+          "line": 32,
+          "end_line": 78
+        },
+        {
+          "name": "_full_jitter_delay",
+          "line": 81,
+          "end_line": 83
+        }
+      ]
+    },
+    "app/retrieval/ingest.py": {
+      "sha256": "b7a2c7bde814c686b0a297e9022f11c6179fa25a6b287c43c448d4d09203b5cc",
+      "line_count": 141,
+      "anchors": [
+        {
+          "line": 79,
+          "text": "async def load(self) -> tuple[list[RetrievedChunk], list[VectorRecord]]:"
+        },
+        {
+          "line": 116,
+          "text": "async def ingest_knowledge("
+        },
+        {
+          "line": 131,
+          "text": "if qdrant_url:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "category_for_stem",
+          "line": 60,
+          "end_line": 65
+        },
+        {
+          "name": "KnowledgeIngestor",
+          "line": 68,
+          "end_line": 100
+        },
+        {
+          "name": "ingest_to_memory",
+          "line": 103,
+          "end_line": 113
+        },
+        {
+          "name": "ingest_knowledge",
+          "line": 116,
+          "end_line": 141
+        },
+        {
+          "name": "__init__",
+          "line": 69,
+          "end_line": 77
+        },
+        {
+          "name": "load",
+          "line": 79,
+          "end_line": 100
+        }
+      ]
+    },
+    "app/retrieval/chunking.py": {
+      "sha256": "56c5cd458a64aa8fe8b17aef45f5c5d9d7896c63099277becf1f8ee8d5fa8542",
+      "line_count": 100,
+      "anchors": [
+        {
+          "line": 23,
+          "text": "def document_id_from_path(path: Path, *, root: Path | None = None) -> str:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "stable_chunk_id",
+          "line": 18,
+          "end_line": 20
+        },
+        {
+          "name": "document_id_from_path",
+          "line": 23,
+          "end_line": 30
+        },
+        {
+          "name": "chunk_markdown",
+          "line": 33,
+          "end_line": 66
+        },
+        {
+          "name": "_split_sections",
+          "line": 69,
+          "end_line": 85
+        },
+        {
+          "name": "_window",
+          "line": 88,
+          "end_line": 100
+        }
+      ]
+    },
+    "app/retrieval/hybrid.py": {
+      "sha256": "a249ff6d178d7f3333922810bb0c16bcb5be3706d893bbc71eb2da1e38586956",
+      "line_count": 76,
+      "anchors": [
+        {
+          "line": 37,
+          "text": "async def retrieve(self, query: str, *, top_k: int) -> list[RetrievedChunk]:"
+        },
+        {
+          "line": 47,
+          "text": "try:"
+        },
+        {
+          "line": 57,
+          "text": "if not lexical and not dense:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "HybridRetriever",
+          "line": 18,
+          "end_line": 76
+        },
+        {
+          "name": "__init__",
+          "line": 24,
+          "end_line": 35
+        },
+        {
+          "name": "retrieve",
+          "line": 37,
+          "end_line": 76
+        }
+      ]
+    },
+    "app/retrieval/fusion.py": {
+      "sha256": "ec7ab7c32a7cd8faf130a93269476357fdf3f42637adb80ff9b61f74aec9197f",
+      "line_count": 38,
+      "anchors": [
+        {
+          "line": 16,
+          "text": "def reciprocal_rank_fusion("
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "reciprocal_rank_fusion",
+          "line": 16,
+          "end_line": 38
+        }
+      ]
+    },
+    "app/retrieval/vector.py": {
+      "sha256": "33afddd3c3229086709b393fb410dd300418b1225cc6d3319089c007556d207a",
+      "line_count": 181,
+      "anchors": [
+        {
+          "line": 161,
+          "text": "async def search(self, query: str, *, top_k: int) -> list[RetrievedChunk]:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "cosine",
+          "line": 18,
+          "end_line": 19
+        },
+        {
+          "name": "stable_point_id",
+          "line": 22,
+          "end_line": 24
+        },
+        {
+          "name": "VectorRecord",
+          "line": 28,
+          "end_line": 30
+        },
+        {
+          "name": "InMemoryVectorStore",
+          "line": 33,
+          "end_line": 62
+        },
+        {
+          "name": "QdrantVectorStore",
+          "line": 65,
+          "end_line": 151
+        },
+        {
+          "name": "VectorRetriever",
+          "line": 154,
+          "end_line": 169
+        },
+        {
+          "name": "build_records",
+          "line": 172,
+          "end_line": 181
+        },
+        {
+          "name": "__init__",
+          "line": 36,
+          "end_line": 37
+        },
+        {
+          "name": "upsert",
+          "line": 39,
+          "end_line": 45
+        },
+        {
+          "name": "search",
+          "line": 47,
+          "end_line": 59
+        },
+        {
+          "name": "ping",
+          "line": 61,
+          "end_line": 62
+        },
+        {
+          "name": "__init__",
+          "line": 66,
+          "end_line": 70
+        },
+        {
+          "name": "_ensure_client",
+          "line": 72,
+          "end_line": 77
+        },
+        {
+          "name": "ensure_collection",
+          "line": 79,
+          "end_line": 88
+        },
+        {
+          "name": "upsert",
+          "line": 90,
+          "end_line": 113
+        },
+        {
+          "name": "ping",
+          "line": 115,
+          "end_line": 120
+        },
+        {
+          "name": "search",
+          "line": 122,
+          "end_line": 151
+        },
+        {
+          "name": "__init__",
+          "line": 155,
+          "end_line": 159
+        },
+        {
+          "name": "search",
+          "line": 161,
+          "end_line": 166
+        },
+        {
+          "name": "ping",
+          "line": 168,
+          "end_line": 169
+        }
+      ]
+    },
+    "app/retrieval/reranker.py": {
+      "sha256": "0a800f4b675ffdc01d7da8fa2e2488d4c79b4e68565c9ccfe3d21683b25e8f2d",
+      "line_count": 31,
+      "anchors": [
+        {
+          "line": 13,
+          "text": "async def rerank("
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "DocumentReranker",
+          "line": 9,
+          "end_line": 31
+        },
+        {
+          "name": "__init__",
+          "line": 10,
+          "end_line": 11
+        },
+        {
+          "name": "rerank",
+          "line": 13,
+          "end_line": 31
+        }
+      ]
+    },
+    "app/providers/reranker.py": {
+      "sha256": "93cd09fe359a32cd9fe1f91b02016460c8cf8cc14e19721db4df0f1ce8d36420",
+      "line_count": 125,
+      "anchors": [
+        {
+          "line": 107,
+          "text": "async def rerank("
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "LexicalRerankProvider",
+          "line": 16,
+          "end_line": 38
+        },
+        {
+          "name": "CrossEncoderRerankProvider",
+          "line": 41,
+          "end_line": 125
+        },
+        {
+          "name": "rerank",
+          "line": 21,
+          "end_line": 38
+        },
+        {
+          "name": "__init__",
+          "line": 48,
+          "end_line": 53
+        },
+        {
+          "name": "backend",
+          "line": 56,
+          "end_line": 57
+        },
+        {
+          "name": "available",
+          "line": 60,
+          "end_line": 61
+        },
+        {
+          "name": "load_error",
+          "line": 64,
+          "end_line": 65
+        },
+        {
+          "name": "_should_load",
+          "line": 67,
+          "end_line": 72
+        },
+        {
+          "name": "_ensure_model",
+          "line": 74,
+          "end_line": 105
+        },
+        {
+          "name": "rerank",
+          "line": 107,
+          "end_line": 120
+        },
+        {
+          "name": "_predict",
+          "line": 123,
+          "end_line": 125
+        }
+      ]
+    },
+    "app/tools/knowledge_tools.py": {
+      "sha256": "5480dfc60d7b87aeea8508c6075cd5eaa283296997dcae657f416a4ebbebdc0d",
+      "line_count": 146,
+      "anchors": [
+        {
+          "line": 51,
+          "text": "async def execute(self, parsed: KnowledgeSearchInput, context: ToolContext) -> ToolResult:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "KnowledgeSearchInput",
+          "line": 11,
+          "end_line": 16
+        },
+        {
+          "name": "CouponInput",
+          "line": 19,
+          "end_line": 24
+        },
+        {
+          "name": "WarrantyInput",
+          "line": 27,
+          "end_line": 32
+        },
+        {
+          "name": "SearchKnowledgeTool",
+          "line": 35,
+          "end_line": 62
+        },
+        {
+          "name": "GetCouponTool",
+          "line": 65,
+          "end_line": 88
+        },
+        {
+          "name": "GetWarrantyTool",
+          "line": 91,
+          "end_line": 113
+        },
+        {
+          "name": "EscalateInput",
+          "line": 116,
+          "end_line": 121
+        },
+        {
+          "name": "EscalateToHumanTool",
+          "line": 124,
+          "end_line": 146
+        },
+        {
+          "name": "__init__",
+          "line": 48,
+          "end_line": 49
+        },
+        {
+          "name": "execute",
+          "line": 51,
+          "end_line": 62
+        },
+        {
+          "name": "execute",
+          "line": 78,
+          "end_line": 88
+        },
+        {
+          "name": "execute",
+          "line": 104,
+          "end_line": 113
+        },
+        {
+          "name": "execute",
+          "line": 137,
+          "end_line": 146
+        }
+      ]
+    },
+    "app/config/settings.py": {
+      "sha256": "d4d593beb2730cf21530155ea23166271d0e7e1a6bce4a46e6a4a58484bb5a65",
+      "line_count": 134,
+      "anchors": [
+        {
+          "line": 10,
+          "text": "class Settings(BaseSettings):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "Settings",
+          "line": 10,
+          "end_line": 124
+        },
+        {
+          "name": "get_settings",
+          "line": 128,
+          "end_line": 129
+        },
+        {
+          "name": "clear_settings_cache",
+          "line": 132,
+          "end_line": 134
+        },
+        {
+          "name": "llm_configured",
+          "line": 82,
+          "end_line": 83
+        },
+        {
+          "name": "embedding_configured",
+          "line": 86,
+          "end_line": 87
+        },
+        {
+          "name": "local_embedding_configured",
+          "line": 90,
+          "end_line": 94
+        },
+        {
+          "name": "cross_encoder_configured",
+          "line": 97,
+          "end_line": 104
+        },
+        {
+          "name": "unstructured_configured",
+          "line": 107,
+          "end_line": 112
+        },
+        {
+          "name": "redis_configured",
+          "line": 115,
+          "end_line": 116
+        },
+        {
+          "name": "qdrant_configured",
+          "line": 119,
+          "end_line": 120
+        },
+        {
+          "name": "use_sqlite",
+          "line": 123,
+          "end_line": 124
+        }
+      ]
+    },
+    "app/tools/base.py": {
+      "sha256": "81a43530c77086a01167b80e4462ad2713ec66669c56efa1bd5ebabcd975d640",
+      "line_count": 94,
+      "anchors": [
+        {
+          "line": 70,
+          "text": "async def run(self, arguments: dict[str, Any], context: ToolContext) -> ToolResult:"
+        },
+        {
+          "line": 59,
+          "text": "def parse(self, arguments: dict[str, Any]) -> BaseModel:"
+        },
+        {
+          "line": 84,
+          "text": "def openai_schema(self) -> dict[str, Any]:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "ToolContext",
+          "line": 14,
+          "end_line": 29
+        },
+        {
+          "name": "BaseTool",
+          "line": 32,
+          "end_line": 42
+        },
+        {
+          "name": "Tool",
+          "line": 45,
+          "end_line": 94
+        },
+        {
+          "name": "execute",
+          "line": 40,
+          "end_line": 42
+        },
+        {
+          "name": "parse",
+          "line": 59,
+          "end_line": 68
+        },
+        {
+          "name": "run",
+          "line": 70,
+          "end_line": 78
+        },
+        {
+          "name": "execute",
+          "line": 80,
+          "end_line": 82
+        },
+        {
+          "name": "openai_schema",
+          "line": 84,
+          "end_line": 94
+        }
+      ]
+    },
+    "app/tools/deps.py": {
+      "sha256": "affcd31e8c05fdb0827c5c20de68ecef085bca12edd7d7ccabb6249cdd0e512e",
+      "line_count": 17,
+      "anchors": [
+        {
+          "line": 14,
+          "text": "def repository(self) -> OrderRepository:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "RepositoryBackedTool",
+          "line": 7,
+          "end_line": 17
+        },
+        {
+          "name": "__init__",
+          "line": 10,
+          "end_line": 11
+        },
+        {
+          "name": "repository",
+          "line": 14,
+          "end_line": 17
+        }
+      ]
+    },
+    "app/tools/registry.py": {
+      "sha256": "e6dffb0c51472acfff537d1f29d47325809d9da88e95e84a25d0426d3572a536",
+      "line_count": 29,
+      "anchors": [
+        {
+          "line": 25,
+          "text": "def openai_tools(self) -> list[dict]:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "ToolRegistry",
+          "line": 9,
+          "end_line": 29
+        },
+        {
+          "name": "__init__",
+          "line": 10,
+          "end_line": 11
+        },
+        {
+          "name": "register",
+          "line": 13,
+          "end_line": 14
+        },
+        {
+          "name": "get",
+          "line": 16,
+          "end_line": 20
+        },
+        {
+          "name": "all",
+          "line": 22,
+          "end_line": 23
+        },
+        {
+          "name": "openai_tools",
+          "line": 25,
+          "end_line": 26
+        },
+        {
+          "name": "names",
+          "line": 28,
+          "end_line": 29
+        }
+      ]
+    },
+    "app/tools/factory.py": {
+      "sha256": "332b94befbab10e0418f3827c774d2e5f2b0e4e0737728277c03ea984350fe8b",
+      "line_count": 52,
+      "anchors": [
+        {
+          "line": 28,
+          "text": "def build_tool_registry(retriever: HybridRetriever) -> ToolRegistry:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "build_tool_registry",
+          "line": 28,
+          "end_line": 52
+        }
+      ]
+    },
+    "app/skills/loader.py": {
+      "sha256": "c4644037838159fe88f989fb0f10fef2290691ff44a08f6cb2cf29882ee1941c",
+      "line_count": 45,
+      "anchors": [
+        {
+          "line": 37,
+          "text": "def match_skill(query: str, intent_label: str = \"\") -> dict | None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "load_skills",
+          "line": 21,
+          "end_line": 27
+        },
+        {
+          "name": "skill_by_name",
+          "line": 30,
+          "end_line": 34
+        },
+        {
+          "name": "match_skill",
+          "line": 37,
+          "end_line": 45
+        }
+      ]
+    },
+    "app/mcp/runtime.py": {
+      "sha256": "91339c18cae6d4842c7390d724baf714bd47f5d1fa314a48bd4554bedb9a6478",
+      "line_count": 80,
+      "anchors": [
+        {
+          "line": 53,
+          "text": "async def call_mcp_tool("
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "call_mcp_tool",
+          "line": 53,
+          "end_line": 80
+        }
+      ]
+    },
+    "app/tools/order_tools.py": {
+      "sha256": "82f761eb6dce269f451fd3b818ee5fc7e38b80ced9c54a6e8a34bec1a054c90f",
+      "line_count": 57,
+      "anchors": [
+        {
+          "line": 33,
+          "text": "async def execute(self, parsed: OrderIdInput, context: ToolContext) -> ToolResult:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "OrderIdInput",
+          "line": 11,
+          "end_line": 17
+        },
+        {
+          "name": "GetOrderTool",
+          "line": 20,
+          "end_line": 35
+        },
+        {
+          "name": "GetOrderItemsTool",
+          "line": 38,
+          "end_line": 57
+        },
+        {
+          "name": "execute",
+          "line": 33,
+          "end_line": 35
+        },
+        {
+          "name": "execute",
+          "line": 51,
+          "end_line": 57
+        }
+      ]
+    },
+    "app/repositories/order_repository.py": {
+      "sha256": "5834e0ce4b7bf7da71e7caf2e70ce4b3fd41e059570492fb12f9165b1f5c65a2",
+      "line_count": 211,
+      "anchors": [
+        {
+          "line": 37,
+          "text": "async def get_visible_order(self, order_id: str, user_id: str) -> Order:"
+        },
+        {
+          "line": 123,
+          "text": "async def cancel_order(self, order_id: str, *, trace_id: str) -> dict:"
+        },
+        {
+          "line": 62,
+          "text": "async def create_refund("
+        },
+        {
+          "line": 139,
+          "text": "async def write_audit(self, trace_id: str, action: str, order_id: str) -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "escape_like",
+          "line": 14,
+          "end_line": 16
+        },
+        {
+          "name": "OrderRepository",
+          "line": 19,
+          "end_line": 186
+        },
+        {
+          "name": "_to_order",
+          "line": 189,
+          "end_line": 211
+        },
+        {
+          "name": "__init__",
+          "line": 20,
+          "end_line": 21
+        },
+        {
+          "name": "get_order",
+          "line": 23,
+          "end_line": 35
+        },
+        {
+          "name": "get_visible_order",
+          "line": 37,
+          "end_line": 44
+        },
+        {
+          "name": "list_orders_for_user",
+          "line": 46,
+          "end_line": 54
+        },
+        {
+          "name": "update_status",
+          "line": 56,
+          "end_line": 60
+        },
+        {
+          "name": "create_refund",
+          "line": 62,
+          "end_line": 95
+        },
+        {
+          "name": "create_return",
+          "line": 97,
+          "end_line": 121
+        },
+        {
+          "name": "cancel_order",
+          "line": 123,
+          "end_line": 137
+        },
+        {
+          "name": "write_audit",
+          "line": 139,
+          "end_line": 140
+        },
+        {
+          "name": "get_product",
+          "line": 142,
+          "end_line": 154
+        },
+        {
+          "name": "search_products",
+          "line": 156,
+          "end_line": 180
+        },
+        {
+          "name": "get_refunds",
+          "line": 182,
+          "end_line": 186
+        }
+      ]
+    },
+    "app/tools/aftersale_tools.py": {
+      "sha256": "39eb36360006050f8ed1f35f88b0161b3084782e8101ac0b37dfde11705c4727",
+      "line_count": 128,
+      "anchors": [
+        {
+          "line": 125,
+          "text": "async def execute(self, parsed: OrderIdInput, context: ToolContext) -> ToolResult:"
+        },
+        {
+          "line": 79,
+          "text": "async def execute(self, parsed: RefundCreateInput, context: ToolContext) -> ToolResult:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "OrderIdInput",
+          "line": 11,
+          "end_line": 17
+        },
+        {
+          "name": "RefundCreateInput",
+          "line": 20,
+          "end_line": 31
+        },
+        {
+          "name": "GetRefundStatusTool",
+          "line": 34,
+          "end_line": 63
+        },
+        {
+          "name": "CreateRefundRequestTool",
+          "line": 66,
+          "end_line": 86
+        },
+        {
+          "name": "CreateReturnRequestTool",
+          "line": 89,
+          "end_line": 109
+        },
+        {
+          "name": "CancelOrderTool",
+          "line": 112,
+          "end_line": 128
+        },
+        {
+          "name": "execute",
+          "line": 47,
+          "end_line": 63
+        },
+        {
+          "name": "execute",
+          "line": 79,
+          "end_line": 86
+        },
+        {
+          "name": "execute",
+          "line": 102,
+          "end_line": 109
+        },
+        {
+          "name": "execute",
+          "line": 125,
+          "end_line": 128
+        }
+      ]
+    },
+    "app/tools/permissions.py": {
+      "sha256": "b53c1ead77aef642283b7e5509e30277dd968a3d0be2fc36fad3270947fe66ef",
+      "line_count": 14,
+      "anchors": [
+        {
+          "line": 10,
+          "text": "def assert_permitted(tool: Tool, *, confirmed: bool) -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "assert_permitted",
+          "line": 10,
+          "end_line": 14
+        }
+      ]
+    },
+    "app/memory/compression.py": {
+      "sha256": "d4cf1b5346cf45b1f624bee0170bfb05d45bbeb8952d01975089e795741c5bc2",
+      "line_count": 66,
+      "anchors": [
+        {
+          "line": 50,
+          "text": "def apply_compression("
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "compress_tool_results",
+          "line": 21,
+          "end_line": 39
+        },
+        {
+          "name": "sliding_window",
+          "line": 42,
+          "end_line": 47
+        },
+        {
+          "name": "apply_compression",
+          "line": 50,
+          "end_line": 66
+        }
+      ]
+    },
+    "app/repositories/session_repository.py": {
+      "sha256": "39a5ffa3077efc62c6d9bd2d816dcd256f50cb94b0f746373241ae96a57b9b31",
+      "line_count": 43,
+      "anchors": [
+        {
+          "line": 23,
+          "text": "async def recent_messages(self, session_id: str, *, limit: int = 20) -> list[ChatMessage]:"
+        },
+        {
+          "line": 15,
+          "text": "async def get_or_create(self, session_id: str, user_id: str) -> SessionRow:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "SessionRepository",
+          "line": 11,
+          "end_line": 43
+        },
+        {
+          "name": "__init__",
+          "line": 12,
+          "end_line": 13
+        },
+        {
+          "name": "get_or_create",
+          "line": 15,
+          "end_line": 21
+        },
+        {
+          "name": "recent_messages",
+          "line": 23,
+          "end_line": 31
+        },
+        {
+          "name": "append_message",
+          "line": 33,
+          "end_line": 37
+        },
+        {
+          "name": "save_summary",
+          "line": 39,
+          "end_line": 43
+        }
+      ]
+    },
+    "app/guardrails/injection.py": {
+      "sha256": "ffe51a7cbd44787f5947d383f9a0ce2b93d89b34fa7cbf6413cc4e583451b669",
+      "line_count": 30,
+      "anchors": [
+        {
+          "line": 19,
+          "text": "def detect_prompt_injection(text: str) -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "detect_prompt_injection",
+          "line": 19,
+          "end_line": 30
+        }
+      ]
+    },
+    "app/providers/fake.py": {
+      "sha256": "b4e6e4b4a16eabf3ae3e6dbb9ddd938409fb34bb4fa20b4e9cecee24486ab6a8",
+      "line_count": 66,
+      "anchors": [
+        {
+          "line": 61,
+          "text": "class OfflineLLMProvider(FakeLLMProvider):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "FakeLLMProvider",
+          "line": 10,
+          "end_line": 54
+        },
+        {
+          "name": "FakeEmbeddingProvider",
+          "line": 57,
+          "end_line": 58
+        },
+        {
+          "name": "OfflineLLMProvider",
+          "line": 61,
+          "end_line": 66
+        },
+        {
+          "name": "__init__",
+          "line": 11,
+          "end_line": 13
+        },
+        {
+          "name": "ping",
+          "line": 15,
+          "end_line": 16
+        },
+        {
+          "name": "generate",
+          "line": 18,
+          "end_line": 36
+        },
+        {
+          "name": "stream",
+          "line": 38,
+          "end_line": 54
+        }
+      ]
+    },
+    "app/providers/embeddings.py": {
+      "sha256": "bb8bbd183a5d1c06ab12ca99d1f8e90ea9e95dda68089bcf02a96811d2654b7a",
+      "line_count": 224,
+      "anchors": [
+        {
+          "line": 213,
+          "text": "def build_embedding_provider(settings: Settings, *, model: Any | None = None) -> Any:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "_l2_normalize",
+          "line": 24,
+          "end_line": 26
+        },
+        {
+          "name": "_local_backend_name",
+          "line": 29,
+          "end_line": 30
+        },
+        {
+          "name": "HashEmbeddingProvider",
+          "line": 33,
+          "end_line": 58
+        },
+        {
+          "name": "BgeM3EmbeddingProvider",
+          "line": 61,
+          "end_line": 162
+        },
+        {
+          "name": "OpenAICompatibleEmbeddingProvider",
+          "line": 165,
+          "end_line": 210
+        },
+        {
+          "name": "build_embedding_provider",
+          "line": 213,
+          "end_line": 224
+        },
+        {
+          "name": "__init__",
+          "line": 41,
+          "end_line": 42
+        },
+        {
+          "name": "ping",
+          "line": 44,
+          "end_line": 45
+        },
+        {
+          "name": "embed",
+          "line": 47,
+          "end_line": 48
+        },
+        {
+          "name": "_embed_one",
+          "line": 50,
+          "end_line": 58
+        },
+        {
+          "name": "__init__",
+          "line": 69,
+          "end_line": 79
+        },
+        {
+          "name": "backend",
+          "line": 82,
+          "end_line": 83
+        },
+        {
+          "name": "available",
+          "line": 86,
+          "end_line": 87
+        },
+        {
+          "name": "load_error",
+          "line": 90,
+          "end_line": 91
+        },
+        {
+          "name": "_should_load",
+          "line": 93,
+          "end_line": 98
+        },
+        {
+          "name": "_ensure_model",
+          "line": 100,
+          "end_line": 128
+        },
+        {
+          "name": "_load_sentence_transformer",
+          "line": 130,
+          "end_line": 134
+        },
+        {
+          "name": "ping",
+          "line": 136,
+          "end_line": 141
+        },
+        {
+          "name": "embed",
+          "line": 143,
+          "end_line": 149
+        },
+        {
+          "name": "_encode",
+          "line": 152,
+          "end_line": 162
+        },
+        {
+          "name": "__init__",
+          "line": 168,
+          "end_line": 175
+        },
+        {
+          "name": "aclose",
+          "line": 177,
+          "end_line": 179
+        },
+        {
+          "name": "ping",
+          "line": 181,
+          "end_line": 186
+        },
+        {
+          "name": "embed",
+          "line": 188,
+          "end_line": 210
+        },
+        {
+          "name": "_call",
+          "line": 191,
+          "end_line": 208
+        }
+      ]
+    },
+    "app/infra/redis_client.py": {
+      "sha256": "ec1443af9b6401dcb2c9de740e3a7ac81f4d530261a3853813458070fddf8b20",
+      "line_count": 33,
+      "anchors": [
+        {
+          "line": 12,
+          "text": "async def connect_redis(settings: Settings):"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "connect_redis",
+          "line": 12,
+          "end_line": 33
+        }
+      ]
+    },
+    "app/retrieval/cache.py": {
+      "sha256": "f88652d644e9a09366d94e7c4668562be07ec857420a59f0e04f11447bf9ef44",
+      "line_count": 87,
+      "anchors": [
+        {
+          "line": 64,
+          "text": "async def get(self, query: str, top_k: int) -> list[RetrievedChunk] | None:"
+        },
+        {
+          "line": 23,
+          "text": "def cache_key(query: str, top_k: int) -> str:"
+        },
+        {
+          "line": 18,
+          "text": "def _looks_like_order_query(query: str) -> bool:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "_looks_like_order_query",
+          "line": 18,
+          "end_line": 20
+        },
+        {
+          "name": "cache_key",
+          "line": 23,
+          "end_line": 25
+        },
+        {
+          "name": "RetrievalCache",
+          "line": 28,
+          "end_line": 33
+        },
+        {
+          "name": "MemoryRetrievalCache",
+          "line": 36,
+          "end_line": 56
+        },
+        {
+          "name": "RedisRetrievalCache",
+          "line": 59,
+          "end_line": 87
+        },
+        {
+          "name": "get",
+          "line": 29,
+          "end_line": 30
+        },
+        {
+          "name": "set",
+          "line": 32,
+          "end_line": 33
+        },
+        {
+          "name": "__init__",
+          "line": 37,
+          "end_line": 39
+        },
+        {
+          "name": "get",
+          "line": 41,
+          "end_line": 51
+        },
+        {
+          "name": "set",
+          "line": 53,
+          "end_line": 56
+        },
+        {
+          "name": "__init__",
+          "line": 60,
+          "end_line": 62
+        },
+        {
+          "name": "get",
+          "line": 64,
+          "end_line": 75
+        },
+        {
+          "name": "set",
+          "line": 77,
+          "end_line": 87
+        }
+      ]
+    },
+    "app/infra/rate_limit.py": {
+      "sha256": "e7fcc08eb402de4122f01841a5dcb650af2f1c33d6448d99a704a85b46a7dd9b",
+      "line_count": 64,
+      "anchors": [
+        {
+          "line": 50,
+          "text": "async def allow(self, key: str) -> bool:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "RateLimiter",
+          "line": 17,
+          "end_line": 19
+        },
+        {
+          "name": "InMemoryRateLimiter",
+          "line": 22,
+          "end_line": 39
+        },
+        {
+          "name": "RedisRateLimiter",
+          "line": 42,
+          "end_line": 64
+        },
+        {
+          "name": "allow",
+          "line": 18,
+          "end_line": 19
+        },
+        {
+          "name": "__init__",
+          "line": 23,
+          "end_line": 27
+        },
+        {
+          "name": "allow",
+          "line": 29,
+          "end_line": 39
+        },
+        {
+          "name": "__init__",
+          "line": 45,
+          "end_line": 48
+        },
+        {
+          "name": "allow",
+          "line": 50,
+          "end_line": 64
+        }
+      ]
+    },
+    "app/repositories/models.py": {
+      "sha256": "08ed89fdb2a18eedf9fcde77c4834b86f8846460da5d0666a51c45b19a597f83",
+      "line_count": 115,
+      "anchors": [],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "Base",
+          "line": 11,
+          "end_line": 12
+        },
+        {
+          "name": "OrderRow",
+          "line": 15,
+          "end_line": 29
+        },
+        {
+          "name": "OrderItemRow",
+          "line": 32,
+          "end_line": 43
+        },
+        {
+          "name": "ProductRow",
+          "line": 46,
+          "end_line": 55
+        },
+        {
+          "name": "RefundRow",
+          "line": 58,
+          "end_line": 66
+        },
+        {
+          "name": "ReturnRow",
+          "line": 69,
+          "end_line": 76
+        },
+        {
+          "name": "SessionRow",
+          "line": 79,
+          "end_line": 86
+        },
+        {
+          "name": "MessageRow",
+          "line": 89,
+          "end_line": 96
+        },
+        {
+          "name": "AuditLogRow",
+          "line": 99,
+          "end_line": 106
+        },
+        {
+          "name": "IdempotencyRow",
+          "line": 109,
+          "end_line": 115
+        }
+      ]
+    },
+    "app/repositories/idempotency.py": {
+      "sha256": "1acfa6d14126631e7cb316cb00034a7750bf27669fcab38de802d7c46f1aae8a",
+      "line_count": 44,
+      "anchors": [
+        {
+          "line": 12,
+          "text": "class IdempotencyRepository:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "IdempotencyRepository",
+          "line": 12,
+          "end_line": 44
+        },
+        {
+          "name": "__init__",
+          "line": 13,
+          "end_line": 14
+        },
+        {
+          "name": "get_if_matches",
+          "line": 16,
+          "end_line": 26
+        },
+        {
+          "name": "put",
+          "line": 28,
+          "end_line": 44
+        }
+      ]
+    },
+    "tests/e2e/test_chat_api.py": {
+      "sha256": "abac9eb6b85fced5128011db3cc8e1ed09d195b4e781bf7d9cef4a8511181343",
+      "line_count": 82,
+      "anchors": [
+        {
+          "line": 14,
+          "text": "def test_health_and_chat_greeting() -> None:"
+        },
+        {
+          "line": 28,
+          "text": "def test_injection_is_refused() -> None:"
+        },
+        {
+          "line": 48,
+          "text": "def test_chat_stream_emits_token_and_node_events() -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "_client",
+          "line": 9,
+          "end_line": 11
+        },
+        {
+          "name": "test_health_and_chat_greeting",
+          "line": 14,
+          "end_line": 25
+        },
+        {
+          "name": "test_injection_is_refused",
+          "line": 28,
+          "end_line": 36
+        },
+        {
+          "name": "test_empty_message_is_invalid_request",
+          "line": 39,
+          "end_line": 45
+        },
+        {
+          "name": "test_chat_stream_emits_token_and_node_events",
+          "line": 48,
+          "end_line": 71
+        },
+        {
+          "name": "test_admin_tools_open_in_testing",
+          "line": 74,
+          "end_line": 82
+        }
+      ]
+    },
+    "tests/unit/test_adaptive_router.py": {
+      "sha256": "04df4c9eb837af449760801b6e00e9896f07b94ea9c628b09f7f6a46b55d4c19",
+      "line_count": 36,
+      "anchors": [
+        {
+          "line": 7,
+          "text": "def test_greeting_goes_direct() -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "test_greeting_goes_direct",
+          "line": 7,
+          "end_line": 11
+        },
+        {
+          "name": "test_order_goes_agent",
+          "line": 14,
+          "end_line": 17
+        },
+        {
+          "name": "test_policy_multi_hop",
+          "line": 20,
+          "end_line": 24
+        },
+        {
+          "name": "test_general_return_policy_does_not_request_order_tools",
+          "line": 27,
+          "end_line": 30
+        },
+        {
+          "name": "test_specific_order_return_uses_tools",
+          "line": 33,
+          "end_line": 36
+        }
+      ]
+    },
+    "tests/unit/test_self_rag.py": {
+      "sha256": "ada42edd0272517a34b7bfc9a9bcbc1b1f6a2d82a45042ec952618ebbf5992ec",
+      "line_count": 152,
+      "anchors": [
+        {
+          "line": 94,
+          "text": "async def test_loop_hops_again_and_dedupes_chunks() -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "_chunk",
+          "line": 22,
+          "end_line": 31
+        },
+        {
+          "name": "_StubRetriever",
+          "line": 34,
+          "end_line": 41
+        },
+        {
+          "name": "_StubReranker",
+          "line": 44,
+          "end_line": 46
+        },
+        {
+          "name": "_PassthroughReranker",
+          "line": 49,
+          "end_line": 53
+        },
+        {
+          "name": "_StubRewriter",
+          "line": 56,
+          "end_line": 62
+        },
+        {
+          "name": "_RaisingLLM",
+          "line": 65,
+          "end_line": 67
+        },
+        {
+          "name": "_loop",
+          "line": 70,
+          "end_line": 77
+        },
+        {
+          "name": "test_loop_stops_when_first_grade_is_sufficient",
+          "line": 81,
+          "end_line": 90
+        },
+        {
+          "name": "test_loop_hops_again_and_dedupes_chunks",
+          "line": 94,
+          "end_line": 104
+        },
+        {
+          "name": "test_loop_respects_max_hops",
+          "line": 108,
+          "end_line": 115
+        },
+        {
+          "name": "test_loop_truncates_to_twice_rerank_top_n",
+          "line": 119,
+          "end_line": 133
+        },
+        {
+          "name": "test_loop_degrades_when_grading_llm_fails",
+          "line": 137,
+          "end_line": 144
+        },
+        {
+          "name": "test_loop_returns_empty_when_nothing_retrieved_and_grading_fails",
+          "line": 148,
+          "end_line": 152
+        },
+        {
+          "name": "__init__",
+          "line": 35,
+          "end_line": 37
+        },
+        {
+          "name": "retrieve",
+          "line": 39,
+          "end_line": 41
+        },
+        {
+          "name": "rerank",
+          "line": 45,
+          "end_line": 46
+        },
+        {
+          "name": "rerank",
+          "line": 52,
+          "end_line": 53
+        },
+        {
+          "name": "__init__",
+          "line": 57,
+          "end_line": 58
+        },
+        {
+          "name": "rewrite",
+          "line": 60,
+          "end_line": 62
+        },
+        {
+          "name": "generate",
+          "line": 66,
+          "end_line": 67
+        }
+      ]
+    },
+    "tests/unit/test_action_confirmation.py": {
+      "sha256": "dfc982a2355bf465cc4fa6233f0488c3062a685a6ba9a77b4601c44b06d9956c",
+      "line_count": 69,
+      "anchors": [
+        {
+          "line": 25,
+          "text": "async def test_cancellation_needs_explicit_request_and_confirmation() -> None:"
+        },
+        {
+          "line": 45,
+          "text": "def test_confirmation_is_bound_to_session_and_user() -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "_action",
+          "line": 14,
+          "end_line": 21
+        },
+        {
+          "name": "test_cancellation_needs_explicit_request_and_confirmation",
+          "line": 25,
+          "end_line": 42
+        },
+        {
+          "name": "test_confirmation_is_bound_to_session_and_user",
+          "line": 45,
+          "end_line": 69
+        }
+      ]
+    },
+    "tests/unit/test_executor_fallback.py": {
+      "sha256": "9856f3db58a6eed9f4af19e02cd2c22dd9ec7202516150cd88f86d3c49d0125d",
+      "line_count": 50,
+      "anchors": [
+        {
+          "line": 37,
+          "text": "async def test_read_tool_falls_back_to_knowledge() -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "_Query",
+          "line": 12,
+          "end_line": 13
+        },
+        {
+          "name": "_FailingOrder",
+          "line": 16,
+          "end_line": 23
+        },
+        {
+          "name": "_Knowledge",
+          "line": 26,
+          "end_line": 33
+        },
+        {
+          "name": "test_read_tool_falls_back_to_knowledge",
+          "line": 37,
+          "end_line": 50
+        },
+        {
+          "name": "execute",
+          "line": 22,
+          "end_line": 23
+        },
+        {
+          "name": "execute",
+          "line": 32,
+          "end_line": 33
+        }
+      ]
+    },
+    "tests/integration/test_orders.py": {
+      "sha256": "29015eb782434b2c5bb34c34617be0828f81b4595faa70de5eb096ecc5e957ee",
+      "line_count": 99,
+      "anchors": [
+        {
+          "line": 34,
+          "text": "async def test_refund_is_idempotent_and_transactional(session_factory) -> None:"
+        },
+        {
+          "line": 50,
+          "text": "async def test_order_is_scoped_to_owner(session_factory) -> None:"
+        },
+        {
+          "line": 90,
+          "text": "async def test_refund_tool_persists_via_repository(session_factory) -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "session_factory",
+          "line": 18,
+          "end_line": 30
+        },
+        {
+          "name": "test_refund_is_idempotent_and_transactional",
+          "line": 34,
+          "end_line": 46
+        },
+        {
+          "name": "test_order_is_scoped_to_owner",
+          "line": 50,
+          "end_line": 62
+        },
+        {
+          "name": "test_seed_fills_missing_rows_without_overwriting_existing_orders",
+          "line": 66,
+          "end_line": 86
+        },
+        {
+          "name": "test_refund_tool_persists_via_repository",
+          "line": 90,
+          "end_line": 99
+        }
+      ]
+    },
+    "tests/unit/test_offline_answer.py": {
+      "sha256": "526fa0ed60bee69a9f7ec264525fcc1fb029d5d65ff832b814969d6939201caa",
+      "line_count": 40,
+      "anchors": [
+        {
+          "line": 22,
+          "text": "async def test_offline_answer_quotes_evidence_instead_of_test_json() -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "test_greeting_prefix_does_not_hide_order_intent",
+          "line": 10,
+          "end_line": 12
+        },
+        {
+          "name": "test_offline_classifier_uses_rules_not_fake_json",
+          "line": 16,
+          "end_line": 18
+        },
+        {
+          "name": "test_offline_answer_quotes_evidence_instead_of_test_json",
+          "line": 22,
+          "end_line": 40
+        }
+      ]
+    },
+    "tests/unit/test_self_correct.py": {
+      "sha256": "619e9b9d0851816d3b32fd72f49d532aa0be41fdae9d58d9e7136097380e88f4",
+      "line_count": 55,
+      "anchors": [
+        {
+          "line": 27,
+          "text": "async def test_self_correct_rewrites_unsupported_answer() -> None:"
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": [
+        {
+          "name": "_SequenceLLM",
+          "line": 10,
+          "end_line": 23
+        },
+        {
+          "name": "test_self_correct_rewrites_unsupported_answer",
+          "line": 27,
+          "end_line": 55
+        },
+        {
+          "name": "__init__",
+          "line": 11,
+          "end_line": 12
+        },
+        {
+          "name": "ping",
+          "line": 14,
+          "end_line": 15
+        },
+        {
+          "name": "generate",
+          "line": 17,
+          "end_line": 23
+        }
+      ]
+    },
+    "tests/conftest.py": {
+      "sha256": "0d183956b96bca78daac02d74cfbb0b0c680f4b8aed981999ef4c1a8e2a0a4ba",
+      "line_count": 18,
+      "anchors": [
+        {
+          "line": 5,
+          "text": "os.environ[\"APP_ENV\"] = \"testing\""
+        }
+      ],
+      "evidence_label": "SOURCE_VERIFIED",
+      "symbols": []
+    },
+    "docs/03-architecture.md": {
+      "sha256": "298c40f87de84d7f072d0f14b1f94a1501ddcbfd7fad10ccbc4b3b42955a4e98",
+      "line_count": 243,
+      "anchors": [],
+      "evidence_label": "SOURCE_VERIFIED"
+    },
+    "docs/05-agents-and-tools.md": {
+      "sha256": "ee70324e05818eeb8becf01b771a60c26f71d0de79930f993821abe93668fefc",
+      "line_count": 322,
+      "anchors": [],
+      "evidence_label": "SOURCE_VERIFIED"
+    }
+  },
+  "note": "Source/test/doc positions and fingerprints; tests were not executed. Repository documentation claims remain DOCUMENTED_ONLY in the report."
+}

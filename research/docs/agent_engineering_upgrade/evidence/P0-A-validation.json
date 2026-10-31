@@ -1,0 +1,202 @@
+{
+  "task_id": "P0-A",
+  "validation_kind": "offline_static_validation",
+  "result": "PASS",
+  "python_executable": "D:\\MiniAnaconda3\\envs\\adaptive-rag\\python.exe",
+  "python_version": "3.11.18",
+  "source_baseline_git_head": "2a12a62382a8c3ec033fa9a5b19b9b23b8780ab8",
+  "git_head_at_validation": "d788492ead34b64390e706d6c95a739bf5c39cd7",
+  "checks": [
+    {
+      "check": "state_schema_and_single_task_scope",
+      "result": "PASS",
+      "basis": "SOURCE_VERIFIED",
+      "detail": "P0-A only; P0-B..P0-G remain pending/false"
+    },
+    {
+      "check": "outside_scope_integrity",
+      "result": "PASS",
+      "basis": "SOURCE_VERIFIED",
+      "detail": {
+        "tracked_files": 329,
+        "preexisting_untracked_files": 19,
+        "modified_or_missing": [],
+        "new_untracked_outside_scope": []
+      }
+    },
+    {
+      "check": "graph_nodes_edges_and_routing",
+      "result": "PASS",
+      "basis": "SOURCE_VERIFIED",
+      "detail": {
+        "nodes": [
+          "apply_guardrail",
+          "check_faithfulness",
+          "classify_intent",
+          "compact_memory",
+          "execute_tools",
+          "generate_answer",
+          "plan_tasks",
+          "refuse_answer",
+          "retrieve_docs",
+          "route_complexity"
+        ],
+        "edges": [
+          [
+            "'check_faithfulness'",
+            "'compact_memory'"
+          ],
+          [
+            "'classify_intent'",
+            "'route_complexity'"
+          ],
+          [
+            "'compact_memory'",
+            "END"
+          ],
+          [
+            "'execute_tools'",
+            "'generate_answer'"
+          ],
+          [
+            "'generate_answer'",
+            "'check_faithfulness'"
+          ],
+          [
+            "'plan_tasks'",
+            "'execute_tools'"
+          ],
+          [
+            "'refuse_answer'",
+            "'compact_memory'"
+          ],
+          [
+            "'retrieve_docs'",
+            "'generate_answer'"
+          ],
+          [
+            "START",
+            "'apply_guardrail'"
+          ]
+        ],
+        "routes": {
+          "DIRECT": "generate_answer",
+          "REFUSE": "refuse_answer",
+          "SINGLE": "retrieve_docs",
+          "MULTI": "retrieve_docs",
+          "AGENT": "plan_tasks"
+        }
+      }
+    },
+    {
+      "check": "state_and_generation_context_boundaries",
+      "result": "PASS",
+      "basis": "SOURCE_VERIFIED",
+      "detail": {
+        "generate_state_reads": [
+          "extra",
+          "intent",
+          "latency",
+          "pending_action",
+          "retrieved_chunks",
+          "strategy",
+          "token_usage",
+          "tool_results",
+          "user_query"
+        ],
+        "initial_summary": ""
+      }
+    },
+    {
+      "check": "provider_and_tool_calling_boundary",
+      "result": "PASS",
+      "basis": "SOURCE_VERIFIED",
+      "detail": "Custom HTTP completion + AgentPlan JSON + Tool.run dispatch; no native tool_calls payload"
+    },
+    {
+      "check": "sse_static_lifecycle",
+      "result": "PASS",
+      "basis": "SOURCE_VERIFIED",
+      "detail": {
+        "commit_lines": [
+          146,
+          128
+        ],
+        "token_yield_lines": [
+          152
+        ],
+        "note": "No runtime ASGI/disconnect claim"
+      }
+    },
+    {
+      "check": "report_references_syntax_and_source_index",
+      "result": "PASS",
+      "basis": "SOURCE_VERIFIED",
+      "detail": {
+        "local_link_occurrences": 169,
+        "source_files": 78
+      }
+    },
+    {
+      "check": "evidence_labels_and_acceptance_scope",
+      "result": "PASS",
+      "basis": "SOURCE_VERIFIED",
+      "detail": "Six P0-A acceptance items covered; no business test success claims; P0-B..P0-G not executed"
+    }
+  ],
+  "acceptance_results": [
+    {
+      "criterion": "?? FastAPI/CLI/ASGI ??????ChatService ? LangGraph ???????????????????",
+      "result": "PASS",
+      "validation_scope": "source/document/static checks only"
+    },
+    {
+      "criterion": "?????????????State ??????????????????????????",
+      "result": "PASS",
+      "validation_scope": "source/document/static checks only"
+    },
+    {
+      "criterion": "?? Prompt ?????DeepSeek ???????? Handler??? Schema ????????",
+      "result": "PASS",
+      "validation_scope": "source/document/static checks only"
+    },
+    {
+      "criterion": "?????????/???????????????? SSE ????????",
+      "result": "PASS",
+      "validation_scope": "source/document/static checks only"
+    },
+    {
+      "criterion": "???????????????????????????????????????",
+      "result": "PASS",
+      "validation_scope": "source/document/static checks only"
+    },
+    {
+      "criterion": "?????????????????????????????????? P0-A?",
+      "result": "PASS",
+      "validation_scope": "source/document/static checks only"
+    }
+  ],
+  "business_tests_run": false,
+  "application_imported_or_started": false,
+  "paid_llm_calls": 0,
+  "model_downloads_or_training": 0,
+  "database_operations": 0,
+  "trace_uploads": 0,
+  "not_run": [
+    {
+      "item": "pytest / TestClient",
+      "label": "BLOCKED",
+      "reason": "Repository conftest creates data/local and HTTP lifespan can create schema/ingest; no business-directory writes authorized."
+    },
+    {
+      "item": "Service/DB/model/remote dependencies",
+      "label": "BLOCKED",
+      "reason": "P0 side-effect restrictions; only source evidence is claimed."
+    },
+    {
+      "item": "Concurrency, SSE cancellation and recovery",
+      "label": "HYPOTHESIS",
+      "reason": "Structural behavior inspected; no runtime fault injection executed."
+    }
+  ]
+}
