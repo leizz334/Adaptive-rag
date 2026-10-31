@@ -7,6 +7,7 @@ import re
 from app.agents.state import AgentState
 from app.core.exceptions import LLMOutputError, LLMProviderError
 from app.core.ids import new_id
+from app.observability.tracing import traced
 from app.prompts.planner import PLANNER_SYSTEM, PLANNER_USER
 from app.providers.base import LLMProvider
 from app.providers.fake import OfflineLLMProvider
@@ -166,6 +167,7 @@ def _knowledge_fallback(query: str, registry: ToolRegistry) -> AgentPlan:
     return AgentPlan(steps=[], rationale="empty")
 
 
+@traced("node.planner", "chain")
 async def planner_node(state: AgentState, planner: Planner) -> dict:
     confirmed = state.get("confirmed_action")
     if confirmed is not None:

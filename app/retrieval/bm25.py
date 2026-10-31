@@ -6,6 +6,7 @@ from collections import defaultdict
 
 from rank_bm25 import BM25Okapi
 
+from app.observability.tracing import traced
 from app.retrieval.tokenizer import tokenize
 from app.schemas.retrieval import RetrievedChunk
 
@@ -25,6 +26,7 @@ class BM25Retriever:
         # BM25Okapi requires a non-empty corpus; keep None if ingest has not run.
         self._bm25 = BM25Okapi(tokenized) if tokenized else None
 
+    @traced("retrieval.bm25", "retriever")
     def search(self, query: str, *, top_k: int) -> list[RetrievedChunk]:
         if self._bm25 is None or not self._chunks:
             return []

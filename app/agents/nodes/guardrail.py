@@ -4,8 +4,10 @@ from app.agents.state import AgentState
 from app.core.enums import RetrievalStrategy
 from app.core.exceptions import GuardrailError
 from app.guardrails.injection import detect_prompt_injection
+from app.observability.tracing import traced
 
 
+@traced("node.guardrail", "chain")
 async def guardrail_node(state: AgentState) -> dict:
     try:
         detect_prompt_injection(state["user_query"])

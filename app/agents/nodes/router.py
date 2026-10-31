@@ -7,6 +7,7 @@ import time
 from app.agents.nodes.intent import IntentClassifier
 from app.agents.state import AgentState
 from app.core.enums import QueryComplexity, RetrievalStrategy
+from app.observability.tracing import traced
 from app.retrieval.adaptive import AdaptiveRouter
 from app.schemas.agent import ComplexityResult
 from app.schemas.common import LatencyBreakdown
@@ -16,6 +17,7 @@ def _latency(state: AgentState) -> LatencyBreakdown:
     return state.get("latency") or LatencyBreakdown()
 
 
+@traced("node.intent", "chain")
 async def intent_node(state: AgentState, classifier: IntentClassifier) -> dict:
     started = time.perf_counter()
     intent = await classifier.classify(state["user_query"])
@@ -24,6 +26,7 @@ async def intent_node(state: AgentState, classifier: IntentClassifier) -> dict:
     return {"intent": intent, "latency": latency}
 
 
+@traced("node.router", "chain")
 async def router_node(state: AgentState, router: AdaptiveRouter) -> dict:
     started = time.perf_counter()
     intent = state["intent"]

@@ -11,6 +11,7 @@ import httpx
 from app.config.settings import Settings
 from app.core.exceptions import LLMProviderError
 from app.core.retry import is_retryable_status, with_exponential_backoff
+from app.observability.tracing import traced
 from app.providers.base import LLMResponse
 from app.schemas.common import TokenUsage
 
@@ -45,6 +46,7 @@ class DeepSeekProvider:
         """Do not call chat completions here — readiness must stay cheap."""
         return bool(self._settings.deepseek_api_key.get_secret_value())
 
+    @traced("llm.deepseek", "llm")
     async def generate(
         self,
         messages: list[dict[str, str]],
@@ -66,6 +68,7 @@ class DeepSeekProvider:
         if response_format is not None:
             payload["response_format"] = response_format
 
+        @traced("llm.http_attempt", "chain")
         async def _call() -> LLMResponse:
             try:
                 response = await self._client.post(

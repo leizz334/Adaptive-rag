@@ -6,9 +6,11 @@ import asyncio
 import logging
 import time
 from collections.abc import AsyncIterator
+from contextlib import suppress
 from dataclasses import dataclass
 from typing import cast
 
+from langsmith import tracing_context
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.agents.graph import build_graph
@@ -19,6 +21,7 @@ from app.core.ids import new_id
 from app.core.request_scope import request_session
 from app.infra.rate_limit import RateLimiter
 from app.observability.metrics import REQUEST_LATENCY, REQUESTS, ROUTING, STAGE_LATENCY, TOKEN_USAGE
+from app.observability.tracing import TraceRecorder, trace_turn, traced
 from app.providers.base import LLMProvider
 from app.repositories.session_repository import SessionRepository
 from app.retrieval.hybrid import HybridRetriever
@@ -50,8 +53,10 @@ class ChatService:
         session_factory: async_sessionmaker[AsyncSession],
         rate_limiter: RateLimiter,
         registry: ToolRegistry | None = None,
+        tracer: TraceRecorder | None = None,
     ) -> None:
         self._settings = settings
+        self._tracer = tracer or TraceRecorder.from_settings(settings)
         self._llm = llm
         self._retriever = retriever
         self._reranker = reranker
@@ -67,6 +72,7 @@ class ChatService:
             registry=self.registry,
         )
 
+    @trace_turn
     async def chat(self, request: ChatRequest, *, trace_id: str) -> ChatResponse:
         await self._enforce_rate_limit(request.user_id)
         started = time.perf_counter()
@@ -76,11 +82,12 @@ class ChatService:
             result = await self._invoke(state)
             response = self._to_response(result, session_id=session_id, trace_id=trace_id)
             await self._persist(db, request, response, summary=result.get("summary") or "")
-            await db.commit()
+            await self._commit(db)
         self._remember_pending(request, response)
         self._observe(response, started)
         return response
 
+    @trace_turn
     async def stream(self, request: ChatRequest, *, trace_id: str) -> AsyncIterator[dict]:
         """SSE: report progress, then send only the validated user-facing answer."""
         await self._enforce_rate_limit(request.user_id)
@@ -92,9 +99,10 @@ class ChatService:
             queue: asyncio.Queue[dict | None] = asyncio.Queue()
             holder: dict = {"merged": dict(state), "guardrail": None, "error": None}
 
+            @traced("graph.stream")
             async def _run_graph() -> None:
                 try:
-                    async for update in self._graph.astream(state, stream_mode="updates"):
+                    async for update in self._stream_updates(state):
                         for node, payload in update.items():
                             if isinstance(payload, dict):
                                 holder["merged"].update(payload)
@@ -122,10 +130,12 @@ class ChatService:
             finally:
                 if not task.done():
                     task.cancel()
+                    with suppress(asyncio.CancelledError):
+                        await task
 
             if holder["guardrail"] is not None:
                 exc = holder["guardrail"]
-                await db.commit()
+                await self._commit(db)
                 yield {
                     "event": "answer",
                     "data": ChatResponse(
@@ -143,7 +153,7 @@ class ChatService:
             merged: AgentState = holder["merged"]
             response = self._to_response(merged, session_id=session_id, trace_id=trace_id)
             await self._persist(db, request, response, summary=merged.get("summary") or "")
-            await db.commit()
+            await self._commit(db)
         self._remember_pending(request, response)
         self._observe(response, started)
         # Never stream the LLM's JSON envelope or an answer that may still be
@@ -158,6 +168,7 @@ class ChatService:
         if not allowed:
             raise RateLimitError()
 
+    @traced("session.load")
     async def _initial_state(
         self,
         db: AsyncSession,
@@ -188,6 +199,7 @@ class ChatService:
             "idempotency_key": request.idempotency_key,
         }
 
+    @traced("confirmation.resolve")
     def _resolve_confirmation(self, request: ChatRequest, session_id: str) -> ActionProposal | None:
         if not request.confirm_action_id:
             return None
@@ -215,10 +227,12 @@ class ChatService:
                 expires_at=now + 15 * 60,
             )
 
+    @traced("graph.invoke")
     async def _invoke(self, state: AgentState) -> AgentState:
         try:
             # LangGraph widens the state to dict[str, Any]; the graph contract is AgentState.
-            return cast(AgentState, await self._graph.ainvoke(state))
+            with tracing_context(enabled=False):
+                return cast(AgentState, await self._graph.ainvoke(state))
         except GuardrailError as exc:
             return {
                 **state,
@@ -229,6 +243,17 @@ class ChatService:
         except AppError:
             raise
 
+    async def _stream_updates(self, state: AgentState):
+        # Disable implicit full-State SaaS capture even if ambient tracing is set.
+        with tracing_context(enabled=False):
+            async for update in self._graph.astream(state, stream_mode="updates"):
+                yield update
+
+    @traced("transaction.commit")
+    async def _commit(self, db: AsyncSession) -> None:
+        await db.commit()
+
+    @traced("session.persist")
     async def _persist(
         self,
         db: AsyncSession,

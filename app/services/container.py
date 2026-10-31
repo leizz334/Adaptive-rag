@@ -49,6 +49,7 @@ class AppContainer:
         self.vector_store = vector_store
 
     async def aclose(self) -> None:
+        self.chat_service._tracer.close()
         closer = getattr(self.llm, "aclose", None)
         if closer:
             await closer()

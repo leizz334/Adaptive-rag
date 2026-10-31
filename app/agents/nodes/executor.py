@@ -16,6 +16,7 @@ from app.core.exceptions import (
 )
 from app.core.request_scope import get_db_session
 from app.observability.metrics import TOOL_CALLS
+from app.observability.tracing import traced
 from app.repositories.idempotency import IdempotencyRepository
 from app.schemas.agent import PlanStep, ToolResult
 from app.schemas.common import LatencyBreakdown
@@ -92,6 +93,7 @@ async def execute_with_fallback(
         raise
 
 
+@traced("node.executor", "chain")
 async def executor_node(
     state: AgentState,
     *,

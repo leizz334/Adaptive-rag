@@ -1,6 +1,7 @@
 """LLM-backed conversation summarisation."""
 
 from app.core.exceptions import LLMOutputError, LLMProviderError
+from app.observability.tracing import traced
 from app.prompts.summary import SUMMARY_SYSTEM, SUMMARY_USER
 from app.providers.base import LLMProvider
 from app.providers.json_parser import extract_json_object
@@ -11,6 +12,7 @@ class ConversationSummarizer:
     def __init__(self, llm: LLMProvider) -> None:
         self._llm = llm
 
+    @traced("memory.summary", "chain")
     async def summarize(self, messages: list[ChatMessage]) -> str:
         history = "\n".join(f"{m.role}: {m.content}" for m in messages[-16:])
         try:

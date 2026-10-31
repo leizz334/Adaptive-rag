@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from app.observability.tracing import traced
 from app.providers.base import RerankProvider
 from app.schemas.retrieval import RetrievedChunk
 
@@ -10,6 +11,7 @@ class DocumentReranker:
     def __init__(self, provider: RerankProvider) -> None:
         self._provider = provider
 
+    @traced("retrieval.rerank", "retriever")
     async def rerank(
         self,
         query: str,

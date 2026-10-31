@@ -9,6 +9,7 @@ import uuid
 from dataclasses import dataclass
 
 from app.core.exceptions import RetrievalError
+from app.observability.tracing import traced
 from app.providers.base import EmbeddingProvider
 from app.schemas.retrieval import RetrievedChunk
 
@@ -44,6 +45,7 @@ class InMemoryVectorStore:
             else:
                 self._records.append(record)
 
+    @traced("retrieval.vector", "retriever")
     def search(self, query_vector: list[float], *, top_k: int) -> list[RetrievedChunk]:
         scored: list[tuple[float, VectorRecord]] = [
             (cosine(query_vector, record.embedding), record) for record in self._records
@@ -119,6 +121,7 @@ class QdrantVectorStore:
         except Exception:
             return False
 
+    @traced("retrieval.vector", "retriever")
     def search(self, query_vector: list[float], *, top_k: int) -> list[RetrievedChunk]:
         try:
             client = self._ensure_client()
@@ -158,6 +161,7 @@ class VectorRetriever:
         self.store = store
         self.embedder = embedder
 
+    @traced("retrieval.vector", "retriever")
     async def search(self, query: str, *, top_k: int) -> list[RetrievedChunk]:
         vectors = await self.embedder.embed([query])
         if not vectors:

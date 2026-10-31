@@ -8,6 +8,7 @@ from app.core.enums import RetrievalStrategy
 from app.core.exceptions import LLMOutputError, LLMProviderError
 from app.guardrails.hallucination import FaithfulnessChecker, FaithfulnessResult
 from app.observability.metrics import HALLUCINATION_FLAGS
+from app.observability.tracing import traced
 from app.prompts.faithfulness import SELF_CORRECT_SYSTEM, SELF_CORRECT_USER
 from app.providers.base import LLMProvider
 from app.providers.fake import OfflineLLMProvider
@@ -15,6 +16,7 @@ from app.providers.json_parser import parse_model
 from app.schemas.retrieval import Citation, RetrievedChunk
 
 
+@traced("answer.self_correct", "chain")
 async def self_correct_answer(
     *,
     llm: LLMProvider,
@@ -70,6 +72,7 @@ async def self_correct_answer(
     return patched, judged, True
 
 
+@traced("node.faithfulness", "chain")
 async def faithfulness_node(
     state: AgentState, checker: FaithfulnessChecker, llm: LLMProvider
 ) -> dict:

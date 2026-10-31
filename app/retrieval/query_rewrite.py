@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from app.core.exceptions import LLMOutputError, LLMProviderError
+from app.observability.tracing import traced
 from app.prompts.query_rewrite import REWRITE_SYSTEM, REWRITE_USER
 from app.providers.base import LLMProvider
 from app.providers.fake import OfflineLLMProvider
@@ -13,6 +14,7 @@ class QueryRewriter:
     def __init__(self, llm: LLMProvider) -> None:
         self._llm = llm
 
+    @traced("query.rewrite", "chain")
     async def rewrite(self, query: str, *, missing_aspect: str = "") -> list[str]:
         if isinstance(self._llm, OfflineLLMProvider):
             return [query]

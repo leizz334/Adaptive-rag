@@ -3,7 +3,7 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import SecretStr
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -77,6 +77,14 @@ class Settings(BaseSettings):
     unstructured_force: bool = False
     mcp_enabled: bool = True
     mcp_remote_url: str = ""
+
+    agent_tracing_enabled: bool = False
+    agent_tracing_backend: Literal["local", "langsmith"] = "local"
+    agent_trace_max_spans: int = Field(default=256, ge=1, le=4096)
+    agent_trace_queue_size: int = Field(default=32, ge=1, le=1024)
+    agent_langsmith_api_key: SecretStr = SecretStr("")
+    agent_langsmith_endpoint: str = "https://api.smith.langchain.com"
+    agent_langsmith_project: str = "adaptive-rag"
 
     @property
     def llm_configured(self) -> bool:

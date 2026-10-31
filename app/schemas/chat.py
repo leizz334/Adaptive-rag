@@ -36,6 +36,7 @@ class ChatResponse(BaseModel):
     answer: str
     session_id: str
     trace_id: str
+    root_run_id: str | None = None
     intent: IntentLabel | None = None
     complexity: QueryComplexity | None = None
     strategy: RetrievalStrategy | None = None

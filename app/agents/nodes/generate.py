@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 from app.agents.state import AgentState
 from app.core.enums import RetrievalStrategy
 from app.core.exceptions import LLMOutputError, LLMProviderError
+from app.observability.tracing import traced
 from app.prompts.answer import ANSWER_SYSTEM, ANSWER_USER
 from app.providers.base import LLMProvider
 from app.providers.fake import OfflineLLMProvider
@@ -24,6 +25,7 @@ class AnswerPayload(BaseModel):
     refused: bool = False
 
 
+@traced("node.generate", "chain")
 async def generate_node(state: AgentState, llm: LLMProvider) -> dict:
     started = time.perf_counter()
     chunks = state.get("retrieved_chunks") or []
@@ -120,6 +122,7 @@ async def generate_node(state: AgentState, llm: LLMProvider) -> dict:
     }
 
 
+@traced("node.refuse", "chain")
 async def refuse_node(state: AgentState) -> dict:
     return {
         "final_answer": "这个问题超出电商客服范围，我无法协助。如需购物、订单、物流或售后帮助，请换个问题。",

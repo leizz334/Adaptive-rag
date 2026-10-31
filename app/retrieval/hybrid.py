@@ -6,6 +6,7 @@ import logging
 import time
 
 from app.core.exceptions import RetrievalError
+from app.observability.tracing import traced
 from app.retrieval.bm25 import BM25Retriever
 from app.retrieval.cache import RetrievalCache
 from app.retrieval.fusion import reciprocal_rank_fusion
@@ -34,6 +35,7 @@ class HybridRetriever:
         self._rrf_k = rrf_k
         self._cache = cache
 
+    @traced("retrieval.hybrid", "retriever")
     async def retrieve(self, query: str, *, top_k: int) -> list[RetrievedChunk]:
         if self._cache is not None:
             cached = await self._cache.get(query, top_k)

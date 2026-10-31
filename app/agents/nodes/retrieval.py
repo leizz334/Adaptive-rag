@@ -7,6 +7,7 @@ import time
 from app.agents.state import AgentState
 from app.config.settings import Settings
 from app.core.enums import RetrievalStrategy
+from app.observability.tracing import traced
 from app.retrieval.hybrid import HybridRetriever
 from app.retrieval.query_rewrite import QueryRewriter
 from app.retrieval.reranker import DocumentReranker
@@ -15,6 +16,7 @@ from app.schemas.common import LatencyBreakdown
 from app.schemas.retrieval import RetrievedChunk
 
 
+@traced("node.retrieval", "chain")
 async def retrieval_node(
     state: AgentState,
     *,

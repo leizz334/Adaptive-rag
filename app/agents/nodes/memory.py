@@ -5,9 +5,11 @@ from app.config.settings import Settings
 from app.core.enums import CompressionLevel
 from app.memory.compression import apply_compression
 from app.memory.summarizer import ConversationSummarizer
+from app.observability.tracing import traced
 from app.schemas.chat import ChatMessage
 
 
+@traced("node.memory", "chain")
 async def memory_node(
     state: AgentState,
     *,

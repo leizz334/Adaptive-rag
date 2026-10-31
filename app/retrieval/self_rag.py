@@ -10,6 +10,7 @@ from pydantic import BaseModel
 
 from app.config.settings import Settings
 from app.core.exceptions import LLMOutputError, LLMProviderError
+from app.observability.tracing import traced
 from app.prompts.self_rag import GRADE_SYSTEM, GRADE_USER
 from app.providers.base import LLMProvider
 from app.providers.json_parser import parse_model
@@ -69,6 +70,7 @@ class SelfRAGLoop:
             current_query = query
         return list(accumulated.values())[: self._settings.rerank_top_n * 2]
 
+    @traced("evidence.grade", "chain")
     async def _grade(self, query: str, chunks: list[RetrievedChunk]) -> GradeResult:
         evidence = "\n\n".join(f"[{c.chunk_id}] {c.content}" for c in chunks[:6]) or "(empty)"
         try:
