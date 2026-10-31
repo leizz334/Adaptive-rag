@@ -149,3 +149,20 @@ CHECKPOINT action=register task=P0-G status=completed passes=True
 GIT_HEAD_AT_CHECK=88b24edba0a16e960439985c1826d7159eec1fc4
 DELIVERY_COMMIT=88b24edba0a16e960439985c1826d7159eec1fc4
 NEXT_ACTION=STOP. All P0 tasks completed; await user review and P1 authorization.
+
+P1_CHECKPOINT action=enable task=continuation
+GIT_HEAD_AT_CHECK=3f789e1411e22cc295a6a68d8e03683749303642
+BRANCH=codex/p1-tracing-evaluation-v2
+NEXT_ACTION=Continue authorized P1 in task order; after F STOP for P1 review. No P2-P4.
+
+P1_CHECKPOINT action=start task=P1-A
+GIT_HEAD_AT_CHECK=3f789e1411e22cc295a6a68d8e03683749303642
+BRANCH=codex/p1-tracing-evaluation-v2
+NEXT_ACTION=Continue authorized P1 in task order; after F STOP for P1 review. No P2-P4.
+
+P1_CHECKPOINT action=finish task=P1-A
+GIT_HEAD_AT_CHECK=3f789e1411e22cc295a6a68d8e03683749303642
+BRANCH=codex/p1-tracing-evaluation-v2
+VALIDATION_JUNIT=evidence/P1-A-pytest.xml
+FILES=P1_A_BASELINE_CONTRACT.md, P1_IMPLEMENTATION_PLAN.md, evidence/P1-A-baseline.json
+NEXT_ACTION=Continue authorized P1 in task order; after F STOP for P1 review. No P2-P4.

@@ -29,9 +29,11 @@ import sys
 state_dir = pathlib.Path(sys.argv[1]).resolve()
 state = json.loads((state_dir / "feature-list.json").read_text(encoding="utf-8"))
 assert (state_dir / "progress.txt").is_file(), "Missing progress.txt; reconcile, do not reinitialize"
-assert state["phase"] == "P0"
+assert state["phase"] in {"P0", "P1"}
 tasks = state["tasks"]
-assert [task["task_id"] for task in tasks] == ["P0-" + letter for letter in "ABCDEFG"]
+assert [task["task_id"] for task in tasks[:7]] == ["P0-" + letter for letter in "ABCDEFG"]
+if state["phase"] == "P1":
+    assert [task["task_id"] for task in tasks[7:]] == ["P1-" + letter for letter in "ABCDEF"]
 required = {
     "task_id", "description", "dependencies", "status", "passes",
     "acceptance_criteria", "evidence_files", "validation_results", "commit_hash", "next_action",
@@ -52,5 +54,5 @@ print("Python:", sys.executable)
 print("State JSON/schema/dependencies: PASS")
 print("Completed:", ", ".join(task["task_id"] for task in tasks if task["passes"]) or "none")
 print("Next dependency-ready task:", next_task["task_id"] if next_task else "none")
-print("Recovery check only. No audit task or P1-P4 phase was started.")
+print("Recovery check only. No task was started by this script.")
 PY

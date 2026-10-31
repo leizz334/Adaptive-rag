@@ -2,7 +2,7 @@
   "schema_version": 1,
   "project": "Adaptive-RAG P0 Unified Audit",
   "audit_date": "2026-10-31",
-  "phase": "P0",
+  "phase": "P1",
   "scope_directory": "research/docs/agent_engineering_upgrade",
   "base_git_head": "2a12a62382a8c3ec033fa9a5b19b9b23b8780ab8",
   "initializer": {
@@ -267,6 +267,121 @@
       ],
       "commit_hash": "88b24edba0a16e960439985c1826d7159eec1fc4",
       "next_action": "Verified complete; do not repeat. Continue next authorized ready task, or STOP after P0-G."
+    },
+    {
+      "task_id": "P1-A",
+      "description": "Immutable offline baseline with dataset/source hashes and actual pytest outcome",
+      "dependencies": [
+        "P0-G"
+      ],
+      "status": "completed",
+      "passes": true,
+      "acceptance_criteria": [
+        "Immutable offline baseline with dataset/source hashes and actual pytest outcome",
+        "Typed tool/trajectory/environment/result contracts and regression tests"
+      ],
+      "evidence_files": [
+        "evidence/P1-A-pytest.xml",
+        "P1_A_BASELINE_CONTRACT.md",
+        "P1_IMPLEMENTATION_PLAN.md",
+        "evidence/P1-A-baseline.json"
+      ],
+      "validation_results": [
+        {
+          "command": "conda run -n adaptive-rag python -B -m pytest (exact invocation in task evidence)",
+          "junit": "evidence/P1-A-pytest.xml",
+          "tests": 166,
+          "failures": 0,
+          "errors": 0
+        }
+      ],
+      "commit_hash": null,
+      "next_action": "Continue next ready P1 task; after F verify/push safely and STOP"
+    },
+    {
+      "task_id": "P1-B",
+      "description": "Configurable metadata-only spans for request/graph/LLM/retrieval/rerank/tool/memory and async/SSE",
+      "dependencies": [
+        "P1-A"
+      ],
+      "status": "pending",
+      "passes": false,
+      "acceptance_criteria": [
+        "Configurable metadata-only spans for request/graph/LLM/retrieval/rerank/tool/memory and async/SSE",
+        "Disabled/export-failure/privacy isolation tests; optional LangSmith offline payload test; cloud NOT_RUN explicitly"
+      ],
+      "evidence_files": [],
+      "validation_results": [],
+      "commit_hash": null,
+      "next_action": "Start when dependency-ready"
+    },
+    {
+      "task_id": "P1-C",
+      "description": "Deterministic selection/argument/path/redundancy/execution/failure scoring from actual tool events",
+      "dependencies": [
+        "P1-B"
+      ],
+      "status": "pending",
+      "passes": false,
+      "acceptance_criteria": [
+        "Deterministic selection/argument/path/redundancy/execution/failure scoring from actual tool events",
+        "Wrong arguments/tools, equivalent paths, failures and constraints covered by tests"
+      ],
+      "evidence_files": [],
+      "validation_results": [],
+      "commit_hash": null,
+      "next_action": "Start when dependency-ready"
+    },
+    {
+      "task_id": "P1-D",
+      "description": "Isolated SQL environment with independent initial/final state and forbidden-mutation oracle",
+      "dependencies": [
+        "P1-C"
+      ],
+      "status": "pending",
+      "passes": false,
+      "acceptance_criteria": [
+        "Isolated SQL environment with independent initial/final state and forbidden-mutation oracle",
+        "Production service/tool tests cover ownership/cancel/HITL/replay/unauthorized and unrelated orders"
+      ],
+      "evidence_files": [],
+      "validation_results": [],
+      "commit_hash": null,
+      "next_action": "Start when dependency-ready"
+    },
+    {
+      "task_id": "P1-E",
+      "description": "Five-state judge classification with errors excluded from hallucination, retrieval comparability",
+      "dependencies": [
+        "P1-D"
+      ],
+      "status": "pending",
+      "passes": false,
+      "acceptance_criteria": [
+        "Five-state judge classification with errors excluded from hallucination, retrieval comparability",
+        "Reusable multi-turn driver and frozen hand-labelled cases; context failures recorded without Memory changes"
+      ],
+      "evidence_files": [],
+      "validation_results": [],
+      "commit_hash": null,
+      "next_action": "Start when dependency-ready"
+    },
+    {
+      "task_id": "P1-F",
+      "description": "Actual full regression and offline repeatability/security checks recorded",
+      "dependencies": [
+        "P1-E"
+      ],
+      "status": "pending",
+      "passes": false,
+      "acceptance_criteria": [
+        "Actual full regression and offline repeatability/security checks recorded",
+        "P1 report/guides/metrics/limits/state/commits and safe push result; no P2 work"
+      ],
+      "evidence_files": [],
+      "validation_results": [],
+      "commit_hash": null,
+      "next_action": "Start when dependency-ready"
     }
   ],
   "continuation": {
@@ -284,5 +399,18 @@
       "backup": "evidence/feature-list.before-continuation.json",
       "reason": "Persisted Chinese fields contain literal question marks from prior shell stdin encoding; recovered acceptance text in ASCII English from explicit user scope; IDs/pass states/dependencies/hashes preserved."
     }
+  },
+  "p1": {
+    "base_head": "3f789e1411e22cc295a6a68d8e03683749303642",
+    "branch": "codex/p1-tracing-evaluation-v2",
+    "remote": "https://github.com/JEen-wang/Adaptive-rag.git",
+    "status": "in_progress",
+    "decisions": [
+      "Only P1 authorized, no production data/paid model or Memory/Experience features",
+      "User AGENTS.md push policy modification and unrelated files must not be committed",
+      "Manual bounded metadata spans, optional LangSmith; local raw evaluation evidence never exported",
+      "Small labelled offline fixtures exercise real service; real model quality/cloud connectivity NOT_RUN"
+    ],
+    "push_status": "PENDING"
   }
 }
