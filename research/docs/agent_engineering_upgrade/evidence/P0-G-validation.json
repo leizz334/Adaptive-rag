@@ -1,0 +1,228 @@
+{
+  "task_id": "P0-G",
+  "result": "PASS",
+  "validation_kind": "source_document_and_isolated_AST_validation",
+  "python": "D:\\MiniAnaconda3\\envs\\adaptive-rag\\python.exe",
+  "git_head_at_validation": "33cc0140a9f189d03c6b3b272137fea9f7e7bc6d",
+  "report_sha256": "d15b98423ddf73aaef12b75bd78e4d1ef44586cda0b9b3d76e0001584450acf9",
+  "scope_integrity": {
+    "result": "PASS",
+    "baseline_counts": {
+      "tracked_sha256": 329,
+      "preexisting_untracked_sha256": 19
+    },
+    "authorized_exception": [
+      "AGENTS.md"
+    ],
+    "historical_P0_A_unchanged": true
+  },
+  "local_link_occurrences": 45,
+  "source_references": {
+    "app/asgi.py": {
+      "sha256": "cdbc3fb8910d1f8f1984019ee8c7623bdb424db0859ef6b349e5541841a1cb73",
+      "anchors": [
+        {
+          "line": 5,
+          "source": "app = create_app()"
+        }
+      ]
+    },
+    "app/main.py": {
+      "sha256": "286c9bb42b275c05252eb46b56655ad415a63572d428214d65c104ea88b94ef7",
+      "anchors": [
+        {
+          "line": 30,
+          "source": "async def lifespan(app: FastAPI) -> AsyncIterator[None]:"
+        }
+      ]
+    },
+    "app/services/chat_service.py": {
+      "sha256": "7c36ab5546ea5ddd8989d06b5a8b6e90e00c93ee2f183da4fd05a11241223eba",
+      "anchors": [
+        {
+          "line": 70,
+          "source": "async def chat(self, request: ChatRequest, *, trace_id: str) -> ChatResponse:"
+        },
+        {
+          "line": 84,
+          "source": "async def stream(self, request: ChatRequest, *, trace_id: str) -> AsyncIterator[dict]:"
+        },
+        {
+          "line": 161,
+          "source": "async def _initial_state("
+        },
+        {
+          "line": 271,
+          "source": "def _observe(self, response: ChatResponse, started: float) -> None:"
+        }
+      ]
+    },
+    "app/agents/graph.py": {
+      "sha256": "824c1105d7257c2c2111965c12f93a51b6c74cb7ce5716de606664b9ce4a2661",
+      "anchors": [
+        {
+          "line": 45,
+          "source": "def build_graph("
+        }
+      ]
+    },
+    "app/providers/deepseek.py": {
+      "sha256": "a298b0e93fa0009771c61fe45fced097ed43911f6d06d93f728a14bf3002dd7d",
+      "anchors": [
+        {
+          "line": 48,
+          "source": "async def generate("
+        }
+      ]
+    },
+    "app/retrieval/hybrid.py": {
+      "sha256": "a249ff6d178d7f3333922810bb0c16bcb5be3706d893bbc71eb2da1e38586956",
+      "anchors": [
+        {
+          "line": 37,
+          "source": "async def retrieve(self, query: str, *, top_k: int) -> list[RetrievedChunk]:"
+        }
+      ]
+    },
+    "app/agents/nodes/retrieval.py": {
+      "sha256": "72d01304c4845d8f4a02ec597b6127127205dd038c92db2f4d7955ed6f8f7e5e",
+      "anchors": [
+        {
+          "line": 18,
+          "source": "async def retrieval_node("
+        }
+      ]
+    },
+    "app/agents/nodes/planner.py": {
+      "sha256": "c486e81061ed357bc1bd5b1b3ca4e4ade76256569f2612ce535333442e45f426",
+      "anchors": [
+        {
+          "line": 37,
+          "source": "async def create_plan(self, query: str, intent_label: str, summary: str) -> AgentPlan:"
+        }
+      ]
+    },
+    "app/agents/nodes/generate.py": {
+      "sha256": "64b0df6e39892dce0f6fd6ab1c36a8ac76fb8ac2dac229865463723afceb61df",
+      "anchors": [
+        {
+          "line": 68,
+          "source": "messages = ["
+        }
+      ]
+    },
+    "app/guardrails/hallucination.py": {
+      "sha256": "01563d7977e6956840961d157fde6a06c0e0b8c77c3dbad59b16c95e10a62973",
+      "anchors": [
+        {
+          "line": 24,
+          "source": "async def check("
+        }
+      ]
+    },
+    "app/agents/nodes/memory.py": {
+      "sha256": "bb6c1f0b38a23158a52af9899deb10100e1b4f49f3df62112fda3b1d5648407f",
+      "anchors": [
+        {
+          "line": 11,
+          "source": "async def memory_node("
+        }
+      ]
+    },
+    "eval/runner.py": {
+      "sha256": "c1d269eb6af1c18d69848a3692ff56bbaccba64260a281b27ac6a1be4cb0bfea",
+      "anchors": [
+        {
+          "line": 442,
+          "source": "if any(token in row[\"query\"] for token in (\"ORD\", \"库存\", \"取消\")):"
+        },
+        {
+          "line": 408,
+          "source": "container = await build_container(settings, seed=True)"
+        }
+      ]
+    },
+    "app/agents/nodes/faithfulness.py": {
+      "sha256": "fa0231c0cd5db1ed8b1621125f40060642f513a2175f3db68fe0b3f4684f0221",
+      "anchors": [
+        {
+          "line": 18,
+          "source": "async def self_correct_answer("
+        }
+      ]
+    },
+    "tests/integration/test_orders.py": {
+      "sha256": "29015eb782434b2c5bb34c34617be0828f81b4595faa70de5eb096ecc5e957ee",
+      "anchors": [
+        {
+          "line": 50,
+          "source": "async def test_order_is_scoped_to_owner(session_factory) -> None:"
+        }
+      ]
+    },
+    "tests/unit/test_action_confirmation.py": {
+      "sha256": "dfc982a2355bf465cc4fa6233f0488c3062a685a6ba9a77b4601c44b06d9956c",
+      "anchors": [
+        {
+          "line": 25,
+          "source": "async def test_cancellation_needs_explicit_request_and_confirmation() -> None:"
+        }
+      ]
+    },
+    "app/schemas/chat.py": {
+      "sha256": "92079a5d445990f9a1f0118ea74d123e0e9997ff8c85b59cd6341a5c6092d703",
+      "anchors": [
+        {
+          "line": 21,
+          "source": "user_id: str = Field(default=\"anonymous\", min_length=1, max_length=64)"
+        }
+      ]
+    },
+    "app/repositories/session_repository.py": {
+      "sha256": "39a5ffa3077efc62c6d9bd2d816dcd256f50cb94b0f746373241ae96a57b9b31",
+      "anchors": [
+        {
+          "line": 15,
+          "source": "async def get_or_create(self, session_id: str, user_id: str) -> SessionRow:"
+        }
+      ]
+    }
+  },
+  "test_source_files": [
+    "tests/integration/test_orders.py",
+    "tests/unit/test_action_confirmation.py"
+  ],
+  "external_primary_references": [],
+  "isolated_probes": [],
+  "datasets": {},
+  "acceptance_results": [
+    {
+      "criterion": "Require passed A-F reports/evidence; synthesize architecture, actual capabilities/gaps, memory/context, Evaluation V2, tracing and experience feasibility.",
+      "result": "PASS",
+      "report_marker": "P0-G.1"
+    },
+    {
+      "criterion": "List safety dependencies, top three issues, recommended P1-P4 ordering, audit limits and unverified conditions.",
+      "result": "PASS",
+      "report_marker": "P0-G.2"
+    },
+    {
+      "criterion": "Give future-stage recommendations only; do not implement or start P1-P4 and do not plan another phase.",
+      "result": "PASS",
+      "report_marker": "P0-G.3"
+    },
+    {
+      "criterion": "Verify final report references, all task states and actual commit history; stop and await user review.",
+      "result": "PASS",
+      "report_marker": "P0-G.4"
+    }
+  ],
+  "not_run": [
+    "original pytest/TestClient/app imports",
+    "DB operations/migrations/order writes",
+    "paid LLM/model download/training",
+    "trace or business data upload",
+    "proposed M/E experiments and platform integration"
+  ],
+  "evidence_limits": "Isolated AST probes use actual extracted function bodies with in-memory stubs. They do not prove full application, provider, DB, ASGI or model behavior."
+}

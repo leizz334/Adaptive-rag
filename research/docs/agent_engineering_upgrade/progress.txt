@@ -113,3 +113,34 @@ CHECKPOINT action=register task=P0-F status=completed passes=True
 GIT_HEAD_AT_CHECK=15ae2b963fd8cc1d34e1d8c4405592e5ab137d85
 DELIVERY_COMMIT=15ae2b963fd8cc1d34e1d8c4405592e5ab137d85
 NEXT_ACTION=After checkpoint, continue P0-G; do not rerun completed tasks.
+
+CHECKPOINT action=start task=P0-G status=in_progress passes=False
+GIT_HEAD_AT_CHECK=33cc0140a9f189d03c6b3b272137fea9f7e7bc6d
+DELIVERY_COMMIT=pending; record only after commit
+NEXT_ACTION=After checkpoint, continue P0-G; do not rerun completed tasks.
+
+CHECKPOINT action=finish task=P0-G status=completed passes=True
+GIT_HEAD_AT_CHECK=33cc0140a9f189d03c6b3b272137fea9f7e7bc6d
+DELIVERY_COMMIT=pending; record only after commit
+FILES=P0_AUDIT_REPORT.md, evidence/P0-G-validation.json, feature-list.json, progress.txt
+VALIDATION=PASS (source/static plus isolated probes if present; original pytest and runtime experiments NOT RUN)
+NEXT_ACTION=STOP. All P0 tasks completed; await user review and P1 authorization.
+
+FINAL_P0_RECOVERY_SUMMARY
+ROLE=Coding Agent
+PHASE=P0
+TASK=P0-G (synthesis of committed A-F; delivery registration follows)
+COMPLETED_WORK=Recovered A without repeating Initializer; completed B,C,D,E,F,G sequentially, with per-task validation, atomic state writes and scoped checkpoints.
+ARCHITECTURE_DECISION=Audit-only delivery. No business code, test, dependency or formal configuration changes. Root AGENTS.md Coding Agent continuation protocol is the only authorized original-file exception.
+ARCHITECTURE_DECISION=Future priority: trustworthy identity/session and isolated evaluation; deterministic task/final-state oracles with redacted tracing; context closure before long-term memory; verified/reviewed experience only after these dependencies.
+RECENT_FILES=P0_AUDIT_REPORT.md; evidence/P0-G-validation.json; feature-list.json; progress.txt.
+VALIDATION=All report acceptance checks passed; B/C/F contain 10 actually executed isolated AST probes in total. Source links/line bounds/hashes, data sizes, state schema/dependencies, historical A bytes and baseline scope integrity checked.
+VALIDATION_LIMITS=Original pytest, app startup, real DB/order operations, paid LLM, SDK connectivity, tracing upload, M0-M3/E0-E3 and all proposed future integrations NOT RUN.
+UNRESOLVED_FINDINGS=Identity/session isolation, heuristic Agent scoring, disconnected context, write/concurrency semantics, redaction and other report risks remain in unchanged source; no P0 audit blocker.
+GIT_HEAD_AT_FINAL_PRECOMMIT_CHECK=33cc0140a9f189d03c6b3b272137fea9f7e7bc6d
+GIT_HASH_POLICY=Task commit_hash records the actual delivery; registration metadata is committed separately. Read git log for latest metadata HEAD; do not fabricate a self-referential hash.
+P1_STARTED=NO
+P2_STARTED=NO
+P3_STARTED=NO
+P4_STARTED=NO
+NEXT_ACTION=Commit G delivery, register its actual hash, checkpoint metadata, verify files/state/Git consistency, then STOP and await user review and explicit P1 authorization.
