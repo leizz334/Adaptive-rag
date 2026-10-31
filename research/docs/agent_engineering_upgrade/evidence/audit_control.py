@@ -146,6 +146,17 @@ def isolated(task):
             exec(compile(ast.fix_missing_locations(ast.Module(body=copy.deepcopy(selected),type_ignores=[])),'eval_e2e_scoring','exec'),env)
             assert (env['toolish_ok'],env['refuse_n'])==expected
         results += [{"probe":"actual E2E scoring credits wrong order ID","result":"REPRODUCED"},{"probe":"unexpected refusal on non-refusal case excluded from refusal denominator","result":"REPRODUCED"},{"probe":"actual metric denominator on short retrieval","result":"PASS"}]
+        class ProviderError(Exception): pass
+        class OutputError(Exception): pass
+        class FailingLLM:
+            async def generate(self,*args,**kwargs): raise ProviderError('synthetic offline failure')
+        judge_ns={'LLMProviderError':ProviderError,'LLMOutputError':OutputError,
+                  'FaithfulnessResult':lambda **kw:SimpleNamespace(**kw),
+                  'FAITHFULNESS_SYSTEM':'offline probe','FAITHFULNESS_USER':'{query} {answer} {evidence} {tool_results}'}
+        extracted('app/guardrails/hallucination.py',{'FaithfulnessChecker'},judge_ns)
+        judgment=asyncio.run(judge_ns['FaithfulnessChecker'](FailingLLM()).check(query='q',answer='a',chunks=[],tool_results_text=''))
+        assert judgment.supported is False and judgment.rationale=='checker_unavailable'
+        results.append({'probe':'actual checker maps provider failure to supported=false','result':'REPRODUCED'})
     if task == "P0-F":
         module=ast.parse((ROOT/'app/core/security.py').read_text(encoding='utf-8'))
         ns={'re':re,'PII_MASK':'***'}

@@ -45,3 +45,15 @@ CHECKPOINT action=register task=P0-B status=completed passes=True
 GIT_HEAD_AT_CHECK=aa98c115e6ee634715b0feff932d66caff99ace4
 DELIVERY_COMMIT=aa98c115e6ee634715b0feff932d66caff99ace4
 NEXT_ACTION=After checkpoint, continue P0-C; do not rerun completed tasks.
+
+CHECKPOINT action=start task=P0-C status=in_progress passes=False
+GIT_HEAD_AT_CHECK=08a7e576d50fb1e7c2221d28c6a01ccd3e1f72ac
+DELIVERY_COMMIT=pending; record only after commit
+NEXT_ACTION=After checkpoint, continue P0-C; do not rerun completed tasks.
+
+CHECKPOINT action=finish task=P0-C status=completed passes=True
+GIT_HEAD_AT_CHECK=08a7e576d50fb1e7c2221d28c6a01ccd3e1f72ac
+DELIVERY_COMMIT=pending; record only after commit
+FILES=audits/evaluation.md, evidence/P0-C-validation.json, feature-list.json, progress.txt
+VALIDATION=PASS (source/static plus isolated probes if present; original pytest and runtime experiments NOT RUN)
+NEXT_ACTION=After checkpoint, continue P0-D; do not rerun completed tasks.
