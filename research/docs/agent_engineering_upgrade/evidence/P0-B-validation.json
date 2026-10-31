@@ -1,0 +1,284 @@
+{
+  "task_id": "P0-B",
+  "result": "PASS",
+  "validation_kind": "source_document_and_isolated_AST_validation",
+  "python": "D:\\MiniAnaconda3\\envs\\adaptive-rag\\python.exe",
+  "git_head_at_validation": "7adae4b0b402f1ebe9181f1a77d68b17fc53d8de",
+  "report_sha256": "9497e36a96e9dcc75eb052d8b59f4a390030ca0ac0c36cce94d76a030bbeeb3f",
+  "scope_integrity": {
+    "result": "PASS",
+    "baseline_counts": {
+      "tracked_sha256": 329,
+      "preexisting_untracked_sha256": 19
+    },
+    "authorized_exception": [
+      "AGENTS.md"
+    ],
+    "historical_P0_A_unchanged": true
+  },
+  "local_link_occurrences": 29,
+  "source_references": {
+    "app/services/chat_service.py": {
+      "sha256": "7c36ab5546ea5ddd8989d06b5a8b6e90e00c93ee2f183da4fd05a11241223eba",
+      "anchors": [
+        {
+          "line": 161,
+          "source": "async def _initial_state("
+        },
+        {
+          "line": 232,
+          "source": "async def _persist("
+        }
+      ]
+    },
+    "app/repositories/session_repository.py": {
+      "sha256": "39a5ffa3077efc62c6d9bd2d816dcd256f50cb94b0f746373241ae96a57b9b31",
+      "anchors": [
+        {
+          "line": 23,
+          "source": "async def recent_messages(self, session_id: str, *, limit: int = 20) -> list[ChatMessage]:"
+        },
+        {
+          "line": 15,
+          "source": "async def get_or_create(self, session_id: str, user_id: str) -> SessionRow:"
+        }
+      ]
+    },
+    "app/repositories/models.py": {
+      "sha256": "08ed89fdb2a18eedf9fcde77c4834b86f8846460da5d0666a51c45b19a597f83",
+      "anchors": [
+        {
+          "line": 79,
+          "source": "class SessionRow(Base):"
+        },
+        {
+          "line": 89,
+          "source": "class MessageRow(Base):"
+        }
+      ]
+    },
+    "app/agents/nodes/memory.py": {
+      "sha256": "bb6c1f0b38a23158a52af9899deb10100e1b4f49f3df62112fda3b1d5648407f",
+      "anchors": [
+        {
+          "line": 11,
+          "source": "async def memory_node("
+        }
+      ]
+    },
+    "app/agents/graph.py": {
+      "sha256": "824c1105d7257c2c2111965c12f93a51b6c74cb7ce5716de606664b9ce4a2661",
+      "anchors": [
+        {
+          "line": 106,
+          "source": "graph.add_edge(\"generate_answer\", \"check_faithfulness\")"
+        }
+      ]
+    },
+    "app/memory/budget.py": {
+      "sha256": "02527c352a1f65e19b424970e5062e85d820f250d6898c9137ba46eddcb71145",
+      "anchors": [
+        {
+          "line": 11,
+          "source": "def estimate_tokens(text: str) -> int:"
+        }
+      ]
+    },
+    "app/memory/compression.py": {
+      "sha256": "d4cf1b5346cf45b1f624bee0170bfb05d45bbeb8952d01975089e795741c5bc2",
+      "anchors": [
+        {
+          "line": 50,
+          "source": "def apply_compression("
+        },
+        {
+          "line": 21,
+          "source": "def compress_tool_results("
+        },
+        {
+          "line": 42,
+          "source": "def sliding_window("
+        }
+      ]
+    },
+    "app/config/settings.py": {
+      "sha256": "d4d593beb2730cf21530155ea23166271d0e7e1a6bce4a46e6a4a58484bb5a65",
+      "anchors": [
+        {
+          "line": 59,
+          "source": "token_budget: int = 128_000"
+        }
+      ]
+    },
+    "app/memory/summarizer.py": {
+      "sha256": "56436bd6002fa6fb1d0b39269a7b40e77be3e78b0829b4904fe3ec6deab8773c",
+      "anchors": [
+        {
+          "line": 14,
+          "source": "async def summarize(self, messages: list[ChatMessage]) -> str:"
+        }
+      ]
+    },
+    "app/agents/nodes/intent.py": {
+      "sha256": "89c72c66957fab18f4f4adcaeeac57cee11751677cea39430689adffeffad43f",
+      "anchors": [
+        {
+          "line": 77,
+          "source": "async def classify(self, query: str) -> IntentResult:"
+        }
+      ]
+    },
+    "app/agents/nodes/router.py": {
+      "sha256": "9a8d98bde50f3f4baf92b851f80598192188331f698fd751027e3ed05f69d9ce",
+      "anchors": [
+        {
+          "line": 27,
+          "source": "async def router_node(state: AgentState, router: AdaptiveRouter) -> dict:"
+        }
+      ]
+    },
+    "app/retrieval/adaptive.py": {
+      "sha256": "32781329d8735d823443ec9dac10ce4bb7c570cbf70ff9946dabe38e4ac3835b",
+      "anchors": [
+        {
+          "line": 135,
+          "source": "async def route(self, query: str, intent: IntentResult) -> ComplexityResult:"
+        }
+      ]
+    },
+    "app/retrieval/query_rewrite.py": {
+      "sha256": "d7c16a267e6a965bcdd7d7d740caa8049aea8c2776b5f1121dd82ad295f3b5c8",
+      "anchors": [
+        {
+          "line": 16,
+          "source": "async def rewrite(self, query: str, *, missing_aspect: str = \"\") -> list[str]:"
+        }
+      ]
+    },
+    "app/agents/nodes/planner.py": {
+      "sha256": "c486e81061ed357bc1bd5b1b3ca4e4ade76256569f2612ce535333442e45f426",
+      "anchors": [
+        {
+          "line": 37,
+          "source": "async def create_plan(self, query: str, intent_label: str, summary: str) -> AgentPlan:"
+        },
+        {
+          "line": 186,
+          "source": "intent = state.get(\"intent\")"
+        }
+      ]
+    },
+    "app/agents/nodes/generate.py": {
+      "sha256": "64b0df6e39892dce0f6fd6ab1c36a8ac76fb8ac2dac229865463723afceb61df",
+      "anchors": [
+        {
+          "line": 49,
+          "source": "evidence = ("
+        },
+        {
+          "line": 68,
+          "source": "messages = ["
+        }
+      ]
+    },
+    "app/schemas/chat.py": {
+      "sha256": "92079a5d445990f9a1f0118ea74d123e0e9997ff8c85b59cd6341a5c6092d703",
+      "anchors": [
+        {
+          "line": 18,
+          "source": "class ChatRequest(BaseModel):"
+        }
+      ]
+    },
+    "app/repositories/order_repository.py": {
+      "sha256": "5834e0ce4b7bf7da71e7caf2e70ce4b3fd41e059570492fb12f9165b1f5c65a2",
+      "anchors": [
+        {
+          "line": 37,
+          "source": "async def get_visible_order(self, order_id: str, user_id: str) -> Order:"
+        }
+      ]
+    },
+    "tests/unit/test_compression.py": {
+      "sha256": "62563ad8042b8a2d8586d09f156765c4569ee204171f20c39c01d461ed61d923",
+      "anchors": [
+        {
+          "line": 9,
+          "source": "def test_compression_levels_follow_budget_ratios() -> None:"
+        },
+        {
+          "line": 19,
+          "source": "def test_soft_truncate_shrinks_tool_payload() -> None:"
+        },
+        {
+          "line": 26,
+          "source": "def test_auto_compact_keeps_recent_messages() -> None:"
+        }
+      ]
+    },
+    "tests/unit/test_action_confirmation.py": {
+      "sha256": "dfc982a2355bf465cc4fa6233f0488c3062a685a6ba9a77b4601c44b06d9956c",
+      "anchors": [
+        {
+          "line": 45,
+          "source": "def test_confirmation_is_bound_to_session_and_user() -> None:"
+        }
+      ]
+    }
+  },
+  "test_source_files": [
+    "tests/unit/test_action_confirmation.py",
+    "tests/unit/test_compression.py"
+  ],
+  "external_primary_references": [
+    "https://docs.openclaw.ai/concepts/compaction",
+    "https://docs.openclaw.ai/concepts/context",
+    "https://docs.openclaw.ai/concepts/memory"
+  ],
+  "isolated_probes": [
+    {
+      "probe": "actual budget thresholds",
+      "result": "PASS"
+    },
+    {
+      "probe": "200k-character tool payload excluded from budget decision",
+      "result": "REPRODUCED"
+    },
+    {
+      "probe": "actual memory_node summarizes after sliding-window truncation",
+      "result": "REPRODUCED",
+      "summarizer_input_messages": 8
+    }
+  ],
+  "datasets": {},
+  "acceptance_results": [
+    {
+      "criterion": "Audit actual history loading/persistence, recent window, summary, token budget, compaction and history use by Intent/Router/Planner/Generate with source evidence.",
+      "result": "PASS",
+      "report_marker": "P0-B.1"
+    },
+    {
+      "criterion": "Distinguish working/conversation/summary/long-term memory, context builder/retrieval/consolidation; assess owner isolation and stale facts.",
+      "result": "PASS",
+      "report_marker": "P0-B.2"
+    },
+    {
+      "criterion": "Reference primary OpenClaw memory design without copying file storage; propose M0/M1/M2/M3 comparisons without implementation.",
+      "result": "PASS",
+      "report_marker": "P0-B.3"
+    },
+    {
+      "criterion": "Save source/test evidence and reproducible offline validation; explicitly record unverified runtime behavior.",
+      "result": "PASS",
+      "report_marker": "P0-B.4"
+    }
+  ],
+  "not_run": [
+    "original pytest/TestClient/app imports",
+    "DB operations/migrations/order writes",
+    "paid LLM/model download/training",
+    "trace or business data upload",
+    "proposed M/E experiments and platform integration"
+  ],
+  "evidence_limits": "Isolated AST probes use actual extracted function bodies with in-memory stubs. They do not prove full application, provider, DB, ASGI or model behavior."
+}

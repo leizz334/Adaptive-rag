@@ -28,3 +28,15 @@ VALIDATION
 
 NEXT_ACTION
 Commit authorized protocol/recovery artifacts, then select P0-B, inspect current source and primary OpenClaw docs, write report, validate, checkpoint; automatically continue through P0-G.
+
+CHECKPOINT action=start task=P0-B status=in_progress passes=False
+GIT_HEAD_AT_CHECK=7adae4b0b402f1ebe9181f1a77d68b17fc53d8de
+DELIVERY_COMMIT=pending; record only after commit
+NEXT_ACTION=After checkpoint, continue P0-B; do not rerun completed tasks.
+
+CHECKPOINT action=finish task=P0-B status=completed passes=True
+GIT_HEAD_AT_CHECK=7adae4b0b402f1ebe9181f1a77d68b17fc53d8de
+DELIVERY_COMMIT=pending; record only after commit
+FILES=audits/memory_context.md, evidence/P0-B-validation.json, feature-list.json, progress.txt
+VALIDATION=PASS (source/static plus isolated probes if present; original pytest and runtime experiments NOT RUN)
+NEXT_ACTION=After checkpoint, continue P0-C; do not rerun completed tasks.
