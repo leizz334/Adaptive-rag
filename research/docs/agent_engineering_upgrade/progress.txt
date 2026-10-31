@@ -1,59 +1,30 @@
-ROLE = Coding Agent (Initializer completed once in this Session)
+ROLE = Coding Agent
 PHASE = P0
-TASK_ID = P0-A
-TASK_STATUS = completed; delivery committed; recovery metadata checkpoint follows
-PASSES = true (six source/document acceptance items; business tests NOT RUN)
-AUDIT_DATE = 2026-10-31 (Asia/Taipei)
-BASE_GIT_HEAD = 2a12a62382a8c3ec033fa9a5b19b9b23b8780ab8
-INITIALIZER_COMMIT_HASH = d788492ead34b64390e706d6c95a739bf5c39cd7
-GIT_HEAD_AT_LAST_CHECK = 6fbd7deefbaed209b4b7e73c9d63a7d8f693340a
-TASK_COMMIT_HASH = 6fbd7deefbaed209b4b7e73c9d63a7d8f693340a
+TASK_STATUS = Recovered P0-A; continuous P0-B through P0-G authorized
+P0-A_DELIVERY = 6fbd7deefbaed209b4b7e73c9d63a7d8f693340a
+INITIALIZER = d788492ead34b64390e706d6c95a739bf5c39cd7 (do not repeat)
+RECOVERY_HEAD = 7cb0200838fb410ff9a75803c36126cd8417fdda
 
-COMPLETED_WORK
-- Initialized seven P0 tasks once; initialization checkpoint contains four initialization artifacts only.
-- Completed P0-A architecture report with actual paths, symbols, line numbers, normal/SSE chains, ten graph nodes, Prompt/Provider/Tool boundaries, DB/cache/degradation, and test-source coverage.
-- Inspected tests as source only. Source/test/document reference index generated with SHA-256 and AST symbols.
-- Executed eight safe static checks; all six P0-A acceptance items satisfied at source/document scope.
-- No P0-B..P0-G deliverable created or task started; no P0 aggregate report yet.
+DECISIONS (preserve verbatim)
+- Only P0 is authorized. Do not implement production features or start P1-P4.
+- Only root AGENTS.md and research/docs/agent_engineering_upgrade/ may be modified in this continuation; preserve unrelated work.
+- All Python/dependency commands use Conda adaptive-rag. Do not install or upgrade dependencies.
+- No application startup, migration, real order writes, paid LLM, model download/training or trace upload. Offline source checks are allowed.
+- SOURCE_VERIFIED means inspected source; TEST_VERIFIED requires an actually executed isolated test. Historical documents are DOCUMENTED_ONLY; proposed behavior is HYPOTHESIS.
+- Recover from task state, actual files, validation and git log. Do not repeat initialization or verified tasks.
+- Task commit_hash references its delivery commit. A following metadata checkpoint records that real hash; identify the metadata HEAD through git log to avoid self-reference.
+- After each authorized atomic task checkpoint, continue to the next ready task; stop after P0-G or an unresolved critical blocker.
 
-ARCHITECTURE_DECISIONS (preserve verbatim)
-- ??? P0?????????????? P1?P4???? P5?
-- ????????? research/docs/agent_engineering_upgrade/??????????
-- ?? Python ????????? Conda adaptive-rag???????
-- ??????????????????????? LLM???????????? Trace?
-- ??????????? SOURCE_VERIFIED???????????????? TEST_VERIFIED?
-- ??? feature-list.json?progress.txt?git log ????????????????????????
-- ?????????????????? commit_hash ?????????????? git log ????????????? hash?
-
-P0-A FINDINGS TO PRESERVE
-- Startup: ASGI -> create_app -> lifespan -> build_container -> ChatService -> graph.compile once; DB Session is request-scoped via ContextVar.
-- Five-route graph is explicit; original/rewritten retrieval and SelfRAGLoop run inside retrieval node; no faithfulness-to-retrieval graph back-edge.
-- Planner uses AgentPlan JSON and registered Tool.run/execute dispatch; DeepSeek HTTP payload does not use native tools/tool_calls.
-- SSE sends node updates, then commits and chunks validated final text into 48-character events; it does not call Provider.stream.
-- State history is loaded, summary resets each request, Generate does not use messages/summary; Memory executes after generation.
-- Architecture handoffs: Settings injection splits factory/lifespan; pending action is process memory; corrected answer does not uniformly rebuild citations; async cancellation/transaction effects remain untested.
-
-RECENT_MODIFIED_FILES (all under research/docs/agent_engineering_upgrade/)
-- feature-list.json
-- progress.txt
-- audits/architecture.md
-- evidence/validate_p0_a.py
-- evidence/P0-A-source-index.json
-- evidence/P0-A-validation.json
+RECOVERY_RECONCILIATION
+- Existing P0-A report, evidence and delivery commit verified present; keep historical report/evidence unchanged.
+- Original state JSON preserved in evidence/feature-list.before-continuation.json. Recovered corrupted human-readable fields from the user task definitions; did not change task IDs, dependencies, verified pass state or commit hashes.
+- Root AGENTS.md has only the explicitly authorized Coding Agent protocol change; it was previously untracked.
+- New validator must allow only the documented AGENTS.md baseline exception and evolving audit artifacts. Historical validate_p0_a.py is a historical single-session validator, not suitable for completed B-G states.
+- Existing unrelated guides/images/script/test_10_27 files remain outside staging scope.
 
 VALIDATION
-- init.sh Bash syntax and read-only execution PASS using Conda adaptive-rag.
-- P0-A validator PASS: 8 source/static checks, 6 acceptance items.
-- SHA-256 comparison PASS: 329 original tracked files and 19 preexisting untracked files unchanged; no new out-of-scope untracked files.
-- Business pytest/TestClient/model/DB/remote-dependency runs NOT RUN. tests/conftest and lifespan have file/DB initialization side effects; no application imported.
-- No paid LLM calls, migration, order write, model download/training or trace upload.
-- Git default sandbox denied .git/index.lock; initialization checkpoint succeeded using explicitly authorized reviewed escalation. No Git identity/configuration modified.
-
-UNRESOLVED / BLOCKERS
-- Architecture runtime claims (concurrency, disconnect/rollback, model quality, resource usage) remain HYPOTHESIS or BLOCKED, not TEST_VERIFIED.
-- Task delivery commit verified and hash registered. Preserve unrelated AGENTS.md, prior guides/images/scripts and test_10_27/.
-- P0-B..P0-G remain pending/false; no P1?P4 started; no P5 planned.
+- Source/test inspection only so far; no production imports, test fixture imports, DB/model/API execution or trace upload.
+- Recovery protocol checkpoint pending.
 
 NEXT_ACTION
-This Session: delivery is committed and its real hash is registered. Commit only feature-list.json/progress.txt as recovery metadata, then EXIT. Do not start P0-B here. The state-only commit is a descendant of TASK_COMMIT_HASH and is identified by git log; a commit cannot contain its own final hash.
-Next NEW Session: read root AGENTS.md, feature-list.json, progress.txt; inspect git status/log and verify task commit/artifacts. First dependency-ready task is P0-B, Memory & Context Audit; complete only P0-B and then exit.
+Commit authorized protocol/recovery artifacts, then select P0-B, inspect current source and primary OpenClaw docs, write report, validate, checkpoint; automatically continue through P0-G.
