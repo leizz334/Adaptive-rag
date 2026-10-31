@@ -1,0 +1,608 @@
+{
+  "task_id": "P0-F",
+  "result": "PASS",
+  "validation_kind": "source_document_and_isolated_AST_validation",
+  "python": "D:\\MiniAnaconda3\\envs\\adaptive-rag\\python.exe",
+  "git_head_at_validation": "6060e46dac752202c771d74a684f9a758e57254d",
+  "report_sha256": "e19f97ccfdc784930224ea7952397144b3e7d58525d47304da778de43a8ca485",
+  "scope_integrity": {
+    "result": "PASS",
+    "baseline_counts": {
+      "tracked_sha256": 329,
+      "preexisting_untracked_sha256": 19
+    },
+    "authorized_exception": [
+      "AGENTS.md"
+    ],
+    "historical_P0_A_unchanged": true
+  },
+  "local_link_occurrences": 90,
+  "source_references": {
+    "app/api/routes/chat.py": {
+      "sha256": "ac13e7f1d8fb16480bb18fcfddb91222ee2a4fffecd3d24058d6909090bcf397",
+      "anchors": [
+        {
+          "line": 15,
+          "source": "async def chat("
+        }
+      ]
+    },
+    "app/schemas/chat.py": {
+      "sha256": "92079a5d445990f9a1f0118ea74d123e0e9997ff8c85b59cd6341a5c6092d703",
+      "anchors": [
+        {
+          "line": 21,
+          "source": "user_id: str = Field(default=\"anonymous\", min_length=1, max_length=64)"
+        }
+      ]
+    },
+    "app/services/chat_service.py": {
+      "sha256": "7c36ab5546ea5ddd8989d06b5a8b6e90e00c93ee2f183da4fd05a11241223eba",
+      "anchors": [
+        {
+          "line": 175,
+          "source": "\"user_id\": request.user_id,"
+        },
+        {
+          "line": 156,
+          "source": "async def _enforce_rate_limit(self, user_id: str) -> None:"
+        },
+        {
+          "line": 170,
+          "source": "await sessions.get_or_create(session_id, request.user_id)"
+        },
+        {
+          "line": 61,
+          "source": "self._pending_actions: dict[str, PendingConfirmation] = {}"
+        },
+        {
+          "line": 191,
+          "source": "def _resolve_confirmation(self, request: ChatRequest, session_id: str) -> ActionProposal | None:"
+        },
+        {
+          "line": 204,
+          "source": "def _remember_pending(self, request: ChatRequest, response: ChatResponse) -> None:"
+        },
+        {
+          "line": 241,
+          "source": "await sessions.append_message(response.session_id, \"user\", request.message)"
+        },
+        {
+          "line": 232,
+          "source": "async def _persist("
+        },
+        {
+          "line": 114,
+          "source": "task = asyncio.create_task(_run_graph())"
+        },
+        {
+          "line": 143,
+          "source": "merged: AgentState = holder[\"merged\"]"
+        },
+        {
+          "line": 126,
+          "source": "if holder[\"guardrail\"] is not None:"
+        },
+        {
+          "line": 271,
+          "source": "def _observe(self, response: ChatResponse, started: float) -> None:"
+        }
+      ]
+    },
+    "app/tools/order_tools.py": {
+      "sha256": "82f761eb6dce269f451fd3b818ee5fc7e38b80ced9c54a6e8a34bec1a054c90f",
+      "anchors": [
+        {
+          "line": 33,
+          "source": "async def execute(self, parsed: OrderIdInput, context: ToolContext) -> ToolResult:"
+        }
+      ]
+    },
+    "app/repositories/order_repository.py": {
+      "sha256": "5834e0ce4b7bf7da71e7caf2e70ce4b3fd41e059570492fb12f9165b1f5c65a2",
+      "anchors": [
+        {
+          "line": 37,
+          "source": "async def get_visible_order(self, order_id: str, user_id: str) -> Order:"
+        },
+        {
+          "line": 62,
+          "source": "async def create_refund("
+        },
+        {
+          "line": 97,
+          "source": "async def create_return("
+        },
+        {
+          "line": 123,
+          "source": "async def cancel_order(self, order_id: str, *, trace_id: str) -> dict:"
+        }
+      ]
+    },
+    "app/main.py": {
+      "sha256": "286c9bb42b275c05252eb46b56655ad415a63572d428214d65c104ea88b94ef7",
+      "anchors": [
+        {
+          "line": 66,
+          "source": "prefix = resolved.api_v1_prefix"
+        },
+        {
+          "line": 56,
+          "source": "if settings is not None:"
+        },
+        {
+          "line": 32,
+          "source": "settings = get_settings()"
+        },
+        {
+          "line": 72,
+          "source": "async def request_context(request: Request, call_next):"
+        },
+        {
+          "line": 120,
+          "source": "@app.get(\"/metrics\")"
+        }
+      ]
+    },
+    "app/api/dependencies.py": {
+      "sha256": "0b58685d6fc4f4094f041f3bda755e381d5b5d19d332f9c60cb9e6295dd7092e",
+      "anchors": [
+        {
+          "line": 8,
+          "source": "def get_container(request: Request) -> AppContainer:"
+        }
+      ]
+    },
+    "tests/integration/test_orders.py": {
+      "sha256": "29015eb782434b2c5bb34c34617be0828f81b4595faa70de5eb096ecc5e957ee",
+      "anchors": [
+        {
+          "line": 50,
+          "source": "async def test_order_is_scoped_to_owner(session_factory) -> None:"
+        },
+        {
+          "line": 34,
+          "source": "async def test_refund_is_idempotent_and_transactional(session_factory) -> None:"
+        },
+        {
+          "line": 90,
+          "source": "async def test_refund_tool_persists_via_repository(session_factory) -> None:"
+        },
+        {
+          "line": 17,
+          "source": "@pytest.fixture"
+        }
+      ]
+    },
+    "app/repositories/session_repository.py": {
+      "sha256": "39a5ffa3077efc62c6d9bd2d816dcd256f50cb94b0f746373241ae96a57b9b31",
+      "anchors": [
+        {
+          "line": 15,
+          "source": "async def get_or_create(self, session_id: str, user_id: str) -> SessionRow:"
+        },
+        {
+          "line": 23,
+          "source": "async def recent_messages(self, session_id: str, *, limit: int = 20) -> list[ChatMessage]:"
+        },
+        {
+          "line": 33,
+          "source": "async def append_message(self, session_id: str, role: str, content: str) -> None:"
+        },
+        {
+          "line": 39,
+          "source": "async def save_summary(self, session_id: str, summary: str) -> None:"
+        }
+      ]
+    },
+    "app/repositories/models.py": {
+      "sha256": "08ed89fdb2a18eedf9fcde77c4834b86f8846460da5d0666a51c45b19a597f83",
+      "anchors": [
+        {
+          "line": 79,
+          "source": "class SessionRow(Base):"
+        },
+        {
+          "line": 109,
+          "source": "class IdempotencyRow(Base):"
+        },
+        {
+          "line": 89,
+          "source": "class MessageRow(Base):"
+        },
+        {
+          "line": 99,
+          "source": "class AuditLogRow(Base):"
+        },
+        {
+          "line": 103,
+          "source": "trace_id: Mapped[str] = mapped_column(String(64), index=True)"
+        }
+      ]
+    },
+    "tests/e2e/test_chat_api.py": {
+      "sha256": "abac9eb6b85fced5128011db3cc8e1ed09d195b4e781bf7d9cef4a8511181343",
+      "anchors": [
+        {
+          "line": 14,
+          "source": "def test_health_and_chat_greeting() -> None:"
+        },
+        {
+          "line": 28,
+          "source": "def test_injection_is_refused() -> None:"
+        },
+        {
+          "line": 48,
+          "source": "def test_chat_stream_emits_token_and_node_events() -> None:"
+        },
+        {
+          "line": 74,
+          "source": "def test_admin_tools_open_in_testing() -> None:"
+        }
+      ]
+    },
+    "app/agents/nodes/planner.py": {
+      "sha256": "c486e81061ed357bc1bd5b1b3ca4e4ade76256569f2612ce535333442e45f426",
+      "anchors": [
+        {
+          "line": 169,
+          "source": "async def planner_node(state: AgentState, planner: Planner) -> dict:"
+        }
+      ]
+    },
+    "tests/unit/test_action_confirmation.py": {
+      "sha256": "dfc982a2355bf465cc4fa6233f0488c3062a685a6ba9a77b4601c44b06d9956c",
+      "anchors": [
+        {
+          "line": 45,
+          "source": "def test_confirmation_is_bound_to_session_and_user() -> None:"
+        },
+        {
+          "line": 25,
+          "source": "async def test_cancellation_needs_explicit_request_and_confirmation() -> None:"
+        }
+      ]
+    },
+    "app/agents/nodes/executor.py": {
+      "sha256": "df1f9c703adb51c554c9210b7f437a59deae750bf09aef405bfae65287ea2bf7",
+      "anchors": [
+        {
+          "line": 104,
+          "source": "if state.get(\"pending_action\") and not state.get(\"confirm_action_id\"):"
+        },
+        {
+          "line": 130,
+          "source": "if tool.risk in WRITE_RISKS:"
+        },
+        {
+          "line": 42,
+          "source": "def _fingerprint(tool_name: str, arguments: dict) -> str:"
+        }
+      ]
+    },
+    "app/repositories/idempotency.py": {
+      "sha256": "1acfa6d14126631e7cb316cb00034a7750bf27669fcab38de802d7c46f1aae8a",
+      "anchors": [
+        {
+          "line": 16,
+          "source": "async def get_if_matches(self, key: str, fingerprint: str) -> dict | None:"
+        }
+      ]
+    },
+    "app/tools/aftersale_tools.py": {
+      "sha256": "39eb36360006050f8ed1f35f88b0161b3084782e8101ac0b37dfde11705c4727",
+      "anchors": [
+        {
+          "line": 79,
+          "source": "async def execute(self, parsed: RefundCreateInput, context: ToolContext) -> ToolResult:"
+        }
+      ]
+    },
+    "app/tools/permissions.py": {
+      "sha256": "b53c1ead77aef642283b7e5509e30277dd968a3d0be2fc36fad3270947fe66ef",
+      "anchors": [
+        {
+          "line": 7,
+          "source": "WRITE_RISKS = {ToolRisk.WRITE, ToolRisk.DESTRUCTIVE}"
+        }
+      ]
+    },
+    "app/mcp/adapter.py": {
+      "sha256": "8a1da0a8f084414437920bf57ce5f23c9aeab86c853b4cfe2d0885ba19a890e7",
+      "anchors": [
+        {
+          "line": 19,
+          "source": "def __init__("
+        },
+        {
+          "line": 50,
+          "source": "def merge_mcp_tools(registry: ToolRegistry, mcp_specs: list[dict[str, str]]) -> ToolRegistry:"
+        }
+      ]
+    },
+    "app/mcp/runtime.py": {
+      "sha256": "91339c18cae6d4842c7390d724baf714bd47f5d1fa314a48bd4554bedb9a6478",
+      "anchors": [
+        {
+          "line": 53,
+          "source": "async def call_mcp_tool("
+        }
+      ]
+    },
+    "app/guardrails/injection.py": {
+      "sha256": "ffe51a7cbd44787f5947d383f9a0ce2b93d89b34fa7cbf6413cc4e583451b669",
+      "anchors": [
+        {
+          "line": 10,
+          "source": "_INJECTION_PATTERNS = ("
+        }
+      ]
+    },
+    "app/agents/nodes/guardrail.py": {
+      "sha256": "6b38f22ed7c67a3f7a95a2be1d95bff37de57149fc93b013827e71bde8b4a5c6",
+      "anchors": [
+        {
+          "line": 9,
+          "source": "async def guardrail_node(state: AgentState) -> dict:"
+        }
+      ]
+    },
+    "app/prompts/answer.py": {
+      "sha256": "422765f66fcfb00b33f2397e537562f4823a7b82cb59d018241b9954635f9962",
+      "anchors": [
+        {
+          "line": 5,
+          "source": "ANSWER_SYSTEM = f\"\"\"你是电商平台客服助手。用简体中文回答，语气克制、可执行。"
+        }
+      ]
+    },
+    "app/agents/nodes/generate.py": {
+      "sha256": "64b0df6e39892dce0f6fd6ab1c36a8ac76fb8ac2dac229865463723afceb61df",
+      "anchors": [
+        {
+          "line": 52,
+          "source": "tool_text = json.dumps([t.model_dump() for t in tools], ensure_ascii=False) if tools else \"(无)\""
+        }
+      ]
+    },
+    "tests/unit/test_guardrails.py": {
+      "sha256": "914e50a791b6f89b03c7dfff7d46a475fda5ca5049fb49bcb92f5033607583d1",
+      "anchors": [
+        {
+          "line": 9,
+          "source": "def test_blocks_ignore_previous_instructions() -> None:"
+        },
+        {
+          "line": 15,
+          "source": "def test_blocks_weapon_query() -> None:"
+        }
+      ]
+    },
+    "app/core/security.py": {
+      "sha256": "b90065119edf99b6ea3e0a871c0a1ccae7008cc54a2e54639b6b322d1f9a44c7",
+      "anchors": [
+        {
+          "line": 28,
+          "source": "def redact_mapping(payload: dict[str, object]) -> dict[str, object]:"
+        },
+        {
+          "line": 42,
+          "source": "def mask_pii(text: str) -> str:"
+        }
+      ]
+    },
+    "app/observability/logging.py": {
+      "sha256": "fbdd35a4b60bf06cf50d0d9ff995fede8b619edba3f7b993ffbc94b2503d41f7",
+      "anchors": [
+        {
+          "line": 20,
+          "source": "class ContextFilter(logging.Filter):"
+        }
+      ]
+    },
+    "tests/unit/test_security.py": {
+      "sha256": "b11fc2ac494ed8c712bcfa36b369f75d3dd8141fe11b873791e0f8ea09bf7248",
+      "anchors": [
+        {
+          "line": 5,
+          "source": "def test_mask_phone_id_bank_and_order() -> None:"
+        }
+      ]
+    },
+    "app/retrieval/vector.py": {
+      "sha256": "33afddd3c3229086709b393fb410dd300418b1225cc6d3319089c007556d207a",
+      "anchors": [
+        {
+          "line": 122,
+          "source": "def search(self, query_vector: list[float], *, top_k: int) -> list[RetrievedChunk]:"
+        },
+        {
+          "line": 99,
+          "source": "payload={"
+        },
+        {
+          "line": 79,
+          "source": "def ensure_collection(self) -> None:"
+        },
+        {
+          "line": 18,
+          "source": "def cosine(a: list[float], b: list[float]) -> float:"
+        }
+      ]
+    },
+    "eval/runner.py": {
+      "sha256": "c1d269eb6af1c18d69848a3692ff56bbaccba64260a281b27ac6a1be4cb0bfea",
+      "anchors": [
+        {
+          "line": 396,
+          "source": "async def eval_e2e() -> dict:"
+        }
+      ]
+    },
+    "app/services/container.py": {
+      "sha256": "ef1201fdde868fc0155ec02f8347d704641e9bdf8e19d19cc1e0c7fd18072049",
+      "anchors": [
+        {
+          "line": 62,
+          "source": "async def build_infrastructure(settings: Settings):"
+        },
+        {
+          "line": 128,
+          "source": "if seed:"
+        }
+      ]
+    },
+    "app/config/settings.py": {
+      "sha256": "d4d593beb2730cf21530155ea23166271d0e7e1a6bce4a46e6a4a58484bb5a65",
+      "anchors": [
+        {
+          "line": 16,
+          "source": "model_config = SettingsConfigDict("
+        }
+      ]
+    },
+    "tests/conftest.py": {
+      "sha256": "0d183956b96bca78daac02d74cfbb0b0c680f4b8aed981999ef4c1a8e2a0a4ba",
+      "anchors": [
+        {
+          "line": 5,
+          "source": "os.environ[\"APP_ENV\"] = \"testing\""
+        }
+      ]
+    },
+    "app/retrieval/cache.py": {
+      "sha256": "f88652d644e9a09366d94e7c4668562be07ec857420a59f0e04f11447bf9ef44",
+      "anchors": [
+        {
+          "line": 23,
+          "source": "def cache_key(query: str, top_k: int) -> str:"
+        },
+        {
+          "line": 18,
+          "source": "def _looks_like_order_query(query: str) -> bool:"
+        },
+        {
+          "line": 74,
+          "source": "payload = json.loads(raw)"
+        },
+        {
+          "line": 36,
+          "source": "class MemoryRetrievalCache(RetrievalCache):"
+        }
+      ]
+    },
+    "tests/unit/test_retrieval_cache.py": {
+      "sha256": "a955e8d3f1d06cc4720c60a25bb830aef9ac33dd81efcd49828f3f35ec2b466f",
+      "anchors": [
+        {
+          "line": 1,
+          "source": "\"\"\"Unit tests for the short-TTL retrieval cache."
+        }
+      ]
+    },
+    "app/infra/rate_limit.py": {
+      "sha256": "e7fcc08eb402de4122f01841a5dcb650af2f1c33d6448d99a704a85b46a7dd9b",
+      "anchors": [
+        {
+          "line": 62,
+          "source": "except Exception:"
+        },
+        {
+          "line": 29,
+          "source": "async def allow(self, key: str) -> bool:"
+        }
+      ]
+    },
+    "app/memory/budget.py": {
+      "sha256": "02527c352a1f65e19b424970e5062e85d820f250d6898c9137ba46eddcb71145",
+      "anchors": [
+        {
+          "line": 1,
+          "source": "\"\"\"Token budget estimation and compression-level decisions.\"\"\""
+        }
+      ]
+    },
+    "app/memory/compression.py": {
+      "sha256": "d4cf1b5346cf45b1f624bee0170bfb05d45bbeb8952d01975089e795741c5bc2",
+      "anchors": [
+        {
+          "line": 1,
+          "source": "\"\"\"Progressive context compression."
+        }
+      ]
+    },
+    ".github/workflows/ci.yml": {
+      "sha256": "076c812a740ae17561d834542f6fcf2a60db5732852cf1d2de44f4c70983c9f3",
+      "anchors": [
+        {
+          "line": 34,
+          "source": "- name: Lockfile in sync"
+        }
+      ]
+    },
+    "app/api/routes/admin.py": {
+      "sha256": "c05d0c9a7175ef7e7e64eba282f5967d8b621317f889f9f4939d39a3c430f314",
+      "anchors": [
+        {
+          "line": 15,
+          "source": "async def require_admin(request: Request, container: AppContainer = Depends(get_container)) -> None:"
+        }
+      ]
+    }
+  },
+  "test_source_files": [
+    "tests/conftest.py",
+    "tests/e2e/test_chat_api.py",
+    "tests/integration/test_orders.py",
+    "tests/unit/test_action_confirmation.py",
+    "tests/unit/test_guardrails.py",
+    "tests/unit/test_retrieval_cache.py",
+    "tests/unit/test_security.py"
+  ],
+  "external_primary_references": [],
+  "isolated_probes": [
+    {
+      "probe": "nested-list secret not redacted by actual redact_mapping",
+      "result": "REPRODUCED"
+    },
+    {
+      "probe": "short ORD10001 identifier not masked",
+      "result": "REPRODUCED"
+    },
+    {
+      "probe": "logging args bypass msg-only mask",
+      "result": "REPRODUCED"
+    }
+  ],
+  "datasets": {},
+  "acceptance_results": [
+    {
+      "criterion": "Inspect identity/session/cross-user access, injection/tool output/HITL/write permissions/idempotency, memory/experience pollution, trace privacy/cache/state consistency.",
+      "result": "PASS",
+      "report_marker": "P0-F.1"
+    },
+    {
+      "criterion": "Assess evaluation side effects on real data and external services without executing real operations.",
+      "result": "PASS",
+      "report_marker": "P0-F.2"
+    },
+    {
+      "criterion": "Record CRITICAL/HIGH/MEDIUM/LOW risks with evidence, impact, existing defenses, gaps, recommendations and validation methods.",
+      "result": "PASS",
+      "report_marker": "P0-F.3"
+    },
+    {
+      "criterion": "Separate verified source defects from untested exploit/concurrency outcomes; save validation evidence.",
+      "result": "PASS",
+      "report_marker": "P0-F.4"
+    }
+  ],
+  "not_run": [
+    "original pytest/TestClient/app imports",
+    "DB operations/migrations/order writes",
+    "paid LLM/model download/training",
+    "trace or business data upload",
+    "proposed M/E experiments and platform integration"
+  ],
+  "evidence_limits": "Isolated AST probes use actual extracted function bodies with in-memory stubs. They do not prove full application, provider, DB, ASGI or model behavior."
+}
