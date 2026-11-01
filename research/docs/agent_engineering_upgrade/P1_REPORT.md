@@ -72,3 +72,8 @@ conda run --no-capture-output -n adaptive-rag python -B research/docs/agent_engi
 - Git远程核实为`https://github.com/JEen-wang/Adaptive-rag.git`，main为原源码基线，P1目标新分支不存在；读取远程需要网络提升权限。普通连接及push dry-run曾失败（connection reset），尚不能认定具有推送权限。实际推送在本地F交付提交后执行；结果、待执行命令保存在最终状态/进度与push证据，绝不force-push或更新main。没有安装gh或改Git身份/配置。
 
 阶段以PARTIAL_PASS关闭：本地交付、回归和80场景评测可复核，外部未验证项仍明确保留，不设置为全面passes=true。F交付及push结果持久化后STOP，等待P1审核；不得自动启动P2。
+
+
+## Git destination correction
+
+The user corrected the delivery destination to `https://github.com/leizz334/Adaptive-rag.git` on branch `codex/p1-tracing-evaluation-v2`. `origin` is corrected; previous JEen-wang/403 records are historical only. Read-only preflight succeeded; two ordinary push attempts failed with network connection errors. See P1_GIT_DELIVERY.md and evidence/P1-push-result.json for the current delivery state. No P2 started.

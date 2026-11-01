@@ -1,3 +1,21 @@
+# P1 Git delivery: corrected destination
+
+Current authorized destination: `https://github.com/leizz334/Adaptive-rag.git`, branch `codex/p1-tracing-evaluation-v2`. The user explicitly corrected the previous repository. `origin` fetch/push URLs have both been updated.
+
+Read-only remote preflight succeeded: HEAD/main `2a12a62382a8c3ec033fa9a5b19b9b23b8780ab8`; target branch absent. Two actual ordinary push attempts failed to connect to github.com:443 (exit 1, 21081/28211 ms). No successful push is claimed. Current status: **FAILED_NETWORK**. The previous 403 belongs to the old destination only.
+
+Local commits and unrelated user changes are preserved; P1 remains PARTIAL_PASS because previously documented external checks are NOT_RUN. No P2 started. Machine-readable history: [P1-push-result.json](evidence/P1-push-result.json).
+
+Retry after connectivity recovers:
+
+```powershell
+git push --set-upstream origin codex/p1-tracing-evaluation-v2
+```
+
+---
+
+## Historical record for superseded destination
+
 # P1 Git 交付状态
 
 本地代码、测试、报告和每任务检查点已提交。P1-F交付为 `b9af124ca516dd28803434c89970c2892643322e`，验收元数据为 `c7e7a40`；后续本文件/状态更新另建本地记录，最新HEAD以git log为准。
