@@ -388,16 +388,29 @@
       "dependencies": [
         "P1-D"
       ],
-      "status": "pending",
-      "passes": false,
+      "status": "completed",
+      "passes": true,
       "acceptance_criteria": [
         "Five-state judge classification with errors excluded from hallucination, retrieval comparability",
         "Reusable multi-turn driver and frozen hand-labelled cases; context failures recorded without Memory changes"
       ],
-      "evidence_files": [],
-      "validation_results": [],
+      "evidence_files": [
+        "evidence/P1-E-pytest.xml",
+        "P1_JUDGE_MULTITURN.md",
+        "evidence/P1-E-offline.json",
+        "evidence/P1-E-offline-trace-off.json"
+      ],
+      "validation_results": [
+        {
+          "command": "conda run -n adaptive-rag python -B -m pytest (exact invocation in task evidence)",
+          "junit": "evidence/P1-E-pytest.xml",
+          "tests": 203,
+          "failures": 0,
+          "errors": 0
+        }
+      ],
       "commit_hash": null,
-      "next_action": "Start when dependency-ready"
+      "next_action": "Continue next ready P1 task; after F verify/push safely and STOP"
     },
     {
       "task_id": "P1-F",

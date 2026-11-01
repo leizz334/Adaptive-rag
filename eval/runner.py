@@ -286,12 +286,13 @@ async def _generate_answer(llm, query: str, evidence: str) -> str:
 
 async def eval_generation() -> dict:
     from app.config.settings import get_settings
-    from app.guardrails.hallucination import FaithfulnessChecker
+    from app.guardrails.hallucination import FaithfulnessChecker, FaithfulnessStatus
     from app.providers.deepseek import DeepSeekProvider
     from app.providers.embeddings import build_embedding_provider
     from app.retrieval.hybrid import HybridRetriever
     from app.retrieval.ingest import ingest_to_memory
     from app.retrieval.vector import VectorRetriever
+    from eval.judge_metrics import summarize_judgments
 
     settings = get_settings()
     if not settings.llm_configured:
@@ -313,6 +314,7 @@ async def eval_generation() -> dict:
     naive_hallucinated = 0
     rag_hallucinated = 0
     checked_hallucinated = 0
+    judgments = {"naive": [], "rag": [], "checked": []}
 
     async def _one(row: dict) -> None:
         nonlocal naive_supported, rag_supported, checked_supported
@@ -333,7 +335,7 @@ async def eval_generation() -> dict:
             )
             checked = rag
             checked_judge = rag_judge
-            if not rag_judge.supported:
+            if rag_judge.status == FaithfulnessStatus.UNSUPPORTED:
                 from app.agents.nodes.faithfulness import self_correct_answer
 
                 checked, checked_judge, _ = await self_correct_answer(
@@ -346,17 +348,20 @@ async def eval_generation() -> dict:
                     first_result=rag_judge,
                 )
             keywords = row.get("gold_answer_contains") or []
+            judgments["naive"].append(naive_judge)
+            judgments["rag"].append(rag_judge)
+            judgments["checked"].append(checked_judge)
             if naive_judge.supported:
                 naive_supported += 1
-            else:
+            elif naive_judge.status == FaithfulnessStatus.UNSUPPORTED:
                 naive_hallucinated += 1
             if rag_judge.supported:
                 rag_supported += 1
-            else:
+            elif rag_judge.status == FaithfulnessStatus.UNSUPPORTED:
                 rag_hallucinated += 1
             if checked_judge.supported:
                 checked_supported += 1
-            else:
+            elif checked_judge.status == FaithfulnessStatus.UNSUPPORTED:
                 checked_hallucinated += 1
             if _keyword_hit(naive, keywords):
                 naive_keyword += 1
@@ -367,29 +372,33 @@ async def eval_generation() -> dict:
 
     await asyncio.gather(*[_one(row) for row in rows])
     n = len(rows)
-    naive_h = naive_hallucinated / n
-    checked_h = checked_hallucinated / n
-    drop = ((naive_h - checked_h) / naive_h) if naive_h else 0.0
+    summaries = {key: summarize_judgments(values) for key, values in judgments.items()}
+    naive_h = summaries["naive"]["hallucination_rate"]
+    checked_h = summaries["checked"]["hallucination_rate"]
+    drop = (
+        ((naive_h - checked_h) / naive_h)
+        if naive_h
+        and checked_h is not None
+        and summaries["naive"]["judged_coverage"] == summaries["checked"]["judged_coverage"]
+        else None
+    )
     return {
         "n": n,
-        "judge": "deepseek-faithfulness_v1",
+        "judge": "deepseek-faithfulness_v2",
         "naive_no_context": {
-            "faithfulness": round(naive_supported / n, 4),
-            "hallucination_rate": round(naive_h, 4),
+            **summaries["naive"],
             "keyword_hit": round(naive_keyword / n, 4),
         },
         "rag": {
-            "faithfulness": round(rag_supported / n, 4),
-            "hallucination_rate": round(rag_hallucinated / n, 4),
+            **summaries["rag"],
             "keyword_hit": round(rag_keyword / n, 4),
         },
         "rag_plus_self_check": {
-            "faithfulness": round(checked_supported / n, 4),
-            "hallucination_rate": round(checked_h, 4),
+            **summaries["checked"],
             "keyword_hit": round(checked_keyword / n, 4),
         },
-        "hallucination_relative_drop": round(drop, 4),
-        "note": "Hallucination = LLM judge supported=false. Relative drop is naive vs RAG+self-check.",
+        "hallucination_relative_drop": round(drop, 4) if drop is not None else None,
+        "note": "V2: only UNSUPPORTED is hallucination; errors/invalid/insufficient excluded with coverage. legacy_supported_fraction preserves old supported/n. Retrieval metrics unchanged; same-model judge bias remains.",
     }
 
 

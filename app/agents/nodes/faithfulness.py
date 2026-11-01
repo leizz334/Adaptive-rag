@@ -6,7 +6,7 @@ from app.agents.nodes.generate import AnswerPayload, _extractive_fallback, _offl
 from app.agents.state import AgentState
 from app.core.enums import RetrievalStrategy
 from app.core.exceptions import LLMOutputError, LLMProviderError
-from app.guardrails.hallucination import FaithfulnessChecker, FaithfulnessResult
+from app.guardrails.hallucination import FaithfulnessChecker, FaithfulnessResult, FaithfulnessStatus
 from app.observability.metrics import HALLUCINATION_FLAGS
 from app.observability.tracing import traced
 from app.prompts.faithfulness import SELF_CORRECT_SYSTEM, SELF_CORRECT_USER
@@ -103,8 +103,14 @@ async def faithfulness_node(
     extra = {"faithfulness": result.model_dump(), "self_corrected": False}
     if result.supported:
         return {"extra": extra}
-    HALLUCINATION_FLAGS.inc()
-    if result.rationale == "checker_unavailable":
+    if result.status == FaithfulnessStatus.INSUFFICIENT_EVIDENCE:
+        return {
+            "final_answer": "现有证据不足，暂时无法给出可靠答复。请补充信息或转人工。",
+            "citations": [],
+            "refused": True,
+            "extra": extra,
+        }
+    if result.status in {FaithfulnessStatus.JUDGE_ERROR, FaithfulnessStatus.INVALID_OUTPUT}:
         fallback_answer, citation_ids = _offline_answer(state)
         citations = [
             Citation(
@@ -121,6 +127,7 @@ async def faithfulness_node(
             "citations": citations,
             "extra": extra,
         }
+    HALLUCINATION_FLAGS.inc()
     patched, judged, corrected = await self_correct_answer(
         llm=llm,
         checker=checker,
