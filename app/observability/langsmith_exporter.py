@@ -3,6 +3,8 @@
 from queue import Empty, Full, Queue
 from threading import Thread
 
+from app.observability.tracing import safe_metadata
+
 
 def run_payload(item):
     return dict(
@@ -16,7 +18,13 @@ def run_payload(item):
         inputs={},
         outputs={},
         error=item.error_type if item.status == "error" else None,
-        extra={"metadata": {**item.metadata, "status": item.status, "latency_ms": item.latency_ms}},
+        extra={
+            "metadata": {
+                **safe_metadata(item.metadata),
+                "status": item.status,
+                "latency_ms": item.latency_ms,
+            }
+        },
     )
 
 

@@ -14,7 +14,9 @@ def test_reject_unknown_execution_and_result_states():
 
 def test_contract_preserves_actual_argument_and_equivalent_paths():
     event = ToolCall(name="get_order", arguments={"order_id": "ORD10001"}, success=False)
-    assert ToolCall.model_validate_json(event.model_dump_json()).arguments == {"order_id": "ORD10001"}
+    assert ToolCall.model_validate_json(event.model_dump_json()).arguments == {
+        "order_id": "ORD10001"
+    }
     spec = TrajectorySpec(valid_paths=[["get_order"], ["get_order", "get_order_items"]])
     assert spec.valid_paths == [["get_order"], ["get_order", "get_order_items"]]
 

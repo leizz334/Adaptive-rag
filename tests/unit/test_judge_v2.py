@@ -4,7 +4,7 @@ from app.core.exceptions import LLMProviderError
 from app.guardrails.hallucination import FaithfulnessChecker, FaithfulnessResult
 from app.providers.base import LLMResponse
 from app.schemas.retrieval import RetrievedChunk
-from eval.judge_metrics import summarize_judgments
+from eval.judge_metrics import paired_hallucination_drop, summarize_judgments
 
 
 class Judge:
@@ -82,3 +82,11 @@ async def test_judge_outage_not_counted_in_hallucination_metric():
         Judge(error=True),
     )
     assert HALLUCINATION_FLAGS._value.get() == before
+
+
+def test_equal_coverage_of_different_cases_does_not_claim_improvement():
+    bad = FaithfulnessResult(supported=False)
+    good = FaithfulnessResult(supported=True)
+    error = FaithfulnessResult(status="JUDGE_ERROR")
+    assert paired_hallucination_drop([bad, error], [error, good]) is None
+    assert paired_hallucination_drop([bad, good], [good, good]) == 1.0

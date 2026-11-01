@@ -21,3 +21,5 @@ conda run --no-capture-output -n adaptive-rag python -B -m pytest -q -p no:cache
 ```
 
 P1-B当前全套173 passed，1条原有LangChain预弃用警告；真实云端、账号权限、远程区域和计费NOT_RUN。生产客户端user_id可信性、全面日志脱敏和业务幂等并发等P0风险没有因追踪自动修复；本地评测原始参数不能传入该导出器。无正式业务数据或API key上传。
+
+P1-F追加验收：现已通过真实LangSmith SDK的纯离线HTTP Adapter序列化测试；原先仅假Client的B阶段证据不被覆盖。SSE根移入拥有流的生产任务，经有界队列/送达确认维持生命周期；路由与Response显式关闭嵌套迭代器，并通过实际ASGI断线测试。导出/本地日志边界再次应用白名单，防未来意外加入原始元数据。完整最终结果见P1_REPORT.md，云端连通仍NOT_RUN。

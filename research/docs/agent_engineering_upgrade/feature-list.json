@@ -23,7 +23,7 @@
       }
     ]
   },
-  "session_policy": "User-authorized continuation: process one atomic P0 task at a time; validate, persist and checkpoint each task, then continue B through G in this Session. Initializer must not run again.",
+  "session_policy": "User-authorized continuous P1-A through P1-F. Phase closes PARTIAL_PASS with explicit external NOT_RUN; after checkpoint/push STOP and await P1 review. No P2-P4.",
   "evidence_labels": [
     "SOURCE_VERIFIED",
     "TEST_VERIFIED",
@@ -418,16 +418,43 @@
       "dependencies": [
         "P1-E"
       ],
-      "status": "pending",
+      "status": "partial_pass",
       "passes": false,
       "acceptance_criteria": [
         "Actual full regression and offline repeatability/security checks recorded",
         "P1 report/guides/metrics/limits/state/commits and safe push result; no P2 work"
       ],
-      "evidence_files": [],
-      "validation_results": [],
+      "evidence_files": [
+        "evidence/P1-F-pytest.xml",
+        "P1_REPORT.md",
+        "P1_TRACE_GUIDE.md",
+        "P1_JUDGE_MULTITURN.md",
+        "evidence/P1-final-validation.json",
+        "evidence/P1-extended-dataset-freeze.json",
+        "evidence/P1-F-offline-1.json",
+        "evidence/P1-F-offline-2.json",
+        "evidence/P1-F-offline-off.json",
+        "evidence/P1-F-extended-1.json",
+        "evidence/P1-F-extended-2.json",
+        "evidence/P1-F-extended-off.json",
+        "evidence/P1-F-checks.json"
+      ],
+      "validation_results": [
+        {
+          "command": "conda run -n adaptive-rag python -B -m pytest (exact invocation in task evidence)",
+          "junit": "evidence/P1-F-pytest.xml",
+          "tests": 212,
+          "failures": 0,
+          "errors": 0
+        },
+        {
+          "scope": "SaaS connectivity, real-model quality and uv resolver",
+          "result": "NOT_RUN",
+          "reason": "No paid model authorization/trace credentials; uv binary unavailable"
+        }
+      ],
       "commit_hash": null,
-      "next_action": "Start when dependency-ready"
+      "next_action": "Await P1 review; do not rerun completed tasks or start P2"
     }
   ],
   "continuation": {
@@ -450,13 +477,16 @@
     "base_head": "3f789e1411e22cc295a6a68d8e03683749303642",
     "branch": "codex/p1-tracing-evaluation-v2",
     "remote": "https://github.com/JEen-wang/Adaptive-rag.git",
-    "status": "in_progress",
+    "status": "PARTIAL_PASS",
     "decisions": [
       "Only P1 authorized, no production data/paid model or Memory/Experience features",
       "User AGENTS.md push policy modification and unrelated files must not be committed",
       "Manual bounded metadata spans, optional LangSmith; local raw evaluation evidence never exported",
-      "Small labelled offline fixtures exercise real service; real model quality/cloud connectivity NOT_RUN"
+      "Small labelled offline fixtures exercise real service; real model quality/cloud connectivity NOT_RUN",
+      "F extends frozen 14 with 66 predeclared matrix variants (80 cases, 18 families), freezes before execution, preserves failures; matrix variants are correlated."
     ],
-    "push_status": "PENDING"
-  }
+    "push_status": "PENDING",
+    "closed": true
+  },
+  "p0_session_policy": "User-authorized continuation: process one atomic P0 task at a time; validate, persist and checkpoint each task, then continue B through G in this Session. Initializer must not run again."
 }

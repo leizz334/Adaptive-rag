@@ -7,14 +7,18 @@ import hashlib
 import hmac
 import inspect
 import logging
+import math
+import re
 import secrets
 import time
-from contextlib import contextmanager
+from contextlib import aclosing, contextmanager, suppress
 from contextvars import ContextVar
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from functools import wraps
 from uuid import uuid4
+
+from anyio import CancelScope
 
 logger = logging.getLogger(__name__)
 _active: ContextVar = ContextVar("agent_trace", default=None)
@@ -39,6 +43,20 @@ def reference(value: str) -> str:
     return hmac.new(_salt, value.encode(), hashlib.sha256).hexdigest()[:24]
 
 
+def safe_metadata(metadata: dict) -> dict:
+    result = {}
+    for key, value in metadata.items():
+        if key in _NUMERIC and type(value) in (int, float, bool) and math.isfinite(value):
+            result[key] = value
+        elif (
+            key in {"app_trace_ref", "session_ref", "user_ref", "request_ref"}
+            and isinstance(value, str)
+            and re.fullmatch(r"[a-f0-9]{24}", value)
+        ):
+            result[key] = value
+    return result
+
+
 @dataclass
 class Span:
     name: str
@@ -56,7 +74,9 @@ class Span:
 
 def _local_sink(spans):
     for item in spans:
-        logger.info("agent_span", extra={"agent_span": asdict(item)})
+        payload = asdict(item)
+        payload["metadata"] = safe_metadata(item.metadata)
+        logger.info("agent_span", extra={"agent_span": payload})
 
 
 class TraceRecorder:
@@ -219,20 +239,50 @@ def trace_turn(fn):
 
         @wraps(fn)
         async def stream(self, *args, **kwargs):
-            with scope(self, args, kwargs) as root:
-                source = fn(self, *args, **kwargs)
+            # ContextVar tokens belong to the producer task, never the task
+            # consuming/yielding the HTTP body (which may change on disconnect).
+            queue: asyncio.Queue = asyncio.Queue(maxsize=1)
+            delivered = asyncio.Event()
+            errors = []
+
+            async def produce():
                 try:
-                    async for value in source:
-                        if root:
-                            value["root_run_id"] = root.id
-                            if value.get("event") == "answer":
-                                value["data"]["root_run_id"] = root.id
-                                root.metadata["session_ref"] = reference(
-                                    value["data"]["session_id"]
-                                )
-                        yield value
-                finally:
-                    await source.aclose()
+                    with scope(self, args, kwargs) as root:
+                        async with aclosing(fn(self, *args, **kwargs)) as source:
+                            async for value in source:
+                                if root:
+                                    value["root_run_id"] = root.id
+                                    if value.get("event") == "answer":
+                                        value["data"]["root_run_id"] = root.id
+                                        root.metadata["session_ref"] = reference(
+                                            value["data"]["session_id"]
+                                        )
+                                await queue.put(value)
+                        await queue.put(None)
+                        await delivered.wait()
+                except asyncio.CancelledError:
+                    raise
+                except BaseException as exc:
+                    errors.append(exc)
+                    await queue.put(None)
+
+            task = asyncio.create_task(produce())
+            try:
+                while True:
+                    value = await queue.get()
+                    if value is None:
+                        delivered.set()
+                        await task
+                        if errors:
+                            raise errors[0]
+                        break
+                    yield value
+            finally:
+                with CancelScope(shield=True):
+                    if not task.done():
+                        task.cancel()
+                    with suppress(asyncio.CancelledError):
+                        await task
 
         return stream
 

@@ -13,7 +13,7 @@ from pydantic import Field
 
 from app.core.exceptions import AppError
 from app.observability.execution import capture_tools
-from app.observability.tracing import TraceRecorder
+from app.observability.tracing import Span, TraceRecorder
 from app.schemas.chat import ChatRequest
 from eval.contracts import (
     Contract,
@@ -40,6 +40,7 @@ class Turn(Contract):
     expected_refused: bool | None = None
     expected_failures: list[str] = Field(default_factory=list)
     trajectory: TrajectorySpec = Field(default_factory=TrajectorySpec)
+    state_changes: dict[str, str] = Field(default_factory=dict)
 
 
 class Scenario(Contract):
@@ -68,7 +69,7 @@ async def run_scenarios(
 ):
     results = []
     for case in cases:
-        batches = []
+        batches: list[list[Span]] = []
         recorder = TraceRecorder(enabled=tracing, sink=batches.append)
         reasons, calls, turns = [], [], []
         started = time.perf_counter()
@@ -80,6 +81,8 @@ async def run_scenarios(
             session_id = None
             pending = None
             for index, turn in enumerate(case.turns):
+                if turn.state_changes:
+                    await env.change_order_states(turn.state_changes)
                 actor = turn.user_id or case.user_id
                 action_id = (
                     "not-issued" if turn.invalid_confirmation else pending if turn.confirm else None
@@ -215,8 +218,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--trace-off", action="store_true")
+    parser.add_argument("--dataset", type=Path, default=DATASET)
     args = parser.parse_args()
-    cases, digest = load_scenarios()
+    cases, digest = load_scenarios(args.dataset)
     value = report(
         asyncio.run(run_scenarios(cases, dataset_sha256=digest, tracing=not args.trace_off))
     )

@@ -50,6 +50,9 @@ for task in tasks:
     if task["commit_hash"]:
         subprocess.run(["git", "-C", str(state_dir), "cat-file", "-e", task["commit_hash"] + "^{commit}"], check=True)
 next_task = next((task for task in tasks if not task["passes"] and all(by_id[dep]["passes"] for dep in task["dependencies"])), None)
+if state.get("p1", {}).get("closed"):
+    next_task = None
+    print("P1 closed with status:", state["p1"]["status"], "- await review; external NOT_RUN items remain explicitly recorded")
 print("Python:", sys.executable)
 print("State JSON/schema/dependencies: PASS")
 print("Completed:", ", ".join(task["task_id"] for task in tasks if task["passes"]) or "none")

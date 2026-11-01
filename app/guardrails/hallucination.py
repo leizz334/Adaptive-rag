@@ -58,7 +58,11 @@ class FaithfulnessChecker:
         tool_results_text: str,
     ) -> FaithfulnessResult:
         if not chunks and tool_results_text.strip() in {"", "[]", "{}", "(none)", "(无)"}:
-            return FaithfulnessResult(status="INSUFFICIENT_EVIDENCE", rationale="no_evidence")
+            return FaithfulnessResult(
+                status=FaithfulnessStatus.INSUFFICIENT_EVIDENCE,
+                supported=False,
+                rationale="no_evidence",
+            )
         evidence = "\n".join(f"[{c.chunk_id}] {c.content}" for c in chunks[:8]) or "(none)"
         try:
             response = await self._llm.generate(
@@ -79,8 +83,16 @@ class FaithfulnessChecker:
                 response_format={"type": "json_object"},
             )
         except Exception:
-            return FaithfulnessResult(status="JUDGE_ERROR", rationale="checker_unavailable")
+            return FaithfulnessResult(
+                status=FaithfulnessStatus.JUDGE_ERROR,
+                supported=False,
+                rationale="checker_unavailable",
+            )
         try:
             return parse_model(response.content, FaithfulnessResult)
         except (LLMOutputError, ValueError, TypeError, AttributeError):
-            return FaithfulnessResult(status="INVALID_OUTPUT", rationale="invalid_judge_output")
+            return FaithfulnessResult(
+                status=FaithfulnessStatus.INVALID_OUTPUT,
+                supported=False,
+                rationale="invalid_judge_output",
+            )

@@ -85,3 +85,18 @@ async def test_error_records_type_not_exception_content():
             raise ValueError("CANARY_SECRET")
     assert all(s.status == "error" for s in records[0])
     assert "CANARY_SECRET" not in json.dumps([run_payload(s) for s in records[0]], default=str)
+
+
+def test_export_boundary_rejects_accidental_raw_metadata():
+    records = []
+    with TraceRecorder(enabled=True, sink=records.append).turn(trace_id="t") as root:
+        root.metadata.update(
+            api_key="CANARY_SECRET",
+            nested=[{"password": "CANARY_NESTED"}],
+            session_ref="ORD10001",
+            count="13800138000",
+        )
+    payload = json.dumps([run_payload(s) for s in records[0]], default=str)
+    assert not any(
+        value in payload for value in ["CANARY_SECRET", "CANARY_NESTED", "ORD10001", "13800138000"]
+    )

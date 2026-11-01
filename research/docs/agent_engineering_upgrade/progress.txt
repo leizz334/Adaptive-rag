@@ -244,3 +244,35 @@ GIT_HEAD_AT_CHECK=ef8f5d8df32770fbc6d1bf60efc49b68bb2579c6
 BRANCH=codex/p1-tracing-evaluation-v2
 DELIVERY_COMMIT=ef8f5d8df32770fbc6d1bf60efc49b68bb2579c6
 NEXT_ACTION=Continue authorized P1 in task order; after F STOP for P1 review. No P2-P4.
+
+P1_CHECKPOINT action=start task=P1-F
+GIT_HEAD_AT_CHECK=c2e49b3d47c31baa815dc4bc7d4d298678d63684
+BRANCH=codex/p1-tracing-evaluation-v2
+NEXT_ACTION=Continue authorized P1 in task order; after F STOP for P1 review. No P2-P4.
+
+P1_CHECKPOINT action=finish task=P1-F
+GIT_HEAD_AT_CHECK=c2e49b3d47c31baa815dc4bc7d4d298678d63684
+BRANCH=codex/p1-tracing-evaluation-v2
+VALIDATION_JUNIT=evidence/P1-F-pytest.xml
+FILES=P1_REPORT.md, P1_TRACE_GUIDE.md, P1_JUDGE_MULTITURN.md, evidence/P1-final-validation.json, evidence/P1-extended-dataset-freeze.json, evidence/P1-F-offline-1.json, evidence/P1-F-offline-2.json, evidence/P1-F-offline-off.json, evidence/P1-F-extended-1.json, evidence/P1-F-extended-2.json, evidence/P1-F-extended-off.json
+NEXT_ACTION=Continue authorized P1 in task order; after F STOP for P1 review. No P2-P4.
+
+FINAL_P1_RECOVERY_SUMMARY
+ROLE=Coding Agent
+PHASE=P1
+TASK=P1-F
+PHASE_STATUS=PARTIAL_PASS; local implementation/verification finished, external NOT_RUN items retained. P1-F passes=false, not a fabricated full PASS.
+COMPLETED=Metadata-only bounded tracing and optional LangSmith adapter; real execution events; deterministic tool/argument/trajectory scoring; isolated committed-state oracle; five-state judge; multi-turn driver; frozen 14 seed plus 66 matrix cases (80 total, 18 correlated scenario families).
+ARCHITECTURE_DECISION=Only P1 authorized. No production DB, paid model calls, SaaS business-data upload, Memory V2, Experience Memory or later phase implementation.
+ARCHITECTURE_DECISION=Own SSE root/ContextVar lifetime in producer task; bounded queue and delivery ack; explicitly close route/ASGI body; metadata allowlist at all export/local-log boundaries; local raw evaluation evidence separate.
+RULING=Keep 14-case E delivery frozen; F adds independently predeclared 66 matrix variants and between-turn fixture state events to meet progressive ~80 coverage. Freeze before first extended run. Do not relabel failures or treat variants as independent samples.
+REVIEW=Two Important findings (SSE cleanup, existing audit/application preservation) reproduced RED and fixed GREEN; paired judge mask and export-boundary/report fixes also tested; independent focused re-grade 23 passed with no remaining Important findings.
+VALIDATION=Full suite 212 passed, 0 failures/errors, one existing LangChain warning. Ruff check/format and mypy 133 files passed. Exact outputs saved in evidence/P1-F-checks.json and P1-F-pytest.xml.
+OFFLINE_RESULTS=14-case 12/14, environment 14/14; 80-case 66/80 (82.5%), environment+observation 77/80. On/on/off normalized results match. Existing forbidden mutations were not observed; failures are redundant fallback and missing fresh pronoun-based reads.
+UNVERIFIED=Real-model quality, independent judge/human calibration, SaaS connectivity/credentials, PostgreSQL concurrency/load, uv resolver (binary missing). Existing production user_id authentication and other P0 risks remain explicitly documented.
+CHANGED_SCOPE=app/ tracing, service/route cleanup, tool evidence, session owner check, judge; eval/ contracts/scorers/environment/driver/datasets; necessary pyproject/lock metadata; tests/; P1 reports/evidence/state. Preserve user AGENTS.md changes and unrelated untracked files.
+GIT=Independent P1 branch; A-E delivery and metadata commits recorded. F local delivery and registration still to commit. Remote main unchanged at 2a12a62; target branch absent at preflight; dry-run failed connection reset. Actual authorized normal push follows final commit.
+P2_STARTED=NO
+P3_STARTED=NO
+P4_STARTED=NO
+NEXT_ACTION=Commit F only, register true hash and metadata, attempt safe push to origin/codex/p1-tracing-evaluation-v2, persist exact result, verify recovery and STOP awaiting P1 review. Never automatically resume F or start P2.

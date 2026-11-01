@@ -5,6 +5,7 @@ from pathlib import Path
 from sqlalchemy import select
 
 from app.config.settings import Settings
+from app.core.enums import OrderStatus
 from app.repositories.models import (
     AuditLogRow,
     OrderItemRow,
@@ -91,6 +92,18 @@ class BusinessEnvironment:
                 ]
                 result[key] = {v["order_id"]: v for v in values} if key == "orders" else values
             return result
+
+    async def change_order_states(self, changes: dict[str, str]):
+        """Synthetic between-turn environment events, never an Agent action."""
+        async with self.container.session_factory() as db:
+            for order_id, status in changes.items():
+                if status not in {s.value for s in OrderStatus}:
+                    raise ValueError("Invalid fixture order state")
+                row = await db.get(OrderRow, order_id)
+                if row is None:
+                    raise ValueError("Unknown fixture order")
+                row.status = status
+            await db.commit()
 
 
 def _scalar(value):

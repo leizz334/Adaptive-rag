@@ -286,13 +286,17 @@ async def _generate_answer(llm, query: str, evidence: str) -> str:
 
 async def eval_generation() -> dict:
     from app.config.settings import get_settings
-    from app.guardrails.hallucination import FaithfulnessChecker, FaithfulnessStatus
+    from app.guardrails.hallucination import (
+        FaithfulnessChecker,
+        FaithfulnessResult,
+        FaithfulnessStatus,
+    )
     from app.providers.deepseek import DeepSeekProvider
     from app.providers.embeddings import build_embedding_provider
     from app.retrieval.hybrid import HybridRetriever
     from app.retrieval.ingest import ingest_to_memory
     from app.retrieval.vector import VectorRetriever
-    from eval.judge_metrics import summarize_judgments
+    from eval.judge_metrics import paired_hallucination_drop, summarize_judgments
 
     settings = get_settings()
     if not settings.llm_configured:
@@ -314,7 +318,7 @@ async def eval_generation() -> dict:
     naive_hallucinated = 0
     rag_hallucinated = 0
     checked_hallucinated = 0
-    judgments = {"naive": [], "rag": [], "checked": []}
+    judgments: dict[str, list[FaithfulnessResult]] = {"naive": [], "rag": [], "checked": []}
 
     async def _one(row: dict) -> None:
         nonlocal naive_supported, rag_supported, checked_supported
@@ -373,15 +377,7 @@ async def eval_generation() -> dict:
     await asyncio.gather(*[_one(row) for row in rows])
     n = len(rows)
     summaries = {key: summarize_judgments(values) for key, values in judgments.items()}
-    naive_h = summaries["naive"]["hallucination_rate"]
-    checked_h = summaries["checked"]["hallucination_rate"]
-    drop = (
-        ((naive_h - checked_h) / naive_h)
-        if naive_h
-        and checked_h is not None
-        and summaries["naive"]["judged_coverage"] == summaries["checked"]["judged_coverage"]
-        else None
-    )
+    drop = paired_hallucination_drop(judgments["naive"], judgments["checked"])
     return {
         "n": n,
         "judge": "deepseek-faithfulness_v2",
@@ -545,14 +541,18 @@ def _resume_bullets(report: dict) -> list[str]:
             )
     gen = report.get("generation")
     if gen:
+
+        def percent(value):
+            return "N/A" if value is None else f"{value:.0%}"
+
         naive = gen["naive_no_context"]
         rag = gen["rag"]
         checked = gen["rag_plus_self_check"]
         bullets.append(
-            f"Faithfulness：无检索 {naive['faithfulness']:.0%} → RAG {rag['faithfulness']:.0%} → RAG+自纠错 {checked['faithfulness']:.0%}"
+            f"Faithfulness：无检索 {percent(naive['faithfulness'])} → RAG {percent(rag['faithfulness'])} → RAG+自纠错 {percent(checked['faithfulness'])}"
         )
         bullets.append(
-            f"幻觉率：无检索 {naive['hallucination_rate']:.0%} → RAG+自纠错 {checked['hallucination_rate']:.0%}，相对下降 {gen['hallucination_relative_drop']:.0%}"
+            f"幻觉率：无检索 {percent(naive['hallucination_rate'])} → RAG+自纠错 {percent(checked['hallucination_rate'])}，相对下降 {percent(gen['hallucination_relative_drop'])}"
         )
     e2e = report.get("e2e")
     if e2e:

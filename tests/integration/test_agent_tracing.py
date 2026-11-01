@@ -104,3 +104,50 @@ def test_langsmith_explicit_credentials_and_offline_payload():
     assert len(client.rows) == 1
     assert client.rows[0]["inputs"] == {} and client.rows[0]["outputs"] == {}
     assert client.rows[0]["parent_run_id"] is None
+
+
+def test_real_langsmith_sdk_serializes_to_offline_transport_only():
+    import requests
+    from langsmith import Client
+    from requests.adapters import BaseAdapter
+
+    captured = []
+
+    class OfflineTransport(BaseAdapter):
+        def send(self, request, **kwargs):
+            captured.append(request)
+            response = requests.Response()
+            response.status_code = 200
+            response._content = b"{}"
+            response.request = request
+            return response
+
+        def close(self):
+            pass
+
+    session = requests.Session()
+    session.mount("https://", OfflineTransport())
+    session.mount("http://", OfflineTransport())
+    sdk = Client(
+        api_url="https://offline.invalid",
+        api_key="synthetic",
+        session=session,
+        auto_batch_tracing=False,
+        hide_inputs=True,
+        hide_outputs=True,
+        omit_traced_runtime_info=True,
+    )
+    # Client installs a more-specific retry adapter; replace that exact prefix.
+    session.mount("https://offline.invalid/", OfflineTransport())
+    settings = Settings(_env_file=None, agent_langsmith_api_key="synthetic")
+    exporter = LangSmithExporter(settings, client=sdk)
+    with TraceRecorder(enabled=True, sink=exporter).turn(trace_id="CANARY_SECRET"):
+        pass
+    exporter.close()
+    assert exporter.errors == 0
+    posts = [r for r in captured if r.method == "POST"]
+    assert len(posts) == 1
+    body = json.loads(posts[0].body)
+    assert body["name"] == "chat.turn"
+    assert body["inputs"] == {} and body["outputs"] == {}
+    assert "CANARY_SECRET" not in json.dumps(body)

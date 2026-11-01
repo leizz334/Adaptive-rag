@@ -8,6 +8,9 @@ def score_goal(
     initial: dict, actual: dict, expected: EnvironmentExpectation, calls: list[ToolCall]
 ) -> dict:
     reasons = []
+    for key in ("refunds", "returns", "audit"):
+        if any(row not in actual[key] for row in initial[key]):
+            reasons.append("preexisting_row_changed:" + key)
     before, after = initial["orders"], actual["orders"]
     for order_id in set(before) | set(after):
         old, new = before.get(order_id), after.get(order_id)
