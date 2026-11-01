@@ -396,6 +396,12 @@ async def eval_generation() -> dict:
 async def eval_e2e() -> dict:
     import os
 
+    if os.environ.get("AGENT_EVAL_ALLOW_LIVE") != "true":
+        raise SystemExit(
+            "Legacy live E2E requires explicit AGENT_EVAL_ALLOW_LIVE=true; use eval.multiturn for isolated offline V2"
+        )
+    from app.observability.execution import capture_tools
+
     os.environ["RATE_LIMIT_PER_MINUTE"] = "1000"
     from app.config.settings import clear_settings_cache, get_settings
     from app.schemas.chat import ChatRequest
@@ -416,33 +422,32 @@ async def eval_e2e() -> dict:
     refuse_n = 0
     keyword_ok = 0
     keyword_n = 0
-    toolish_ok = 0
-    toolish_n = 0
+    executed_ok = 0
+    executed_n = 0
     details = []
     try:
         for row in rows:
             request = ChatRequest(message=row["query"], user_id=row.get("user_id") or "u_demo")
             started = time.perf_counter()
-            response = await container.chat_service.chat(request, trace_id=f"eval_{row['id']}")
+            with capture_tools() as tool_events:
+                response = await container.chat_service.chat(request, trace_id=f"eval_{row['id']}")
             total_ms = (time.perf_counter() - started) * 1000
             latencies.append(response.latency.total_ms or total_ms)
             intent_ms.append(response.latency.intent_ms)
             retrieval_ms.append(response.latency.retrieval_ms)
             llm_ms.append(response.latency.llm_ms)
             tool_ms.append(response.latency.tool_ms)
-            if row.get("expect_refused"):
-                refuse_n += 1
-                if response.refused:
-                    refuse_ok += 1
+            refuse_n += 1
+            if bool(row.get("expect_refused")) == response.refused:
+                refuse_ok += 1
             keywords = row.get("expect_keywords") or []
             if keywords:
                 keyword_n += 1
                 if _keyword_hit(response.answer, keywords):
                     keyword_ok += 1
-            if any(token in row["query"] for token in ("ORD", "库存", "取消")):
-                toolish_n += 1
-                if "ORD" in response.answer or response.pending_action or "库存" in response.answer:
-                    toolish_ok += 1
+            executed = [e for e in tool_events if e["status"] == "executed"]
+            executed_n += len(executed)
+            executed_ok += sum(e["success"] for e in executed)
             details.append(
                 {
                     "id": row["id"],
@@ -450,6 +455,7 @@ async def eval_e2e() -> dict:
                     "strategy": response.strategy.value if response.strategy else None,
                     "intent": response.intent.value if response.intent else None,
                     "latency_ms": round(latencies[-1], 1),
+                    "tool_events": tool_events,
                 }
             )
     finally:
@@ -458,7 +464,11 @@ async def eval_e2e() -> dict:
         "n": len(rows),
         "refuse_accuracy": round(refuse_ok / refuse_n, 4) if refuse_n else None,
         "keyword_hit": round(keyword_ok / keyword_n, 4) if keyword_n else None,
-        "tool_path_hit": round(toolish_ok / toolish_n, 4) if toolish_n else None,
+        "schema_version": "agent-eval-v2.1",
+        "tool_path_hit": None,
+        "tool_selection_accuracy": None,
+        "tool_execution_success": round(executed_ok / executed_n, 4) if executed_n else None,
+        "tool_evaluation_note": "Legacy rows have no gold trajectory; use V2 annotated cases. tool_path_hit retired, never used as task success.",
         "latency_ms": {
             "p50": round(percentile(latencies, 50), 1),
             "p95": round(percentile(latencies, 95), 1),

@@ -15,6 +15,7 @@ from app.core.exceptions import (
     ToolPermissionError,
 )
 from app.core.request_scope import get_db_session
+from app.observability.execution import record_tool
 from app.observability.metrics import TOOL_CALLS
 from app.observability.tracing import traced
 from app.repositories.idempotency import IdempotencyRepository
@@ -136,6 +137,7 @@ async def executor_node(
                     fp = _fingerprint(tool.name, step.arguments)
                     existing = await idempotency.get_if_matches(idem_key, fp)
                     if existing is not None:
+                        record_tool(tool.name, step.arguments, status="replayed")
                         results.append(
                             ToolResult(
                                 name=tool.name, success=True, output=existing, risk=tool.risk
@@ -154,6 +156,13 @@ async def executor_node(
             TOOL_CALLS.labels(tool=tool.name, status="ok").inc()
             results.append(result)
         except ToolPermissionError as exc:
+            record_tool(
+                tool.name,
+                step.arguments,
+                success=False,
+                status="denied",
+                failure_kind="permission_denied",
+            )
             TOOL_CALLS.labels(tool=tool.name, status="denied").inc()
             results.append(
                 ToolResult(name=tool.name, success=False, error=str(exc), risk=tool.risk)

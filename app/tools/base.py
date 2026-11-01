@@ -8,6 +8,7 @@ from pydantic import BaseModel, ValidationError
 
 from app.core.enums import ToolRisk
 from app.core.exceptions import InvalidRequestError, ToolExecutionError
+from app.observability.execution import record_tool
 from app.observability.tracing import traced
 from app.schemas.agent import ToolResult
 
@@ -71,12 +72,29 @@ class Tool:
     @traced("tool.execute", "tool")
     async def run(self, arguments: dict[str, Any], context: ToolContext) -> ToolResult:
         """Validate, then execute, mapping unexpected errors to a tool failure."""
-        parsed = self.parse(arguments)
         try:
-            return await self.execute(parsed, context)
+            parsed = self.parse(arguments)
         except InvalidRequestError:
+            record_tool(self.name, arguments, success=False, failure_kind="invalid_arguments")
+            raise
+        try:
+            result = await self.execute(parsed, context)
+            record_tool(
+                self.name,
+                parsed.model_dump(),
+                success=result.success,
+                failure_kind=None if result.success else "tool_result_failure",
+            )
+            return result
+        except InvalidRequestError:
+            record_tool(
+                self.name, parsed.model_dump(), success=False, failure_kind="business_rejected"
+            )
             raise
         except Exception as exc:
+            record_tool(
+                self.name, parsed.model_dump(), success=False, failure_kind="execution_error"
+            )
             raise ToolExecutionError(f"{self.name} failed") from exc
 
     async def execute(self, parsed: BaseModel, context: ToolContext) -> ToolResult:
