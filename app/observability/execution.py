@@ -17,7 +17,9 @@ def capture_tools():
         _events.reset(token)
 
 
-def record_tool(name, arguments, *, success=True, status="executed", failure_kind=None):
+def record_tool(
+    name, arguments, *, success=True, status="executed", failure_kind=None, output=None
+):
     events = _events.get()
     if events is None:
         return
@@ -31,5 +33,6 @@ def record_tool(name, arguments, *, success=True, status="executed", failure_kin
             success=success,
             status=status,
             failure_kind=failure_kind,
+            output=deepcopy(output or {}),
         )
     )

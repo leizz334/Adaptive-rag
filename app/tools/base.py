@@ -84,6 +84,7 @@ class Tool:
                 parsed.model_dump(),
                 success=result.success,
                 failure_kind=None if result.success else "tool_result_failure",
+                output=result.output,
             )
             return result
         except InvalidRequestError:

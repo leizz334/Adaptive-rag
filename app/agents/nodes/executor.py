@@ -137,7 +137,7 @@ async def executor_node(
                     fp = _fingerprint(tool.name, step.arguments)
                     existing = await idempotency.get_if_matches(idem_key, fp)
                     if existing is not None:
-                        record_tool(tool.name, step.arguments, status="replayed")
+                        record_tool(tool.name, step.arguments, status="replayed", output=existing)
                         results.append(
                             ToolResult(
                                 name=tool.name, success=True, output=existing, risk=tool.risk

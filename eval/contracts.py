@@ -16,6 +16,7 @@ class ToolCall(Contract):
     success: bool = True
     failure_kind: str | None = None
     turn: int = 0
+    output: dict[str, Any] = Field(default_factory=dict)
 
 
 class ToolExpectation(Contract):
@@ -37,6 +38,7 @@ class EnvironmentExpectation(Contract):
     refunds: int = 0
     returns: int = 0
     audit_actions: list[str] = Field(default_factory=list)
+    observations: list[ToolExpectation] = Field(default_factory=list)
 
 
 class EvaluationResult(Contract):
