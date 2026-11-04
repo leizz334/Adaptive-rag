@@ -178,6 +178,10 @@ class BudgetExceeded(Exception):
     """Raised before transport when the frozen request/token ceiling is reached."""
 
 
+class UsageAccountingError(Exception):
+    """A gateway response cannot provide trustworthy usage accounting."""
+
+
 async def probe(*, network_retry=False):
     config = read("experiment_config.json")
     result = read("results.json")
@@ -207,7 +211,7 @@ async def probe(*, network_retry=False):
         body = json.loads(request.content)
         reservation = len(request.content) + 1024 + body["max_tokens"]
         accounted = sum(
-            r.get("usage", {}).get("total_tokens", r["reserved_tokens"]) for r in records
+            (r.get("usage") or {}).get("total_tokens", r["reserved_tokens"]) for r in records
         )
         if len(records) >= config["max_http_attempts"] or (
             accounted + reservation > config["max_accounted_tokens"]
@@ -243,14 +247,33 @@ async def probe(*, network_retry=False):
         write("requests.json", records)
         if response.status_code == 200:
             payload = response.json()
+            raw_usage = payload.get("usage")
+            usage = (
+                {
+                    k: raw_usage.get(k)
+                    for k in ("prompt_tokens", "completion_tokens", "total_tokens")
+                }
+                if isinstance(raw_usage, dict)
+                else None
+            )
             record.update(
                 {
                     "model_reported": payload.get("model"),
-                    "usage": payload.get("usage"),
+                    "usage": usage,
                     "response_sha256": hashlib.sha256(response.content).hexdigest(),
                     "finish_reasons": [x.get("finish_reason") for x in payload.get("choices", [])],
                 }
             )
+            write("requests.json", records)
+            if not usage or not all(type(v) is int and v >= 0 for v in usage.values()):
+                raise UsageAccountingError("Missing or invalid gateway usage")
+            if usage["total_tokens"] != usage["prompt_tokens"] + usage["completion_tokens"]:
+                raise UsageAccountingError("Inconsistent gateway usage")
+            accounted = sum(
+                (r.get("usage") or {}).get("total_tokens", r["reserved_tokens"]) for r in records
+            )
+            if accounted > config["max_accounted_tokens"]:
+                raise UsageAccountingError("Gateway-reported usage exceeded frozen budget")
         write("requests.json", records)
 
     client = httpx.AsyncClient(
@@ -277,7 +300,7 @@ async def probe(*, network_retry=False):
                 "connected": connected,
                 "probe_expected_text_received": response.content.strip() == "BASELINE_OK",
                 "model_reported": records[-1].get("model_reported"),
-                "usage": response.usage.model_dump(),
+                "usage": records[-1]["usage"],
             }
         )
         result["status"] = "CONNECTED" if connected else "BLOCKED_CONNECTIVITY"
@@ -294,7 +317,11 @@ async def probe(*, network_retry=False):
         result["connectivity"].update(
             {"connected": False, "error_chain": exception_diagnostic(exc)}
         )
-        result["status"] = "BLOCKED_CONNECTIVITY"
+        result["status"] = (
+            "BLOCKED_ACCOUNTING"
+            if isinstance(exc, UsageAccountingError | BudgetExceeded)
+            else "BLOCKED_CONNECTIVITY"
+        )
     finally:
         if container:
             await container.aclose()

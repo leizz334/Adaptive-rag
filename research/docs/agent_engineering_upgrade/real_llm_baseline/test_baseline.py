@@ -132,3 +132,26 @@ def test_settings_never_use_production_business_services(monkeypatch):
     assert not s.agent_tracing_enabled and not s.mcp_enabled
     assert not s.redis_url and not s.qdrant_url and not s.embedding_configured
     assert not s.local_embedding_configured and not s.cross_encoder_configured
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "usage",
+    [
+        None,
+        {"total_tokens": 13},
+        {"prompt_tokens": 100001, "completion_tokens": 3, "total_tokens": 100004},
+    ],
+)
+async def test_unknown_invalid_or_over_budget_usage_cannot_pass_gate(setup_probe, usage):
+    install, calls = setup_probe
+    payload = {"model": "reported", "choices": [{"message": {"content": "BASELINE_OK"}}]}
+    if usage is not None:
+        payload["usage"] = usage
+    install(httpx.Response(200, json=payload))
+    await b.probe()
+    result = b.read("results.json")
+    assert result["status"] == "BLOCKED_ACCOUNTING"
+    assert result["connectivity"]["connected"] is False
+    assert result["connectivity"].get("usage") is None
+    assert len(calls) == 1

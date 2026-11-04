@@ -334,3 +334,15 @@ REQUEST_PATH=/chat/completions; no API config changes or extra paid attempts
 TASK_STATUS=REAL-B1 blocked/passes=false; REAL-B2 NOT_RUN/passes=false; REAL-B3 evidence in_progress
 VALIDATION=5 experiment-local mock tests passed; immutable source/dataset/report hashes and original P0/P1 state verified
 NEXT_ACTION=Commit failed-connectivity evidence; finalize report and 15 NOT_RUN placeholders, verify, checkpoint, safe push, STOP. No P2.
+
+REAL_B1_COMMIT=32b85301a1195cfa50ee6cf0754475327e9c0701
+REAL_BASELINE_RESULTS=15 selected; 0 evaluated; 15 NOT_RUN; all quality/safety metrics N/A; tokens unknown
+TOTAL_PROBE_WALL_MS=4428.880000021309
+FINAL_REPORT=real_llm_baseline/BASELINE_REPORT.md
+NEXT_ACTION=Verify report and immutable inputs, commit only experiments/state; ordinary push to authorized origin branch; record result and STOP before P2.
+
+REAL_BASELINE_REVIEW
+FINDING=Experiment-only usage stop gate accepted missing/over-budget usage; actual failed-run reports unaffected
+FIX=Validate raw usage counters/consistency/cumulative ceiling; BLOCKED_ACCOUNTING, unknown never measured zero
+VALIDATION=Three mock regression cases RED, full eight tests GREEN; no additional real requests
+NEXT_ACTION=Final review/checkpoint and actual authorized push; save outcome then STOP.

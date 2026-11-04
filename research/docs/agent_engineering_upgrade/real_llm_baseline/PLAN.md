@@ -15,8 +15,8 @@ Architecture decisions (preserve verbatim):
 - Reproducible means frozen inputs/code/scorers/config and a rerunnable protocol, not guaranteed identical outputs from a mutable gateway alias.
 
 Tasks:
-- [ ] REAL-B1: Recover P1 and freeze inputs/config; verify application selection of DeepSeekProvider in an isolated container; perform one read-only connectivity request and save actual HTTP status, returned model, usage, latency and redacted diagnostics. On failure record blocked baseline and stop evaluation.
-- [ ] REAL-B2 (requires REAL-B1 connectivity): Run exactly 15 preselected P1 scenarios sequentially using unchanged run_scenarios and score_tools/score_goal. Seven known reference failures plus eight controls. Add only experiment-local metering/provider adapter if needed, tested with mock HTTP (no paid calls in tests). Record original task/trajectory/argument/state/safety evidence and separate upstream/infrastructure errors.
+- [x] REAL-B1 attempted, BLOCKED (passes=false): P1 restored and inputs frozen; DeepSeekProvider selected. Initial sandbox permission failure followed by one explicitly elevated probe: HTTP 200 / JSONDecodeError, no valid completion/model/usage. Diagnostic checkpoint 32b85301a1195cfa50ee6cf0754475327e9c0701. Further paid calls stopped.
+- [ ] REAL-B2 NOT_RUN (requires REAL-B1 connectivity; passes=false): All 15 preselected cases, including seven reference failures, retained unchanged as NOT_RUN. No scenario adapter implemented after the failed gate; no offline substitution.
 - [ ] REAL-B3: Verify immutable P1 hashes, calculate metrics/limitations and required outputs, update persistent state without changing P0/P1 task records, task-scoped local commits, verify destination/branch/status then ordinary push. Save actual push status and stop for review.
 
 Validation: experiment-local offline tests for budgets, actual response model/usage and failures; existing multiturn/scoring/environment tests if adapter is needed; immutable source/dataset hashes; no secret values in staged artifacts; local artifact consistency. Do not rerun full P1 or call a judge API.
