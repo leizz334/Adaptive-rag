@@ -772,5 +772,82 @@
     "push_status": "SUCCESS",
     "p3_started": false,
     "p4_started": false
+  },
+  "p2_quality": {
+    "phase": "P2-Q",
+    "status": "in_progress",
+    "baseline_commit": "c45f509f5e4260c34818df9bf48f2807dd1338b4",
+    "tasks": [
+      {
+        "TASK_ID": "P2-QA",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [],
+        "acceptance_criteria": [
+          "Durable bounded request replay tested",
+          "Real interleaved paired evidence or explicit partial interruption",
+          "Frozen source/Gold/config and cost/latency/errors retained"
+        ],
+        "evidence": [],
+        "commit_hash": null,
+        "next_action": "Follow P2-Q_PLAN.md"
+      },
+      {
+        "TASK_ID": "P2-QB",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P2-QA"
+        ],
+        "acceptance_criteria": [
+          "All nine failures traced with first provable node",
+          "Evidence-backed Memory fixes only; corrupt inputs not inferred",
+          "Old12 unchanged regression; unseen dataset frozen before implementation"
+        ],
+        "evidence": [],
+        "commit_hash": null,
+        "next_action": "Follow P2-Q_PLAN.md"
+      },
+      {
+        "TASK_ID": "P2-QC",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P2-QB"
+        ],
+        "acceptance_criteria": [
+          "Necessary versus redundant tool calls justified",
+          "Fixed-Memory C0/C1 with owner7,longwindow,full80 and safety tests",
+          "Minimal Planner/Fallback changes, independent attribution"
+        ],
+        "evidence": [],
+        "commit_hash": null,
+        "next_action": "Follow P2-Q_PLAN.md"
+      },
+      {
+        "TASK_ID": "P2-QD",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P2-QC"
+        ],
+        "acceptance_criteria": [
+          "All pytest/Ruff/Mypy and four-source regression evidence",
+          "Unseen evaluation after implementation freeze; failures retained",
+          "Historical state/evidence and user files preserved; safe normal push"
+        ],
+        "evidence": [],
+        "commit_hash": null,
+        "next_action": "Follow P2-Q_PLAN.md"
+      }
+    ],
+    "budget": {
+      "http": 350,
+      "tokens": 300000,
+      "estimated_usd": 3,
+      "concurrency": 1
+    },
+    "p3_started": false,
+    "p4_started": false
   }
 }
