@@ -55,7 +55,7 @@ def build_graph(
     rewriter = QueryRewriter(llm)
     self_rag = SelfRAGLoop(retriever, reranker, rewriter, llm, settings)
     planner = Planner(llm, registry)
-    checker = FaithfulnessChecker(llm)
+    checker = FaithfulnessChecker(llm, max_tokens=settings.llm_judge_max_tokens)
     summarizer = ConversationSummarizer(llm)
 
     graph = StateGraph(AgentState)

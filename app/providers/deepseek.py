@@ -9,7 +9,7 @@ from collections.abc import AsyncIterator
 import httpx
 
 from app.config.settings import Settings
-from app.core.exceptions import LLMProviderError
+from app.core.exceptions import LLMProviderError, LLMTruncationError
 from app.core.retry import is_retryable_status, with_exponential_backoff
 from app.observability.tracing import traced
 from app.providers.base import LLMResponse
@@ -96,8 +96,11 @@ class DeepSeekProvider:
             body = response.json()
             try:
                 content = body["choices"][0]["message"]["content"]
+                finish_reason = body["choices"][0].get("finish_reason")
             except (KeyError, IndexError, TypeError) as exc:
                 raise LLMProviderError("DeepSeek response missing choices") from exc
+            if response_format and finish_reason == "length":
+                raise LLMTruncationError()
             usage_raw = body.get("usage") or {}
             usage = TokenUsage(
                 prompt_tokens=int(usage_raw.get("prompt_tokens") or 0),
@@ -105,7 +108,10 @@ class DeepSeekProvider:
                 total_tokens=int(usage_raw.get("total_tokens") or 0),
             )
             return LLMResponse(
-                content=content or "", usage=usage, model=self._settings.deepseek_model
+                content=content or "",
+                usage=usage,
+                model=body.get("model") or self._settings.deepseek_model,
+                finish_reason=finish_reason,
             )
 
         return await with_exponential_backoff(

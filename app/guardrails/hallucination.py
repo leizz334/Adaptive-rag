@@ -46,8 +46,9 @@ class FaithfulnessResult(BaseModel):
 
 
 class FaithfulnessChecker:
-    def __init__(self, llm: LLMProvider) -> None:
+    def __init__(self, llm: LLMProvider, *, max_tokens: int = 512) -> None:
         self._llm = llm
+        self._max_tokens = max_tokens
 
     async def check(
         self,
@@ -79,8 +80,14 @@ class FaithfulnessChecker:
                     },
                 ],
                 temperature=0.0,
-                max_tokens=256,
+                max_tokens=self._max_tokens,
                 response_format={"type": "json_object"},
+            )
+        except LLMOutputError:
+            return FaithfulnessResult(
+                status=FaithfulnessStatus.INVALID_OUTPUT,
+                supported=False,
+                rationale="invalid_or_truncated_judge_output",
             )
         except Exception:
             return FaithfulnessResult(

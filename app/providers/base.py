@@ -19,12 +19,19 @@ class LLMResponse:
         model: Identifier of the model that produced the response.
     """
 
-    __slots__ = ("content", "usage", "model")
+    __slots__ = ("content", "usage", "model", "finish_reason")
 
-    def __init__(self, content: str, usage: TokenUsage | None = None, model: str = "") -> None:
+    def __init__(
+        self,
+        content: str,
+        usage: TokenUsage | None = None,
+        model: str = "",
+        finish_reason: str | None = None,
+    ) -> None:
         self.content = content
         self.usage = usage or TokenUsage()
         self.model = model
+        self.finish_reason = finish_reason
 
 
 class LLMProvider(Protocol):

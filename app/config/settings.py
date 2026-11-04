@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     deepseek_model: str = "deepseek-chat"
     llm_timeout_seconds: float = 30.0
     llm_max_retries: int = 3
+    llm_judge_max_tokens: int = Field(default=512, ge=256, le=2048)
 
     embedding_api_key: SecretStr = SecretStr("")
     embedding_base_url: str = ""

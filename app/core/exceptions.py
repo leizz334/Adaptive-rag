@@ -81,6 +81,14 @@ class LLMOutputError(AppError):
         )
 
 
+class LLMTruncationError(LLMOutputError):
+    """A longer retry requires an explicit budget decision, never an automatic retry."""
+
+    def __init__(self) -> None:
+        super().__init__("DeepSeek structured output truncated (finish_reason=length)")
+        self.retryable = False
+
+
 class ToolExecutionError(AppError):
     def __init__(self, message: str) -> None:
         super().__init__(
