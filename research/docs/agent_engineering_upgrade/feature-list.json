@@ -494,5 +494,48 @@
     "authorized_branch": "codex/p1-tracing-evaluation-v2",
     "credential_account": "leizz334"
   },
-  "p0_session_policy": "User-authorized continuation: process one atomic P0 task at a time; validate, persist and checkpoint each task, then continue B through G in this Session. Initializer must not run again."
+  "p0_session_policy": "User-authorized continuation: process one atomic P0 task at a time; validate, persist and checkpoint each task, then continue B through G in this Session. Initializer must not run again.",
+  "real_llm_baseline": {
+    "authorization": "User explicitly authorized small paid baseline before P2; configured third-party gateway approved with provenance limitation",
+    "status": "blocked_connectivity",
+    "p2_started": false,
+    "tasks": [
+      {
+        "task_id": "REAL-B1",
+        "dependencies": [],
+        "status": "blocked",
+        "passes": false,
+        "acceptance_criteria": [
+          "Freeze P1 inputs/config, isolate infrastructure, verify actual provider choice and real read-only connectivity; preserve failure diagnostics"
+        ],
+        "validation_results": [
+          "Application selected DeepSeekProvider; key recognized; sandbox PermissionError; elevated gateway HTTP 200 non-JSON / JSONDecodeError; no valid completion/model/usage.",
+          "Experiment mock tests: initial budget test RED (1 failed,3 passed), added guard, GREEN 5 passed; no extra paid calls."
+        ]
+      },
+      {
+        "task_id": "REAL-B2",
+        "dependencies": [
+          "REAL-B1"
+        ],
+        "status": "not_run",
+        "passes": false,
+        "acceptance_criteria": [
+          "Run 15 unchanged P1 cases including seven reference failures within budgets, or explicitly record NOT_RUN on connectivity failure"
+        ],
+        "blocker": "REAL-B1 connectivity failed; stop per user instruction. All 15 selected cases NOT_RUN."
+      },
+      {
+        "task_id": "REAL-B3",
+        "dependencies": [
+          "REAL-B2"
+        ],
+        "status": "in_progress",
+        "passes": false,
+        "acceptance_criteria": [
+          "Save verified report/results/config/failures and exact local commits/push outcome; preserve original P0/P1 evidence; STOP before P2"
+        ]
+      }
+    ]
+  }
 }

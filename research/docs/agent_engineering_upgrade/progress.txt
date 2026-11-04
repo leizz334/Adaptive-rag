@@ -316,3 +316,21 @@ GIT_HEAD_AT_CHECK=a1911baa1d5a2c028a7a2f78c1d4cfdd22c7e083
 VALIDATION=p1_control.py check passed; P0 unchanged, P1-A through E completed, F remains partial_pass
 FILES=feature-list.json, progress.txt, P1_GIT_DELIVERY.md, P1_REPORT.md, evidence/P1-push-result.json
 NEXT_ACTION=Retry normal push to corrected origin after connectivity recovers, await P1 review. No P2.
+
+REAL_BASELINE_2026-11-04
+AUTHORIZATION=Real paid baseline only, no P2. User approves api.llm.pm gateway; underlying DeepSeek identity unverified.
+BASE_HEAD=f454fb0
+TASK=REAL-B1 in_progress
+DECISION=Existing run_scenarios llm_factory and per-case SQLite memory environment; no production changes or Gold changes.
+BUDGET=80 HTTP attempts, 100000 accounted tokens, concurrency=1, no retries, output<=1024.
+PLAN=real_llm_baseline/PLAN.md
+NEXT_ACTION=Run isolated read-only connectivity probe; if unavailable save diagnostics and stop cases.
+
+REAL_B1_BLOCKED_CHECKPOINT
+PROVIDER=DeepSeekProvider; key recognized=true; third-party provenance retained
+NETWORK=First attempt sandbox PermissionError errno13/winerror5. Explicit escalated probe then reached gateway.
+GATEWAY=HTTP200, JSONDecodeError; no valid model result, no reported model, no token usage
+REQUEST_PATH=/chat/completions; no API config changes or extra paid attempts
+TASK_STATUS=REAL-B1 blocked/passes=false; REAL-B2 NOT_RUN/passes=false; REAL-B3 evidence in_progress
+VALIDATION=5 experiment-local mock tests passed; immutable source/dataset/report hashes and original P0/P1 state verified
+NEXT_ACTION=Commit failed-connectivity evidence; finalize report and 15 NOT_RUN placeholders, verify, checkpoint, safe push, STOP. No P2.
