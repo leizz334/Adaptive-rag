@@ -1,0 +1,2558 @@
+{
+  "schema_version": 1,
+  "task": "P2-QB_READ_ONLY_FAILURE_ANALYSIS",
+  "status": "DIAGNOSED_CORRUPT_FROZEN_INPUTS_NO_MEMORY_FIX_JUSTIFIED",
+  "analysis_date": "2026-11-04",
+  "git_head_at_analysis": "2d54c37935c846d0b763f9155dde4f37f92d0b5d",
+  "scope": {
+    "owned_outputs": [
+      "p2_quality/P2-QB_FAILURE_ANALYSIS.md",
+      "p2_quality/qb_diagnosis.json"
+    ],
+    "production_edits": false,
+    "test_edits": false,
+    "evaluation_code_edits": false,
+    "new_api_calls": 0,
+    "unseen_dataset_inspected": false,
+    "historical_reports_modified": false
+  },
+  "provenance": {
+    "frozen_fixture": "research/docs/agent_engineering_upgrade/p2_evidence/heldout_reference.json",
+    "sha256": "f1200034a4048b20768ba2097bc408097f760dd7974ae8fe2ed093a15343fefc",
+    "initial_freeze_commit": "a9320d9391cf462335ab62f92cbb77dd80d4f6e1",
+    "initial_blob_sha256": "f1200034a4048b20768ba2097bc408097f760dd7974ae8fe2ed093a15343fefc",
+    "initial_blob_equals_current": true,
+    "reviewed_result": "research/docs/agent_engineering_upgrade/p2_evidence/P2-E-reviewed-results.json",
+    "reviewed_result_sha256": "ed6b518ae0e0fa121aee33bb8d07669092eba6f0b50372dac9da139cf1db9aa6",
+    "reviewed_source_commit": "40d86224e7f3f12b952a86a8aa6e1301c87199f2",
+    "reviewed_model_evaluation": "NOT_RUN",
+    "reviewed_paid_calls": 0,
+    "reviewed_paid_tokens": 0
+  },
+  "dataset_integrity": {
+    "scenario_count": 12,
+    "message_count": 32,
+    "messages_with_ascii_question_marks": 32,
+    "messages_with_non_ascii": 0,
+    "assertion": "Question marks are actual U+003F bytes, present in original committed JSON; not a terminal display/UTF-8 decoding problem. Unknown original authoring mechanism; intended utterances cannot be recovered from these bytes."
+  },
+  "statistics": {
+    "failed_cases_in_scope": 9,
+    "reviewed_arms": 8,
+    "failed_case_arm_pairs": 72,
+    "failing_turn_pairs_with_zero_actual_calls": 72,
+    "primary_root_counts": {
+      "OTHER/DATASET_CORRUPTION": 9
+    },
+    "confirmed_memory_defects": 0,
+    "confirmed_planner_defects": 0,
+    "insufficient_production_causal_attribution": 9,
+    "changed_state_cases_missing_fresh_observation": 3,
+    "executed_component_probes": 36,
+    "component_probe_failures": 0
+  },
+  "evidence_limits": [
+    "Original reviewed runs disabled tracing; span_count=0 and root_run_id=null. Tool events are retained; node states, selected context, generated answers and assistant history are not.",
+    "Focused component probes are newly executed offline SOURCE/TEST evidence, not historical runtime reconstruction. Synthetic user-only histories and deliberately supplied summary candidates cannot bypass the early return.",
+    "OFFLINE_RULE and OFFLINE_SCRIPTED share lexical/rule logic; eight arms are not independent model samples. No real model behavior is established.",
+    "A missing required call yields argument_accuracy=0 and wrong_arguments even when no tool was called. Do not classify these as nine executed wrong-argument failures.",
+    "The frozen Gold contract conflicts with question-mark-only current queries. Preserve historical FAIL; neither Gold repair nor semantic quality extrapolation is justified."
+  ],
+  "source_chain": [
+    {
+      "path": "eval/multiturn.py",
+      "lines": "56-64,83-110",
+      "finding": "Loader validates schema/duplicate IDs, not semantic/text integrity; raw turn.message passes unchanged to ChatRequest; state changes are harness operations."
+    },
+    {
+      "path": "app/services/chat_service.py",
+      "lines": "176-223",
+      "finding": "Loads owner-scoped session history/summary, constructs context, keeps raw user_query and separate resolved_query."
+    },
+    {
+      "path": "app/memory/context.py",
+      "lines": "80-140",
+      "finding": "M0 returns unchanged query; M1-M3 early return at110-118 for question-mark-only inputs before history/summary lookup124-133. No referential cue or direct entity survives in failing query."
+    },
+    {
+      "path": "app/agents/nodes/intent.py",
+      "lines": "32-60,77-101",
+      "finding": "Rule default FAQ_POLICY; scripted provider delegates to rule_based_intent."
+    },
+    {
+      "path": "app/agents/nodes/intent_overlay.py",
+      "lines": "33-118",
+      "finding": "Explicit ORD in prior messages triggers order inquiry; question marks alone trigger no overlay."
+    },
+    {
+      "path": "app/retrieval/adaptive.py",
+      "lines": "52-128",
+      "finding": "No explicit order ID or transactional cue leads to SINGLE policy/FAQ retrieval."
+    },
+    {
+      "path": "app/agents/graph.py",
+      "lines": "33-42,83-116",
+      "finding": "SINGLE goes retrieve_docs -> generate_answer, bypassing plan_tasks/execute_tools."
+    },
+    {
+      "path": "eval/memory_ablation.py",
+      "lines": "69-91,153-182",
+      "finding": "Scripted intent/router/planner use production rules; ablation explicitly tracing=False and offline/network forbidden."
+    },
+    {
+      "path": "eval/tool_scoring.py",
+      "lines": "25-42,60-90",
+      "finding": "Missing required calls lower argument metric, trajectory and selection jointly."
+    },
+    {
+      "path": "eval/multiturn.py",
+      "lines": "112-123,150-190",
+      "finding": "Missing tool metrics become multiple reasons; output keeps tool events but no node state."
+    },
+    {
+      "path": "eval/goal_scoring.py",
+      "lines": "42-54",
+      "finding": "Fresh-state observation is independently required in hr07-09; harness state changed but no matching later get_order event exists."
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "hr01",
+      "family_metadata_only": "heldout_recent_user_reference",
+      "failing_turn_zero_based": 1,
+      "query_verbatim_ascii": "???????????????",
+      "prior_user_history_verbatim_ascii": [
+        {
+          "turn": 0,
+          "role": "user",
+          "content": "?????? ORD10001 ????"
+        }
+      ],
+      "assistant_history": "NOT_PRESERVED_IN_REVIEWED_RESULT; do not reconstruct",
+      "expected_trajectory": {
+        "required": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001"
+            }
+          }
+        ],
+        "allowed": [
+          "get_order",
+          "track_shipment",
+          "search_knowledge"
+        ],
+        "max_calls": {
+          "get_order": 1,
+          "track_shipment": 1,
+          "search_knowledge": 2
+        }
+      },
+      "expected_fresh_observations": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10001",
+            "status": "shipped"
+          }
+        }
+      ],
+      "harness_state_changes": {},
+      "actual_failing_turn_tool_calls": [],
+      "actual_prior_tool_calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10001"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD10001"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        }
+      ],
+      "reviewed_reasons": [
+        "turn:1:missing_tool",
+        "turn:1:trajectory_invalid",
+        "turn:1:wrong_arguments"
+      ],
+      "first_provable_failure_node": "DATASET_INPUT (frozen fixture before ChatService/ContextBuilder)",
+      "first_production_runtime_failure_node": "NOT_PROVABLE_FROM_PRESERVED_NODE_TRACE; no node state/spans",
+      "source_supported_first_target_divergence": "ContextBuilder.build returns unchanged non-entity query before consulting recent history or summary; subsequent rule/scripted route is SINGLE, bypassing Planner",
+      "direct_failure": "Required get_order absent at failing turn; wrong_arguments and trajectory_invalid are dependent scorer consequences, not evidence of a malformed executed argument",
+      "root_classification": "OTHER/DATASET_CORRUPTION",
+      "secondary_classification": "INSUFFICIENT_EVIDENCE_FOR_MEMORY_OR_PLANNER_ATTRIBUTION",
+      "memory_attributable": false,
+      "planner_attributable": false,
+      "model_failure_proven": false,
+      "minimal_recommendation": "Preserve original fixture/Gold/results; validate semantically intact independently frozen cases and encoding preflight before considering production fixes; do not infer text or add question-mark order inference.",
+      "focused_component_probe": [
+        {
+          "mode": "M0",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M1",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M2",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M3",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        }
+      ],
+      "reviewed_arm_evidence": [
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "hr02",
+      "family_metadata_only": "heldout_recent_user_reference",
+      "failing_turn_zero_based": 1,
+      "query_verbatim_ascii": "?????????????",
+      "prior_user_history_verbatim_ascii": [
+        {
+          "turn": 0,
+          "role": "user",
+          "content": "????? ORD10002 ????"
+        }
+      ],
+      "assistant_history": "NOT_PRESERVED_IN_REVIEWED_RESULT; do not reconstruct",
+      "expected_trajectory": {
+        "required": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10002"
+            }
+          }
+        ],
+        "allowed": [
+          "get_order",
+          "track_shipment",
+          "search_knowledge"
+        ],
+        "max_calls": {
+          "get_order": 1,
+          "track_shipment": 1,
+          "search_knowledge": 2
+        }
+      },
+      "expected_fresh_observations": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10002",
+            "status": "delivered"
+          }
+        }
+      ],
+      "harness_state_changes": {},
+      "actual_failing_turn_tool_calls": [],
+      "actual_prior_tool_calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10002"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD10002"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        }
+      ],
+      "reviewed_reasons": [
+        "turn:1:missing_tool",
+        "turn:1:trajectory_invalid",
+        "turn:1:wrong_arguments"
+      ],
+      "first_provable_failure_node": "DATASET_INPUT (frozen fixture before ChatService/ContextBuilder)",
+      "first_production_runtime_failure_node": "NOT_PROVABLE_FROM_PRESERVED_NODE_TRACE; no node state/spans",
+      "source_supported_first_target_divergence": "ContextBuilder.build returns unchanged non-entity query before consulting recent history or summary; subsequent rule/scripted route is SINGLE, bypassing Planner",
+      "direct_failure": "Required get_order absent at failing turn; wrong_arguments and trajectory_invalid are dependent scorer consequences, not evidence of a malformed executed argument",
+      "root_classification": "OTHER/DATASET_CORRUPTION",
+      "secondary_classification": "INSUFFICIENT_EVIDENCE_FOR_MEMORY_OR_PLANNER_ATTRIBUTION",
+      "memory_attributable": false,
+      "planner_attributable": false,
+      "model_failure_proven": false,
+      "minimal_recommendation": "Preserve original fixture/Gold/results; validate semantically intact independently frozen cases and encoding preflight before considering production fixes; do not infer text or add question-mark order inference.",
+      "focused_component_probe": [
+        {
+          "mode": "M0",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M1",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M2",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M3",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        }
+      ],
+      "reviewed_arm_evidence": [
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "hr03",
+      "family_metadata_only": "heldout_recent_user_reference",
+      "failing_turn_zero_based": 1,
+      "query_verbatim_ascii": "????????????",
+      "prior_user_history_verbatim_ascii": [
+        {
+          "turn": 0,
+          "role": "user",
+          "content": "?????? ORD10003 ????"
+        }
+      ],
+      "assistant_history": "NOT_PRESERVED_IN_REVIEWED_RESULT; do not reconstruct",
+      "expected_trajectory": {
+        "required": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003"
+            }
+          }
+        ],
+        "allowed": [
+          "get_order",
+          "track_shipment",
+          "search_knowledge"
+        ],
+        "max_calls": {
+          "get_order": 1,
+          "track_shipment": 1,
+          "search_knowledge": 2
+        }
+      },
+      "expected_fresh_observations": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10003",
+            "status": "paid"
+          }
+        }
+      ],
+      "harness_state_changes": {},
+      "actual_failing_turn_tool_calls": [],
+      "actual_prior_tool_calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10003"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD10003"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        }
+      ],
+      "reviewed_reasons": [
+        "turn:1:missing_tool",
+        "turn:1:trajectory_invalid",
+        "turn:1:wrong_arguments"
+      ],
+      "first_provable_failure_node": "DATASET_INPUT (frozen fixture before ChatService/ContextBuilder)",
+      "first_production_runtime_failure_node": "NOT_PROVABLE_FROM_PRESERVED_NODE_TRACE; no node state/spans",
+      "source_supported_first_target_divergence": "ContextBuilder.build returns unchanged non-entity query before consulting recent history or summary; subsequent rule/scripted route is SINGLE, bypassing Planner",
+      "direct_failure": "Required get_order absent at failing turn; wrong_arguments and trajectory_invalid are dependent scorer consequences, not evidence of a malformed executed argument",
+      "root_classification": "OTHER/DATASET_CORRUPTION",
+      "secondary_classification": "INSUFFICIENT_EVIDENCE_FOR_MEMORY_OR_PLANNER_ATTRIBUTION",
+      "memory_attributable": false,
+      "planner_attributable": false,
+      "model_failure_proven": false,
+      "minimal_recommendation": "Preserve original fixture/Gold/results; validate semantically intact independently frozen cases and encoding preflight before considering production fixes; do not infer text or add question-mark order inference.",
+      "focused_component_probe": [
+        {
+          "mode": "M0",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M1",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M2",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M3",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        }
+      ],
+      "reviewed_arm_evidence": [
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "hr04",
+      "family_metadata_only": "heldout_older_user_reference",
+      "failing_turn_zero_based": 7,
+      "query_verbatim_ascii": "?????????????????",
+      "prior_user_history_verbatim_ascii": [
+        {
+          "turn": 0,
+          "role": "user",
+          "content": "?????? ORD10001 ????"
+        },
+        {
+          "turn": 1,
+          "role": "user",
+          "content": "???"
+        },
+        {
+          "turn": 2,
+          "role": "user",
+          "content": "???"
+        },
+        {
+          "turn": 3,
+          "role": "user",
+          "content": "???"
+        },
+        {
+          "turn": 4,
+          "role": "user",
+          "content": "???"
+        },
+        {
+          "turn": 5,
+          "role": "user",
+          "content": "???"
+        },
+        {
+          "turn": 6,
+          "role": "user",
+          "content": "??"
+        }
+      ],
+      "assistant_history": "NOT_PRESERVED_IN_REVIEWED_RESULT; do not reconstruct",
+      "expected_trajectory": {
+        "required": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001"
+            }
+          }
+        ],
+        "allowed": [
+          "get_order",
+          "track_shipment",
+          "search_knowledge"
+        ],
+        "max_calls": {
+          "get_order": 1,
+          "track_shipment": 1,
+          "search_knowledge": 2
+        }
+      },
+      "expected_fresh_observations": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10001",
+            "status": "shipped"
+          }
+        }
+      ],
+      "harness_state_changes": {},
+      "actual_failing_turn_tool_calls": [],
+      "actual_prior_tool_calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10001"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD10001"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        }
+      ],
+      "reviewed_reasons": [
+        "turn:7:missing_tool",
+        "turn:7:trajectory_invalid",
+        "turn:7:wrong_arguments"
+      ],
+      "first_provable_failure_node": "DATASET_INPUT (frozen fixture before ChatService/ContextBuilder)",
+      "first_production_runtime_failure_node": "NOT_PROVABLE_FROM_PRESERVED_NODE_TRACE; no node state/spans",
+      "source_supported_first_target_divergence": "ContextBuilder.build returns unchanged non-entity query before consulting recent history or summary; subsequent rule/scripted route is SINGLE, bypassing Planner",
+      "direct_failure": "Required get_order absent at failing turn; wrong_arguments and trajectory_invalid are dependent scorer consequences, not evidence of a malformed executed argument",
+      "root_classification": "OTHER/DATASET_CORRUPTION",
+      "secondary_classification": "INSUFFICIENT_EVIDENCE_FOR_MEMORY_OR_PLANNER_ATTRIBUTION",
+      "memory_attributable": false,
+      "planner_attributable": false,
+      "model_failure_proven": false,
+      "minimal_recommendation": "Preserve original fixture/Gold/results; validate semantically intact independently frozen cases and encoding preflight before considering production fixes; do not infer text or add question-mark order inference.",
+      "focused_component_probe": [
+        {
+          "mode": "M0",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M1",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M2",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M3",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        }
+      ],
+      "reviewed_arm_evidence": [
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:7:missing_tool",
+            "turn:7:trajectory_invalid",
+            "turn:7:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:7:missing_tool",
+            "turn:7:trajectory_invalid",
+            "turn:7:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:7:missing_tool",
+            "turn:7:trajectory_invalid",
+            "turn:7:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:7:missing_tool",
+            "turn:7:trajectory_invalid",
+            "turn:7:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:7:missing_tool",
+            "turn:7:trajectory_invalid",
+            "turn:7:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:7:missing_tool",
+            "turn:7:trajectory_invalid",
+            "turn:7:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:7:missing_tool",
+            "turn:7:trajectory_invalid",
+            "turn:7:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:7:missing_tool",
+            "turn:7:trajectory_invalid",
+            "turn:7:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "hr05",
+      "family_metadata_only": "heldout_explicit_correction",
+      "failing_turn_zero_based": 2,
+      "query_verbatim_ascii": "??????????????",
+      "prior_user_history_verbatim_ascii": [
+        {
+          "turn": 0,
+          "role": "user",
+          "content": "???? ORD10001 ????"
+        },
+        {
+          "turn": 1,
+          "role": "user",
+          "content": "????????? ORD10002 ????"
+        }
+      ],
+      "assistant_history": "NOT_PRESERVED_IN_REVIEWED_RESULT; do not reconstruct",
+      "expected_trajectory": {
+        "required": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10002"
+            }
+          }
+        ],
+        "allowed": [
+          "get_order",
+          "track_shipment",
+          "search_knowledge"
+        ],
+        "max_calls": {
+          "get_order": 1,
+          "track_shipment": 1,
+          "search_knowledge": 2
+        }
+      },
+      "expected_fresh_observations": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10002",
+            "status": "delivered"
+          }
+        }
+      ],
+      "harness_state_changes": {},
+      "actual_failing_turn_tool_calls": [],
+      "actual_prior_tool_calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10001"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD10001"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        },
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10002"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 1
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD10002"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 1
+        }
+      ],
+      "reviewed_reasons": [
+        "turn:2:missing_tool",
+        "turn:2:trajectory_invalid",
+        "turn:2:wrong_arguments"
+      ],
+      "first_provable_failure_node": "DATASET_INPUT (frozen fixture before ChatService/ContextBuilder)",
+      "first_production_runtime_failure_node": "NOT_PROVABLE_FROM_PRESERVED_NODE_TRACE; no node state/spans",
+      "source_supported_first_target_divergence": "ContextBuilder.build returns unchanged non-entity query before consulting recent history or summary; subsequent rule/scripted route is SINGLE, bypassing Planner",
+      "direct_failure": "Required get_order absent at failing turn; wrong_arguments and trajectory_invalid are dependent scorer consequences, not evidence of a malformed executed argument",
+      "root_classification": "OTHER/DATASET_CORRUPTION",
+      "secondary_classification": "INSUFFICIENT_EVIDENCE_FOR_MEMORY_OR_PLANNER_ATTRIBUTION",
+      "memory_attributable": false,
+      "planner_attributable": false,
+      "model_failure_proven": false,
+      "minimal_recommendation": "Preserve original fixture/Gold/results; validate semantically intact independently frozen cases and encoding preflight before considering production fixes; do not infer text or add question-mark order inference.",
+      "focused_component_probe": [
+        {
+          "mode": "M0",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M1",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M2",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M3",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        }
+      ],
+      "reviewed_arm_evidence": [
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "hr06",
+      "family_metadata_only": "heldout_explicit_switch",
+      "failing_turn_zero_based": 2,
+      "query_verbatim_ascii": "???????????????",
+      "prior_user_history_verbatim_ascii": [
+        {
+          "turn": 0,
+          "role": "user",
+          "content": "???? ORD10003 ????"
+        },
+        {
+          "turn": 1,
+          "role": "user",
+          "content": "??????? ORD10001 ????"
+        }
+      ],
+      "assistant_history": "NOT_PRESERVED_IN_REVIEWED_RESULT; do not reconstruct",
+      "expected_trajectory": {
+        "required": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001"
+            }
+          }
+        ],
+        "allowed": [
+          "get_order",
+          "track_shipment",
+          "search_knowledge"
+        ],
+        "max_calls": {
+          "get_order": 1,
+          "track_shipment": 1,
+          "search_knowledge": 2
+        }
+      },
+      "expected_fresh_observations": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10001",
+            "status": "shipped"
+          }
+        }
+      ],
+      "harness_state_changes": {},
+      "actual_failing_turn_tool_calls": [],
+      "actual_prior_tool_calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10003"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD10003"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        },
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10001"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 1
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD10001"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 1
+        }
+      ],
+      "reviewed_reasons": [
+        "turn:2:missing_tool",
+        "turn:2:trajectory_invalid",
+        "turn:2:wrong_arguments"
+      ],
+      "first_provable_failure_node": "DATASET_INPUT (frozen fixture before ChatService/ContextBuilder)",
+      "first_production_runtime_failure_node": "NOT_PROVABLE_FROM_PRESERVED_NODE_TRACE; no node state/spans",
+      "source_supported_first_target_divergence": "ContextBuilder.build returns unchanged non-entity query before consulting recent history or summary; subsequent rule/scripted route is SINGLE, bypassing Planner",
+      "direct_failure": "Required get_order absent at failing turn; wrong_arguments and trajectory_invalid are dependent scorer consequences, not evidence of a malformed executed argument",
+      "root_classification": "OTHER/DATASET_CORRUPTION",
+      "secondary_classification": "INSUFFICIENT_EVIDENCE_FOR_MEMORY_OR_PLANNER_ATTRIBUTION",
+      "memory_attributable": false,
+      "planner_attributable": false,
+      "model_failure_proven": false,
+      "minimal_recommendation": "Preserve original fixture/Gold/results; validate semantically intact independently frozen cases and encoding preflight before considering production fixes; do not infer text or add question-mark order inference.",
+      "focused_component_probe": [
+        {
+          "mode": "M0",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M1",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M2",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M3",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        }
+      ],
+      "reviewed_arm_evidence": [
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "turn:2:missing_tool",
+            "turn:2:trajectory_invalid",
+            "turn:2:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "hr07",
+      "family_metadata_only": "heldout_changed_state",
+      "failing_turn_zero_based": 1,
+      "query_verbatim_ascii": "????????????????",
+      "prior_user_history_verbatim_ascii": [
+        {
+          "turn": 0,
+          "role": "user",
+          "content": "???? ORD10001 ????"
+        }
+      ],
+      "assistant_history": "NOT_PRESERVED_IN_REVIEWED_RESULT; do not reconstruct",
+      "expected_trajectory": {
+        "required": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001"
+            }
+          }
+        ],
+        "allowed": [
+          "get_order",
+          "track_shipment",
+          "search_knowledge"
+        ],
+        "max_calls": {
+          "get_order": 1,
+          "track_shipment": 1,
+          "search_knowledge": 2
+        }
+      },
+      "expected_fresh_observations": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10001",
+            "status": "delivered"
+          }
+        }
+      ],
+      "harness_state_changes": {
+        "ORD10001": "delivered"
+      },
+      "actual_failing_turn_tool_calls": [],
+      "actual_prior_tool_calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10001"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD10001"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        }
+      ],
+      "reviewed_reasons": [
+        "missing_observation:get_order",
+        "turn:1:missing_tool",
+        "turn:1:trajectory_invalid",
+        "turn:1:wrong_arguments"
+      ],
+      "first_provable_failure_node": "DATASET_INPUT (frozen fixture before ChatService/ContextBuilder)",
+      "first_production_runtime_failure_node": "NOT_PROVABLE_FROM_PRESERVED_NODE_TRACE; no node state/spans",
+      "source_supported_first_target_divergence": "ContextBuilder.build returns unchanged non-entity query before consulting recent history or summary; subsequent rule/scripted route is SINGLE, bypassing Planner",
+      "direct_failure": "Required get_order absent at failing turn; wrong_arguments and trajectory_invalid are dependent scorer consequences, not evidence of a malformed executed argument",
+      "root_classification": "OTHER/DATASET_CORRUPTION",
+      "secondary_classification": "INSUFFICIENT_EVIDENCE_FOR_MEMORY_OR_PLANNER_ATTRIBUTION",
+      "memory_attributable": false,
+      "planner_attributable": false,
+      "model_failure_proven": false,
+      "minimal_recommendation": "Preserve original fixture/Gold/results; validate semantically intact independently frozen cases and encoding preflight before considering production fixes; do not infer text or add question-mark order inference.",
+      "focused_component_probe": [
+        {
+          "mode": "M0",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M1",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M2",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M3",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        }
+      ],
+      "reviewed_arm_evidence": [
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "hr08",
+      "family_metadata_only": "heldout_changed_state",
+      "failing_turn_zero_based": 1,
+      "query_verbatim_ascii": "?????????????",
+      "prior_user_history_verbatim_ascii": [
+        {
+          "turn": 0,
+          "role": "user",
+          "content": "???? ORD10003 ????"
+        }
+      ],
+      "assistant_history": "NOT_PRESERVED_IN_REVIEWED_RESULT; do not reconstruct",
+      "expected_trajectory": {
+        "required": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003"
+            }
+          }
+        ],
+        "allowed": [
+          "get_order",
+          "track_shipment",
+          "search_knowledge"
+        ],
+        "max_calls": {
+          "get_order": 1,
+          "track_shipment": 1,
+          "search_knowledge": 2
+        }
+      },
+      "expected_fresh_observations": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10003",
+            "status": "shipped"
+          }
+        }
+      ],
+      "harness_state_changes": {
+        "ORD10003": "shipped"
+      },
+      "actual_failing_turn_tool_calls": [],
+      "actual_prior_tool_calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10003"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD10003"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        }
+      ],
+      "reviewed_reasons": [
+        "missing_observation:get_order",
+        "turn:1:missing_tool",
+        "turn:1:trajectory_invalid",
+        "turn:1:wrong_arguments"
+      ],
+      "first_provable_failure_node": "DATASET_INPUT (frozen fixture before ChatService/ContextBuilder)",
+      "first_production_runtime_failure_node": "NOT_PROVABLE_FROM_PRESERVED_NODE_TRACE; no node state/spans",
+      "source_supported_first_target_divergence": "ContextBuilder.build returns unchanged non-entity query before consulting recent history or summary; subsequent rule/scripted route is SINGLE, bypassing Planner",
+      "direct_failure": "Required get_order absent at failing turn; wrong_arguments and trajectory_invalid are dependent scorer consequences, not evidence of a malformed executed argument",
+      "root_classification": "OTHER/DATASET_CORRUPTION",
+      "secondary_classification": "INSUFFICIENT_EVIDENCE_FOR_MEMORY_OR_PLANNER_ATTRIBUTION",
+      "memory_attributable": false,
+      "planner_attributable": false,
+      "model_failure_proven": false,
+      "minimal_recommendation": "Preserve original fixture/Gold/results; validate semantically intact independently frozen cases and encoding preflight before considering production fixes; do not infer text or add question-mark order inference.",
+      "focused_component_probe": [
+        {
+          "mode": "M0",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M1",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M2",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M3",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        }
+      ],
+      "reviewed_arm_evidence": [
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "hr09",
+      "family_metadata_only": "heldout_changed_state",
+      "failing_turn_zero_based": 1,
+      "query_verbatim_ascii": "??????????????",
+      "prior_user_history_verbatim_ascii": [
+        {
+          "turn": 0,
+          "role": "user",
+          "content": "???? ORD10002 ????"
+        }
+      ],
+      "assistant_history": "NOT_PRESERVED_IN_REVIEWED_RESULT; do not reconstruct",
+      "expected_trajectory": {
+        "required": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10002"
+            }
+          }
+        ],
+        "allowed": [
+          "get_order",
+          "track_shipment",
+          "search_knowledge"
+        ],
+        "max_calls": {
+          "get_order": 1,
+          "track_shipment": 1,
+          "search_knowledge": 2
+        }
+      },
+      "expected_fresh_observations": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10002",
+            "status": "refunding"
+          }
+        }
+      ],
+      "harness_state_changes": {
+        "ORD10002": "refunding"
+      },
+      "actual_failing_turn_tool_calls": [],
+      "actual_prior_tool_calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10002"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD10002"
+          },
+          "status": "executed",
+          "success": true,
+          "failure_kind": null,
+          "turn": 0
+        }
+      ],
+      "reviewed_reasons": [
+        "missing_observation:get_order",
+        "turn:1:missing_tool",
+        "turn:1:trajectory_invalid",
+        "turn:1:wrong_arguments"
+      ],
+      "first_provable_failure_node": "DATASET_INPUT (frozen fixture before ChatService/ContextBuilder)",
+      "first_production_runtime_failure_node": "NOT_PROVABLE_FROM_PRESERVED_NODE_TRACE; no node state/spans",
+      "source_supported_first_target_divergence": "ContextBuilder.build returns unchanged non-entity query before consulting recent history or summary; subsequent rule/scripted route is SINGLE, bypassing Planner",
+      "direct_failure": "Required get_order absent at failing turn; wrong_arguments and trajectory_invalid are dependent scorer consequences, not evidence of a malformed executed argument",
+      "root_classification": "OTHER/DATASET_CORRUPTION",
+      "secondary_classification": "INSUFFICIENT_EVIDENCE_FOR_MEMORY_OR_PLANNER_ATTRIBUTION",
+      "memory_attributable": false,
+      "planner_attributable": false,
+      "model_failure_proven": false,
+      "minimal_recommendation": "Preserve original fixture/Gold/results; validate semantically intact independently frozen cases and encoding preflight before considering production fixes; do not infer text or add question-mark order inference.",
+      "focused_component_probe": [
+        {
+          "mode": "M0",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M1",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M2",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        },
+        {
+          "mode": "M3",
+          "query_unchanged": true,
+          "order_id": null,
+          "context_source": "none",
+          "needs_clarification": false,
+          "intent": "faq_policy",
+          "strategy": "single"
+        }
+      ],
+      "reviewed_arm_evidence": [
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_RULE",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M0",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M1",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M2",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        },
+        {
+          "mode": "M3",
+          "provider": "OFFLINE_SCRIPTED",
+          "status": "FAIL",
+          "reasons": [
+            "missing_observation:get_order",
+            "turn:1:missing_tool",
+            "turn:1:trajectory_invalid",
+            "turn:1:wrong_arguments"
+          ],
+          "actual_failing_turn_calls": [],
+          "span_count": 0,
+          "root_run_ids": [
+            null,
+            null
+          ]
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "command_environment": "Conda adaptive-rag python -B inline read-only JSON/git/source extraction and focused ContextBuilder/intent/router probes",
+    "results": [
+      "PASS: original git blob raw bytes equal current fixture; SHA256 matches frozen hash",
+      "PASS: all nine failures inspected in all eight reviewed arms, no failing-turn tool events",
+      "PASS: 36 focused component probes return unchanged query, no order reference, FAQ_POLICY/SINGLE",
+      "PASS: report and JSON cover all nine cases with expected and actual calls",
+      "No API/full application/evaluation run was performed by this diagnosis worker."
+    ],
+    "warning": "Existing LangChainPendingDeprecationWarning on import; probes completed successfully."
+  }
+}

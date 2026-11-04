@@ -1,0 +1,88 @@
+{
+  "schema_version": "unseen-freeze-v1",
+  "artifact": "research/docs/agent_engineering_upgrade/p2_quality/new_unseen.json",
+  "sha256": "a974c33ea360eee6fc3c92771298fecb3886ef9d57861cc65901af2eef715064",
+  "bytes": 12443,
+  "case_count": 16,
+  "turn_count": 31,
+  "frozen_at_utc": "2026-11-04T12:59:26.838934+00:00",
+  "authoring_source_commit": "2d54c37935c846d0b763f9155dde4f37f92d0b5d",
+  "source_sha256": {
+    "eval/multiturn.py": "7d0988603053e15d8f4101b3be3888cf92c48e4599a1d7971ea05bd902e3839a",
+    "eval/contracts.py": "24187e7f77535b84e6e29790c1201bfb56e256527ae38a6daed0c60b2b1d7eb9",
+    "eval/environment.py": "9a4a5990c0079937beaa7791b039e5899902985eab8361b031446a0187905f9b",
+    "eval/tool_scoring.py": "62946bc4afe29cafe9f3113fcc45ef7c5dd9f31e0d628e2aa828bc8eade158b6",
+    "eval/goal_scoring.py": "87696b8313bad6d33e90ef7777011e94d416b6a4c05711b2dee56f4d496532a0",
+    "app/services/seed.py": "708fd451b7ad7721b8bb680d6423a7b0fe0599e69c922341653b2369026c7e1d",
+    "app/tools/order_tools.py": "82f761eb6dce269f451fd3b818ee5fc7e38b80ced9c54a6e8a34bec1a054c90f",
+    "app/tools/logistics_tools.py": "9920c3119abe4bc6fd0f7b9a4bc03565141c6aa0bd99ec11d102b0f1ebbc818e",
+    "app/tools/knowledge_tools.py": "5480dfc60d7b87aeea8508c6075cd5eaa283296997dcae657f416a4ebbebdc0d",
+    "eval/dataset/agent_v2.json": "97045d20b42414cf5278ad32243d53adc734182443de5106b34b34be13ddcb38",
+    "eval/dataset/agent_v2_extended.json": "89005ffbcd721760e851f5b7f47eaabd13153adb7ee037e75cb65eb082535eb7",
+    "research/docs/agent_engineering_upgrade/p2_evidence/heldout_reference.json": "f1200034a4048b20768ba2097bc408097f760dd7974ae8fe2ed093a15343fefc"
+  },
+  "provenance": {
+    "independent_authoring": true,
+    "production_context_builder_inspected": false,
+    "production_planner_inspected": false,
+    "production_fallback_inspected": false,
+    "implementation_results_inspected": false,
+    "model_or_api_calls": 0,
+    "scenario_execution": "NOT_RUN",
+    "application_startup": "NOT_RUN",
+    "tuned_to_implementation": false,
+    "existing_inputs_reused": false,
+    "original_expected_oracle_modified": false,
+    "parent_disclosure": "Only aggregate counts, artifact paths, hashes and schema-validation status; case content and exact wording withheld until parent explicitly releases after implementation freeze.",
+    "sources_read": "AGENTS and project task state; evaluator schema, scorer and synthetic environment contracts; existing heldout schema; seeded fixture facts; read-tool contracts. Existing datasets are used only for overlap checks, never as templates for input text."
+  },
+  "gold_basis": {
+    "actor": "u_demo owns all three seeded orders; u_unseen_other owns none.",
+    "initial_order_statuses": {
+      "ORD10001": "shipped",
+      "ORD10002": "delivered",
+      "ORD10003": "paid"
+    },
+    "shipment_tracking_numbers": {
+      "ORD10001": "SF1234567890",
+      "ORD10002": "YT998877"
+    },
+    "state_events": "Only explicitly declared status changes are external fixture events. A successful live get_order observation of the new state is required.",
+    "minimal_read_contract": "Status-only questions require one get_order per requested target; actual shipment-event questions require one track_shipment. An unrelated read tool is not an allowed substitute or free extra call. General policy turns require search_knowledge, up to two calls with no overconstrained query wording.",
+    "negative_contract": "Missing or ambiguous referents and a new session allow no active tools, pending writes or mutations. A different actor reusing the session must receive INVALID_REQUEST. A foreign explicit-order read may reach the repository and must fail business_rejected without successful foreign output.",
+    "no_writes_authorized": true
+  },
+  "coverage": [
+    "recent user-history reference",
+    "explicit target switch",
+    "explicit correction",
+    "ambiguous referent",
+    "missing referent",
+    "fresh changed-state observation",
+    "new-session isolation",
+    "different-actor session rejection",
+    "foreign order permission",
+    "temporal general-policy negative",
+    "policy switch after order",
+    "actual shipment versus order status",
+    "reference across intervening policy"
+  ],
+  "validation": {
+    "status": "PASS",
+    "validated_at_utc": "2026-11-04T12:59:26.838934+00:00",
+    "method": "Unchanged eval.multiturn.load_scenarios Pydantic loader only, unique case IDs and input strings, UTF-8/non-ASCII integrity, zero exact input overlap with both original datasets and old heldout, fixture/expected-state consistency, read-only trajectory constraints and old-heldout SHA preservation.",
+    "case_count": 16,
+    "turn_count": 31,
+    "no_tool_turn_count": 4,
+    "expected_error_turn_count": 1,
+    "external_state_event_count": 1,
+    "scenario_execution": "NOT_RUN",
+    "network_calls": 0
+  },
+  "interpretation_limits": [
+    "These are synthetic authored checks; passing does not establish general model quality or production authentication.",
+    "Unchanged evaluator does not score answer prose; clarification negatives establish absence of unsupported reads rather than quality of clarification text.",
+    "No assistant-only antecedent injection is expressible in the unchanged Turn schema; no uncontrolled generated assistant mention is treated as a frozen fixture.",
+    "All unseen failures must be retained. Changing a scenario or oracle after first evaluation creates a new version and cannot overwrite this freeze."
+  ]
+}

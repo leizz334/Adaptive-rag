@@ -1,0 +1,166 @@
+{
+  "schema_version": "agent-scenarios-v2.1",
+  "labeling": "Independently authored synthetic reference checks frozen before implementation inspection or scenario execution. Gold follows user intent, public tool contracts and seeded fixture facts; no system answers or model outputs were used. New cases are authored checks, not a statistical population sample.",
+  "scenarios": [
+    {
+      "id": "nu01",
+      "family": "unseen_recent_reference",
+      "user_goal": "Resolve a singular recent user antecedent and read its current paid order state.",
+      "turns": [
+        {"message": "帮我核实一下 ORD10003 的订单状态。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10003"}}]}},
+        {"message": "这笔订单现在是什么状态？请重新查一下。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10003"}}]}}
+      ],
+      "expected": {"observations": [{"name": "get_order", "arguments": {"order_id": "ORD10003", "status": "paid"}}]}
+    },
+    {
+      "id": "nu02",
+      "family": "unseen_recent_reference",
+      "user_goal": "Resolve a demonstrative to a delivered order without substituting shipment tracking for order status.",
+      "turns": [
+        {"message": "我想知道 ORD10002 当前的订单状态。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10002"}}]}},
+        {"message": "刚说的那单，能再核对一遍订单状态吗？", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10002"}}]}}
+      ],
+      "expected": {"observations": [{"name": "get_order", "arguments": {"order_id": "ORD10002", "status": "delivered"}}]}
+    },
+    {
+      "id": "nu03",
+      "family": "unseen_status_reference",
+      "user_goal": "Resolve a shipped-order antecedent while keeping a status-only request to the order read tool.",
+      "turns": [
+        {"message": "先替我查查 ORD10001 的订单状态吧。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10001"}}]}},
+        {"message": "它现在的订单状态有变化吗？再读取一次就好。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10001"}}]}}
+      ],
+      "expected": {"observations": [{"name": "get_order", "arguments": {"order_id": "ORD10001", "status": "shipped"}}]}
+    },
+    {
+      "id": "nu04",
+      "family": "unseen_explicit_target_change",
+      "user_goal": "An explicit new target replaces the previous order and remains the referent of the following turn.",
+      "turns": [
+        {"message": "先核对 ORD10002 的订单状态。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10002"}}]}},
+        {"message": "接着换成 ORD10003，查它的订单状态。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10003"}}]}},
+        {"message": "现在这单的订单状态再帮我确认一次。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10003"}}]}}
+      ],
+      "expected": {"observations": [{"name": "get_order", "arguments": {"order_id": "ORD10003", "status": "paid"}}]}
+    },
+    {
+      "id": "nu05",
+      "family": "unseen_explicit_correction",
+      "user_goal": "A correction with a new explicit ID overrides the earlier target without reading both orders.",
+      "turns": [
+        {"message": "麻烦查看 ORD10003 的当前订单状态。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10003"}}]}},
+        {"message": "我刚才报错了，实际要查的是 ORD10001 的订单状态。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10001"}}]}}
+      ],
+      "expected": {"observations": [{"name": "get_order", "arguments": {"order_id": "ORD10001", "status": "shipped"}}]}
+    },
+    {
+      "id": "nu06",
+      "family": "unseen_ambiguous_reference",
+      "user_goal": "After an equally salient pair, an unspecified singular reference must not silently select either order.",
+      "turns": [
+        {"message": "请分别核对 ORD10001 和 ORD10003 的订单状态，两笔我都要看。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10001"}}, {"name": "get_order", "arguments": {"order_id": "ORD10003"}}], "max_calls": {"get_order": 2}}},
+        {"message": "那笔订单现在是什么状态？", "expected_pending": false, "expected_refused": false, "trajectory": {}}
+      ],
+      "expected": {}
+    },
+    {
+      "id": "nu07",
+      "family": "unseen_missing_reference",
+      "user_goal": "A fresh conversation with no identified order must not invent an antecedent or access an arbitrary order.",
+      "turns": [
+        {"message": "能替我重新查那张订单的状态吗？我还没有提供订单号。", "expected_pending": false, "expected_refused": false, "trajectory": {}}
+      ],
+      "expected": {}
+    },
+    {
+      "id": "nu08",
+      "family": "unseen_fresh_state",
+      "user_goal": "Re-read the referenced order after an external state event; a cached paid observation cannot satisfy the cancelled-state oracle.",
+      "turns": [
+        {"message": "替我读取 ORD10003 的订单状态。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10003"}}]}},
+        {"message": "过了一会儿了，这张订单此刻是什么状态？请查最新记录。", "state_changes": {"ORD10003": "cancelled"}, "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10003"}}]}}
+      ],
+      "expected": {"orders": {"ORD10003": "cancelled"}, "allowed_mutations": ["ORD10003"], "observations": [{"name": "get_order", "arguments": {"order_id": "ORD10003", "status": "cancelled"}}]}
+    },
+    {
+      "id": "nu09",
+      "family": "unseen_new_session_isolation",
+      "user_goal": "An antecedent in a previous session is unavailable to a fresh session even for the same synthetic user.",
+      "turns": [
+        {"message": "这一轮先查 ORD10002 的订单状态。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10002"}}]}},
+        {"message": "刚才那张订单现在处于什么状态？", "new_session": true, "expected_pending": false, "expected_refused": false, "trajectory": {}}
+      ],
+      "expected": {}
+    },
+    {
+      "id": "nu10",
+      "family": "unseen_owner_session_isolation",
+      "user_goal": "Reject reuse of a synthetic owner's session by a different actor before any referenced order access.",
+      "turns": [
+        {"message": "在这个会话里帮我看 ORD10001 的订单状态。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10001"}}]}},
+        {"message": "把那单当前的订单状态给我看看。", "user_id": "u_unseen_other", "expected_error": "INVALID_REQUEST", "trajectory": {}}
+      ],
+      "expected": {}
+    },
+    {
+      "id": "nu11",
+      "family": "unseen_foreign_order",
+      "user_goal": "An explicit order number does not grant an unrelated fixture actor access to an owned order.",
+      "user_id": "u_unseen_other",
+      "turns": [
+        {"message": "请读取 ORD10002 当前的订单状态给我。", "expected_pending": false, "expected_failures": ["business_rejected"], "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10002"}}]}}
+      ],
+      "expected": {}
+    },
+    {
+      "id": "nu12",
+      "family": "unseen_policy_negative",
+      "user_goal": "A general shipping-policy question with a temporal cue requires policy retrieval without order selection or tracking.",
+      "turns": [
+        {"message": "现在普通商品的配送时效规则是什么？我问的是通用政策。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "search_knowledge"}], "max_calls": {"search_knowledge": 2}}}
+      ],
+      "expected": {}
+    },
+    {
+      "id": "nu13",
+      "family": "unseen_policy_after_order",
+      "user_goal": "A general return-policy topic switch must not inherit an order target or start an after-sale application.",
+      "turns": [
+        {"message": "麻烦核对一下 ORD10001 的订单状态。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10001"}}]}},
+        {"message": "另外问个通用问题：定制商品适用七天无理由退货规则吗？只咨询政策。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "search_knowledge"}], "max_calls": {"search_knowledge": 2}}}
+      ],
+      "expected": {}
+    },
+    {
+      "id": "nu14",
+      "family": "unseen_shipment_reference",
+      "user_goal": "A shipment-events request must use the tracking tool, including when its order is supplied by a user antecedent.",
+      "turns": [
+        {"message": "我想查看 ORD10001 的快递物流轨迹。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "track_shipment", "arguments": {"order_id": "ORD10001"}}]}},
+        {"message": "这单的快递到哪里了？请再读取最新物流轨迹。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "track_shipment", "arguments": {"order_id": "ORD10001"}}]}}
+      ],
+      "expected": {"observations": [{"name": "track_shipment", "arguments": {"order_id": "ORD10001", "tracking_no": "SF1234567890"}}]}
+    },
+    {
+      "id": "nu15",
+      "family": "unseen_status_to_shipment",
+      "user_goal": "Keep the order antecedent while switching from order status to actual shipment events with the appropriate minimal read tool.",
+      "turns": [
+        {"message": "先读取 ORD10002 的订单状态让我确认。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10002"}}]}},
+        {"message": "接下来我要看这笔订单的快递物流轨迹，请查物流记录。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "track_shipment", "arguments": {"order_id": "ORD10002"}}]}}
+      ],
+      "expected": {"observations": [{"name": "track_shipment", "arguments": {"order_id": "ORD10002", "tracking_no": "YT998877"}}]}
+    },
+    {
+      "id": "nu16",
+      "family": "unseen_reference_after_policy",
+      "user_goal": "Recover the only user-supplied order after an intervening general policy question without treating policy as a new order fact.",
+      "turns": [
+        {"message": "我先确认 ORD10003 的订单状态，麻烦查一下。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10003"}}]}},
+        {"message": "顺便咨询一下，普通商品的七天无理由退货政策怎么规定？", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "search_knowledge"}], "max_calls": {"search_knowledge": 2}}},
+        {"message": "回到之前提到的那张订单，它此刻的订单状态是什么？请重新查询。", "expected_pending": false, "expected_refused": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10003"}}]}}
+      ],
+      "expected": {"observations": [{"name": "get_order", "arguments": {"order_id": "ORD10003", "status": "paid"}}]}
+    }
+  ]
+}
