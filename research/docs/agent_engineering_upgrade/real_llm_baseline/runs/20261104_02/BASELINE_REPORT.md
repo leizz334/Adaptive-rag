@@ -72,4 +72,4 @@ The run command refuses replay once evaluation_started_at exists. A future autho
 
 Run the offline integrity check with `conda run --no-capture-output -n adaptive-rag python -B research/docs/agent_engineering_upgrade/real_llm_baseline/runs/20261104_02/verify_results.py`. It makes no network calls.
 
-Only experiment/state changes are committed. Delivery hashes and actual push result are recorded in git_delivery.json and parent persistent state. **STOP for user review; do not automatically start P2 or issue more model requests.**
+Report delivery commit: `4919adf790a6b4677296da34e6b5372903c4352d`. Ordinary push to the authorized repository/feature branch succeeded (exit 0, e919f49..4919adf). This delivery registration is synchronized separately. Only experiment/state changes are committed. Exact delivery hashes and actual push result are recorded in git_delivery.json and parent persistent state. **STOP for user review; do not automatically start P2 or issue more model requests.**
