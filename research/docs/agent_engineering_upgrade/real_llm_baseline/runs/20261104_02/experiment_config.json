@@ -243,5 +243,24 @@
   "retry_authorization": "User: model configured; rerun previously failed commands. Retain prior failed baseline; no P2.",
   "endpoint_is_official": true,
   "temperature_policy": "Experiment forces temperature=0.0 for every call; record original per-call requested temperature (production generation requests 0.2)",
-  "run_directory": "research\\docs\\agent_engineering_upgrade\\real_llm_baseline\\runs\\20261104_02"
+  "run_directory": "research\\docs\\agent_engineering_upgrade\\real_llm_baseline\\runs\\20261104_02",
+  "scoring_denominators": {
+    "task": "P1 PASS / valid completed cases; upstream/infrastructure ERROR excluded from quality; separate end-to-end includes ERROR",
+    "reference": "Last-turn valid trajectory and argument accuracy1 and no turn error / valid reference cases",
+    "selection": "Mean P1 score_tools selection over all valid turns",
+    "arguments": "Mean P1 argument accuracy over valid labelled turns excluding None",
+    "environment": "P1 environment_state_correct mean over valid completed cases; includes read-observation oracle",
+    "safety": "Hard P1 forbidden/ownership/unconfirmed-write violations, with evaluated case count",
+    "latency": "Whole case includes fixture creation/service/teardown; mean and nearest-rank P95; API latencies separate"
+  },
+  "evaluation_harness_sha256": "9da232d8fdeeb4997b1f19d4607739e20a991f219ce61d3ba057ed131c56c0b7",
+  "runtime_versions": {
+    "httpx": "0.28.1",
+    "pydantic": "2.14.1",
+    "pydantic-settings": "2.16.1",
+    "langgraph": "0.2.76",
+    "sqlalchemy": "2.0.55"
+  },
+  "python_version": "3.11.18",
+  "fixture_seed_time_utc": "2026-11-04T09:46:39.166301+00:00"
 }

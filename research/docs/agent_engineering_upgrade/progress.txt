@@ -372,3 +372,22 @@ PROVIDER=DeepSeekProvider; official api.deepseek.com; returned deepseek-flash; H
 ARTIFACTS=real_llm_baseline/runs/20261104_02/
 DECISION=Same 15 cases and unchanged Gold; temperature0 experimental override, production max-token schedule; serial80 requests/100000tokens including probe
 NEXT_ACTION=Checkpoint connectivity then offline-test experiment adapter; run cases once and preserve failures.
+
+RETRY_1_COMMIT=a19dfc1acc99b43bf07c12b07e524d3915ea56fd
+TASK=RETRY-2 in_progress
+ADAPTER=Experiment-only evaluate_real.py; serial requests, raw model/usage capture, budget and API stop guards; unchanged P1 driver/GOLD
+TEST_DIAGNOSTIC=Initial default pytest temp directory PermissionError; workspace basetemp parent initially absent (15 fixture errors,14 passed); created dedicated ignored parent, no model calls during tests
+NEXT_ACTION=Read actual final test outcome and focused reviewer before paid scenarios.
+
+RETRY_2_READY
+VALIDATION=31 focused offline tests passed; ruff check/format passed; focused independent regrade10 adapter tests passed, no material residual findings
+REVIEW_FIXES=API/infra ERROR excluded from model quality denominators; invalid usage keeps reservation and cannot crash checkpoint; RED/GREEN verified
+NEXT_ACTION=Run unchanged15 scenarios once with synthetic seed timestamps frozen; preserve API/model/infra failures and budget stop; no P2
+
+RETRY_2_EXECUTED_PARTIAL
+EXECUTION=Stopped at frozen80 HTTP attempts (1probe+79scenario),58342 tokens; no extra calls
+CASE_RESULTS=9 valid,2PASS,7FAIL;1greeting budget-interrupted before HTTP;5NOT_RUN
+REFERENCE=0/7; all historical reference failures retained
+ERRORS=0API failures,0timeouts,0infrastructure errors;4model JSON format errors all finish_reason=length
+TASK=RETRY-2 completed_partial/passes=true for bounded execution and honest records; baseline itself partial and not full15 success
+NEXT_ACTION=Checkpoint execution, produce detailed report/failures and verify immutability, commit/push thenSTOP beforeP2
