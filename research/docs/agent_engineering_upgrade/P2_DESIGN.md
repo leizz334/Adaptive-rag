@@ -16,3 +16,5 @@ Architecture decisions (preserve verbatim):
 Approach: extend current SQL session + in-process context pipeline. A new external vector-memory service would add infrastructure and identity assumptions; blindly appending full history would waste budget and weaken provenance. Neither is necessary for the authorized minimum implementation.
 
 Unverified gates: six-case pre-P2 real supplement and paid M0–M3 comparisons require separate explicit cost authorization and new Run IDs; SaaS/production concurrency, trusted user authentication and true tokenizer/model-context limits remain outside this offline phase.
+
+Source-driven ruling after A diagnosis: the four256-token truncations are in the Faithfulness checker chain, not proven Intent/Router failures. The earlier classifier-budget proposal is superseded by a judge-only allowance and global structured truncation detection; Intent/Router caps remain unchanged. Architecture history above is retained verbatim.

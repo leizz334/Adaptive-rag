@@ -614,7 +614,7 @@
   },
   "p2": {
     "authorization": "User explicitly authorized P2-A through E continuous execution; no additional paid model requests; no P3/P4",
-    "status": "in_progress",
+    "status": "PARTIAL_PASS",
     "base_git_head": "3c373ca502e2e08b4a343d751500c7ce77b28415",
     "branch": "codex/p2-memory-context",
     "p1_status": "PARTIAL_PASS",
@@ -698,8 +698,8 @@
         "dependencies": [
           "P2-D"
         ],
-        "status": "in_progress",
-        "passes": false,
+        "status": "completed_offline_partial_quality",
+        "passes": true,
         "acceptance_criteria": [
           "Paired offline M0-M3, original seven and held-out with frozen Gold; repair and Memory effects separate",
           "Full safety/regression/check evidence; real arms NOT_RUN; prior baselines preserved",
@@ -708,11 +708,15 @@
         "validation_results": [
           "Initial paired rule/scripted8arms completed: original80 M0=66/80 vs M1/M2/M3=73/80;original7=0/7 vs7/7;heldout=2/12 vs3/12;long-window task remainsFAIL allarms butM2environment/args improve",
           "244full tests passed;mypy137files;Ruffpassed after analysis-scriptformat",
-          "Fresh review found two engineering regressions (generic policy temporal cue, M1window>20); preserve first results and fix separately before final new-output replay"
-        ]
+          "Fresh review found two engineering regressions (generic policy temporal cue, M1window>20); preserve first results and fix separately before final new-output replay",
+          "Final247tests,mypy137files,Ruffpassed;fresh review fixed two independent regressions, regrade14passed",
+          "Finalnewsource8arm replay completed with identical normalized outcomes,3280turnscores recomputed;66prior artifacts/frozenGold/heldout/oldstate preserved",
+          "PaidModel/JSON/Memory arms NOT_RUN;heldout9fail andPlannerlongwindowfail explicit;overallPARTIAL_PASS not fabricatedPASS"
+        ],
+        "quality_status": "PARTIAL"
       }
     ],
-    "next_action": "Checkpoint focused review fixes, then new-source offline replay and final regression/report/push.",
+    "next_action": "Commit verified final partial report/evidence, ordinary push to authorized P2 branch, record actual outcome and STOP; no paid calls or P3/P4.",
     "worktree": "D:/Code/Adaptive-rag/.worktrees/p2-memory-context",
     "heldout_sha256": "f1200034a4048b20768ba2097bc408097f760dd7974ae8fe2ed093a15343fefc",
     "review_fixes": {
@@ -722,7 +726,44 @@
         "M1 configured message window truncated at20"
       ],
       "scope": "Independent reviewer repros, not heldout tuning; raw initial results and Gold preserved",
-      "validation": "Independent RED then targeted GREEN; final new-output replay and full regression follow"
+      "validation": "Independent RED then targeted GREEN; final new-output replay and full regression follow",
+      "commit_hash": "40d86224e7f3f12b952a86a8aa6e1301c87199f2"
+    },
+    "implementation_complete": true,
+    "quality_status": "PARTIAL",
+    "passes": false,
+    "pass_semantics": "Task passes verify authorized engineering acceptance/evidence; they do not certify real-model quality. Overall P2 stays PARTIAL_PASS.",
+    "paid_api_calls": 0,
+    "new_paid_tokens": 0,
+    "real_memory_validation": "NOT_RUN",
+    "real_json_validation": "NOT_RUN",
+    "results": {
+      "offline_original80": {
+        "M0": "66/80",
+        "M1": "73/80",
+        "M2": "73/80",
+        "M3_synthetic": "73/80"
+      },
+      "offline_original7": {
+        "M0": "0/7",
+        "M1": "7/7",
+        "M2": "7/7",
+        "M3_synthetic": "7/7"
+      },
+      "heldout": {
+        "M0": "2/12",
+        "M1": "3/12",
+        "M2": "3/12",
+        "M3_synthetic": "3/12"
+      },
+      "observed_safety_violations": 0,
+      "full_tests": 247,
+      "remaining_gates": [
+        "Real six-case supplement and paid Memory/JSON ablations NOT_RUN without fee authorization",
+        "9/12 independent held-out tasks fail, retained without tuning",
+        "Long-window task fails unchanged Planner extra-call criterion despite M2 fresh read success",
+        "Trusted production authentication absent; M3 public disabled"
+      ]
     }
   }
 }
