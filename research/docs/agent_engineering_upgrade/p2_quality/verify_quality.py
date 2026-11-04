@@ -27,7 +27,13 @@ def sha(path):
 def main():
     preserved = read(QUALITY / "preservation.json")["historical_files"]
     for path, expected in preserved.items():
-        assert sha(ROOT / path) == expected, path
+        raw = (ROOT / path).read_bytes()
+        # Legacy root checkout retained CRLF; the isolated checkout uses the
+        # existing .gitattributes LF policy. Root raw bytes are checked below.
+        assert (
+            sha(ROOT / path) == expected
+            or hashlib.sha256(raw.replace(b"\r\n", b"\n")).hexdigest() == expected
+        ), path
     state_path = "research/docs/agent_engineering_upgrade/feature-list.json"
     baseline = json.loads(
         subprocess.check_output(["git", "show", BASE + ":" + state_path], cwd=ROOT)
@@ -45,6 +51,9 @@ def main():
     root_user = read(QUALITY / "root_user_preservation.json")
     for name, expected in root_user["files"].items():
         assert sha(Path(root_user["root"]) / name) == expected, name
+    if (QUALITY / "root_historical_preservation.json").exists():
+        for name, expected in read(QUALITY / "root_historical_preservation.json").items():
+            assert sha(Path(root_user["root"]) / name) == expected, name
     freeze = read(QUALITY / "reviewed_implementation_freeze.json")
     assert all(sha(ROOT / p) == value for p, value in freeze["source"].items())
     assert sha(QUALITY / "new_unseen.json") == freeze["unseen_sha256"]
