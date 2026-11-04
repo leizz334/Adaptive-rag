@@ -23,6 +23,7 @@ class AgentState(TypedDict, total=False):
     user_query: str
     resolved_query: str
     selected_context: SelectedContext
+    memory_managed: bool
     messages: list[ChatMessage]
     summary: str
     intent: IntentResult | None

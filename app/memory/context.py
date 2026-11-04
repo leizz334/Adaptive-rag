@@ -48,6 +48,7 @@ class SelectedContext:
     history: tuple[str, ...] = ()
     source: str = "none"
     summary: str = ""
+    max_chars: int = 1800
 
     def prompt_context(self, stage: str) -> str:
         if not self.order_id or stage not in {"planner", "generate"}:
@@ -61,6 +62,14 @@ class SelectedContext:
             value["selected_user_history"] = self.history
             if self.summary:
                 value["untrusted_summary"] = self.summary
+        while len(json.dumps(value, ensure_ascii=False)) > self.max_chars:
+            if value.get("selected_user_history"):
+                value["selected_user_history"] = value["selected_user_history"][1:]
+            elif value.get("untrusted_summary"):
+                value["untrusted_summary"] = value["untrusted_summary"][:-64]
+            else:
+                value = {"order_reference": self.order_id, "source": self.source}
+                break
         return json.dumps(value, ensure_ascii=False)
 
 
@@ -108,6 +117,7 @@ class ContextBuilder:
             history=selected,
             source=source,
             summary=summary[: self.settings.memory_context_max_chars],
+            max_chars=self.settings.memory_context_max_chars,
         )
 
 

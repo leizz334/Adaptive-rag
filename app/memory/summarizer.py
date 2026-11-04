@@ -9,6 +9,25 @@ from app.schemas.chat import ChatMessage
 
 
 class ConversationSummarizer:
+    @staticmethod
+    def merge_extractively(
+        previous: str, messages: list[ChatMessage], *, max_chars: int = 1800
+    ) -> str:
+        """Incremental bounded user excerpts; entities/provenance live outside this lossy text."""
+        from app.core.exceptions import GuardrailError
+        from app.guardrails.injection import detect_prompt_injection
+
+        excerpts = [previous] if previous else []
+        for message in messages:
+            if message.role != "user":
+                continue
+            try:
+                detect_prompt_injection(message.content)
+            except GuardrailError:
+                continue
+            excerpts.append(message.content[:240])
+        return "\n".join(excerpts)[-max_chars:]
+
     def __init__(self, llm: LLMProvider) -> None:
         self._llm = llm
 

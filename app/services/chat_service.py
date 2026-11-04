@@ -21,6 +21,7 @@ from app.core.ids import new_id
 from app.core.request_scope import request_session
 from app.infra.rate_limit import RateLimiter
 from app.memory.context import ContextBuilder, SelectedContext
+from app.memory.summary_state import prepare_summary
 from app.observability.metrics import REQUEST_LATENCY, REQUESTS, ROUTING, STAGE_LATENCY, TOKEN_USAGE
 from app.observability.tracing import TraceRecorder, trace_turn, traced
 from app.providers.base import LLMProvider
@@ -179,9 +180,16 @@ class ChatService:
     ) -> AgentState:
         confirmed_action = self._resolve_confirmation(request, session_id)
         sessions = SessionRepository(db)
-        await sessions.get_or_create(session_id, request.user_id)
+        session_row = await sessions.get_or_create(session_id, request.user_id)
         history = await sessions.recent_messages(session_id)
-        context = ContextBuilder(self._settings).build(request.message, history)
+        summary, summary_orders, summary_text = "", [], ""
+        if self._settings.memory_mode in {"M2", "M3"}:
+            history, summary, summary_orders, summary_text = await prepare_summary(
+                sessions, session_row, self._settings
+            )
+        context = ContextBuilder(self._settings).build(
+            request.message, history, summary_orders=summary_orders, summary=summary_text
+        )
         if confirmed_action is not None:
             context = SelectedContext(request.message)
         return {
@@ -192,7 +200,8 @@ class ChatService:
             "resolved_query": context.effective_query,
             "selected_context": context,
             "messages": history,
-            "summary": "",
+            "summary": summary,
+            "memory_managed": self._settings.memory_mode != "M0",
             "retrieved_chunks": [],
             "tool_results": [],
             "citations": [],
@@ -271,7 +280,7 @@ class ChatService:
         sessions = SessionRepository(db)
         await sessions.append_message(response.session_id, "user", request.message)
         await sessions.append_message(response.session_id, "assistant", response.answer)
-        if summary:
+        if summary or self._settings.memory_mode in {"M2", "M3"}:
             await sessions.save_summary(response.session_id, summary)
 
     def _to_response(

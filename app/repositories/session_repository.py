@@ -39,6 +39,41 @@ class SessionRepository:
         if row is not None:
             row.updated_at = utcnow()
 
+    async def recent_message_rows(self, session_id: str, *, limit: int = 8) -> list[MessageRow]:
+        rows = (
+            (
+                await self._session.execute(
+                    select(MessageRow)
+                    .where(MessageRow.session_id == session_id)
+                    .order_by(MessageRow.id.desc())
+                    .limit(limit)
+                )
+            )
+            .scalars()
+            .all()
+        )
+        return list(reversed(rows))
+
+    async def messages_since(
+        self, session_id: str, *, after: int, before: int, limit: int = 200
+    ) -> list[MessageRow]:
+        rows = await self._session.execute(
+            select(MessageRow)
+            .where(
+                MessageRow.session_id == session_id, MessageRow.id > after, MessageRow.id < before
+            )
+            .order_by(MessageRow.id)
+            .limit(limit)
+        )
+        return list(rows.scalars().all())
+
+    async def message_by_id(self, session_id: str, message_id: int) -> MessageRow | None:
+        return await self._session.scalar(
+            select(MessageRow).where(
+                MessageRow.session_id == session_id, MessageRow.id == message_id
+            )
+        )
+
     async def save_summary(self, session_id: str, summary: str) -> None:
         row = await self._session.get(SessionRow, session_id)
         if row is not None:

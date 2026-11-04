@@ -23,6 +23,10 @@ async def memory_node(
         messages.append(ChatMessage(role="assistant", content=final_answer))
     tool_results = list(state.get("tool_results") or [])
     summary = state.get("summary") or ""
+    if state.get("memory_managed"):
+        # Pre-inference selective context/summary already budgeted; never replace fresh tools
+        # or a versioned summary with legacy post-answer truncation.
+        return {"messages": messages, "tool_results": tool_results, "summary": summary}
     messages, tool_results, level, summary = apply_compression(
         messages, tool_results, summary, settings
     )

@@ -1,0 +1,11 @@
+# M2 incremental summary and budget
+
+Default Memory mode is M2; M0/M1 remain explicit ablation controls. Session ownership is checked before any history or summary load. Existing SessionRow.summary stores a version1 JSON envelope: owner/session, revision, coverage_message_id, source_message_id, user-origin order_ids, bounded extractive text, expiry. No DB migration.
+
+Before inference, older messages are read incrementally in200-row batches until the recent-window boundary. Only safe user excerpts are merged; assistant factual claims do not establish entities. The latest user entity is retained separately from lossy text. Watermarks avoid reprocessing; multi-batch restoration cannot use a stale first-batch target. Source message/session/role/order correspondence is revalidated. Invalid, wrong-owner, future-watermark or expired summaries are discarded and rebuilt from owned raw records. Current explicit/recent entities take precedence; business state is always queried live.
+
+There are no summary LLM calls. Raw messages remain intact; summary updates persist only with the chat transaction. Invalid empty summaries can be cleared. Existing free-text summaries lack version/provenance and are conservatively rebuilt from raw history rather than trusted for entity resolution. Summaries remain untrusted data, never permissions or approval.
+
+Context copies are trimmed to memory_context_max_chars without cutting the structured entity; planner gets only an entity hint. Provider generate and stream preflight conservatively count the full serialized payload (system/messages/retrieved evidence/tool JSON/response format) plus128overhead and max_tokens output reservation. UTF-8-byte bounds are estimates, not actual tokenizer usage or a model-window certification. Oversize requests fail before HTTP without retries; critical current tools and confirmed arguments are not silently truncated.
+
+Tests: initial4fail/2pass; added paging regression reproduced wrong old entity, fixed with incremental batches. Final236full tests pass, mypy135files and Ruff pass. Restore/expiry/foreign summary/source conflict/long conversation/raw preservation and complete-input/output budget checks are offline. Real-model Memory/summary quality and production concurrency/load remain NOT_RUN.

@@ -2,10 +2,27 @@
 
 from __future__ import annotations
 
+import json
+
 from app.config.settings import Settings
 from app.core.enums import CompressionLevel
+from app.core.exceptions import LLMProviderError
 from app.schemas.chat import ChatMessage
 from app.schemas.retrieval import RetrievedChunk
+
+
+def enforce_request_budget(payload: dict, limit: int) -> int:
+    """Conservative UTF-8-byte bound for full input plus output reserve, not billed tokens."""
+    estimate = (
+        len(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
+        + 128
+        + int(payload.get("max_tokens", 0))
+    )
+    if estimate > limit:
+        raise LLMProviderError(
+            "Complete LLM request exceeds configured token budget", retryable=False
+        )
+    return estimate
 
 
 def estimate_tokens(text: str) -> int:

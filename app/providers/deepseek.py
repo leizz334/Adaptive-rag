@@ -11,6 +11,7 @@ import httpx
 from app.config.settings import Settings
 from app.core.exceptions import LLMProviderError, LLMTruncationError
 from app.core.retry import is_retryable_status, with_exponential_backoff
+from app.memory.budget import enforce_request_budget
 from app.observability.tracing import traced
 from app.providers.base import LLMResponse
 from app.schemas.common import TokenUsage
@@ -67,6 +68,7 @@ class DeepSeekProvider:
         }
         if response_format is not None:
             payload["response_format"] = response_format
+        enforce_request_budget(payload, self._settings.token_budget)
 
         @traced("llm.http_attempt", "chain")
         async def _call() -> LLMResponse:
@@ -141,6 +143,7 @@ class DeepSeekProvider:
         }
         if response_format is not None:
             payload["response_format"] = response_format
+        enforce_request_budget(payload, self._settings.token_budget)
 
         try:
             async with self._client.stream(

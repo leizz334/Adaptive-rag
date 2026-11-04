@@ -64,9 +64,10 @@ class Settings(BaseSettings):
 
     max_agent_steps: int = 8
     max_tool_calls: int = 6
-    memory_mode: Literal["M0", "M1", "M2", "M3"] = "M1"
+    memory_mode: Literal["M0", "M1", "M2", "M3"] = "M2"
     memory_recent_messages: int = Field(default=8, ge=2, le=100)
     memory_context_max_chars: int = Field(default=1800, ge=256, le=16000)
+    memory_summary_ttl_seconds: int = Field(default=86400, ge=1, le=2592000)
 
     rate_limit_per_minute: int = 60
     retrieval_cache_ttl_seconds: int = 60

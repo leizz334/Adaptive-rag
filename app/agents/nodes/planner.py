@@ -190,7 +190,9 @@ async def planner_node(state: AgentState, planner: Planner) -> dict:
     plan = await planner.create_plan(
         node_query(state),
         intent.label.value if intent else "faq_policy",
-        node_context(state, "planner") or state.get("summary") or "",
+        node_context(state, "planner")
+        if state.get("memory_managed")
+        else state.get("summary") or "",
     )
     write_steps = [
         step
