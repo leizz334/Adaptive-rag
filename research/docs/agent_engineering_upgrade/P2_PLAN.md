@@ -50,4 +50,4 @@ Files: P2_A_BASELINE_GATE.md, P2_JSON_RELIABILITY.md, p2_evidence/, app/provider
 - [x] Run frozen original seven + P1 fixtures + held-out + long-window scenarios under paired offline M0/M1/M2 and authorized synthetic M3; unchanged Gold/success scoring. Keep JSON-only arm distinct.
 - [x] Report task/reference/tool argument/selection/state/safety/input-estimate/latency and model-call accounting; real arms all NOT_RUN and billed P2 tokens=0.
 - [x] Full existing + new regressions, lint/format/type checks, immutable evidence and held-out hash checks, fresh branch review and required fixes.
-- [ ] P2_REPORT.md, P2_ABLATION.md, p2_evidence/results.json, failure/limits/paid supplement plan/state/true commits and actual normal push outcome. STOP before P3/P4.
+- [x] P2_REPORT.md, P2_ABLATION.md, p2_evidence/results.json, failure/limits/paid supplement plan/state/true commits and actual normal push outcome. STOP before P3/P4.
