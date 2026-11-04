@@ -1,0 +1,1023 @@
+{
+  "schema_version": "agent-scenarios-v2.1",
+  "labeling": "Independent held-out reference scenarios frozen before MemoryV2 implementation inspection and all scenario execution. User-only antecedents, synthetic fixture facts, unchanged evaluator contracts; no model answers or implementation output used for gold. Cases are authored checks, not statistically independent samples.",
+  "scenarios": [
+    {
+      "id": "hr01",
+      "family": "heldout_recent_user_reference",
+      "user_goal": "Resolve a fresh user-only antecedent and perform a live owned-order read.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "?????? ORD10001 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "???????????????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001",
+              "status": "shipped"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hr02",
+      "family": "heldout_recent_user_reference",
+      "user_goal": "Resolve a distinct demonstrative expression for a delivered fixture.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "????? ORD10002 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "?????????????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10002",
+              "status": "delivered"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hr03",
+      "family": "heldout_recent_user_reference",
+      "user_goal": "Resolve a distinct earlier-order expression for the paid fixture.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "?????? ORD10003 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "????????????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003",
+              "status": "paid"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hr04",
+      "family": "heldout_older_user_reference",
+      "user_goal": "Recover the single older user antecedent after it leaves the eight-message recent window, then read live state.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "?????? ORD10001 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "???",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "???",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "???",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "???",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "???",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "??",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "?????????????????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001",
+              "status": "shipped"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hr05",
+      "family": "heldout_explicit_correction",
+      "user_goal": "An explicit corrected user target replaces the prior reference and binds the following demonstrative.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "???? ORD10001 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "????????? ORD10002 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "??????????????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10002",
+              "status": "delivered"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hr06",
+      "family": "heldout_explicit_switch",
+      "user_goal": "A separate explicit topic switch supersedes an earlier paid-order target.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "???? ORD10003 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "??????? ORD10001 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "???????????????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001",
+              "status": "shipped"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hr07",
+      "family": "heldout_changed_state",
+      "user_goal": "A historical shipped state cannot replace the current delivered observation.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "???? ORD10001 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "????????????????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          },
+          "state_changes": {
+            "ORD10001": "delivered"
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "delivered",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [
+          "ORD10001"
+        ],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001",
+              "status": "delivered"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hr08",
+      "family": "heldout_changed_state",
+      "user_goal": "A historical paid state cannot replace the current shipped observation.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "???? ORD10003 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "?????????????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          },
+          "state_changes": {
+            "ORD10003": "shipped"
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "shipped"
+        },
+        "allowed_mutations": [
+          "ORD10003"
+        ],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003",
+              "status": "shipped"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hr09",
+      "family": "heldout_changed_state",
+      "user_goal": "A historical delivered state cannot replace the current refunding observation.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "???? ORD10002 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "??????????????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          },
+          "state_changes": {
+            "ORD10002": "refunding"
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "refunding",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [
+          "ORD10002"
+        ],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10002",
+              "status": "refunding"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hr10",
+      "family": "heldout_ambiguous_reference",
+      "user_goal": "Two equally introduced user order IDs do not authorize selecting an arbitrary order or a write.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "???? ORD10001 ? ORD10003??????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "?????????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": []
+      }
+    },
+    {
+      "id": "hr11",
+      "family": "heldout_new_session_boundary",
+      "user_goal": "A new session cannot inherit the prior session order antecedent.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "?????? ORD10002 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "?????????????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          },
+          "new_session": true
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10002",
+              "status": "delivered"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "hr12",
+      "family": "heldout_cross_user_boundary",
+      "user_goal": "Fixture identity change must reject reuse of another actor session before any tool disclosure.",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "?????? ORD10003 ????",
+          "expected_pending": false,
+          "expected_refused": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment",
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1,
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "????????????",
+          "user_id": "other",
+          "expected_error": "INVALID_REQUEST",
+          "trajectory": {}
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003",
+              "status": "paid"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

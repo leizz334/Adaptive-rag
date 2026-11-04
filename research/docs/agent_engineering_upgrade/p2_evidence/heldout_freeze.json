@@ -1,0 +1,52 @@
+{
+  "schema_version": "heldout-freeze-v1",
+  "artifact": "research/docs/agent_engineering_upgrade/p2_evidence/heldout_reference.json",
+  "sha256": "f1200034a4048b20768ba2097bc408097f760dd7974ae8fe2ed093a15343fefc",
+  "bytes": 26308,
+  "case_count": 12,
+  "frozen_at_utc": "2026-11-04T10:46:25.710877+00:00",
+  "original_source_baseline": "3c373ca502e2e08b4a343d751500c7ce77b28415",
+  "source_sha256": {
+    "eval/multiturn.py": "7d0988603053e15d8f4101b3be3888cf92c48e4599a1d7971ea05bd902e3839a",
+    "eval/contracts.py": "24187e7f77535b84e6e29790c1201bfb56e256527ae38a6daed0c60b2b1d7eb9",
+    "eval/environment.py": "8d112974d748335c7e0c5b853eb4721e0ff73a2acf92dba6d1d767c0b89f8d59",
+    "eval/tool_scoring.py": "62946bc4afe29cafe9f3113fcc45ef7c5dd9f31e0d628e2aa828bc8eade158b6",
+    "eval/goal_scoring.py": "87696b8313bad6d33e90ef7777011e94d416b6a4c05711b2dee56f4d496532a0",
+    "eval/dataset/agent_v2.json": "97045d20b42414cf5278ad32243d53adc734182443de5106b34b34be13ddcb38",
+    "eval/dataset/agent_v2_extended.json": "89005ffbcd721760e851f5b7f47eaabd13153adb7ee037e75cb65eb082535eb7",
+    "app/services/seed.py": "708fd451b7ad7721b8bb680d6423a7b0fe0599e69c922341653b2369026c7e1d"
+  },
+  "pre_execution_status": "NOT_RUN",
+  "implementation_inspected": false,
+  "used_for_tuning": false,
+  "gold_basis": "Seed ownership u_demo for all three synthetic orders; initial shipped/delivered/paid statuses; explicit between-turn changes are external fixture events, and live successful tool observations remain mandatory.",
+  "strictness": "Unchanged schema, loader, trajectory scorer and goal scorer. Exact required order_id arguments; maximum one get_order and track_shipment and two search_knowledge per read turn, matching original matrix caps. No pending actions, writes, refunds, returns or audit entries authorized; external state events allow only their declared order status mutation.",
+  "coverage": [
+    "recent user-only reference",
+    "older user-only reference beyond recent window",
+    "explicit correction",
+    "explicit topic switch",
+    "changed live state",
+    "ambiguous antecedent",
+    "new-session isolation",
+    "cross-user session rejection"
+  ],
+  "exclusions": {
+    "assistant_only": "Not encoded: unchanged Scenario/Turn schema cannot inject an assistant-only historical mention; relying on a generated assistant sentence would not freeze a deterministic fixture-independent antecedent."
+  },
+  "interpretation_limits": [
+    "Synthetic checks do not establish public identity authentication; user_id remains untrusted for public M3.",
+    "Original P1 PARTIAL_PASS and real baseline PARTIAL are unaffected.",
+    "Offline schema validation imports evaluator modules but never starts the application or executes scenarios."
+  ],
+  "validation": {
+    "status": "PASS",
+    "scope": "JSON bytes, unchanged load_scenarios Pydantic schema, uniqueness, unchanged scorer import compatibility, fixture constraints, negative-turn no-tool contracts, absence of followup overlap with original datasets",
+    "command": "conda run --no-capture-output -n adaptive-rag python - (offline artifact creation and schema validation stdin)",
+    "scenario_execution": "NOT_RUN",
+    "application_startup": "NOT_RUN",
+    "network_or_paid_calls": "NOT_RUN",
+    "model_downloads": "NOT_RUN",
+    "validated_at_utc": "2026-11-04T10:46:28.469750+00:00"
+  }
+}
