@@ -69,9 +69,11 @@ async def execute_with_fallback(
         if result.success:
             return result
         raise ToolExecutionError(result.error or f"{tool.name} returned success=false")
-    except ToolPermissionError:
+    except (ToolPermissionError, InvalidRequestError):
+        # A deterministic business/argument rejection cannot be repaired by
+        # asking another tool for the same protected entity.
         raise
-    except (AppError, InvalidRequestError) as exc:
+    except AppError as exc:
         last_error = str(exc)
         for fallback_name in READ_FALLBACKS.get(tool.name, []):
             if fallback_name not in registry.names():
@@ -89,7 +91,9 @@ async def execute_with_fallback(
                     }
                     TOOL_CALLS.labels(tool=fallback_name, status="fallback").inc()
                     return fb_result.model_copy(update={"output": merged})
-            except (AppError, InvalidRequestError):
+            except (ToolPermissionError, InvalidRequestError):
+                raise
+            except AppError:
                 continue
         raise
 

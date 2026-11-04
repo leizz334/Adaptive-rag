@@ -38,7 +38,7 @@ class Planner:
 
     async def create_plan(self, query: str, intent_label: str, summary: str) -> AgentPlan:
         skill = match_skill(query, intent_label)
-        allowed = _allowed_tools(skill, self._registry)
+        allowed = _allowed_tools(skill, self._registry, query)
         if isinstance(self._llm, OfflineLLMProvider):
             return (
                 skill_to_plan(skill, query, self._registry)
@@ -79,11 +79,34 @@ class Planner:
         return _knowledge_fallback(query, self._registry)
 
 
-def _allowed_tools(skill: dict | None, registry: ToolRegistry) -> set[str] | None:
+def _skill_tools(skill: dict, query: str) -> list[str]:
+    tools = list(skill.get("tools", []))
+    # The appended entity hint requests a fresh observation; it is not a new
+    # user request for status or shipment events.
+    requested = query.partition("（会话指代：")[0]
+    requested = re.sub(r"[\s?？!！。]+", "", requested)
+    # Positive recognition of a complete, narrow order-header request. Unknown
+    # wording or additional goals preserve shipment capability; a keyword such
+    # as 状态 alone cannot prove that shipment evidence is unnecessary.
+    status_only = re.fullmatch(
+        r"(?:(?:请|帮我|麻烦)?(?:查询|查看|查|看下|看看))?"
+        r"(?:我的)?(?:订单)?(?:ORD\d+|它|这单|那单|该订单|这个订单|那个订单)"
+        r"(?:(?:现在|当前|最新|目前)?(?:的)?(?:是)?(?:什么)?(?:状态|支付状态|发货状态)"
+        r"|(?:的)?金额(?:是多少|多少)?"
+        r"|(?:现在|当前)?(?:是否|有没有)?已?(?:支付|发货)(?:成功|了)?吗?)",
+        requested,
+        re.I,
+    )
+    if skill.get("name") == "order_tracking" and status_only:
+        tools = [name for name in tools if name != "track_shipment"]
+    return tools
+
+
+def _allowed_tools(skill: dict | None, registry: ToolRegistry, query: str = "") -> set[str] | None:
     if skill is None:
         return None
     names = set(registry.names())
-    allowed = {name for name in skill.get("tools", []) if name in names}
+    allowed = {name for name in _skill_tools(skill, query) if name in names}
     allowed.update(name for name in _ALWAYS_AVAILABLE if name in names)
     return allowed or None
 
@@ -110,7 +133,7 @@ def _sanitize_plan(
 
 def skill_to_plan(skill: dict, query: str, registry: ToolRegistry) -> AgentPlan:
     steps: list[PlanStep] = []
-    for index, tool_name in enumerate(skill.get("tools", []), start=1):
+    for index, tool_name in enumerate(_skill_tools(skill, query), start=1):
         if tool_name not in registry.names():
             continue
         steps.append(
