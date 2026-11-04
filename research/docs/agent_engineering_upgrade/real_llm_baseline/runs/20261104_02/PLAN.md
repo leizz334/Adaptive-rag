@@ -13,7 +13,7 @@ Architecture decisions (preserve verbatim):
 
 Tasks:
 - [x] RETRY-1: Restore P1 state; freeze new-run config; perform isolated application-provider connectivity check. Actual DeepSeekProvider request returned deepseek-flash, expected text, usage 46+15=61.
-- [ ] RETRY-2: Add minimal experiment-only metering adapter, validate offline budgets/error paths, run 15 frozen cases sequentially within limits, checkpoint actual evidence.
+- [x] RETRY-2 completed_partial (80-request cap reached;9 valid,1 budget-interrupted,5 NOT_RUN; failures preserved): Add minimal experiment-only metering adapter, validate offline budgets/error paths, run 15 frozen cases sequentially within limits, checkpoint actual evidence.
 - [ ] RETRY-3: Calculate original criteria, reference/selection/argument/environment/safety/latency/token/error metrics; preserve failures, verify immutable inputs, commit/push authorized records, STOP for review. No P2.
 
 Validation: mock transport budget/usage/API error guards; original multiturn/scoring regressions; immutable hash checks; secret scan; independent review before completion. No model judge calls or repeated paid runs.
