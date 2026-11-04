@@ -548,5 +548,51 @@
     "closed": true,
     "push_status": "SUCCESS",
     "report_commit": "13d8ee7303ef280ef777c177d3b8f91b44efdf87"
+  },
+  "real_llm_baseline_retries": {
+    "20261104_02": {
+      "authorization": "User: model configured; rerun previously failed commands. Retain prior failed baseline; no P2.",
+      "status": "in_progress",
+      "p2_started": false,
+      "directory": "research\\docs\\agent_engineering_upgrade\\real_llm_baseline\\runs\\20261104_02",
+      "baseline_git_head": "3908634fa71bc2d40343962116768d75e75fe92c",
+      "tasks": [
+        {
+          "task_id": "RETRY-1",
+          "dependencies": [],
+          "status": "completed",
+          "passes": true,
+          "acceptance_criteria": [
+            "Original failed evidence preserved; new configuration and same 15 samples frozen; actual isolated application DeepSeekProvider request succeeds with HTTP/model/usage recorded"
+          ],
+          "validation_results": [
+            "Official configured endpoint api.deepseek.com returned HTTP200, model deepseek-flash, expected text, 61 tokens; no business data connection"
+          ]
+        },
+        {
+          "task_id": "RETRY-2",
+          "dependencies": [
+            "RETRY-1"
+          ],
+          "status": "pending",
+          "passes": false,
+          "acceptance_criteria": [
+            "Experiment-only adapter tested offline; unchanged P1 scorer and 15-case dataset run in synthetic memory environments under fixed serial budget; partial results and all failures retained"
+          ]
+        },
+        {
+          "task_id": "RETRY-3",
+          "dependencies": [
+            "RETRY-2"
+          ],
+          "status": "pending",
+          "passes": false,
+          "acceptance_criteria": [
+            "Reports/metrics/failed cases/config/hash and test evidence verified; actual commits and push outcome saved; STOP before P2"
+          ]
+        }
+      ],
+      "next_action": "Checkpoint connectivity then implement/test minimal adapter and run selected cases once."
+    }
   }
 }
