@@ -21,6 +21,7 @@ from app.core.ids import new_id
 from app.core.request_scope import request_session
 from app.infra.rate_limit import RateLimiter
 from app.memory.context import ContextBuilder, SelectedContext
+from app.memory.long_term import PreferenceMemory, current_memory_identity
 from app.memory.summary_state import prepare_summary
 from app.observability.metrics import REQUEST_LATENCY, REQUESTS, ROUTING, STAGE_LATENCY, TOKEN_USAGE
 from app.observability.tracing import TraceRecorder, trace_turn, traced
@@ -56,8 +57,10 @@ class ChatService:
         rate_limiter: RateLimiter,
         registry: ToolRegistry | None = None,
         tracer: TraceRecorder | None = None,
+        memory_store: PreferenceMemory | None = None,
     ) -> None:
         self._settings = settings
+        self._memory_store = memory_store
         self._tracer = tracer or TraceRecorder.from_settings(settings)
         self._llm = llm
         self._retriever = retriever
@@ -192,6 +195,16 @@ class ChatService:
         )
         if confirmed_action is not None:
             context = SelectedContext(request.message)
+        preferences = {}
+        identity = current_memory_identity()
+        if (
+            self._settings.memory_mode == "M3"
+            and self._memory_store is not None
+            and identity is not None
+            and identity.verified
+            and identity.user_id == request.user_id
+        ):
+            preferences = {r.key: r.value for r in self._memory_store.recall(identity)}
         return {
             "trace_id": trace_id,
             "session_id": session_id,
@@ -202,6 +215,7 @@ class ChatService:
             "messages": history,
             "summary": summary,
             "memory_managed": self._settings.memory_mode != "M0",
+            "memory_preferences": preferences,
             "retrieved_chunks": [],
             "tool_results": [],
             "citations": [],
