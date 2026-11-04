@@ -39,3 +39,5 @@ Remaining gates: reconcile request194 with provider billing before any paid resu
 
 Each authorized task has its own checkpoint in feature-list.json/progress.txt. See those files and git log for exact hashes. Work is isolated oncodex/p2-quality from pushedP2c45f509; ordinary push only after final remote/branch/user-file verification. The final delivery checkpoint records actual push outcome. Never resume the paid runner merely because budget remains: its PENDING row is deliberately fail-closed. STOP after P2-Q; noP3/P4.
 
+
+Delivery: root handed to codex/p2-quality;20user files including.env and110historical root artifact raw bytes preserved. Source and3691scores reverified in root. See handoff.json, feature-list.json, progress.txt and git upstream for delivery checkpoints. Initial normal push verified at58bb2c8; final metadata receives an ordinary push with remote HEAD verification.
