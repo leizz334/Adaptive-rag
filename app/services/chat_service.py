@@ -184,7 +184,12 @@ class ChatService:
         confirmed_action = self._resolve_confirmation(request, session_id)
         sessions = SessionRepository(db)
         session_row = await sessions.get_or_create(session_id, request.user_id)
-        history = await sessions.recent_messages(session_id)
+        history = await sessions.recent_messages(
+            session_id,
+            limit=20
+            if self._settings.memory_mode == "M0"
+            else self._settings.memory_recent_messages,
+        )
         summary, summary_orders, summary_text = "", [], ""
         if self._settings.memory_mode in {"M2", "M3"}:
             history, summary, summary_orders, summary_text = await prepare_summary(

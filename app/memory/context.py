@@ -89,6 +89,33 @@ class ContextBuilder:
             return SelectedContext(query)
         direct = user_orders(query)
         reference = any(cue in query for cue in REFERENCE_CUES)
+        pointed_order = any(
+            cue in query
+            for cue in (
+                "它",
+                "这单",
+                "那单",
+                "该订单",
+                "同一笔",
+                "上一笔",
+                "这笔",
+                "那笔",
+                "那个订单",
+                "这个订单",
+            )
+        )
+        general_policy = any(cue in query for cue in ("规则", "政策", "条件", "怎么算"))
+        if not direct and general_policy and not pointed_order:
+            return SelectedContext(query)
+        if (
+            not direct
+            and not pointed_order
+            and not any(
+                cue in query
+                for cue in ("订单", "状态", "发货", "物流", "进度", "取消", "运单", "支付")
+            )
+        ):
+            return SelectedContext(query)
         if not direct and not reference:
             return SelectedContext(query)
         recent = history[-self.settings.memory_recent_messages :]
