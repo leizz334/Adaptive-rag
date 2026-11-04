@@ -62,7 +62,12 @@ def main():
             invalid_output_groups=sum(bool(r["request_errors"]) for r in rows),
             pending_requests=sum(r["status"] != "RESPONSE" for r in paid),
         )
-        for key in ("estimated_input_utf8_bound", "scripted_calls", "real_model_tokens", "paid_tokens"):
+        for key in (
+            "estimated_input_utf8_bound",
+            "scripted_calls",
+            "real_model_tokens",
+            "paid_tokens",
+        ):
             values.pop(key, None)
         values["reported_real_tokens"] = values["prompt_tokens"] + values["completion_tokens"]
         metrics[mode] = values
@@ -96,7 +101,9 @@ def main():
         total_http_latency_ms=sum(r.get("latency_ms", 0) for r in requests),
         http_failures=sum(r.get("http_status", 200) != 200 for r in requests),
         pending=sum(r["status"] != "RESPONSE" for r in requests),
-        transport_errors=dict(Counter(r["transport_error_type"] for r in requests if r.get("transport_error_type"))),
+        transport_errors=dict(
+            Counter(r["transport_error_type"] for r in requests if r.get("transport_error_type"))
+        ),
     )
     write(RUN / "analysis.json", summary)
     ambient = Settings(_env_file=None)
@@ -188,7 +195,14 @@ def main():
         "",
         "Cost uses published peak cache-miss input$0.30/M and output$1.20/M without discounts: https://api-docs.deepseek.com/quick_start/pricing/ . This is an estimate, not an invoice. API alias/backend and response randomness can change.",
     ]
-    text += ["", "## Interrupted scope", "", "Only seven complete case triples were obtained: one normal control plus six of the original seven references. The third-order changed-state triple and both remaining controls are NOT_RUN (the M1 first request was attempted but has no durable response). Thus the planned ten triples / three normal controls are not complete; QA quality remains PARTIAL. The per-mode task denominators above contain completed groups, including model-invalid outputs recovered by fallback; the uncertain additional M1 group is excluded from paired scoring and retained separately as infrastructure ERROR/UNSCORABLE.", "", f"The uncertain attempt is a ConnectError, not a model timeout or task failure. Conservatively reserved unknown usage: {total['accounted_tokens']-total['reported_tokens']} tokens. Provider-reported usage is not proof of the unsettled request's bill. No request replay, replacement run or extra real QC requests was issued after this stop. Measured HTTP latency excludes the uncertain attempt because its failure path did not persist elapsed time; that latency is NOT_RECORDED. Three truncations remain (Planner M0/M1 and Judge M0), independently of strict task outcomes. No generalized JSON repair benefit or M2-over-M1 gain is established."]
+    text += [
+        "",
+        "## Interrupted scope",
+        "",
+        "Only seven complete case triples were obtained: one normal control plus six of the original seven references. The third-order changed-state triple and both remaining controls are NOT_RUN (the M1 first request was attempted but has no durable response). Thus the planned ten triples / three normal controls are not complete; QA quality remains PARTIAL. The per-mode task denominators above contain completed groups, including model-invalid outputs recovered by fallback; the uncertain additional M1 group is excluded from paired scoring and retained separately as infrastructure ERROR/UNSCORABLE.",
+        "",
+        f"The uncertain attempt is a ConnectError, not a model timeout or task failure. Conservatively reserved unknown usage: {total['accounted_tokens']-total['reported_tokens']} tokens. Provider-reported usage is not proof of the unsettled request's bill. No request replay, replacement run or extra real QC requests was issued after this stop. Measured HTTP latency excludes the uncertain attempt because its failure path did not persist elapsed time; that latency is NOT_RECORDED. Three truncations remain (Planner M0/M1 and Judge M0), independently of strict task outcomes. No generalized JSON repair benefit or M2-over-M1 gain is established.",
+    ]
     (QUALITY / "P2-QA_REAL_LLM_REPORT.md").write_bytes(("\n".join(text) + "\n").encode())
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 

@@ -188,7 +188,20 @@ async def test_full_pilot_crash_replays_prior_http_without_repaying(tmp_path, mo
         return httpx.Response(200, json=value)
 
     monkeypatch.setattr(r.httpx, "AsyncHTTPTransport", lambda **_: httpx.MockTransport(answer))
+    # The synthetic integration fixture freezes one unchanged source file so the
+    # harness's baseline-only production guard remains testable after QC evolves.
+    monkeypatch.setattr(
+        r,
+        "source_files",
+        lambda: {
+            "app/config/settings.py": r.digest((r.ROOT / "app/config/settings.py").read_bytes())
+        },
+    )
     r.prepare(run, env)
+    monkeypatch.setenv("MEMORY_RECENT_MESSAGES", "100")
+    with pytest.raises(r.SafetyStop, match="hash"):
+        r.verify(run, env)
+    monkeypatch.delenv("MEMORY_RECENT_MESSAGES")
     await r.execute("probe", run, env)
     monkeypatch.setenv("TOKEN_BUDGET", "64")
     with pytest.raises(r.SafetyStop, match="hash"):

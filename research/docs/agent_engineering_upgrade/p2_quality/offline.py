@@ -19,7 +19,7 @@ def write(path, value):
     path.write_bytes((json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode())
 
 
-async def evaluate(output, unseen=False):
+async def evaluate(output, unseen=False, unseen_only=False):
     if output.exists():
         raise RuntimeError("Existing output must be preserved; choose a new run directory")
     output.mkdir(parents=True)
@@ -32,6 +32,8 @@ async def evaluate(output, unseen=False):
     if unseen:
         unseen_cases, _ = load_scenarios(QUALITY / "new_unseen.json")
         cases += unseen_cases
+    if unseen_only:
+        cases = unseen_cases
     digest = hashlib.sha256("".join(c.model_dump_json() for c in cases).encode()).hexdigest()
     config = dict(
         head=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
@@ -90,6 +92,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--unseen", action="store_true")
+    parser.add_argument("--unseen-only", action="store_true")
     args = parser.parse_args()
     logging.disable(logging.CRITICAL)
-    asyncio.run(evaluate(args.output, args.unseen))
+    asyncio.run(evaluate(args.output, args.unseen or args.unseen_only, args.unseen_only))

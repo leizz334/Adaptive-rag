@@ -17,9 +17,13 @@ def aggregate(rows):
         tool_calls_per_task=len(calls) / len(rows) if rows else None,
         scorer_redundant_tool_calls=extra,
         wrong_arguments=sum(
-            t["scores"].get("failure_counts", {}).get("wrong_arguments", 0)
+            t["scores"].get("tool_argument_accuracy") is not None
+            and t["scores"]["tool_argument_accuracy"] < 1
             for r in rows
             for t in r["evidence"]["turns"]
+        ),
+        executed_invalid_argument_calls=sum(
+            c.get("failure_kind") == "invalid_arguments" for c in calls
         ),
         calls_by_tool=dict(Counter(c["name"] for c in calls)),
         failures=[
