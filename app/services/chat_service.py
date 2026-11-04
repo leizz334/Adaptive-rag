@@ -20,6 +20,7 @@ from app.core.exceptions import AppError, GuardrailError, InvalidRequestError, R
 from app.core.ids import new_id
 from app.core.request_scope import request_session
 from app.infra.rate_limit import RateLimiter
+from app.memory.context import ContextBuilder, SelectedContext
 from app.observability.metrics import REQUEST_LATENCY, REQUESTS, ROUTING, STAGE_LATENCY, TOKEN_USAGE
 from app.observability.tracing import TraceRecorder, trace_turn, traced
 from app.providers.base import LLMProvider
@@ -180,11 +181,16 @@ class ChatService:
         sessions = SessionRepository(db)
         await sessions.get_or_create(session_id, request.user_id)
         history = await sessions.recent_messages(session_id)
+        context = ContextBuilder(self._settings).build(request.message, history)
+        if confirmed_action is not None:
+            context = SelectedContext(request.message)
         return {
             "trace_id": trace_id,
             "session_id": session_id,
             "user_id": request.user_id,
             "user_query": request.message,
+            "resolved_query": context.effective_query,
+            "selected_context": context,
             "messages": history,
             "summary": "",
             "retrieved_chunks": [],

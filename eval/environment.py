@@ -19,8 +19,9 @@ from app.services.container import build_container
 
 
 class BusinessEnvironment:
-    def __init__(self, *, llm=None, tracer=None):
+    def __init__(self, *, llm=None, tracer=None, memory_mode="M0"):
         self.llm = llm
+        self.memory_mode = memory_mode
         self.tracer = tracer
         self.container = None
 
@@ -28,6 +29,7 @@ class BusinessEnvironment:
         settings = Settings(
             _env_file=None,
             app_env="testing",
+            memory_mode=self.memory_mode,
             database_url="sqlite+aiosqlite:///:memory:",
             deepseek_api_key="",
             embedding_api_key="",

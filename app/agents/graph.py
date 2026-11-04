@@ -81,13 +81,20 @@ def build_graph(
     graph.add_node("compact_memory", partial(memory_node, settings=settings, summarizer=summarizer))
 
     def _after_guardrail(state: AgentState) -> str:
-        return "refuse_answer" if state.get("refused") else "classify_intent"
+        if state.get("refused"):
+            return "refuse_answer"
+        context = state.get("selected_context")
+        return "generate_answer" if context and context.needs_clarification else "classify_intent"
 
     graph.add_edge(START, "apply_guardrail")
     graph.add_conditional_edges(
         "apply_guardrail",
         _after_guardrail,
-        {"refuse_answer": "refuse_answer", "classify_intent": "classify_intent"},
+        {
+            "refuse_answer": "refuse_answer",
+            "classify_intent": "classify_intent",
+            "generate_answer": "generate_answer",
+        },
     )
     graph.add_edge("classify_intent", "route_complexity")
     graph.add_conditional_edges(

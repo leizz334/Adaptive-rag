@@ -7,6 +7,7 @@ import re
 from app.agents.state import AgentState
 from app.core.exceptions import LLMOutputError, LLMProviderError
 from app.core.ids import new_id
+from app.memory.context import node_context, node_query
 from app.observability.tracing import traced
 from app.prompts.planner import PLANNER_SYSTEM, PLANNER_USER
 from app.providers.base import LLMProvider
@@ -187,9 +188,9 @@ async def planner_node(state: AgentState, planner: Planner) -> dict:
         }
     intent = state.get("intent")
     plan = await planner.create_plan(
-        state["user_query"],
+        node_query(state),
         intent.label.value if intent else "faq_policy",
-        state.get("summary") or "",
+        node_context(state, "planner") or state.get("summary") or "",
     )
     write_steps = [
         step

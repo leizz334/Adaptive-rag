@@ -3,6 +3,7 @@
 from typing import Any, TypedDict
 
 from app.core.enums import QueryComplexity, RetrievalStrategy
+from app.memory.context import SelectedContext
 from app.schemas.agent import AgentPlan, ComplexityResult, IntentResult, ToolResult
 from app.schemas.chat import ActionProposal, ChatMessage
 from app.schemas.common import LatencyBreakdown, TokenUsage
@@ -20,6 +21,8 @@ class AgentState(TypedDict, total=False):
     session_id: str
     user_id: str
     user_query: str
+    resolved_query: str
+    selected_context: SelectedContext
     messages: list[ChatMessage]
     summary: str
     intent: IntentResult | None
