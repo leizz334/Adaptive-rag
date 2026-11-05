@@ -1,0 +1,1998 @@
+{
+  "origin": "Actual P2-R frozen-source node traces plus fresh baseline-source reexecution; no altered Gold",
+  "cases": [
+    {
+      "case": "dv01",
+      "origin": "research\\docs\\agent_engineering_upgrade\\p2_answer_reliability\\evidence\\s3_old_dev_traces\\traces\\000_dv01.json",
+      "turns": [
+        {
+          "query": "劳烦核实 ORD10001 目前走到哪个订单阶段了。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "order_inquiry",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.7918000337667763,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.7918000337667763,
+                  "routing_ms": 0.2932000206783414,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "plan_tasks",
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_tracking",
+                      "tool_name": "track_shipment",
+                      "arguments": {
+                        "order_id": "ORD10001"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "node": "execute_tools",
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "track_shipment",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10001",
+                      "tracking_no": "SF1234567890",
+                      "city": "上海",
+                      "events": [
+                        {
+                          "status": "warehouse",
+                          "at": "2026-11-02T13:25:58.048088"
+                        },
+                        {
+                          "status": "in_transit",
+                          "tracking_no": "SF1234567890",
+                          "at": "2026-11-03T13:25:58.048088"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 1,
+                "latency": {
+                  "intent_ms": 0.7918000337667763,
+                  "routing_ms": 0.2932000206783414,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 9.615899994969368,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "[{\"order_id\": \"ORD10001\", \"tracking_no\": \"SF1234567890\", \"city\": \"上海\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-02T13:25:58.048088\"}, {\"status\": \"in_transit\", \"tracking_no\": \"SF1234567890\", \"at\": \"2026-11-03T13:25:58.048088\"}]}]",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.7918000337667763,
+                  "routing_ms": 0.2932000206783414,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 9.615899994969368,
+                  "llm_ms": 0.31910004327073693,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "[{\"order_id\": \"ORD10001\", \"tracking_no\": \"SF1234567890\", \"city\": \"上海\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-02T13:25:58.048088\"}, {\"status\": \"in_transit\", \"tracking_no\": \"SF1234567890\", \"at\": \"2026-11-03T13:25:58.048088\"}]}]"
+        }
+      ]
+    },
+    {
+      "case": "dv05",
+      "origin": "research\\docs\\agent_engineering_upgrade\\p2_answer_reliability\\evidence\\s3_old_dev_traces\\traces\\001_dv05.json",
+      "turns": [
+        {
+          "query": "只展示 ORD10001 最新快递轨迹即可，不用展开订单金额。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "logistics",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.36589999217540026,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.36589999217540026,
+                  "routing_ms": 0.23770000552758574,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "plan_tasks",
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_tracking",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10001"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "order_tracking",
+                      "tool_name": "track_shipment",
+                      "arguments": {
+                        "order_id": "ORD10001"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "node": "execute_tools",
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10001",
+                      "user_id": "u_demo",
+                      "status": "shipped",
+                      "items": [
+                        {
+                          "sku": "SKU-HEADSET",
+                          "name": "降噪耳机 Pro",
+                          "quantity": 1,
+                          "unit_price_cents": 29900,
+                          "customized": false
+                        }
+                      ],
+                      "total_cents": 29900,
+                      "created_at": "2026-11-02T13:25:58.496757",
+                      "paid_at": "2026-11-02T13:25:58.496757",
+                      "shipped_at": "2026-11-03T13:25:58.496757",
+                      "delivered_at": null,
+                      "tracking_no": "SF1234567890",
+                      "receiver_city": "上海"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "track_shipment",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10001",
+                      "tracking_no": "SF1234567890",
+                      "city": "上海",
+                      "events": [
+                        {
+                          "status": "warehouse",
+                          "at": "2026-11-02T13:25:58.496757"
+                        },
+                        {
+                          "status": "in_transit",
+                          "tracking_no": "SF1234567890",
+                          "at": "2026-11-03T13:25:58.496757"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 2,
+                "latency": {
+                  "intent_ms": 0.36589999217540026,
+                  "routing_ms": 0.23770000552758574,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 11.965300014708191,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "[{\"order_id\": \"ORD10001\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T13:25:58.496757\", \"paid_at\": \"2026-11-02T13:25:58.496757\", \"shipped_at\": \"2026-11-03T13:25:58.496757\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}, {\"order_id\": \"ORD10001\", \"tracking_no\": \"SF1234567890\", \"city\": \"上海\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-02T13:25:58.496757\"}, {\"status\": \"in_transit\", \"tracking_no\": \"SF1234567890\", \"at\": \"2026-11-03T13:25:58.496757\"}]}]",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.36589999217540026,
+                  "routing_ms": 0.23770000552758574,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 11.965300014708191,
+                  "llm_ms": 0.39870000910013914,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "[{\"order_id\": \"ORD10001\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T13:25:58.496757\", \"paid_at\": \"2026-11-02T13:25:58.496757\", \"shipped_at\": \"2026-11-03T13:25:58.496757\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}, {\"order_id\": \"ORD10001\", \"tracking_no\": \"SF1234567890\", \"city\": \"上海\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-02T13:25:58.496757\"}, {\"status\": \"in_transit\", \"tracking_no\": \"SF1234567890\", \"at\": \"2026-11-03T13:25:58.496757\"}]}]"
+        }
+      ]
+    },
+    {
+      "case": "dv06",
+      "origin": "research\\docs\\agent_engineering_upgrade\\p2_answer_reliability\\evidence\\s3_old_dev_traces\\traces\\002_dv06.json",
+      "turns": [
+        {
+          "query": "ORD10001 的订单状态和物流轨迹都请核对后告诉我。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "logistics",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.3011999651789665,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.3011999651789665,
+                  "routing_ms": 0.4039999912492931,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "plan_tasks",
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_tracking",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10001"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "order_tracking",
+                      "tool_name": "track_shipment",
+                      "arguments": {
+                        "order_id": "ORD10001"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "node": "execute_tools",
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10001",
+                      "user_id": "u_demo",
+                      "status": "shipped",
+                      "items": [
+                        {
+                          "sku": "SKU-HEADSET",
+                          "name": "降噪耳机 Pro",
+                          "quantity": 1,
+                          "unit_price_cents": 29900,
+                          "customized": false
+                        }
+                      ],
+                      "total_cents": 29900,
+                      "created_at": "2026-11-02T13:25:58.891848",
+                      "paid_at": "2026-11-02T13:25:58.891848",
+                      "shipped_at": "2026-11-03T13:25:58.891848",
+                      "delivered_at": null,
+                      "tracking_no": "SF1234567890",
+                      "receiver_city": "上海"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "track_shipment",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10001",
+                      "tracking_no": "SF1234567890",
+                      "city": "上海",
+                      "events": [
+                        {
+                          "status": "warehouse",
+                          "at": "2026-11-02T13:25:58.891848"
+                        },
+                        {
+                          "status": "in_transit",
+                          "tracking_no": "SF1234567890",
+                          "at": "2026-11-03T13:25:58.891848"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 2,
+                "latency": {
+                  "intent_ms": 0.3011999651789665,
+                  "routing_ms": 0.4039999912492931,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 12.812400003895164,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "[{\"order_id\": \"ORD10001\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T13:25:58.891848\", \"paid_at\": \"2026-11-02T13:25:58.891848\", \"shipped_at\": \"2026-11-03T13:25:58.891848\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}, {\"order_id\": \"ORD10001\", \"tracking_no\": \"SF1234567890\", \"city\": \"上海\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-02T13:25:58.891848\"}, {\"status\": \"in_transit\", \"tracking_no\": \"SF1234567890\", \"at\": \"2026-11-03T13:25:58.891848\"}]}]",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.3011999651789665,
+                  "routing_ms": 0.4039999912492931,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 12.812400003895164,
+                  "llm_ms": 0.3828000044450164,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "[{\"order_id\": \"ORD10001\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T13:25:58.891848\", \"paid_at\": \"2026-11-02T13:25:58.891848\", \"shipped_at\": \"2026-11-03T13:25:58.891848\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}, {\"order_id\": \"ORD10001\", \"tracking_no\": \"SF1234567890\", \"city\": \"上海\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-02T13:25:58.891848\"}, {\"status\": \"in_transit\", \"tracking_no\": \"SF1234567890\", \"at\": \"2026-11-03T13:25:58.891848\"}]}]"
+        }
+      ]
+    },
+    {
+      "case": "dv07",
+      "origin": "research\\docs\\agent_engineering_upgrade\\p2_answer_reliability\\evidence\\s3_old_dev_traces\\traces\\003_dv07.json",
+      "turns": [
+        {
+          "query": "查下 ORD10002 里面有哪些商品，各买了几件。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "order_inquiry",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.36800000816583633,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.36800000816583633,
+                  "routing_ms": 0.24089997168630362,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "plan_tasks",
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_tracking",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10002"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "order_tracking",
+                      "tool_name": "track_shipment",
+                      "arguments": {
+                        "order_id": "ORD10002"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "node": "execute_tools",
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10002",
+                      "user_id": "u_demo",
+                      "status": "delivered",
+                      "items": [
+                        {
+                          "sku": "SKU-MUG-CUSTOM",
+                          "name": "定制马克杯",
+                          "quantity": 1,
+                          "unit_price_cents": 3900,
+                          "customized": true
+                        }
+                      ],
+                      "total_cents": 3900,
+                      "created_at": "2026-10-16T13:25:59.310446",
+                      "paid_at": "2026-10-16T13:25:59.310446",
+                      "shipped_at": "2026-10-17T13:25:59.310446",
+                      "delivered_at": "2026-10-24T13:25:59.310446",
+                      "tracking_no": "YT998877",
+                      "receiver_city": "北京"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "track_shipment",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10002",
+                      "tracking_no": "YT998877",
+                      "city": "北京",
+                      "events": [
+                        {
+                          "status": "warehouse",
+                          "at": "2026-10-16T13:25:59.310446"
+                        },
+                        {
+                          "status": "in_transit",
+                          "tracking_no": "YT998877",
+                          "at": "2026-10-17T13:25:59.310446"
+                        },
+                        {
+                          "status": "delivered",
+                          "at": "2026-10-24T13:25:59.310446"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 2,
+                "latency": {
+                  "intent_ms": 0.36800000816583633,
+                  "routing_ms": 0.24089997168630362,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 10.319900000467896,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "[{\"order_id\": \"ORD10002\", \"user_id\": \"u_demo\", \"status\": \"delivered\", \"items\": [{\"sku\": \"SKU-MUG-CUSTOM\", \"name\": \"定制马克杯\", \"quantity\": 1, \"unit_price_cents\": 3900, \"customized\": true}], \"total_cents\": 3900, \"created_at\": \"2026-10-16T13:25:59.310446\", \"paid_at\": \"2026-10-16T13:25:59.310446\", \"shipped_at\": \"2026-10-17T13:25:59.310446\", \"delivered_at\": \"2026-10-24T13:25:59.310446\", \"tracking_no\": \"YT998877\", \"receiver_city\": \"北京\"}, {\"order_id\": \"ORD10002\", \"tracking_no\": \"YT998877\", \"city\": \"北京\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-10-16T13:25:59.310446\"}, {\"status\": \"in_transit\", \"tracking_no\": \"YT998877\", \"at\": \"2026-10-17T13:25:59.310446\"}, {\"status\": \"delivered\", \"at\": \"2026-10-24T13:25:59.310446\"}]}]",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.36800000816583633,
+                  "routing_ms": 0.24089997168630362,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 10.319900000467896,
+                  "llm_ms": 0.3684999537654221,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "[{\"order_id\": \"ORD10002\", \"user_id\": \"u_demo\", \"status\": \"delivered\", \"items\": [{\"sku\": \"SKU-MUG-CUSTOM\", \"name\": \"定制马克杯\", \"quantity\": 1, \"unit_price_cents\": 3900, \"customized\": true}], \"total_cents\": 3900, \"created_at\": \"2026-10-16T13:25:59.310446\", \"paid_at\": \"2026-10-16T13:25:59.310446\", \"shipped_at\": \"2026-10-17T13:25:59.310446\", \"delivered_at\": \"2026-10-24T13:25:59.310446\", \"tracking_no\": \"YT998877\", \"receiver_city\": \"北京\"}, {\"order_id\": \"ORD10002\", \"tracking_no\": \"YT998877\", \"city\": \"北京\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-10-16T13:25:59.310446\"}, {\"status\": \"in_transit\", \"tracking_no\": \"YT998877\", \"at\": \"2026-10-17T13:25:59.310446\"}, {\"status\": \"delivered\", \"at\": \"2026-10-24T13:25:59.310446\"}]}]"
+        }
+      ]
+    },
+    {
+      "case": "P2R-B03",
+      "origin": "research\\docs\\agent_engineering_upgrade\\p2_agent_quality\\evidence\\post_blind_failures\\traces\\000_P2R-B03.json",
+      "turns": [
+        {
+          "query": "我记不清 ORD10002 有没有退款申请，帮我看一下退款单列表。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "order_inquiry",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.4927999689243734,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.4927999689243734,
+                  "routing_ms": 0.14739995822310448,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "plan_tasks",
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_tracking",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10002"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "order_tracking",
+                      "tool_name": "track_shipment",
+                      "arguments": {
+                        "order_id": "ORD10002"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "node": "execute_tools",
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10002",
+                      "user_id": "u_demo",
+                      "status": "delivered",
+                      "items": [
+                        {
+                          "sku": "SKU-MUG-CUSTOM",
+                          "name": "定制马克杯",
+                          "quantity": 1,
+                          "unit_price_cents": 3900,
+                          "customized": true
+                        }
+                      ],
+                      "total_cents": 3900,
+                      "created_at": "2026-10-16T06:29:51.032158",
+                      "paid_at": "2026-10-16T06:29:51.032158",
+                      "shipped_at": "2026-10-17T06:29:51.032158",
+                      "delivered_at": "2026-10-24T06:29:51.032158",
+                      "tracking_no": "YT998877",
+                      "receiver_city": "北京"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "track_shipment",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10002",
+                      "tracking_no": "YT998877",
+                      "city": "北京",
+                      "events": [
+                        {
+                          "status": "warehouse",
+                          "at": "2026-10-16T06:29:51.032158"
+                        },
+                        {
+                          "status": "in_transit",
+                          "tracking_no": "YT998877",
+                          "at": "2026-10-17T06:29:51.032158"
+                        },
+                        {
+                          "status": "delivered",
+                          "at": "2026-10-24T06:29:51.032158"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 2,
+                "latency": {
+                  "intent_ms": 0.4927999689243734,
+                  "routing_ms": 0.14739995822310448,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 7.541499973740429,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "[{\"order_id\": \"ORD10002\", \"user_id\": \"u_demo\", \"status\": \"delivered\", \"items\": [{\"sku\": \"SKU-MUG-CUSTOM\", \"name\": \"定制马克杯\", \"quantity\": 1, \"unit_price_cents\": 3900, \"customized\": true}], \"total_cents\": 3900, \"created_at\": \"2026-10-16T06:29:51.032158\", \"paid_at\": \"2026-10-16T06:29:51.032158\", \"shipped_at\": \"2026-10-17T06:29:51.032158\", \"delivered_at\": \"2026-10-24T06:29:51.032158\", \"tracking_no\": \"YT998877\", \"receiver_city\": \"北京\"}, {\"order_id\": \"ORD10002\", \"tracking_no\": \"YT998877\", \"city\": \"北京\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-10-16T06:29:51.032158\"}, {\"status\": \"in_transit\", \"tracking_no\": \"YT998877\", \"at\": \"2026-10-17T06:29:51.032158\"}, {\"status\": \"delivered\", \"at\": \"2026-10-24T06:29:51.032158\"}]}]",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.4927999689243734,
+                  "routing_ms": 0.14739995822310448,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 7.541499973740429,
+                  "llm_ms": 0.2090999623760581,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "[{\"order_id\": \"ORD10002\", \"user_id\": \"u_demo\", \"status\": \"delivered\", \"items\": [{\"sku\": \"SKU-MUG-CUSTOM\", \"name\": \"定制马克杯\", \"quantity\": 1, \"unit_price_cents\": 3900, \"customized\": true}], \"total_cents\": 3900, \"created_at\": \"2026-10-16T06:29:51.032158\", \"paid_at\": \"2026-10-16T06:29:51.032158\", \"shipped_at\": \"2026-10-17T06:29:51.032158\", \"delivered_at\": \"2026-10-24T06:29:51.032158\", \"tracking_no\": \"YT998877\", \"receiver_city\": \"北京\"}, {\"order_id\": \"ORD10002\", \"tracking_no\": \"YT998877\", \"city\": \"北京\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-10-16T06:29:51.032158\"}, {\"status\": \"in_transit\", \"tracking_no\": \"YT998877\", \"at\": \"2026-10-17T06:29:51.032158\"}, {\"status\": \"delivered\", \"at\": \"2026-10-24T06:29:51.032158\"}]}]"
+        }
+      ]
+    },
+    {
+      "case": "P2R-B06",
+      "origin": "research\\docs\\agent_engineering_upgrade\\p2_agent_quality\\evidence\\post_blind_failures\\traces\\001_P2R-B06.json",
+      "turns": [
+        {
+          "query": "ORD10001 是什么状态，先看它。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "order_inquiry",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.221800000872463,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.221800000872463,
+                  "routing_ms": 0.11500000255182385,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "plan_tasks",
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_tracking",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10001"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "node": "execute_tools",
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10001",
+                      "user_id": "u_demo",
+                      "status": "shipped",
+                      "items": [
+                        {
+                          "sku": "SKU-HEADSET",
+                          "name": "降噪耳机 Pro",
+                          "quantity": 1,
+                          "unit_price_cents": 29900,
+                          "customized": false
+                        }
+                      ],
+                      "total_cents": 29900,
+                      "created_at": "2026-11-02T06:29:51.291499",
+                      "paid_at": "2026-11-02T06:29:51.291499",
+                      "shipped_at": "2026-11-03T06:29:51.291499",
+                      "delivered_at": null,
+                      "tracking_no": "SF1234567890",
+                      "receiver_city": "上海"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 1,
+                "latency": {
+                  "intent_ms": 0.221800000872463,
+                  "routing_ms": 0.11500000255182385,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.322000022511929,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "[{\"order_id\": \"ORD10001\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T06:29:51.291499\", \"paid_at\": \"2026-11-02T06:29:51.291499\", \"shipped_at\": \"2026-11-03T06:29:51.291499\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}]",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.221800000872463,
+                  "routing_ms": 0.11500000255182385,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.322000022511929,
+                  "llm_ms": 0.18759997328743339,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "[{\"order_id\": \"ORD10001\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T06:29:51.291499\", \"paid_at\": \"2026-11-02T06:29:51.291499\", \"shipped_at\": \"2026-11-03T06:29:51.291499\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}]"
+        },
+        {
+          "query": "接下来改看 ORD10003，有没有支付成功。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "order_inquiry",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.21239998750388622,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.21239998750388622,
+                  "routing_ms": 0.1218999968841672,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "plan_tasks",
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_tracking",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "node": "execute_tools",
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10003",
+                      "user_id": "u_demo",
+                      "status": "paid",
+                      "items": [
+                        {
+                          "sku": "SKU-TEE",
+                          "name": "纯棉T恤",
+                          "quantity": 1,
+                          "unit_price_cents": 7900,
+                          "customized": false
+                        }
+                      ],
+                      "total_cents": 7900,
+                      "created_at": "2026-11-05T01:29:51.291499",
+                      "paid_at": "2026-11-05T01:29:51.291499",
+                      "shipped_at": null,
+                      "delivered_at": null,
+                      "tracking_no": null,
+                      "receiver_city": "杭州"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 1,
+                "latency": {
+                  "intent_ms": 0.21239998750388622,
+                  "routing_ms": 0.1218999968841672,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 2.7554999687708914,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "[{\"order_id\": \"ORD10003\", \"user_id\": \"u_demo\", \"status\": \"paid\", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-05T01:29:51.291499\", \"paid_at\": \"2026-11-05T01:29:51.291499\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.21239998750388622,
+                  "routing_ms": 0.1218999968841672,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 2.7554999687708914,
+                  "llm_ms": 0.15849998453631997,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "[{\"order_id\": \"ORD10003\", \"user_id\": \"u_demo\", \"status\": \"paid\", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-05T01:29:51.291499\", \"paid_at\": \"2026-11-05T01:29:51.291499\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]"
+        },
+        {
+          "query": "刚切换的这笔现在到哪个订单阶段了。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "order_inquiry",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.20480004604905844,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.20480004604905844,
+                  "routing_ms": 0.1115999766625464,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "plan_tasks",
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_tracking",
+                      "tool_name": "track_shipment",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "node": "execute_tools",
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "track_shipment",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10003",
+                      "tracking_no": null,
+                      "city": "杭州",
+                      "events": [
+                        {
+                          "status": "warehouse",
+                          "at": "2026-11-05T01:29:51.291499"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 1,
+                "latency": {
+                  "intent_ms": 0.20480004604905844,
+                  "routing_ms": 0.1115999766625464,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.026000038720667,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "[{\"order_id\": \"ORD10003\", \"tracking_no\": null, \"city\": \"杭州\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-05T01:29:51.291499\"}]}]",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.20480004604905844,
+                  "routing_ms": 0.1115999766625464,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.026000038720667,
+                  "llm_ms": 0.14590000500902534,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "[{\"order_id\": \"ORD10003\", \"tracking_no\": null, \"city\": \"杭州\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-05T01:29:51.291499\"}]}]"
+        }
+      ]
+    },
+    {
+      "case": "P2R-B26",
+      "origin": "research\\docs\\agent_engineering_upgrade\\p2_agent_quality\\evidence\\post_blind_failures\\traces\\002_P2R-B26.json",
+      "turns": [
+        {
+          "query": "ORD10001 我想一起核对实付总额，以及包裹的实际运输节点。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "order_inquiry",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.26729999808594584,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.26729999808594584,
+                  "routing_ms": 0.18089998047798872,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "plan_tasks",
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_tracking",
+                      "tool_name": "track_shipment",
+                      "arguments": {
+                        "order_id": "ORD10001"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "node": "execute_tools",
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "track_shipment",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10001",
+                      "tracking_no": "SF1234567890",
+                      "city": "上海",
+                      "events": [
+                        {
+                          "status": "warehouse",
+                          "at": "2026-11-02T06:29:51.609740"
+                        },
+                        {
+                          "status": "in_transit",
+                          "tracking_no": "SF1234567890",
+                          "at": "2026-11-03T06:29:51.609740"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 1,
+                "latency": {
+                  "intent_ms": 0.26729999808594584,
+                  "routing_ms": 0.18089998047798872,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.507099976763129,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "[{\"order_id\": \"ORD10001\", \"tracking_no\": \"SF1234567890\", \"city\": \"上海\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-02T06:29:51.609740\"}, {\"status\": \"in_transit\", \"tracking_no\": \"SF1234567890\", \"at\": \"2026-11-03T06:29:51.609740\"}]}]",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.26729999808594584,
+                  "routing_ms": 0.18089998047798872,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.507099976763129,
+                  "llm_ms": 0.1718999701552093,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "[{\"order_id\": \"ORD10001\", \"tracking_no\": \"SF1234567890\", \"city\": \"上海\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-02T06:29:51.609740\"}, {\"status\": \"in_transit\", \"tracking_no\": \"SF1234567890\", \"at\": \"2026-11-03T06:29:51.609740\"}]}]"
+        }
+      ]
+    },
+    {
+      "case": "P2R-B28",
+      "origin": "research\\docs\\agent_engineering_upgrade\\p2_agent_quality\\evidence\\post_blind_failures\\traces\\003_P2R-B28.json",
+      "turns": [
+        {
+          "query": "ORD10003 有没有发货，只核实订单阶段就好，不用列物流轨迹。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "logistics",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.20559999393299222,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.20559999393299222,
+                  "routing_ms": 0.11150003410875797,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "plan_tasks",
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_tracking",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "order_tracking",
+                      "tool_name": "track_shipment",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "node": "execute_tools",
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10003",
+                      "user_id": "u_demo",
+                      "status": "paid",
+                      "items": [
+                        {
+                          "sku": "SKU-TEE",
+                          "name": "纯棉T恤",
+                          "quantity": 1,
+                          "unit_price_cents": 7900,
+                          "customized": false
+                        }
+                      ],
+                      "total_cents": 7900,
+                      "created_at": "2026-11-05T01:29:51.864991",
+                      "paid_at": "2026-11-05T01:29:51.864991",
+                      "shipped_at": null,
+                      "delivered_at": null,
+                      "tracking_no": null,
+                      "receiver_city": "杭州"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "track_shipment",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10003",
+                      "tracking_no": null,
+                      "city": "杭州",
+                      "events": [
+                        {
+                          "status": "warehouse",
+                          "at": "2026-11-05T01:29:51.864991"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 2,
+                "latency": {
+                  "intent_ms": 0.20559999393299222,
+                  "routing_ms": 0.11150003410875797,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 6.674200005363673,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "[{\"order_id\": \"ORD10003\", \"user_id\": \"u_demo\", \"status\": \"paid\", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-05T01:29:51.864991\", \"paid_at\": \"2026-11-05T01:29:51.864991\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}, {\"order_id\": \"ORD10003\", \"tracking_no\": null, \"city\": \"杭州\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-05T01:29:51.864991\"}]}]",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.20559999393299222,
+                  "routing_ms": 0.11150003410875797,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 6.674200005363673,
+                  "llm_ms": 0.1998000079765916,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "[{\"order_id\": \"ORD10003\", \"user_id\": \"u_demo\", \"status\": \"paid\", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-05T01:29:51.864991\", \"paid_at\": \"2026-11-05T01:29:51.864991\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}, {\"order_id\": \"ORD10003\", \"tracking_no\": null, \"city\": \"杭州\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-05T01:29:51.864991\"}]}]"
+        }
+      ]
+    },
+    {
+      "case": "P2R-B30",
+      "origin": "research\\docs\\agent_engineering_upgrade\\p2_agent_quality\\evidence\\post_blind_failures\\traces\\004_P2R-B30.json",
+      "turns": [
+        {
+          "query": "SKU-TEE 现在还有库存吗，只看件数就行。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "product_consult",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.3277999931015074,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "single_hop",
+                  "strategy": "single",
+                  "confidence": 0.75
+                },
+                "strategy": "single",
+                "query_complexity": "single_hop",
+                "latency": {
+                  "intent_ms": 0.3277999931015074,
+                  "routing_ms": 0.12510002125054598,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "离线固定证据答复",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.3277999931015074,
+                  "routing_ms": 0.12510002125054598,
+                  "retrieval_ms": 5.070099956355989,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.12799998512491584,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "离线固定证据答复"
+        }
+      ]
+    },
+    {
+      "case": "P2R-B31",
+      "origin": "research\\docs\\agent_engineering_upgrade\\p2_agent_quality\\evidence\\post_blind_failures\\traces\\005_P2R-B31.json",
+      "turns": [
+        {
+          "query": "ORD10003 的订单状态核实一下。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "order_inquiry",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.21499994909390807,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.21499994909390807,
+                  "routing_ms": 0.10359997395426035,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "plan_tasks",
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_tracking",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "node": "execute_tools",
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10003",
+                      "user_id": "u_demo",
+                      "status": "paid",
+                      "items": [
+                        {
+                          "sku": "SKU-TEE",
+                          "name": "纯棉T恤",
+                          "quantity": 1,
+                          "unit_price_cents": 7900,
+                          "customized": false
+                        }
+                      ],
+                      "total_cents": 7900,
+                      "created_at": "2026-11-05T01:29:52.412590",
+                      "paid_at": "2026-11-05T01:29:52.412590",
+                      "shipped_at": null,
+                      "delivered_at": null,
+                      "tracking_no": null,
+                      "receiver_city": "杭州"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 1,
+                "latency": {
+                  "intent_ms": 0.21499994909390807,
+                  "routing_ms": 0.10359997395426035,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.473100008908659,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "[{\"order_id\": \"ORD10003\", \"user_id\": \"u_demo\", \"status\": \"paid\", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-05T01:29:52.412590\", \"paid_at\": \"2026-11-05T01:29:52.412590\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.21499994909390807,
+                  "routing_ms": 0.10359997395426035,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.473100008908659,
+                  "llm_ms": 0.19160000374540687,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "[{\"order_id\": \"ORD10003\", \"user_id\": \"u_demo\", \"status\": \"paid\", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-05T01:29:52.412590\", \"paid_at\": \"2026-11-05T01:29:52.412590\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]"
+        },
+        {
+          "query": "另一个问题，SKU-HEADSET 的保修是几个月，人为损坏保不保。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "faq_policy",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.22500002523884177,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "single_hop",
+                  "strategy": "single",
+                  "confidence": 0.75
+                },
+                "strategy": "single",
+                "query_complexity": "single_hop",
+                "latency": {
+                  "intent_ms": 0.22500002523884177,
+                  "routing_ms": 0.15089998487383127,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "离线固定证据答复",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.22500002523884177,
+                  "routing_ms": 0.15089998487383127,
+                  "retrieval_ms": 5.445300019346178,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.12729997979477048,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "离线固定证据答复"
+        }
+      ]
+    },
+    {
+      "case": "P2R-B32",
+      "origin": "research\\docs\\agent_engineering_upgrade\\p2_agent_quality\\evidence\\post_blind_failures\\traces\\006_P2R-B32.json",
+      "turns": [
+        {
+          "query": "帮我查 SKU-NOT-EXISTS 这款商品的详细资料。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "faq_policy",
+                  "confidence": 0.55,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.21590001415461302,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "single_hop",
+                  "strategy": "single",
+                  "confidence": 0.75
+                },
+                "strategy": "single",
+                "query_complexity": "single_hop",
+                "latency": {
+                  "intent_ms": 0.21590001415461302,
+                  "routing_ms": 0.18039997667074203,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "离线固定证据答复",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.21590001415461302,
+                  "routing_ms": 0.18039997667074203,
+                  "retrieval_ms": 4.921299987472594,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.10699999984353781,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "离线固定证据答复"
+        },
+        {
+          "query": "刚才编号打错了，正确的是 SKU-HEADSET，请查这款的详细资料。",
+          "nodes": [
+            {
+              "node": "classify_intent",
+              "output": {
+                "intent": {
+                  "label": "faq_policy",
+                  "confidence": 0.55,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 0.2190999803133309,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "route_complexity",
+              "output": {
+                "complexity": {
+                  "complexity": "single_hop",
+                  "strategy": "single",
+                  "confidence": 0.75
+                },
+                "strategy": "single",
+                "query_complexity": "single_hop",
+                "latency": {
+                  "intent_ms": 0.2190999803133309,
+                  "routing_ms": 0.12209999840706587,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "node": "generate_answer",
+              "output": {
+                "final_answer": "离线固定证据答复",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.2190999803133309,
+                  "routing_ms": 0.12209999840706587,
+                  "retrieval_ms": 5.9760999865829945,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.1412000274285674,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                }
+              }
+            },
+            {
+              "node": "check_faithfulness",
+              "output": {}
+            }
+          ],
+          "final_answer": "离线固定证据答复"
+        }
+      ]
+    }
+  ]
+}

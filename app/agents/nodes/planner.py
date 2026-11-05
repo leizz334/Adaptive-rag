@@ -7,6 +7,7 @@ import re
 
 from pydantic import ValidationError
 
+from app.agents.goals import SKU_RE, read_tools
 from app.agents.state import AgentState
 from app.core.exceptions import LLMOutputError, LLMProviderError
 from app.core.ids import new_id
@@ -27,6 +28,7 @@ _ALWAYS_AVAILABLE = ("search_knowledge", "escalate_to_human")
 _ORDER_TOOLS = {
     "get_order",
     "get_order_items",
+    "get_refund_status",
     "track_shipment",
     "cancel_order",
     "create_return_request",
@@ -98,7 +100,13 @@ class Planner:
                 response_format={"type": "json_object"},
             )
             plan = parse_model(response.content, AgentPlan)
-            plan = _sanitize_plan(plan, self._registry, allowed, order_ids=targets)
+            plan = _sanitize_plan(
+                plan,
+                self._registry,
+                allowed,
+                order_ids=targets,
+                sku_ids=tuple(s.upper() for s in SKU_RE.findall(raw)),
+            )
             if plan.rationale == "clarification_required":
                 return plan
             if plan.steps:
@@ -114,28 +122,17 @@ class Planner:
 
 def _skill_tools(skill: dict, query: str) -> list[str]:
     tools = list(skill.get("tools", []))
-    if skill.get("name") == "order_tracking":
+    if skill.get("name") == "order_tracking" or not any(
+        _explicit_write_request(query, n)
+        for n in ("cancel_order", "create_refund_request", "create_return_request")
+    ):
         tools = _evidence_tools(query) or tools
     return tools
 
 
 def _evidence_tools(query: str) -> list[str]:
     """Small evidence capabilities, independent of utterance shape or entity ID."""
-    raw = query.partition("（会话指代：")[0]
-    shipment = any(
-        cue in raw for cue in ("物流", "快递", "轨迹", "运单", "运输", "配送", "到哪", "节点")
-    )
-    # A shipment's 状态 is not also a request for the order header.
-    header_text = re.sub(r"(?:物流|快递|运输|配送)(?:的)?状态", "", raw)
-    header = any(cue in header_text for cue in ("状态", "金额", "支付", "付款")) or bool(
-        re.search(r"(?:是否|有没有)(?:已经|已)?发货", header_text)
-    )
-    items = any(cue in raw for cue in ("商品明细", "订单明细", "买了什么", "数量", "定制"))
-    return (
-        (["get_order"] if header else [])
-        + (["track_shipment"] if shipment else [])
-        + (["get_order_items"] if items else [])
-    )
+    return read_tools(query)
 
 
 def _order_ids(query: str) -> tuple[str, ...]:
@@ -157,6 +154,7 @@ def _allowed_tools(skill: dict | None, registry: ToolRegistry, query: str = "") 
         if not remainder and _evidence_tools(query) == ["get_order"]:
             tools = ["get_order"]
     allowed = {name for name in tools if name in names}
+    allowed.update(name for name in read_tools(query) if name in names)
     allowed.update(name for name in _ALWAYS_AVAILABLE if name in names)
     return allowed or None
 
@@ -175,6 +173,7 @@ def _sanitize_plan(
     allowed: set[str] | None,
     *,
     order_ids: tuple[str, ...] = (),
+    sku_ids: tuple[str, ...] | None = None,
 ) -> AgentPlan:
     names = set(registry.names())
     if allowed is not None:
@@ -187,6 +186,11 @@ def _sanitize_plan(
         if step.tool_name not in names:
             continue
         tool = registry.get(step.tool_name)
+        if "sku" in tool.input_model.model_fields and sku_ids is not None:
+            if not sku_ids:
+                return AgentPlan(steps=[], rationale="clarification_required")
+            if step.arguments.get("sku") not in sku_ids:
+                continue
         if "order_id" in tool.input_model.model_fields:
             if not order_ids:
                 return AgentPlan(steps=[], rationale="clarification_required")
@@ -236,7 +240,13 @@ def skill_to_plan(
         # The offline scripted fixture has a names-only Catalog; real registries
         # additionally validate concrete tool contracts before any dispatch.
         return (
-            _sanitize_plan(plan, registry, None, order_ids=targets)
+            _sanitize_plan(
+                plan,
+                registry,
+                None,
+                order_ids=targets,
+                sku_ids=tuple(s.upper() for s in SKU_RE.findall(raw)),
+            )
             if hasattr(registry, "get")
             else plan
         )
@@ -244,6 +254,9 @@ def skill_to_plan(
 
 
 def _tool_arguments(tool_name: str, query: str) -> dict:
+    if tool_name in {"check_inventory", "get_product_detail", "get_warranty"}:
+        skus = tuple(dict.fromkeys(s.upper() for s in SKU_RE.findall(query)))
+        return {"sku": skus[0]} if len(skus) == 1 else {}
     if tool_name in {"search_knowledge"}:
         return {"query": query[:200]}
     if tool_name in {"search_products"}:
@@ -253,6 +266,7 @@ def _tool_arguments(tool_name: str, query: str) -> dict:
     if tool_name in {
         "get_order",
         "get_order_items",
+        "get_refund_status",
         "track_shipment",
         "cancel_order",
         "create_return_request",
@@ -268,6 +282,25 @@ def _tool_arguments(tool_name: str, query: str) -> dict:
 
 
 def _knowledge_fallback(query: str, registry: ToolRegistry) -> AgentPlan:
+    required = read_tools(query)
+    if required:
+        steps: list[PlanStep] = []
+        for name in required:
+            if name not in registry.names():
+                continue
+            arguments = _tool_arguments(name, query)
+            if not arguments:
+                return AgentPlan(steps=[], rationale="clarification_required")
+            steps.append(
+                PlanStep(
+                    step_id=len(steps) + 1,
+                    goal="read_evidence",
+                    tool_name=name,
+                    arguments=arguments,
+                )
+            )
+        if steps:
+            return AgentPlan(steps=steps[:6], rationale="read_evidence")
     if "search_knowledge" in registry.names():
         return AgentPlan(
             steps=[
@@ -357,6 +390,12 @@ async def planner_node(state: AgentState, planner: Planner) -> dict:
 
 
 def _explicit_write_request(query: str, tool_name: str) -> bool:
+    if re.search(r"(?:才|的话|则|否则|再).{0,8}(?:取消|退款|退货)", query):
+        return False
+    if re.search(
+        r"(?:不要|不用|不必|别|不想|无需)(?!了|要了)[^，,。；;]{0,6}(?:取消|退款|退货)", query
+    ) or any(c in query for c in ("如果", "假如", "若是", "若未", "满足条件")):
+        return False
     if any(
         cue in query
         for cue in (

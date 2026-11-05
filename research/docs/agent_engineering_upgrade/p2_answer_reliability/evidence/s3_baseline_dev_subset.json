@@ -1,0 +1,103 @@
+{
+  "schema_version": "agent-scenarios-v2.1",
+  "scenarios": [
+    {
+      "id": "dv01",
+      "family": "explicit_header",
+      "user_goal": "自然口吻核对订单当前阶段，仅需订单头事实",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "劳烦核实 ORD10001 目前走到哪个订单阶段了。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv05",
+      "family": "shipment_only",
+      "user_goal": "只要快递轨迹，Owner验证由追踪工具内部执行",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "只展示 ORD10001 最新快递轨迹即可，不用展开订单金额。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv06",
+      "family": "combined_evidence",
+      "user_goal": "两个不同证据目标都必须满足",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10001 的订单状态和物流轨迹都请核对后告诉我。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              },
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv07",
+      "family": "order_items",
+      "user_goal": "商品明细已有专用工具，不是物流问题",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "查下 ORD10002 里面有哪些商品，各买了几件。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order_items",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    }
+  ]
+}

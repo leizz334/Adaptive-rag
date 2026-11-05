@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import re
 
+from app.agents.goals import SKU_RE, read_tools
 from app.core.constants import PROMPT_VERSION_COMPLEXITY
 from app.core.enums import IntentLabel, QueryComplexity, RetrievalStrategy
 from app.core.exceptions import LLMOutputError, LLMProviderError
@@ -57,6 +58,13 @@ def rule_based_complexity(query: str, intent: IntentResult) -> ComplexityResult:
             strategy=RetrievalStrategy.REFUSE,
             confidence=0.95,
             rationale="intent_out_of_scope",
+        )
+    if SKU_RE.search(text) and read_tools(text):
+        return ComplexityResult(
+            complexity=QueryComplexity.TOOL_REQUIRED,
+            strategy=RetrievalStrategy.AGENT,
+            confidence=0.95,
+            rationale="explicit_sku_business_evidence",
         )
     if intent.label in {IntentLabel.GREETING, IntentLabel.CHITCHAT}:
         return ComplexityResult(
@@ -159,7 +167,9 @@ class AdaptiveRouter:
                 and parsed.strategy == RetrievalStrategy.AGENT
             ):
                 return fallback
-            if _ORDER_ID.search(query) and fallback.strategy == RetrievalStrategy.AGENT:
+            if (
+                _ORDER_ID.search(query) or SKU_RE.search(query)
+            ) and fallback.strategy == RetrievalStrategy.AGENT:
                 return fallback
             return parsed
         except (LLMProviderError, LLMOutputError):

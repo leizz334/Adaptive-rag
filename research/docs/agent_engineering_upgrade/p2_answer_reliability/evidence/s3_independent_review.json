@@ -1,0 +1,91 @@
+{
+  "schema_version": "p2-s3-independent-review-v1",
+  "scope": "Uncommitted S3 goal/routing/planner/answer completion changes",
+  "restrictions": {
+    "production_edits": false,
+    "commits_created": false,
+    "paid_api_calls": 0,
+    "blind_data_access": false,
+    "prior_s2_review_overwritten": false
+  },
+  "validation": {
+    "command": "D:/MiniAnaconda3/envs/adaptive-rag/python.exe -m pytest tests/unit/test_p2s_goal_review.py -q --tb=short",
+    "exit_code": 1,
+    "result": "5 failed, 1 warning in 2.60s",
+    "raw_output": "FFFFF                                                                    [100%]\r\n================================== FAILURES ===================================\r\n_________ test_current_sku_does_not_accept_planner_invented_other_sku _________\r\ntests\\unit\\test_p2s_goal_review.py:42: in test_current_sku_does_not_accept_planner_invented_other_sku\r\n    assert all(step.arguments.get(\"sku\") != \"SKU-OTHER\" for step in plan.steps), plan\r\nE   AssertionError: AgentPlan(steps=[PlanStep(step_id=1, goal='���', tool_name='check_inventory', arguments={'sku': 'SKU-OTHER'}, needs_retrieval=False)], rationale='')\r\nE   assert False\r\nE    +  where False = all(<generator object test_current_sku_does_not_accept_planner_invented_other_sku.<locals>.<genexpr> at 0x000001C0E020A880>)\r\n__________ test_product_price_goal_does_not_accept_name_only_answer ___________\r\ntests\\unit\\test_p2s_goal_review.py:53: in test_product_price_goal_does_not_accept_name_only_answer\r\n    assert \"12.50\" in result[\"final_answer\"], result\r\nE   AssertionError: {'citations': [], 'extra': {'generation_error': None, 'goal_coverage': [{'conveyed': True, 'goal': '��Ʒ����', 'observed':...ent_ms=0.0, routing_ms=0.0, retrieval_ms=0.0, rerank_ms=0.0, tool_ms=0.0, llm_ms=1.492900017183274, total_ms=0.0), ...}\r\nE   assert '12.50' in 'SKU-CURRENT�������Ƕ�����'\r\n________ test_other_sku_evidence_does_not_cover_current_inventory_goal ________\r\ntests\\unit\\test_p2s_goal_review.py:60: in test_other_sku_evidence_does_not_cover_current_inventory_goal\r\n    assert not any(row[\"observed\"] or row[\"conveyed\"] for row in result), result\r\nE   AssertionError: [{'conveyed': True, 'goal': '���', 'observed': True, 'tool': 'check_inventory'}]\r\nE   assert not True\r\nE    +  where True = any(<generator object test_other_sku_evidence_does_not_cover_current_inventory_goal.<locals>.<genexpr> at 0x000001C0E022BB90>)\r\n____ test_unresolved_only_if_write_does_not_create_unconditional_proposal _____\r\ntests\\unit\\test_p2s_goal_review.py:71: in test_unresolved_only_if_write_does_not_create_unconditional_proposal\r\n    assert not result.get(\"pending_action\"), result\r\nE   AssertionError: {'pending_action': ActionProposal(action_id='act_cdfe63c0757246ada27b082024edbbcc', tool_name='cancel_order', argument...ame='cancel_order', arguments={'order_id': 'ORD7000'}, needs_retrieval=False)], rationale='skill:order_cancellation;')}\r\nE   assert not ActionProposal(action_id='act_cdfe63c0757246ada27b082024edbbcc', tool_name='cancel_order', arguments={'order_id': 'ORD7000'}, risk=<ToolRisk.DESTRUCTIVE: 'destructive'>, summary='ȷ�Ϻ�ȡ������ ORD7000����˶Զ����š�')\r\nE    +  where ActionProposal(action_id='act_cdfe63c0757246ada27b082024edbbcc', tool_name='cancel_order', arguments={'order_id': 'ORD7000'}, risk=<ToolRisk.DESTRUCTIVE: 'destructive'>, summary='ȷ�Ϻ�ȡ������ ORD7000����˶Զ����š�') = <built-in method get of dict object at 0x000001C0E02ECD40>('pending_action')\r\nE    +    where <built-in method get of dict object at 0x000001C0E02ECD40> = {'pending_action': ActionProposal(action_id='act_cdfe63c0757246ada27b082024edbbcc', tool_name='cancel_order', argument...ame='cancel_order', arguments={'order_id': 'ORD7000'}, needs_retrieval=False)], rationale='skill:order_cancellation;')}.get\r\n________ test_explicit_sku_coupon_policy_does_not_require_order_lookup ________\r\ntests\\unit\\test_p2s_goal_review.py:77: in test_explicit_sku_coupon_policy_does_not_require_order_lookup\r\n    assert routed.strategy in {RetrievalStrategy.SINGLE, RetrievalStrategy.MULTI}, routed\r\nE   AssertionError: ComplexityResult(complexity=<QueryComplexity.TOOL_REQUIRED: 'tool_required'>, strategy=<RetrievalStrategy.AGENT: 'agent'>, confidence=0.95, rationale='explicit_sku_business_evidence')\r\nE   assert <RetrievalStrategy.AGENT: 'agent'> in {<RetrievalStrategy.MULTI: 'multi'>, <RetrievalStrategy.SINGLE: 'single'>}\r\nE    +  where <RetrievalStrategy.AGENT: 'agent'> = ComplexityResult(complexity=<QueryComplexity.TOOL_REQUIRED: 'tool_required'>, strategy=<RetrievalStrategy.AGENT: 'agent'>, confidence=0.95, rationale='explicit_sku_business_evidence').strategy\r\n============================== warnings summary ===============================\r\n..\\..\\..\\..\\MiniAnaconda3\\envs\\adaptive-rag\\Lib\\site-packages\\langgraph\\checkpoint\\base\\__init__.py:18\r\n  D:\\MiniAnaconda3\\envs\\adaptive-rag\\Lib\\site-packages\\langgraph\\checkpoint\\base\\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.\r\n    from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n=========================== short test summary info ===========================\r\nFAILED tests/unit/test_p2s_goal_review.py::test_current_sku_does_not_accept_planner_invented_other_sku\r\nFAILED tests/unit/test_p2s_goal_review.py::test_product_price_goal_does_not_accept_name_only_answer\r\nFAILED tests/unit/test_p2s_goal_review.py::test_other_sku_evidence_does_not_cover_current_inventory_goal\r\nFAILED tests/unit/test_p2s_goal_review.py::test_unresolved_only_if_write_does_not_create_unconditional_proposal\r\nFAILED tests/unit/test_p2s_goal_review.py::test_explicit_sku_coupon_policy_does_not_require_order_lookup\r\n5 failed, 1 warning in 2.60s\r\n"
+  },
+  "findings": [
+    {
+      "id": "S3-R1",
+      "priority": "P1",
+      "source": "app/agents/nodes/planner.py:_sanitize_plan",
+      "test": "test_current_sku_does_not_accept_planner_invented_other_sku",
+      "repro": "Query SKU-CURRENT inventory, synthetic planner outputs check_inventory(sku=SKU-OTHER). Sanitizer accepts the invented SKU.",
+      "impact": "Successful execution may read and answer about a different product from the one requested.",
+      "minimal_fix": "Validate explicit current SKU references for SKU-scoped tools alongside existing order-ID grounding. Reject or clarify incompatible SKU arguments; retain schema validation."
+    },
+    {
+      "id": "S3-R2",
+      "priority": "P1",
+      "source": "app/agents/goals.py:coverage",
+      "test": "test_other_sku_evidence_does_not_cover_current_inventory_goal",
+      "repro": "Query SKU-CURRENT inventory with successful SKU-OTHER inventory7 result and SKU-OTHER answer. Both observed and conveyed are true.",
+      "impact": "Wrong-product evidence satisfies current-product completeness; downstream faithfulness can still support the wrong-product statement.",
+      "minimal_fix": "Bind read goals/evidence to explicit current entities, including SKU and order IDs when available, before assessing conveyance."
+    },
+    {
+      "id": "S3-R3",
+      "priority": "P2",
+      "source": "app/agents/goals.py:read_goals product-detail goal",
+      "test": "test_product_price_goal_does_not_accept_name_only_answer",
+      "repro": "Price query with actual price1250/name-earphone output and name-only model answer is retained; coverage says conveyed true.",
+      "impact": "The primary requested price is omitted without invoking completeness recovery.",
+      "minimal_fix": "Represent price_cents as its own product-price obligation; keep tool dispatch deduplicated. Assess each requested output field independently."
+    },
+    {
+      "id": "S3-R4",
+      "priority": "P1",
+      "source": "app/agents/nodes/planner.py:_explicit_write_request/planner_node",
+      "test": "test_unresolved_only_if_write_does_not_create_unconditional_proposal",
+      "repro": "SKU-CURRENT库存超过10件才取消订单ORD7000 plus model cancel-only plan produces unconditional cancel proposal without an inventory observation.",
+      "impact": "The user's stock predicate disappears from the confirmation proposal. Cancellation DB guards do not enforce that stock predicate.",
+      "qualification": "HITL confirmation still applies. No owner bypass or direct unconfirmed write was demonstrated.",
+      "minimal_fix": "Conservatively recognize common conditional forms such as 才 and 的话; remove unresolved write steps while allowing needed reads or clarification, without inventing condition execution."
+    },
+    {
+      "id": "S3-R5",
+      "priority": "P2",
+      "source": "app/agents/goals.py:read_goals and app/retrieval/adaptive.py explicit-SKU route",
+      "test": "test_explicit_sku_coupon_policy_does_not_require_order_lookup",
+      "repro": "SKU-CURRENT的优惠券优惠金额规则是什么 forces AGENT because 金额 becomes get_order, despite static coupon-policy intent and no order target.",
+      "impact": "A static policy request becomes an order-data task and can demand an unrelated order ID.",
+      "minimal_fix": "Scope order-total cues to order/payment requests; avoid forcing SKU business routing from unrelated generic monetary policy keywords."
+    }
+  ],
+  "other_review_conclusions": [
+    "No scorer/Gold imports were introduced in reviewed product goal/routing/answer modules.",
+    "Product name/description additions are explicitly quoted as tool source text. No demonstrated instruction execution or permission bypass was found; this review makes no blanket semantic safety claim.",
+    "Existing owner and HITL enforcement code was not modified by this reviewer."
+  ],
+  "regrade": {
+  "command": "D:/MiniAnaconda3/envs/adaptive-rag/python.exe -m pytest tests/unit/test_p2s_goal_review.py tests/unit/test_p2s_safety_review.py -q --tb=short",
+  "exit_code": 0,
+  "result": "6 passed, 1 warning in 1.75s",
+  "raw_output": "......                                                                   [100%]\r\n============================== warnings summary ===============================\r\n..\\..\\..\\..\\MiniAnaconda3\\envs\\adaptive-rag\\Lib\\site-packages\\langgraph\\checkpoint\\base\\__init__.py:18\r\n  D:\\MiniAnaconda3\\envs\\adaptive-rag\\Lib\\site-packages\\langgraph\\checkpoint\\base\\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.\r\n    from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n6 passed, 1 warning in 1.75s\r\n",
+  "findings": {
+    "S3-R1": "PASS: invented SKU rejected",
+    "S3-R2": "PASS: wrong-SKU evidence excluded",
+    "S3-R3": "PASS: price omission recovered",
+    "S3-R4": "PASS: unresolved conditional write proposal blocked",
+    "S3-R5": "PASS: coupon policy retains knowledge routing"
+  },
+  "additional_test": {
+    "test": "test_model_refused_flag_does_not_bypass_answer_validation",
+    "result": "PASS",
+    "qualification": "Implementer-authored reproduction independently rerun. Verifies unsupported cancellation/refund claims do not bypass faithfulness via model refused=true."
+  },
+  "remaining_demonstrated_material_issues": "None among these six reproduced cases",
+  "limits": "Focused synthetic regrade only. No broad new safety, semantic calibration, real API, or holdout claims."
+},
+  "assessment": "All five original independent S3 reproductions and the additional implementer-authored refusal-safety reproduction pass when independently rerun. Original RED evidence is retained. No remaining demonstrated material issue among these six focused cases."
+}

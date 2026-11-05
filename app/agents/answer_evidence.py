@@ -75,6 +75,10 @@ def verified_facts(results: list[ToolResult]) -> list[str]:
             if type(inventory) is int and inventory >= 0:
                 facts.append(f"商品 {sku} 库存：{inventory}件。")
             if result.name == "get_product_detail":
+                for key, field_label in (("name", "名称"), ("description", "资料")):
+                    value = data.get(key)
+                    if isinstance(value, str) and value.strip() and len(value) <= 300:
+                        facts.append(f"商品 {sku} {field_label}（工具原文）：{value.strip()!r}。")
                 price = _money(data.get("price_cents"))
                 if price:
                     facts.append(f"商品 {sku} 价格：{price}。")

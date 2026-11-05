@@ -81,7 +81,7 @@ async def faithfulness_node(
 ) -> dict:
     answer = state.get("final_answer") or ""
     if (
-        state.get("refused")
+        (state.get("refused") and not (state.get("extra") or {}).get("generated_refusal"))
         or (state.get("selected_context") and state["selected_context"].needs_clarification)
         or state.get("pending_action")
         or (state.get("extra") or {}).get("missing_order_id")
