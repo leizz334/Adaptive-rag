@@ -8,6 +8,7 @@ import time
 
 from app.agents.state import AgentState
 from app.config.settings import Settings
+from app.core.enums import ToolRisk
 from app.core.exceptions import (
     AppError,
     InvalidRequestError,
@@ -62,10 +63,22 @@ async def execute_with_fallback(
     context: ToolContext,
     registry: ToolRegistry,
     query: str,
+    *,
+    read_cache: dict[str, ToolResult] | None = None,
 ) -> ToolResult:
     """Execution-layer fallback: a failed read tool tries the next mapped tool."""
+
+    async def observe(candidate: Tool, arguments: dict) -> ToolResult:
+        key = _fingerprint(candidate.name, arguments)
+        if read_cache is not None and candidate.risk == ToolRisk.READ and key in read_cache:
+            return read_cache[key]
+        value = await candidate.run(arguments, context)
+        if read_cache is not None and candidate.risk == ToolRisk.READ and value.success:
+            read_cache[key] = value
+        return value
+
     try:
-        result = await tool.run(step.arguments, context)
+        result = await observe(tool, step.arguments)
         if result.success:
             return result
         raise ToolExecutionError(result.error or f"{tool.name} returned success=false")
@@ -80,16 +93,21 @@ async def execute_with_fallback(
                 continue
             fallback = registry.get(fallback_name)
             try:
-                fb_result = await fallback.run(
-                    fallback_arguments(fallback_name, step, query), context
+                arguments = fallback_arguments(fallback_name, step, query)
+                reused = (
+                    read_cache is not None
+                    and fallback.risk == ToolRisk.READ
+                    and _fingerprint(fallback.name, arguments) in read_cache
                 )
+                fb_result = await observe(fallback, arguments)
                 if fb_result.success:
                     merged = {
                         **fb_result.output,
                         "fallback_from": tool.name,
                         "fallback_error": last_error,
                     }
-                    TOOL_CALLS.labels(tool=fallback_name, status="fallback").inc()
+                    if not reused:
+                        TOOL_CALLS.labels(tool=fallback_name, status="fallback").inc()
                     return fb_result.model_copy(update={"output": merged})
             except (ToolPermissionError, InvalidRequestError):
                 raise
@@ -122,6 +140,9 @@ async def executor_node(
     )
     idempotency = IdempotencyRepository(get_db_session())
     calls = 0
+    seen_reads: set[str] = set()
+    read_cache: dict[str, ToolResult] = {}
+    hidden_orders: set[str] = set()
     query = state["user_query"]
     for step in plan.steps:
         if (
@@ -132,6 +153,15 @@ async def executor_node(
         if not step.tool_name:
             continue
         tool = registry.get(step.tool_name)
+        read_key = _fingerprint(tool.name, step.arguments)
+        order_id = step.arguments.get("order_id")
+        if tool.risk != ToolRisk.READ:
+            # Even an attempted write is a freshness barrier. Writes retain the
+            # existing confirmation/idempotency path and are never deduplicated.
+            seen_reads.clear()
+            read_cache.clear()
+        elif read_key in seen_reads or (isinstance(order_id, str) and order_id in hidden_orders):
+            continue
         confirmed = bool(state.get("confirm_action_id"))
         try:
             if tool.risk in WRITE_RISKS:
@@ -156,10 +186,25 @@ async def executor_node(
                     results.append(result)
                     calls += 1
                     continue
-            result = await execute_with_fallback(tool, step, context, registry, query)
+            result = await execute_with_fallback(
+                tool, step, context, registry, query, read_cache=read_cache
+            )
+            if tool.risk == ToolRisk.READ and result.success:
+                # Cache only the capability that actually produced evidence;
+                # a fallback to order headers does not satisfy shipment events.
+                seen_reads.add(
+                    _fingerprint(
+                        result.name,
+                        step.arguments
+                        if result.name == tool.name
+                        else fallback_arguments(result.name, step, query),
+                    )
+                )
             TOOL_CALLS.labels(tool=tool.name, status="ok").inc()
             results.append(result)
         except ToolPermissionError as exc:
+            if tool.risk == ToolRisk.READ:
+                seen_reads.add(read_key)
             record_tool(
                 tool.name,
                 step.arguments,
@@ -172,6 +217,13 @@ async def executor_node(
                 ToolResult(name=tool.name, success=False, error=str(exc), risk=tool.risk)
             )
         except AppError as exc:
+            if tool.risk == ToolRisk.READ and isinstance(exc, InvalidRequestError):
+                seen_reads.add(read_key)
+                # get_visible_order deliberately hides both missing and foreign
+                # orders with this exact contract. Other argument/business
+                # errors must not block a different read capability.
+                if isinstance(order_id, str) and exc.message == f"order not found: {order_id}":
+                    hidden_orders.add(order_id)
             if exc.error_code.value == "IDEMPOTENCY_CONFLICT":
                 TOOL_CALLS.labels(tool=tool.name, status="conflict").inc()
             else:

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="6" time="2.265" timestamp="2026-11-05T14:00:53.278322+08:00" hostname="LAPTOP-OMRADJBO"><testcase classname="tests.unit.test_p2r_decision" name="test_real_model_keeps_capabilities_for_unrecognized_additional_obligations[\u8bf7\u6838\u5b9e ORD86420 \u7684\u652f\u4ed8\u72b6\u6001\uff0c\u5e76\u5217\u51fa\u5305\u88f9\u6bcf\u6b21\u4e2d\u8f6c\u7684\u65f6\u95f4\u548c\u5730\u70b9]" time="0.009"><failure message="AssertionError: assert ['get_order'] == ['get_order',...ack_shipment']&#10;  &#10;  Right contains one more item: 'track_shipment'&#10;  Use -v to get more diff">query = '请核实 ORD86420 的支付状态，并列出包裹每次中转的时间和地点'
+
+    @pytest.mark.parametrize(
+        "query",
+        [
+            "请核实 ORD86420 的支付状态，并列出包裹每次中转的时间和地点",
+            "订单 ORD86420 的状态，以及承运商最后一次装卸记录",
+        ],
+    )
+    async def test_real_model_keeps_capabilities_for_unrecognized_additional_obligations(query):
+        model = ModelPlan([
+            model_step(name, {"order_id": "ORD86420"})
+            for name in ("get_order", "track_shipment")
+        ])
+        plan = await Planner(model, registry()).create_plan(query, "order_inquiry", "")
+&gt;       assert names(plan) == ["get_order", "track_shipment"]
+E       AssertionError: assert ['get_order'] == ['get_order',...ack_shipment']
+E         
+E         Right contains one more item: 'track_shipment'
+E         Use -v to get more diff
+
+tests\unit\test_p2r_decision.py:248: AssertionError</failure></testcase><testcase classname="tests.unit.test_p2r_decision" name="test_real_model_keeps_capabilities_for_unrecognized_additional_obligations[\u8ba2\u5355 ORD86420 \u7684\u72b6\u6001\uff0c\u4ee5\u53ca\u627f\u8fd0\u5546\u6700\u540e\u4e00\u6b21\u88c5\u5378\u8bb0\u5f55]" time="0.007"><failure message="AssertionError: assert ['get_order'] == ['get_order',...ack_shipment']&#10;  &#10;  Right contains one more item: 'track_shipment'&#10;  Use -v to get more diff">query = '订单 ORD86420 的状态，以及承运商最后一次装卸记录'
+
+    @pytest.mark.parametrize(
+        "query",
+        [
+            "请核实 ORD86420 的支付状态，并列出包裹每次中转的时间和地点",
+            "订单 ORD86420 的状态，以及承运商最后一次装卸记录",
+        ],
+    )
+    async def test_real_model_keeps_capabilities_for_unrecognized_additional_obligations(query):
+        model = ModelPlan([
+            model_step(name, {"order_id": "ORD86420"})
+            for name in ("get_order", "track_shipment")
+        ])
+        plan = await Planner(model, registry()).create_plan(query, "order_inquiry", "")
+&gt;       assert names(plan) == ["get_order", "track_shipment"]
+E       AssertionError: assert ['get_order'] == ['get_order',...ack_shipment']
+E         
+E         Right contains one more item: 'track_shipment'
+E         Use -v to get more diff
+
+tests\unit\test_p2r_decision.py:248: AssertionError</failure></testcase><testcase classname="tests.unit.test_p2r_decision" name="test_planner_preserves_bounded_repeated_steps_until_actual_result_is_known" time="0.007"><failure message="AssertionError: assert ['get_order'] == ['get_order', 'get_order']&#10;  &#10;  Right contains one more item: 'get_order'&#10;  Use -v to get more diff">async def test_planner_preserves_bounded_repeated_steps_until_actual_result_is_known():
+        model = ModelPlan([model_step("get_order", {"order_id": "ORD24680"})] * 2)
+        plan = await Planner(model, registry()).create_plan("订单 ORD24680 状态", "order_inquiry", "")
+&gt;       assert names(plan) == ["get_order", "get_order"]
+E       AssertionError: assert ['get_order'] == ['get_order', 'get_order']
+E         
+E         Right contains one more item: 'get_order'
+E         Use -v to get more diff
+
+tests\unit\test_p2r_decision.py:255: AssertionError</failure></testcase><testcase classname="tests.unit.test_p2r_decision" name="test_transient_failed_read_does_not_suppress_next_bounded_planned_attempt" time="0.008"><failure message="assert 1 == 2&#10; +  where 1 = &lt;test_p2r_decision.test_transient_failed_read_does_not_suppress_next_bounded_planned_attempt.&lt;locals&gt;.Flaky object at 0x000001DC1AF040D0&gt;.calls">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001DC1AF07B50&gt;
+
+    async def test_transient_failed_read_does_not_suppress_next_bounded_planned_attempt(monkeypatch):
+        class Flaky(Observation):
+            async def execute(self, parsed, context):
+                self.calls += 1
+                if self.calls == 1:
+                    raise ToolExecutionError("temporary backend failure")
+                return ToolResult(name=self.name, success=True, output={"status": "paid"})
+    
+        read = Flaky("get_order")
+        result = await execute(monkeypatch, [read], [step("get_order", 1), step("get_order", 2)])
+&gt;       assert read.calls == 2
+E       assert 1 == 2
+E        +  where 1 = &lt;test_p2r_decision.test_transient_failed_read_does_not_suppress_next_bounded_planned_attempt.&lt;locals&gt;.Flaky object at 0x000001DC1AF040D0&gt;.calls
+
+tests\unit\test_p2r_decision.py:268: AssertionError</failure></testcase><testcase classname="tests.unit.test_p2r_decision" name="test_owner_not_found_stops_other_reads_only_for_same_entity_this_turn" time="0.008"><failure message="AssertionError: assert (1 == 1 and ['ORD24680', 'ORD13579'] == ['ORD13579']&#10; +  where 1 = &lt;test_p2r_decision.Observation object at 0x000001DC1ADF2CD0&gt;.calls&#10;  &#10;  At index 0 diff: 'ORD24680' != 'ORD13579'&#10;  Left contains one more item: 'ORD13579'&#10;  Use -v to get more diff)">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001DC1ADF3550&gt;
+
+    async def test_owner_not_found_stops_other_reads_only_for_same_entity_this_turn(monkeypatch):
+        class TargetRead(Observation):
+            def __init__(self):
+                super().__init__("track_shipment")
+                self.targets = []
+    
+            async def execute(self, parsed, context):
+                self.targets.append(parsed.order_id)
+                return await super().execute(parsed, context)
+    
+        denied = Observation("get_order", failure=InvalidRequestError("order not found: ORD24680"))
+        tracking = TargetRead()
+        await execute(monkeypatch, [denied, tracking], [
+            step("get_order", 1), step("track_shipment", 2), step("track_shipment", 3, "ORD13579"),
+        ])
+&gt;       assert denied.calls == 1 and tracking.targets == ["ORD13579"]
+E       AssertionError: assert (1 == 1 and ['ORD24680', 'ORD13579'] == ['ORD13579']
+E        +  where 1 = &lt;test_p2r_decision.Observation object at 0x000001DC1ADF2CD0&gt;.calls
+E         
+E         At index 0 diff: 'ORD24680' != 'ORD13579'
+E         Left contains one more item: 'ORD13579'
+E         Use -v to get more diff)
+
+tests\unit\test_p2r_decision.py:287: AssertionError</failure></testcase><testcase classname="tests.unit.test_p2r_decision" name="test_generic_invalid_request_does_not_block_other_read_capabilities" time="0.006" /></testsuite></testsuites>

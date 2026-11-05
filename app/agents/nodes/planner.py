@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import json
 import re
+
+from pydantic import ValidationError
 
 from app.agents.state import AgentState
 from app.core.exceptions import LLMOutputError, LLMProviderError
@@ -19,8 +22,16 @@ from app.skills.loader import match_skill
 from app.tools.permissions import WRITE_RISKS
 from app.tools.registry import ToolRegistry
 
-_ORDER_RE = re.compile(r"ORD\d+", re.IGNORECASE)
+_ORDER_RE = re.compile(r"(?<![A-Za-z0-9_])ORD\d+(?![A-Za-z0-9_])", re.IGNORECASE)
 _ALWAYS_AVAILABLE = ("search_knowledge", "escalate_to_human")
+_ORDER_TOOLS = {
+    "get_order",
+    "get_order_items",
+    "track_shipment",
+    "cancel_order",
+    "create_return_request",
+    "create_refund_request",
+}
 
 
 class Planner:
@@ -33,15 +44,31 @@ class Planner:
         for tool in self._registry.all():
             if allowed is not None and tool.name not in allowed:
                 continue
-            lines.append(f"- {tool.name}: {tool.description} [{tool.risk.value}]")
+            schema = json.dumps(tool.input_model.model_json_schema(), ensure_ascii=False)
+            lines.append(
+                f"- {tool.name}: {tool.description} [{tool.risk.value}] arguments={schema}"
+            )
         return "\n".join(lines) or "- (no tools)"
 
-    async def create_plan(self, query: str, intent_label: str, summary: str) -> AgentPlan:
-        skill = match_skill(query, intent_label)
-        allowed = _allowed_tools(skill, self._registry, query)
+    async def create_plan(
+        self,
+        query: str,
+        intent_label: str,
+        summary: str,
+        *,
+        raw_query: str | None = None,
+        order_ids: tuple[str, ...] = (),
+    ) -> AgentPlan:
+        raw = raw_query if raw_query is not None else query.partition("（会话指代：")[0]
+        targets = _order_ids(raw) or order_ids or _order_ids(query)
+        # Ground references without changing which evidence the raw user requested.
+        if targets and not _order_ids(query):
+            query += "（会话指代：订单 " + ", ".join(targets) + "）"
+        skill = match_skill(raw, intent_label)
+        allowed = _allowed_tools(skill, self._registry, raw)
         if isinstance(self._llm, OfflineLLMProvider):
             return (
-                skill_to_plan(skill, query, self._registry)
+                skill_to_plan(skill, query, self._registry, raw_query=raw, order_ids=targets)
                 if skill
                 else _knowledge_fallback(query, self._registry)
             )
@@ -58,7 +85,11 @@ class Planner:
                     {
                         "role": "user",
                         "content": PLANNER_USER.format(
-                            query=query, intent=intent_label, summary=summary or "无"
+                            query=query,
+                            intent=intent_label,
+                            summary=summary or "无",
+                            raw_query=raw,
+                            order_ids=json.dumps(targets),
                         ),
                     },
                 ],
@@ -67,7 +98,9 @@ class Planner:
                 response_format={"type": "json_object"},
             )
             plan = parse_model(response.content, AgentPlan)
-            plan = _sanitize_plan(plan, self._registry, allowed)
+            plan = _sanitize_plan(plan, self._registry, allowed, order_ids=targets)
+            if plan.rationale == "clarification_required":
+                return plan
             if plan.steps:
                 if skill:
                     plan.rationale = f"skill:{skill['name']};{plan.rationale}"
@@ -75,38 +108,55 @@ class Planner:
         except (LLMOutputError, LLMProviderError):
             pass
         if skill:
-            return skill_to_plan(skill, query, self._registry)
+            return skill_to_plan(skill, query, self._registry, raw_query=raw, order_ids=targets)
         return _knowledge_fallback(query, self._registry)
 
 
 def _skill_tools(skill: dict, query: str) -> list[str]:
     tools = list(skill.get("tools", []))
-    # The appended entity hint requests a fresh observation; it is not a new
-    # user request for status or shipment events.
-    requested = query.partition("（会话指代：")[0]
-    requested = re.sub(r"[\s?？!！。]+", "", requested)
-    # Positive recognition of a complete, narrow order-header request. Unknown
-    # wording or additional goals preserve shipment capability; a keyword such
-    # as 状态 alone cannot prove that shipment evidence is unnecessary.
-    status_only = re.fullmatch(
-        r"(?:(?:请|帮我|麻烦)?(?:查询|查看|查|看下|看看))?"
-        r"(?:我的)?(?:订单)?(?:ORD\d+|它|这单|那单|该订单|这个订单|那个订单)"
-        r"(?:(?:现在|当前|最新|目前)?(?:的)?(?:是)?(?:什么)?(?:状态|支付状态|发货状态)"
-        r"|(?:的)?金额(?:是多少|多少)?"
-        r"|(?:现在|当前)?(?:是否|有没有)?已?(?:支付|发货)(?:成功|了)?吗?)",
-        requested,
-        re.I,
-    )
-    if skill.get("name") == "order_tracking" and status_only:
-        tools = [name for name in tools if name != "track_shipment"]
+    if skill.get("name") == "order_tracking":
+        tools = _evidence_tools(query) or tools
     return tools
+
+
+def _evidence_tools(query: str) -> list[str]:
+    """Small evidence capabilities, independent of utterance shape or entity ID."""
+    raw = query.partition("（会话指代：")[0]
+    shipment = any(
+        cue in raw for cue in ("物流", "快递", "轨迹", "运单", "运输", "配送", "到哪", "节点")
+    )
+    # A shipment's 状态 is not also a request for the order header.
+    header_text = re.sub(r"(?:物流|快递|运输|配送)(?:的)?状态", "", raw)
+    header = any(cue in header_text for cue in ("状态", "金额", "支付", "付款")) or bool(
+        re.search(r"(?:是否|有没有)(?:已经|已)?发货", header_text)
+    )
+    items = any(cue in raw for cue in ("商品明细", "订单明细", "买了什么", "数量", "定制"))
+    return (
+        (["get_order"] if header else [])
+        + (["track_shipment"] if shipment else [])
+        + (["get_order_items"] if items else [])
+    )
+
+
+def _order_ids(query: str) -> tuple[str, ...]:
+    return tuple(dict.fromkeys(value.upper() for value in _ORDER_RE.findall(query)))
 
 
 def _allowed_tools(skill: dict | None, registry: ToolRegistry, query: str = "") -> set[str] | None:
     if skill is None:
         return None
     names = set(registry.names())
-    allowed = {name for name in _skill_tools(skill, query) if name in names}
+    tools = _skill_tools(skill, query)
+    if skill.get("name") == "order_tracking":
+        # Capability keywords cannot establish that an additional, unfamiliar
+        # obligation is absent. Keep candidates unless every query token is
+        # accounted for by the small order-header contract below.
+        tools = list(dict.fromkeys([*skill.get("tools", []), *tools]))
+        remainder = _ORDER_RE.sub("", query)
+        remainder = re.sub(r"订单|的|支付|付款|状态|金额|[\s?？!！。,.，]", "", remainder)
+        if not remainder and _evidence_tools(query) == ["get_order"]:
+            tools = ["get_order"]
+    allowed = {name for name in tools if name in names}
     allowed.update(name for name in _ALWAYS_AVAILABLE if name in names)
     return allowed or None
 
@@ -123,30 +173,73 @@ def _sanitize_plan(
     plan: AgentPlan,
     registry: ToolRegistry,
     allowed: set[str] | None,
+    *,
+    order_ids: tuple[str, ...] = (),
 ) -> AgentPlan:
     names = set(registry.names())
     if allowed is not None:
         names = names & allowed
-    steps = [step for step in plan.steps if not step.tool_name or step.tool_name in names]
+    steps = []
+    for step in plan.steps:
+        if not step.tool_name:
+            steps.append(step)
+            continue
+        if step.tool_name not in names:
+            continue
+        tool = registry.get(step.tool_name)
+        if "order_id" in tool.input_model.model_fields:
+            if not order_ids:
+                return AgentPlan(steps=[], rationale="clarification_required")
+            if step.arguments.get("order_id") not in order_ids:
+                continue
+        try:
+            arguments = tool.input_model.model_validate(step.arguments).model_dump(mode="json")
+        except ValidationError:
+            continue
+        # Only execution can establish whether an observation succeeded. Keep
+        # bounded repeated steps so a transient failure can still be repaired.
+        steps.append(step.model_copy(update={"arguments": arguments}))
     return AgentPlan(steps=steps[:6], rationale=plan.rationale)
 
 
-def skill_to_plan(skill: dict, query: str, registry: ToolRegistry) -> AgentPlan:
+def skill_to_plan(
+    skill: dict,
+    query: str,
+    registry: ToolRegistry,
+    *,
+    raw_query: str | None = None,
+    order_ids: tuple[str, ...] = (),
+) -> AgentPlan:
     steps: list[PlanStep] = []
-    for index, tool_name in enumerate(_skill_tools(skill, query), start=1):
+    raw = raw_query if raw_query is not None else query.partition("（会话指代：")[0]
+    targets = _order_ids(raw) or order_ids or _order_ids(query)
+    for tool_name in _skill_tools(skill, raw):
         if tool_name not in registry.names():
             continue
-        steps.append(
-            PlanStep(
-                step_id=index,
-                goal=skill["name"],
-                tool_name=tool_name,
-                arguments=_tool_arguments(tool_name, query),
-                needs_retrieval=tool_name == "search_knowledge",
+        if tool_name in _ORDER_TOOLS and not targets:
+            return AgentPlan(steps=[], rationale="clarification_required")
+        for target in targets if tool_name in _ORDER_TOOLS else (None,):
+            arguments = _tool_arguments(tool_name, raw)
+            if target:
+                arguments["order_id"] = target
+            steps.append(
+                PlanStep(
+                    step_id=len(steps) + 1,
+                    goal=skill["name"],
+                    tool_name=tool_name,
+                    arguments=arguments,
+                    needs_retrieval=tool_name == "search_knowledge",
+                )
             )
-        )
     if steps:
-        return AgentPlan(steps=steps, rationale=f"skill:{skill['name']}")
+        plan = AgentPlan(steps=steps[:6], rationale=f"skill:{skill['name']}")
+        # The offline scripted fixture has a names-only Catalog; real registries
+        # additionally validate concrete tool contracts before any dispatch.
+        return (
+            _sanitize_plan(plan, registry, None, order_ids=targets)
+            if hasattr(registry, "get")
+            else plan
+        )
     return _knowledge_fallback(query, registry)
 
 
@@ -210,13 +303,19 @@ async def planner_node(state: AgentState, planner: Planner) -> dict:
             "pending_action": None,
         }
     intent = state.get("intent")
+    context = state.get("selected_context")
     plan = await planner.create_plan(
         node_query(state),
         intent.label.value if intent else "faq_policy",
         node_context(state, "planner")
         if state.get("memory_managed")
         else state.get("summary") or "",
+        raw_query=state["user_query"],
+        order_ids=getattr(context, "order_ids", ())
+        or ((context.order_id,) if context and context.order_id else ()),
     )
+    if plan.rationale == "clarification_required":
+        return {"plan": plan, "pending_action": None, "extra": {"missing_order_id": True}}
     write_steps = [
         step
         for step in plan.steps

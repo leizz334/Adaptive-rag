@@ -1,0 +1,35 @@
+{
+  "schema_version": "p2r-red-evidence-v1",
+  "phase": "P2-R3",
+  "evidence": "ACTUALLY_EXECUTED_PRE_IMPLEMENTATION",
+  "command": "conda run --no-capture-output -n adaptive-rag python -B -m pytest tests/unit/test_p2r_decision.py -q",
+  "exit_code": 1,
+  "failed": 14,
+  "passed": 4,
+  "elapsed_pytest_seconds": 3.31,
+  "record_origin": "Observed live command output in this agent session before production edits; initial run did not write JUnit XML.",
+  "source_basis": "Unchanged pre-R3 Planner, Executor, and PlannerPrompt; no production edits existed when this command ran.",
+  "failed_behavior_counts": {
+    "header_paraphrase_surplus_shipment": 2,
+    "shipment_only_surplus_order_header": 1,
+    "explicit_item_capability_missing": 1,
+    "explicit_multi_target_not_expanded": 1,
+    "raw_goal_binding_api_missing": 1,
+    "missing_placeholder_or_foreign_order_arguments_not_validated": 3,
+    "missing_target_not_clarified": 1,
+    "tool_catalog_argument_schema_missing": 1,
+    "same_turn_duplicate_read_repeated": 1,
+    "deterministic_rejection_repeated": 1,
+    "successful_fallback_read_repeated": 1
+  },
+  "passing_controls": [
+    "mixed_order_header_and_transport_history_capabilities",
+    "transport_history_retains_shipment_capability",
+    "distinct_order_targets_are_not_deduplicated",
+    "read_after_write_is_fresh_and_unconfirmed_write_is_denied"
+  ],
+  "synthetic_order_ids": ["ORD24680", "ORD13579"],
+  "frozen_datasets_modified": false,
+  "blind_dataset_read_or_run": false,
+  "paid_api_calls": 0
+}

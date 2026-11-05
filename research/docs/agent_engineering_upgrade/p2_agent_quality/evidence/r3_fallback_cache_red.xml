@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="2.174" timestamp="2026-11-05T14:08:14.350634+08:00" hostname="LAPTOP-OMRADJBO"><testcase classname="tests.unit.test_p2r_decision" name="test_repeated_transient_primary_reuses_successful_fallback_only_within_turn" time="0.008"><failure message="assert (2 == 2 and 2 == 1)&#10; +  where 2 = &lt;test_p2r_decision.Observation object at 0x000001EA9F6D4890&gt;.calls&#10; +  and   2 = &lt;test_p2r_decision.Observation object at 0x000001EA9F66B450&gt;.calls">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001EA9F7CFD10&gt;
+
+    async def test_repeated_transient_primary_reuses_successful_fallback_only_within_turn(monkeypatch):
+        primary = Observation("track_shipment", failure=ToolExecutionError("temporary tracking outage"))
+        fallback = Observation("get_order")
+        steps = [step("track_shipment", 1), step("track_shipment", 2)]
+        with capture_tools() as events:
+            await execute(monkeypatch, [primary, fallback], steps)
+&gt;       assert primary.calls == 2 and fallback.calls == 1
+E       assert (2 == 2 and 2 == 1)
+E        +  where 2 = &lt;test_p2r_decision.Observation object at 0x000001EA9F6D4890&gt;.calls
+E        +  and   2 = &lt;test_p2r_decision.Observation object at 0x000001EA9F66B450&gt;.calls
+
+tests\unit\test_p2r_decision.py:325: AssertionError</failure></testcase><testcase classname="tests.unit.test_p2r_decision" name="test_write_attempt_invalidates_successful_fallback_observation" time="0.008" /></testsuite></testsuites>
