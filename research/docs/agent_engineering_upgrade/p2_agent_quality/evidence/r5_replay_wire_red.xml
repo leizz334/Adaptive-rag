@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="2.316" timestamp="2026-11-05T15:11:32.917393+08:00" hostname="LAPTOP-OMRADJBO"><testcase classname="research.docs.agent_engineering_upgrade.p2_agent_quality.replay_paid" name="test_replay_matches_wire_bytes_from_actual_frozen_provider" time="0.010"><failure message="_p2r_replay_frozen_helpers.SafetyStop: request sequence hash mismatch; final answer unknown">async def test_replay_matches_wire_bytes_from_actual_frozen_provider():
+        settings = Settings(
+            _env_file=None, deepseek_api_key="synthetic-never-real",
+            deepseek_base_url="https://replay.invalid", deepseek_model="synthetic",
+            llm_max_retries=1,
+        )
+        requests = []
+        row = synthetic_row()
+    
+        def record(request):
+            requests.append(request)
+            return httpx.Response(200, json=row["response"], request=request)
+    
+        with capture.offline_network():
+            async with httpx.AsyncClient(base_url=settings.deepseek_base_url, transport=httpx.MockTransport(record)) as client:
+                frozen = old.Provider.__new__(old.Provider)
+                old.DeepSeekProvider.__init__(frozen, settings, client=client)
+                await frozen.generate([{"role": "user", "content": "synthetic"}], max_tokens=32)
+            original = requests[0]
+            assert b'"temperature":0.0' in original.content
+            row["request_sha256"] = old.digest({"method": original.method, "url": str(original.url), "body": json.loads(original.content)})
+            replayed = ReplayLLM(settings, [row])
+            try:
+&gt;               value = await replayed.generate([{"role": "user", "content": "synthetic"}], max_tokens=32)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+research\docs\agent_engineering_upgrade\p2_agent_quality\replay_paid.py:362: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+research\docs\agent_engineering_upgrade\p2_agent_quality\replay_paid.py:99: in generate
+    return await super().generate(
+app\observability\tracing.py:201: in call
+    result = await fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+app\providers\deepseek.py:119: in generate
+    return await with_exponential_backoff(
+app\core\retry.py:44: in with_exponential_backoff
+    return await operation()
+           ^^^^^^^^^^^^^^^^^
+app\observability\tracing.py:201: in call
+    result = await fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+app\providers\deepseek.py:76: in _call
+    response = await self._client.post(
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\site-packages\httpx\_client.py:1859: in post
+    return await self.request(
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\site-packages\httpx\_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\site-packages\httpx\_client.py:1629: in send
+    response = await self._send_handling_auth(
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\site-packages\httpx\_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\site-packages\httpx\_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\site-packages\httpx\_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\site-packages\httpx\_transports\mock.py:34: in handle_async_request
+    response = self.handler(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;replay_paid.ReplayLLM object at 0x0000013FE4B6C2D0&gt;
+request = &lt;Request('POST', 'https://replay.invalid/chat/completions')&gt;
+
+    def reply(self, request):
+        try:
+            body = json.loads(request.content)
+        except ValueError:
+            raise SafetyStop("non-JSON replay request") from None
+        actual = old.digest({"method": request.method, "url": str(request.url), "body": body})
+        if self.sequence &gt;= len(self.rows):
+            self.failure = {
+                "sequence": self.sequence,
+                "actual_sha256": actual,
+                "kind": "missing_completed_response",
+            }
+            raise SafetyStop("missing completed response; no live transport exists")
+        row = self.rows[self.sequence]
+        if actual != row["request_sha256"]:
+            self.failure = {
+                "sequence": self.sequence,
+                "stage": row.get("stage"),
+                "expected_sha256": row["request_sha256"],
+                "actual_sha256": actual,
+                "kind": "request_hash_mismatch",
+            }
+&gt;           raise SafetyStop("request sequence hash mismatch; final answer unknown")
+E           _p2r_replay_frozen_helpers.SafetyStop: request sequence hash mismatch; final answer unknown
+
+research\docs\agent_engineering_upgrade\p2_agent_quality\replay_paid.py:94: SafetyStop</failure></testcase></testsuite></testsuites>

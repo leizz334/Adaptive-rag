@@ -1,0 +1,203 @@
+{
+  "evidence_origin": "LOCAL_REPLAY_OF_COMPLETED_PAID_RESPONSES",
+  "variant": "R1",
+  "source_root": "D:\\Code\\Adaptive-rag\\.worktrees\\p2-agent-quality",
+  "source_sha256": "9fea56bb57b29502563b846681a8e24e4a4e4ba8f222688a62bfb7d2c2fb732d",
+  "live_artifact_hashes": {
+    "experiment_config.json": "40c5661be8a6a188bf2e1f95dbfdebe00d2343a0356dacfe150b6f048260a606",
+    "requests.json": "b329baef876d375920c76fbfb03c991ac5969740ac81bbcbeea31061ff635df6",
+    "results.json": "a7cd09caaec24c69612bae160441f82890fcc655de028c0f58dff115394b89f7"
+  },
+  "network": "FORBIDDEN_MOCK_TRANSPORT_ONLY",
+  "historical_trace": false,
+  "new_paid_api_calls": 0,
+  "new_paid_tokens": 0,
+  "usage_note": "Any usage in replayed service traces belongs to already billed durable responses; never add it to global usage totals.",
+  "excluded_pending_groups": [
+    "P2R-B05:R0:0"
+  ],
+  "groups": [
+    {
+      "group": "dv01:R1:0",
+      "case_id": "dv01",
+      "variant": "R1",
+      "original_status": "PASS",
+      "evidence_origin": "LOCAL_REPLAY_OF_COMPLETED_PAID_RESPONSES",
+      "status": "EXACT_REPLAY_COMPLETE",
+      "replayed_responses": 5,
+      "oracle_equivalent": true,
+      "answer_stages": [
+        {
+          "turn": 0,
+          "generated_answer": "已核实 ORD10001：当前订单状态为“已发货（shipped）”，发货时间为 2026-11-03T06:34:33（UTC），运单号为 SF1234567890，收货城市为上海；暂未记录签收时间，说明订单仍在运输途中。如需进一步确认物流节点，可提供运单号或转人工核实。",
+          "final_service_answer": "已核实 ORD10001：当前订单状态为“已发货（shipped）”，发货时间为 2026-11-03T06:34:33（UTC），运单号为 SF1234567890，收货城市为上海；暂未记录签收时间，说明订单仍在运输途中。如需进一步确认物流节点，可提供运单号或转人工核实。",
+          "changed_after_generate": false,
+          "service_error": null
+        }
+      ]
+    },
+    {
+      "group": "dv06:R1:0",
+      "case_id": "dv06",
+      "variant": "R1",
+      "original_status": "PASS",
+      "evidence_origin": "LOCAL_REPLAY_OF_COMPLETED_PAID_RESPONSES",
+      "status": "EXACT_REPLAY_COMPLETE",
+      "replayed_responses": 5,
+      "oracle_equivalent": true,
+      "answer_stages": [
+        {
+          "turn": 0,
+          "generated_answer": "已核对订单 ORD10001：\n\n- 订单状态：已发货（shipped）\n- 商品：降噪耳机 Pro ×1，订单金额 ¥299.00\n- 下单/支付时间：2026-11-02\n- 发货时间：2026-11-03\n- 运单号：SF1234567890（顺丰）\n- 收货城市：上海\n- 物流轨迹：2026-11-02 仓库处理；2026-11-03 运输中（in_transit）\n- 妥投时间：暂无记录\n\n说明：本次没有可引用的检索证据片段，以上信息来自实时订单与物流工具查询结果。物流轨迹目前只有两条节点，后续可凭运单号继续跟踪；如长时间未更新，建议转人工核查承运商。",
+          "final_service_answer": "订单 ORD10001 的物流状态：运输中。",
+          "changed_after_generate": true,
+          "service_error": null
+        }
+      ]
+    },
+    {
+      "group": "dv08:R1:0",
+      "case_id": "dv08",
+      "variant": "R1",
+      "original_status": "PASS",
+      "evidence_origin": "LOCAL_REPLAY_OF_COMPLETED_PAID_RESPONSES",
+      "status": "EXACT_REPLAY_COMPLETE",
+      "replayed_responses": 10,
+      "oracle_equivalent": true,
+      "answer_stages": [
+        {
+          "turn": 0,
+          "generated_answer": "订单 ORD10003 当前状态为「已支付（paid）」，下单与支付时间为 2026-11-05 01:34:33；订单商品为「纯棉T恤」1 件，单价 79.00 元，合计 79.00 元，非定制商品；收货城市为杭州。该订单尚未发货：shipped_at、delivered_at 均为空，运单号暂未生成。如需了解预计发货时效，当前证据不足以确认，建议提供下单渠道或转人工进一步核实。",
+          "final_service_answer": "订单 ORD10003 当前状态为「已支付（paid）」，下单与支付时间为 2026-11-05 01:34:33；订单商品为「纯棉T恤」1 件，单价 79.00 元，合计 79.00 元，非定制商品；收货城市为杭州。该订单尚未发货：shipped_at、delivered_at 均为空，运单号暂未生成。如需了解预计发货时效，当前证据不足以确认，建议提供下单渠道或转人工进一步核实。",
+          "changed_after_generate": false,
+          "service_error": null
+        },
+        {
+          "turn": 1,
+          "generated_answer": "已实时查询订单 ORD10003，当前状态为“已支付（paid）”，尚未发货。\n\n- 商品：纯棉T恤（SKU-TEE）×1，单价 79.00 元\n- 订单金额：79.00 元\n- 下单/支付时间：2026-11-05 01:34:33\n- 收货城市：杭州\n- 发货时间、送达时间、运单号：暂无（shipped_at、delivered_at、tracking_no 均为空）\n\n说明：本次无检索证据可引用，以上信息来自实时订单查询工具结果；如需进一步确认发货进度，请提供下单手机号或联系人工客服核实。",
+          "final_service_answer": "已实时查询订单 ORD10003，当前状态为“已支付（paid）”，尚未发货。\n\n- 商品：纯棉T恤（SKU-TEE）×1，单价 79.00 元\n- 订单金额：79.00 元\n- 下单/支付时间：2026-11-05 01:34:33\n- 收货城市：杭州\n- 发货时间、送达时间、运单号：暂无（shipped_at、delivered_at、tracking_no 均为空）\n\n说明：本次无检索证据可引用，以上信息来自实时订单查询工具结果；如需进一步确认发货进度，请提供下单手机号或联系人工客服核实。",
+          "changed_after_generate": false,
+          "service_error": null
+        }
+      ]
+    },
+    {
+      "group": "dv16:R1:0",
+      "case_id": "dv16",
+      "variant": "R1",
+      "original_status": "PASS",
+      "evidence_origin": "LOCAL_REPLAY_OF_COMPLETED_PAID_RESPONSES",
+      "status": "EXACT_REPLAY_COMPLETE",
+      "replayed_responses": 10,
+      "oracle_equivalent": true,
+      "answer_stages": [
+        {
+          "turn": 0,
+          "generated_answer": "订单 ORD10003 当前状态为「已付款（paid）」，下单并支付时间为 2026-11-05 01:34:33。订单内容：纯棉T恤（SKU-TEE）1 件，单价 79.00 元，合计 79.00 元，非定制商品，收货城市为杭州。该订单尚未发货（shipped_at 为空），暂无运单号。如需进一步催促发货或查询物流，请提供订单号并转人工客服跟进。",
+          "final_service_answer": "订单 ORD10003 当前状态为「已付款（paid）」，下单并支付时间为 2026-11-05 01:34:33。订单内容：纯棉T恤（SKU-TEE）1 件，单价 79.00 元，合计 79.00 元，非定制商品，收货城市为杭州。该订单尚未发货（shipped_at 为空），暂无运单号。如需进一步催促发货或查询物流，请提供订单号并转人工客服跟进。",
+          "changed_after_generate": false,
+          "service_error": null
+        },
+        {
+          "turn": 1,
+          "generated_answer": "已实时查询订单 ORD10003。系统当前状态为「已发货（shipped）」，商品为纯棉T恤 1 件，订单金额 79.00 元，下单及支付时间均为 2026-11-05。需要注意的是：系统未返回发货时间（shipped_at 为空）和运单号（tracking_no 为空），因此我无法提供物流单号或预计送达时间。建议您稍后再次查询物流信息，或提供运单号以便核对；若长时间无物流更新，可转人工协助向承运方核实。",
+          "final_service_answer": "已实时查询订单 ORD10003。系统当前状态为「已发货（shipped）」，商品为纯棉T恤 1 件，订单金额 79.00 元，下单及支付时间均为 2026-11-05。需要注意的是：系统未返回发货时间（shipped_at 为空）和运单号（tracking_no 为空），因此我无法提供物流单号或预计送达时间。建议您稍后再次查询物流信息，或提供运单号以便核对；若长时间无物流更新，可转人工协助向承运方核实。",
+          "changed_after_generate": false,
+          "service_error": null
+        }
+      ]
+    },
+    {
+      "group": "dv18:R1:0",
+      "case_id": "dv18",
+      "variant": "R1",
+      "original_status": "PASS",
+      "evidence_origin": "LOCAL_REPLAY_OF_COMPLETED_PAID_RESPONSES",
+      "status": "EXACT_REPLAY_COMPLETE",
+      "replayed_responses": 6,
+      "oracle_equivalent": true,
+      "answer_stages": [
+        {
+          "turn": 0,
+          "generated_answer": "确认后将取消订单 ORD10003。请核对订单号。",
+          "final_service_answer": "确认后将取消订单 ORD10003。请核对订单号。",
+          "changed_after_generate": false,
+          "service_error": null
+        },
+        {
+          "turn": 1,
+          "generated_answer": "已为你发起该笔订单（ORD10003）的取消确认，系统返回状态为「已取消」。由于取消属于不可逆操作，最终结果请以订单页显示为准；若订单页仍显示待处理，或你需要恢复订单，请补充订单号后转人工核实。",
+          "final_service_answer": "订单 ORD10003 已取消。",
+          "changed_after_generate": true,
+          "service_error": null
+        }
+      ]
+    },
+    {
+      "group": "P2R-B31:R1:0",
+      "case_id": "P2R-B31",
+      "variant": "R1",
+      "original_status": "FAIL",
+      "evidence_origin": "LOCAL_REPLAY_OF_COMPLETED_PAID_RESPONSES",
+      "status": "EXACT_REPLAY_COMPLETE",
+      "replayed_responses": 10,
+      "oracle_equivalent": true,
+      "answer_stages": [
+        {
+          "turn": 0,
+          "generated_answer": "订单 ORD10003 当前状态为「已支付」（paid）：包含纯棉T恤（SKU-TEE）1 件，单价 79.00 元，订单总额 79.00 元；下单与支付时间为 2026-11-05 01:34，收货城市为杭州。该订单尚未发货（shipped_at 为空），也暂无运单号，因此目前无法提供物流信息。如需进一步核实发货安排，建议转人工处理。",
+          "final_service_answer": "订单 ORD10003 当前状态为「已支付」（paid）：包含纯棉T恤（SKU-TEE）1 件，单价 79.00 元，订单总额 79.00 元；下单与支付时间为 2026-11-05 01:34，收货城市为杭州。该订单尚未发货（shipped_at 为空），也暂无运单号，因此目前无法提供物流信息。如需进一步核实发货安排，建议转人工处理。",
+          "changed_after_generate": false,
+          "service_error": null
+        },
+        {
+          "turn": 1,
+          "generated_answer": "现有证据无法确认 SKU-HEADSET 的具体保修月数，也没有关于人为损坏是否在保修范围内的条款。可以确定的是：按现行通用保修政策，数码配件保修 12 个月，自订单签收日起算（warranty_1f88fd5f_00）；但证据未明确耳机是否归入“数码配件”，因此不能据此直接回答你的问题。关于人为损坏，证据中仅有饰品条款提及“不含磕碰变形”（warranty_jewelry_579c96b6_01），不适用于耳机，故不作推断。建议你提供订单号，由人工核实该 SKU 的保修政策及损坏判定标准。",
+          "final_service_answer": "当前未配置生成模型，以下是《warranty_battery》的资料节选，请核对原文：\n\n> 滤芯、刀头、墨水等耗材无保修,质量问题(未开封即损坏)签收 7 日内可退。",
+          "changed_after_generate": true,
+          "service_error": null
+        }
+      ]
+    },
+    {
+      "group": "P2R-B01:R1:0",
+      "case_id": "P2R-B01",
+      "variant": "R1",
+      "original_status": "PASS",
+      "evidence_origin": "LOCAL_REPLAY_OF_COMPLETED_PAID_RESPONSES",
+      "status": "EXACT_REPLAY_COMPLETE",
+      "replayed_responses": 5,
+      "oracle_equivalent": true,
+      "answer_stages": [
+        {
+          "turn": 0,
+          "generated_answer": "已核对订单 ORD10003：\n\n- 付款状态：已支付（status = paid），支付时间为 2026-11-05 01:34:33\n- 订单合计：79.00 元（total_cents = 7900）\n- 商品明细：纯棉T恤 ×1，单价 79.00 元，非定制\n- 物流状态：尚未发货，暂无运单号\n\n说明：以上信息来自订单系统实时查询结果（get_order）。如需进一步确认款项到账流水或催发货，请提供付款渠道信息，或告知需要转人工核实。",
+          "final_service_answer": "已核对订单 ORD10003：\n\n- 付款状态：已支付（status = paid），支付时间为 2026-11-05 01:34:33\n- 订单合计：79.00 元（total_cents = 7900）\n- 商品明细：纯棉T恤 ×1，单价 79.00 元，非定制\n- 物流状态：尚未发货，暂无运单号\n\n说明：以上信息来自订单系统实时查询结果（get_order）。如需进一步确认款项到账流水或催发货，请提供付款渠道信息，或告知需要转人工核实。",
+          "changed_after_generate": false,
+          "service_error": null
+        }
+      ]
+    },
+    {
+      "group": "P2R-B10:R1:0",
+      "case_id": "P2R-B10",
+      "variant": "R1",
+      "original_status": "PASS",
+      "evidence_origin": "LOCAL_REPLAY_OF_COMPLETED_PAID_RESPONSES",
+      "status": "EXACT_REPLAY_COMPLETE",
+      "replayed_responses": 5,
+      "oracle_equivalent": true,
+      "answer_stages": [
+        {
+          "turn": 0,
+          "generated_answer": "已分别查询，以下按订单列出：\n\n【ORD10002】\n运单号：YT998877\n城市：北京\n物流节点：\n- 2026-10-16：warehouse（仓库处理）\n- 2026-10-17：in_transit（运输中），运单号 YT998877\n- 2026-10-24：delivered（已送达）\n\n【ORD10001】\n运单号：SF1234567890\n城市：上海\n物流节点：\n- 2026-11-02：warehouse（仓库处理）\n- 2026-11-03：in_transit（运输中），运单号 SF1234567890\n\n以上为两个订单各自的物流信息，未混用。",
+          "final_service_answer": "已分别查询，以下按订单列出：\n\n【ORD10002】\n运单号：YT998877\n城市：北京\n物流节点：\n- 2026-10-16：warehouse（仓库处理）\n- 2026-10-17：in_transit（运输中），运单号 YT998877\n- 2026-10-24：delivered（已送达）\n\n【ORD10001】\n运单号：SF1234567890\n城市：上海\n物流节点：\n- 2026-11-02：warehouse（仓库处理）\n- 2026-11-03：in_transit（运输中），运单号 SF1234567890\n\n以上为两个订单各自的物流信息，未混用。",
+          "changed_after_generate": false,
+          "service_error": null
+        }
+      ]
+    }
+  ],
+  "complete": 8,
+  "unknown": 0
+}

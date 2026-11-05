@@ -157,14 +157,20 @@ def pending_value(service):
     }
 
 
-async def evaluate_cases(cases, *, dataset_sha256, mode="M2", provider="scripted"):
+async def evaluate_cases(
+    cases, *, dataset_sha256, mode="M2", provider="scripted", llm_factory=None
+):
     """Reusable evaluator for synthetic cases. Calls the original scorer unchanged.
 
     Run sequentially: graph references are patched process-wide during the scope,
     while node callbacks are isolated by ContextVar per actual service turn.
     """
-    if mode != "M2" or provider not in {"scripted", "rule"}:
-        raise ValueError("Runtime evidence supports M2 and offline scripted/rule providers only")
+    if mode != "M2" or provider not in {"scripted", "rule", "replay"}:
+        raise ValueError(
+            "Runtime evidence supports M2 and offline scripted/rule/replay providers only"
+        )
+    if (provider == "replay") != (llm_factory is not None):
+        raise ValueError("An external llm_factory is required exclusively for offline replay")
     all_results, traces = [], []
     initial_state = ChatService._initial_state
     invoke = ChatService._invoke
@@ -248,7 +254,11 @@ async def evaluate_cases(cases, *, dataset_sha256, mode="M2", provider="scripted
             providers = []
 
             def factory(_providers=providers):
-                value = ScriptedProvider() if provider == "scripted" else OfflineLLMProvider()
+                value = (
+                    llm_factory()
+                    if llm_factory
+                    else (ScriptedProvider() if provider == "scripted" else OfflineLLMProvider())
+                )
                 _providers.append(value)
                 return value
 

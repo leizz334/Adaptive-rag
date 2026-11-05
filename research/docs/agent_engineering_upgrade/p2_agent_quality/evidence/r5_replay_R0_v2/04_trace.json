@@ -1,0 +1,3102 @@
+{
+  "schema_version": "p2r-runtime-evidence-v1",
+  "model_evaluation": "OFFLINE",
+  "real_model_evaluation": "NOT_RUN",
+  "evidence_origin": "LOCAL_REPLAY_OF_COMPLETED_PAID_RESPONSES",
+  "provider": "OFFLINE_REPLAY",
+  "mode": "M2",
+  "paid_api_calls": 0,
+  "paid_tokens": 0,
+  "raw_scorer_model_evaluation_note": "NOT_RUN is the original contract default; this run is explicitly OFFLINE",
+  "cases": 1,
+  "passed": 1,
+  "results": [
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "dv18",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 300.6936999736354
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "hitl_confirmed_cancel",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "90b347e5-b570-4042-ab5a-a3070308cabc",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": true,
+            "refused": false
+          },
+          {
+            "turn": 1,
+            "error": null,
+            "root_run_id": "ab0915d9-391f-43f8-b4f5-628b33c5d6eb",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "cancel_order",
+            "arguments": {
+              "order_id": "ORD10003"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 1,
+            "output": {
+              "order_id": "ORD10003",
+              "status": "cancelled"
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "cancelled"
+        },
+        "span_count": 41,
+        "known_limitation": null
+      },
+      "dataset_sha256": "634317b75ed575321c66feed9e8b6347d70ca2b9a03208493f62797c812e7bb4",
+      "model_evaluation": "NOT_RUN"
+    }
+  ],
+  "traces": [
+    {
+      "case_id": "dv18",
+      "evidence_origin": "LOCAL_REPLAY_OF_COMPLETED_PAID_RESPONSES",
+      "turns": [
+        {
+          "turn": 0,
+          "trace_id": "offline_dv18_0",
+          "request": {
+            "message": "请取消订单 ORD10003，我不要这笔了。",
+            "session_id": null,
+            "user_id": "u_demo",
+            "stream": false,
+            "confirm_action_id": null,
+            "idempotency_key": null
+          },
+          "nodes": [
+            {
+              "sequence": 0,
+              "node": "apply_guardrail",
+              "input": {
+                "trace_id": "offline_dv18_0",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "请取消订单 ORD10003，我不要这笔了。",
+                "resolved_query": "请取消订单 ORD10003，我不要这笔了。",
+                "selected_context": {
+                  "effective_query": "请取消订单 ORD10003，我不要这笔了。",
+                  "order_id": "ORD10003",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.0,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {}
+            },
+            {
+              "sequence": 1,
+              "node": "classify_intent",
+              "input": {
+                "trace_id": "offline_dv18_0",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "请取消订单 ORD10003，我不要这笔了。",
+                "resolved_query": "请取消订单 ORD10003，我不要这笔了。",
+                "selected_context": {
+                  "effective_query": "请取消订单 ORD10003，我不要这笔了。",
+                  "order_id": "ORD10003",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.0,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.98,
+                  "prompt_version": "intent_v3"
+                },
+                "latency": {
+                  "intent_ms": 0.7183999987319112,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 2,
+              "node": "route_complexity",
+              "input": {
+                "trace_id": "offline_dv18_0",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "请取消订单 ORD10003，我不要这笔了。",
+                "resolved_query": "请取消订单 ORD10003，我不要这笔了。",
+                "selected_context": {
+                  "effective_query": "请取消订单 ORD10003，我不要这笔了。",
+                  "order_id": "ORD10003",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.98,
+                  "prompt_version": "intent_v3"
+                },
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.7183999987319112,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.7183999987319112,
+                  "routing_ms": 0.48990000505000353,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 3,
+              "node": "plan_tasks",
+              "input": {
+                "trace_id": "offline_dv18_0",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "请取消订单 ORD10003，我不要这笔了。",
+                "resolved_query": "请取消订单 ORD10003，我不要这笔了。",
+                "selected_context": {
+                  "effective_query": "请取消订单 ORD10003，我不要这笔了。",
+                  "order_id": "ORD10003",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.98,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.7183999987319112,
+                  "routing_ms": 0.48990000505000353,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_cancellation",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "order_cancellation",
+                      "tool_name": "cancel_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                }
+              }
+            },
+            {
+              "sequence": 4,
+              "node": "execute_tools",
+              "input": {
+                "trace_id": "offline_dv18_0",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "请取消订单 ORD10003，我不要这笔了。",
+                "resolved_query": "请取消订单 ORD10003，我不要这笔了。",
+                "selected_context": {
+                  "effective_query": "请取消订单 ORD10003，我不要这笔了。",
+                  "order_id": "ORD10003",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.98,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_cancellation",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "order_cancellation",
+                      "tool_name": "cancel_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [],
+                "pending_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.7183999987319112,
+                  "routing_ms": 0.48990000505000353,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "tool_results": []
+              }
+            },
+            {
+              "sequence": 5,
+              "node": "generate_answer",
+              "input": {
+                "trace_id": "offline_dv18_0",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "请取消订单 ORD10003，我不要这笔了。",
+                "resolved_query": "请取消订单 ORD10003，我不要这笔了。",
+                "selected_context": {
+                  "effective_query": "请取消订单 ORD10003，我不要这笔了。",
+                  "order_id": "ORD10003",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.98,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_cancellation",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "order_cancellation",
+                      "tool_name": "cancel_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [],
+                "pending_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.7183999987319112,
+                  "routing_ms": 0.48990000505000353,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "final_answer": "确认后将取消订单 ORD10003。请核对订单号。",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.7183999987319112,
+                  "routing_ms": 0.48990000505000353,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.002900022082030773,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 6,
+              "node": "check_faithfulness",
+              "input": {
+                "trace_id": "offline_dv18_0",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "请取消订单 ORD10003，我不要这笔了。",
+                "resolved_query": "请取消订单 ORD10003，我不要这笔了。",
+                "selected_context": {
+                  "effective_query": "请取消订单 ORD10003，我不要这笔了。",
+                  "order_id": "ORD10003",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.98,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_cancellation",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "order_cancellation",
+                      "tool_name": "cancel_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [],
+                "pending_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "final_answer": "确认后将取消订单 ORD10003。请核对订单号。",
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.7183999987319112,
+                  "routing_ms": 0.48990000505000353,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.002900022082030773,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {}
+            },
+            {
+              "sequence": 7,
+              "node": "compact_memory",
+              "input": {
+                "trace_id": "offline_dv18_0",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "请取消订单 ORD10003，我不要这笔了。",
+                "resolved_query": "请取消订单 ORD10003，我不要这笔了。",
+                "selected_context": {
+                  "effective_query": "请取消订单 ORD10003，我不要这笔了。",
+                  "order_id": "ORD10003",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.98,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "order_cancellation",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "order_cancellation",
+                      "tool_name": "cancel_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [],
+                "pending_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "final_answer": "确认后将取消订单 ORD10003。请核对订单号。",
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.7183999987319112,
+                  "routing_ms": 0.48990000505000353,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.002900022082030773,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "请取消订单 ORD10003，我不要这笔了。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                    "name": null
+                  }
+                ],
+                "tool_results": [],
+                "summary": ""
+              }
+            }
+          ],
+          "pending_before": {},
+          "initial_state": {
+            "trace_id": "offline_dv18_0",
+            "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+            "user_id": "u_demo",
+            "user_query": "请取消订单 ORD10003，我不要这笔了。",
+            "resolved_query": "请取消订单 ORD10003，我不要这笔了。",
+            "selected_context": {
+              "effective_query": "请取消订单 ORD10003，我不要这笔了。",
+              "order_id": "ORD10003",
+              "needs_clarification": false,
+              "history": [],
+              "source": "current_user",
+              "summary": "",
+              "max_chars": 1800
+            },
+            "messages": [],
+            "summary": "",
+            "memory_managed": true,
+            "memory_preferences": {},
+            "retrieved_chunks": [],
+            "tool_results": [],
+            "citations": [],
+            "refused": false,
+            "step_count": 0,
+            "token_usage": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0
+            },
+            "latency": {
+              "intent_ms": 0.0,
+              "routing_ms": 0.0,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 0.0,
+              "llm_ms": 0.0,
+              "total_ms": 0.0
+            },
+            "confirm_action_id": null,
+            "confirmed_action": null,
+            "idempotency_key": null
+          },
+          "final_state": {
+            "trace_id": "offline_dv18_0",
+            "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+            "user_id": "u_demo",
+            "user_query": "请取消订单 ORD10003，我不要这笔了。",
+            "resolved_query": "请取消订单 ORD10003，我不要这笔了。",
+            "selected_context": {
+              "effective_query": "请取消订单 ORD10003，我不要这笔了。",
+              "order_id": "ORD10003",
+              "needs_clarification": false,
+              "history": [],
+              "source": "current_user",
+              "summary": "",
+              "max_chars": 1800
+            },
+            "memory_managed": true,
+            "memory_preferences": {},
+            "messages": [
+              {
+                "role": "user",
+                "content": "请取消订单 ORD10003，我不要这笔了。",
+                "name": null
+              },
+              {
+                "role": "assistant",
+                "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                "name": null
+              }
+            ],
+            "summary": "",
+            "intent": {
+              "label": "cancel_order",
+              "confidence": 0.98,
+              "prompt_version": "intent_v3"
+            },
+            "complexity": {
+              "complexity": "tool_required",
+              "strategy": "agent",
+              "confidence": 0.8
+            },
+            "strategy": "agent",
+            "query_complexity": "tool_required",
+            "retrieved_chunks": [],
+            "plan": {
+              "steps": [
+                {
+                  "step_id": 1,
+                  "goal": "order_cancellation",
+                  "tool_name": "get_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "needs_retrieval": false
+                },
+                {
+                  "step_id": 2,
+                  "goal": "order_cancellation",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "needs_retrieval": false
+                }
+              ]
+            },
+            "tool_results": [],
+            "pending_action": {
+              "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+              "tool_name": "cancel_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "risk": "destructive",
+              "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+            },
+            "confirmed_action": null,
+            "confirm_action_id": null,
+            "idempotency_key": null,
+            "final_answer": "确认后将取消订单 ORD10003。请核对订单号。",
+            "citations": [],
+            "refused": false,
+            "step_count": 0,
+            "token_usage": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0
+            },
+            "latency": {
+              "intent_ms": 0.7183999987319112,
+              "routing_ms": 0.48990000505000353,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 0.0,
+              "llm_ms": 0.002900022082030773,
+              "total_ms": 0.0
+            }
+          },
+          "response": {
+            "answer": "确认后将取消订单 ORD10003。请核对订单号。",
+            "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+            "trace_id": "offline_dv18_0",
+            "root_run_id": "90b347e5-b570-4042-ab5a-a3070308cabc",
+            "intent": "cancel_order",
+            "complexity": "tool_required",
+            "strategy": "agent",
+            "citations": [],
+            "pending_action": {
+              "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+              "tool_name": "cancel_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "risk": "destructive",
+              "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+            },
+            "refused": false,
+            "error_code": null,
+            "token_usage": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0
+            },
+            "latency": {
+              "intent_ms": 0.7183999987319112,
+              "routing_ms": 0.48990000505000353,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 0.0,
+              "llm_ms": 0.002900022082030773,
+              "total_ms": 28.267799993045628
+            }
+          },
+          "pending_after": {
+            "act_9141ac853e6f4c709e1a5f97f7ab1d73": {
+              "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+              "user_id": "u_demo",
+              "action": {
+                "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                "tool_name": "cancel_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "risk": "destructive",
+                "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+              }
+            }
+          },
+          "database_after": {
+            "business": {
+              "orders": {
+                "ORD10001": {
+                  "order_id": "ORD10001",
+                  "user_id": "u_demo",
+                  "status": "shipped",
+                  "total_cents": 29900,
+                  "created_at": "2026-11-02T06:34:33.069559",
+                  "paid_at": "2026-11-02T06:34:33.069559",
+                  "shipped_at": "2026-11-03T06:34:33.069559",
+                  "delivered_at": null,
+                  "tracking_no": "SF1234567890",
+                  "receiver_city": "上海"
+                },
+                "ORD10002": {
+                  "order_id": "ORD10002",
+                  "user_id": "u_demo",
+                  "status": "delivered",
+                  "total_cents": 3900,
+                  "created_at": "2026-10-16T06:34:33.069559",
+                  "paid_at": "2026-10-16T06:34:33.069559",
+                  "shipped_at": "2026-10-17T06:34:33.069559",
+                  "delivered_at": "2026-10-24T06:34:33.069559",
+                  "tracking_no": "YT998877",
+                  "receiver_city": "北京"
+                },
+                "ORD10003": {
+                  "order_id": "ORD10003",
+                  "user_id": "u_demo",
+                  "status": "paid",
+                  "total_cents": 7900,
+                  "created_at": "2026-11-05T01:34:33.069559",
+                  "paid_at": "2026-11-05T01:34:33.069559",
+                  "shipped_at": null,
+                  "delivered_at": null,
+                  "tracking_no": null,
+                  "receiver_city": "杭州"
+                }
+              },
+              "items": [
+                {
+                  "id": 1,
+                  "order_id": "ORD10001",
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                },
+                {
+                  "id": 2,
+                  "order_id": "ORD10002",
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "quantity": 1,
+                  "unit_price_cents": 3900,
+                  "customized": true
+                },
+                {
+                  "id": 3,
+                  "order_id": "ORD10003",
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "products": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "category": "数码",
+                  "price_cents": 29900,
+                  "inventory": 42,
+                  "tags": "耳机,降噪",
+                  "description": "头戴式主动降噪耳机"
+                },
+                {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "category": "家居",
+                  "price_cents": 3900,
+                  "inventory": 200,
+                  "tags": "定制,杯子",
+                  "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                },
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "category": "服饰",
+                  "price_cents": 7900,
+                  "inventory": 0,
+                  "tags": "衣服,基础款",
+                  "description": "基础纯棉短袖"
+                }
+              ],
+              "refunds": [],
+              "returns": [],
+              "audit": []
+            },
+            "tables": {
+              "audit_logs": [],
+              "idempotency_keys": [],
+              "messages": [
+                {
+                  "id": 1,
+                  "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                  "role": "user",
+                  "content": "请取消订单 ORD10003，我不要这笔了。",
+                  "created_at": "2026-11-05T07:12:57.157796"
+                },
+                {
+                  "id": 2,
+                  "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                  "role": "assistant",
+                  "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                  "created_at": "2026-11-05T07:12:57.159926"
+                }
+              ],
+              "order_items": [
+                {
+                  "id": 1,
+                  "order_id": "ORD10001",
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                },
+                {
+                  "id": 2,
+                  "order_id": "ORD10002",
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "quantity": 1,
+                  "unit_price_cents": 3900,
+                  "customized": true
+                },
+                {
+                  "id": 3,
+                  "order_id": "ORD10003",
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "orders": [
+                {
+                  "order_id": "ORD10001",
+                  "user_id": "u_demo",
+                  "status": "shipped",
+                  "total_cents": 29900,
+                  "created_at": "2026-11-02T06:34:33.069559",
+                  "paid_at": "2026-11-02T06:34:33.069559",
+                  "shipped_at": "2026-11-03T06:34:33.069559",
+                  "delivered_at": null,
+                  "tracking_no": "SF1234567890",
+                  "receiver_city": "上海"
+                },
+                {
+                  "order_id": "ORD10002",
+                  "user_id": "u_demo",
+                  "status": "delivered",
+                  "total_cents": 3900,
+                  "created_at": "2026-10-16T06:34:33.069559",
+                  "paid_at": "2026-10-16T06:34:33.069559",
+                  "shipped_at": "2026-10-17T06:34:33.069559",
+                  "delivered_at": "2026-10-24T06:34:33.069559",
+                  "tracking_no": "YT998877",
+                  "receiver_city": "北京"
+                },
+                {
+                  "order_id": "ORD10003",
+                  "user_id": "u_demo",
+                  "status": "paid",
+                  "total_cents": 7900,
+                  "created_at": "2026-11-05T01:34:33.069559",
+                  "paid_at": "2026-11-05T01:34:33.069559",
+                  "shipped_at": null,
+                  "delivered_at": null,
+                  "tracking_no": null,
+                  "receiver_city": "杭州"
+                }
+              ],
+              "products": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "category": "数码",
+                  "price_cents": 29900,
+                  "inventory": 42,
+                  "tags": "耳机,降噪",
+                  "description": "头戴式主动降噪耳机"
+                },
+                {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "category": "家居",
+                  "price_cents": 3900,
+                  "inventory": 200,
+                  "tags": "定制,杯子",
+                  "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                },
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "category": "服饰",
+                  "price_cents": 7900,
+                  "inventory": 0,
+                  "tags": "衣服,基础款",
+                  "description": "基础纯棉短袖"
+                }
+              ],
+              "refunds": [],
+              "returns": [],
+              "sessions": [
+                {
+                  "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                  "user_id": "u_demo",
+                  "summary": "",
+                  "created_at": "2026-11-05T07:12:57.136258",
+                  "updated_at": "2026-11-05T07:12:57.159926"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "turn": 1,
+          "trace_id": "offline_dv18_1",
+          "request": {
+            "message": "确认取消这一笔。",
+            "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+            "user_id": "u_demo",
+            "stream": false,
+            "confirm_action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+            "idempotency_key": null
+          },
+          "nodes": [
+            {
+              "sequence": 0,
+              "node": "apply_guardrail",
+              "input": {
+                "trace_id": "offline_dv18_1",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "确认取消这一笔。",
+                "resolved_query": "确认取消这一笔。",
+                "selected_context": {
+                  "effective_query": "确认取消这一笔。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "请取消订单 ORD10003，我不要这笔了。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                    "name": null
+                  }
+                ],
+                "summary": "",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirm_action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.0,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {}
+            },
+            {
+              "sequence": 1,
+              "node": "classify_intent",
+              "input": {
+                "trace_id": "offline_dv18_1",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "确认取消这一笔。",
+                "resolved_query": "确认取消这一笔。",
+                "selected_context": {
+                  "effective_query": "确认取消这一笔。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "请取消订单 ORD10003，我不要这笔了。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                    "name": null
+                  }
+                ],
+                "summary": "",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirm_action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.0,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "latency": {
+                  "intent_ms": 0.769499980378896,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 2,
+              "node": "route_complexity",
+              "input": {
+                "trace_id": "offline_dv18_1",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "确认取消这一笔。",
+                "resolved_query": "确认取消这一笔。",
+                "selected_context": {
+                  "effective_query": "确认取消这一笔。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "请取消订单 ORD10003，我不要这笔了。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                    "name": null
+                  }
+                ],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirm_action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.769499980378896,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 1.0
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 0.769499980378896,
+                  "routing_ms": 0.015099998563528061,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 3,
+              "node": "plan_tasks",
+              "input": {
+                "trace_id": "offline_dv18_1",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "确认取消这一笔。",
+                "resolved_query": "确认取消这一笔。",
+                "selected_context": {
+                  "effective_query": "确认取消这一笔。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "请取消订单 ORD10003，我不要这笔了。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                    "name": null
+                  }
+                ],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 1.0
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirm_action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.769499980378896,
+                  "routing_ms": 0.015099998563528061,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "confirmed action",
+                      "tool_name": "cancel_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "sequence": 4,
+              "node": "execute_tools",
+              "input": {
+                "trace_id": "offline_dv18_1",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "确认取消这一笔。",
+                "resolved_query": "确认取消这一笔。",
+                "selected_context": {
+                  "effective_query": "确认取消这一笔。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "请取消订单 ORD10003，我不要这笔了。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                    "name": null
+                  }
+                ],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 1.0
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "confirmed action",
+                      "tool_name": "cancel_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [],
+                "pending_action": null,
+                "confirmed_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirm_action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.769499980378896,
+                  "routing_ms": 0.015099998563528061,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "cancel_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10003",
+                      "status": "cancelled"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 1,
+                "latency": {
+                  "intent_ms": 0.769499980378896,
+                  "routing_ms": 0.015099998563528061,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 11.994799948297441,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 5,
+              "node": "generate_answer",
+              "input": {
+                "trace_id": "offline_dv18_1",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "确认取消这一笔。",
+                "resolved_query": "确认取消这一笔。",
+                "selected_context": {
+                  "effective_query": "确认取消这一笔。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "请取消订单 ORD10003，我不要这笔了。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                    "name": null
+                  }
+                ],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 1.0
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "confirmed action",
+                      "tool_name": "cancel_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [
+                  {
+                    "name": "cancel_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10003",
+                      "status": "cancelled"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "pending_action": null,
+                "confirmed_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirm_action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 1,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.769499980378896,
+                  "routing_ms": 0.015099998563528061,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 11.994799948297441,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "final_answer": "已收到您对订单 ORD10003 的取消请求，系统已发起取消确认。目前该订单在系统中显示的状态为“已取消”；最终是否取消成功，请您以确认回执和订单最终状态为准。如您还未提供该订单号，或需核对是否为同一笔订单，请补充订单号，以便我进一步核实；若有疑问，也可转人工客服复核。",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 0.769499980378896,
+                  "routing_ms": 0.015099998563528061,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 11.994799948297441,
+                  "llm_ms": 0.6117000011727214,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 272,
+                  "completion_tokens": 327,
+                  "total_tokens": 599
+                }
+              }
+            },
+            {
+              "sequence": 6,
+              "node": "check_faithfulness",
+              "input": {
+                "trace_id": "offline_dv18_1",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "确认取消这一笔。",
+                "resolved_query": "确认取消这一笔。",
+                "selected_context": {
+                  "effective_query": "确认取消这一笔。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "请取消订单 ORD10003，我不要这笔了。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                    "name": null
+                  }
+                ],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 1.0
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "confirmed action",
+                      "tool_name": "cancel_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [
+                  {
+                    "name": "cancel_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10003",
+                      "status": "cancelled"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "pending_action": null,
+                "confirmed_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirm_action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                "idempotency_key": null,
+                "final_answer": "已收到您对订单 ORD10003 的取消请求，系统已发起取消确认。目前该订单在系统中显示的状态为“已取消”；最终是否取消成功，请您以确认回执和订单最终状态为准。如您还未提供该订单号，或需核对是否为同一笔订单，请补充订单号，以便我进一步核实；若有疑问，也可转人工客服复核。",
+                "citations": [],
+                "refused": false,
+                "step_count": 1,
+                "token_usage": {
+                  "prompt_tokens": 272,
+                  "completion_tokens": 327,
+                  "total_tokens": 599
+                },
+                "latency": {
+                  "intent_ms": 0.769499980378896,
+                  "routing_ms": 0.015099998563528061,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 11.994799948297441,
+                  "llm_ms": 0.6117000011727214,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "final_answer": "订单 ORD10003 已取消。",
+                "citations": []
+              }
+            },
+            {
+              "sequence": 7,
+              "node": "compact_memory",
+              "input": {
+                "trace_id": "offline_dv18_1",
+                "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                "user_id": "u_demo",
+                "user_query": "确认取消这一笔。",
+                "resolved_query": "确认取消这一笔。",
+                "selected_context": {
+                  "effective_query": "确认取消这一笔。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "请取消订单 ORD10003，我不要这笔了。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                    "name": null
+                  }
+                ],
+                "summary": "",
+                "intent": {
+                  "label": "cancel_order",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 1.0
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "confirmed action",
+                      "tool_name": "cancel_order",
+                      "arguments": {
+                        "order_id": "ORD10003"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [
+                  {
+                    "name": "cancel_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10003",
+                      "status": "cancelled"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "pending_action": null,
+                "confirmed_action": {
+                  "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "risk": "destructive",
+                  "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+                },
+                "confirm_action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                "idempotency_key": null,
+                "final_answer": "订单 ORD10003 已取消。",
+                "citations": [],
+                "refused": false,
+                "step_count": 1,
+                "token_usage": {
+                  "prompt_tokens": 272,
+                  "completion_tokens": 327,
+                  "total_tokens": 599
+                },
+                "latency": {
+                  "intent_ms": 0.769499980378896,
+                  "routing_ms": 0.015099998563528061,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 11.994799948297441,
+                  "llm_ms": 0.6117000011727214,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "请取消订单 ORD10003，我不要这笔了。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                    "name": null
+                  },
+                  {
+                    "role": "user",
+                    "content": "确认取消这一笔。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "订单 ORD10003 已取消。",
+                    "name": null
+                  }
+                ],
+                "tool_results": [
+                  {
+                    "name": "cancel_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10003",
+                      "status": "cancelled"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "summary": ""
+              }
+            }
+          ],
+          "pending_before": {
+            "act_9141ac853e6f4c709e1a5f97f7ab1d73": {
+              "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+              "user_id": "u_demo",
+              "action": {
+                "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                "tool_name": "cancel_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "risk": "destructive",
+                "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+              }
+            }
+          },
+          "initial_state": {
+            "trace_id": "offline_dv18_1",
+            "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+            "user_id": "u_demo",
+            "user_query": "确认取消这一笔。",
+            "resolved_query": "确认取消这一笔。",
+            "selected_context": {
+              "effective_query": "确认取消这一笔。",
+              "order_id": null,
+              "needs_clarification": false,
+              "history": [],
+              "source": "none",
+              "summary": "",
+              "max_chars": 1800
+            },
+            "messages": [
+              {
+                "role": "user",
+                "content": "请取消订单 ORD10003，我不要这笔了。",
+                "name": null
+              },
+              {
+                "role": "assistant",
+                "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                "name": null
+              }
+            ],
+            "summary": "",
+            "memory_managed": true,
+            "memory_preferences": {},
+            "retrieved_chunks": [],
+            "tool_results": [],
+            "citations": [],
+            "refused": false,
+            "step_count": 0,
+            "token_usage": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0
+            },
+            "latency": {
+              "intent_ms": 0.0,
+              "routing_ms": 0.0,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 0.0,
+              "llm_ms": 0.0,
+              "total_ms": 0.0
+            },
+            "confirm_action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+            "confirmed_action": {
+              "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+              "tool_name": "cancel_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "risk": "destructive",
+              "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+            },
+            "idempotency_key": null
+          },
+          "final_state": {
+            "trace_id": "offline_dv18_1",
+            "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+            "user_id": "u_demo",
+            "user_query": "确认取消这一笔。",
+            "resolved_query": "确认取消这一笔。",
+            "selected_context": {
+              "effective_query": "确认取消这一笔。",
+              "order_id": null,
+              "needs_clarification": false,
+              "history": [],
+              "source": "none",
+              "summary": "",
+              "max_chars": 1800
+            },
+            "memory_managed": true,
+            "memory_preferences": {},
+            "messages": [
+              {
+                "role": "user",
+                "content": "请取消订单 ORD10003，我不要这笔了。",
+                "name": null
+              },
+              {
+                "role": "assistant",
+                "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                "name": null
+              },
+              {
+                "role": "user",
+                "content": "确认取消这一笔。",
+                "name": null
+              },
+              {
+                "role": "assistant",
+                "content": "订单 ORD10003 已取消。",
+                "name": null
+              }
+            ],
+            "summary": "",
+            "intent": {
+              "label": "cancel_order",
+              "confidence": 0.93,
+              "prompt_version": "intent_v3"
+            },
+            "complexity": {
+              "complexity": "tool_required",
+              "strategy": "agent",
+              "confidence": 1.0
+            },
+            "strategy": "agent",
+            "query_complexity": "tool_required",
+            "retrieved_chunks": [],
+            "plan": {
+              "steps": [
+                {
+                  "step_id": 1,
+                  "goal": "confirmed action",
+                  "tool_name": "cancel_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "needs_retrieval": false
+                }
+              ]
+            },
+            "tool_results": [
+              {
+                "name": "cancel_order",
+                "success": true,
+                "output": {
+                  "order_id": "ORD10003",
+                  "status": "cancelled"
+                },
+                "error": null,
+                "risk": "read",
+                "truncated": false
+              }
+            ],
+            "pending_action": null,
+            "confirmed_action": {
+              "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+              "tool_name": "cancel_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "risk": "destructive",
+              "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+            },
+            "confirm_action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+            "idempotency_key": null,
+            "final_answer": "订单 ORD10003 已取消。",
+            "citations": [],
+            "refused": false,
+            "step_count": 1,
+            "token_usage": {
+              "prompt_tokens": 272,
+              "completion_tokens": 327,
+              "total_tokens": 599
+            },
+            "latency": {
+              "intent_ms": 0.769499980378896,
+              "routing_ms": 0.015099998563528061,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 11.994799948297441,
+              "llm_ms": 0.6117000011727214,
+              "total_ms": 0.0
+            }
+          },
+          "response": {
+            "answer": "订单 ORD10003 已取消。",
+            "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+            "trace_id": "offline_dv18_1",
+            "root_run_id": "ab0915d9-391f-43f8-b4f5-628b33c5d6eb",
+            "intent": "cancel_order",
+            "complexity": "tool_required",
+            "strategy": "agent",
+            "citations": [],
+            "pending_action": null,
+            "refused": false,
+            "error_code": null,
+            "token_usage": {
+              "prompt_tokens": 272,
+              "completion_tokens": 327,
+              "total_tokens": 599
+            },
+            "latency": {
+              "intent_ms": 0.769499980378896,
+              "routing_ms": 0.015099998563528061,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 11.994799948297441,
+              "llm_ms": 0.6117000011727214,
+              "total_ms": 38.473499997053295
+            }
+          },
+          "pending_after": {
+            "act_9141ac853e6f4c709e1a5f97f7ab1d73": {
+              "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+              "user_id": "u_demo",
+              "action": {
+                "action_id": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                "tool_name": "cancel_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "risk": "destructive",
+                "summary": "确认后将取消订单 ORD10003。请核对订单号。"
+              }
+            }
+          },
+          "database_after": {
+            "business": {
+              "orders": {
+                "ORD10001": {
+                  "order_id": "ORD10001",
+                  "user_id": "u_demo",
+                  "status": "shipped",
+                  "total_cents": 29900,
+                  "created_at": "2026-11-02T06:34:33.069559",
+                  "paid_at": "2026-11-02T06:34:33.069559",
+                  "shipped_at": "2026-11-03T06:34:33.069559",
+                  "delivered_at": null,
+                  "tracking_no": "SF1234567890",
+                  "receiver_city": "上海"
+                },
+                "ORD10002": {
+                  "order_id": "ORD10002",
+                  "user_id": "u_demo",
+                  "status": "delivered",
+                  "total_cents": 3900,
+                  "created_at": "2026-10-16T06:34:33.069559",
+                  "paid_at": "2026-10-16T06:34:33.069559",
+                  "shipped_at": "2026-10-17T06:34:33.069559",
+                  "delivered_at": "2026-10-24T06:34:33.069559",
+                  "tracking_no": "YT998877",
+                  "receiver_city": "北京"
+                },
+                "ORD10003": {
+                  "order_id": "ORD10003",
+                  "user_id": "u_demo",
+                  "status": "cancelled",
+                  "total_cents": 7900,
+                  "created_at": "2026-11-05T01:34:33.069559",
+                  "paid_at": "2026-11-05T01:34:33.069559",
+                  "shipped_at": null,
+                  "delivered_at": null,
+                  "tracking_no": null,
+                  "receiver_city": "杭州"
+                }
+              },
+              "items": [
+                {
+                  "id": 1,
+                  "order_id": "ORD10001",
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                },
+                {
+                  "id": 2,
+                  "order_id": "ORD10002",
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "quantity": 1,
+                  "unit_price_cents": 3900,
+                  "customized": true
+                },
+                {
+                  "id": 3,
+                  "order_id": "ORD10003",
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "products": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "category": "数码",
+                  "price_cents": 29900,
+                  "inventory": 42,
+                  "tags": "耳机,降噪",
+                  "description": "头戴式主动降噪耳机"
+                },
+                {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "category": "家居",
+                  "price_cents": 3900,
+                  "inventory": 200,
+                  "tags": "定制,杯子",
+                  "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                },
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "category": "服饰",
+                  "price_cents": 7900,
+                  "inventory": 0,
+                  "tags": "衣服,基础款",
+                  "description": "基础纯棉短袖"
+                }
+              ],
+              "refunds": [],
+              "returns": [],
+              "audit": [
+                {
+                  "id": 1,
+                  "trace_id": "offline_dv18_1",
+                  "action": "cancel_order",
+                  "payload": "ORD10003",
+                  "created_at": "2026-11-05T07:12:57.199395"
+                }
+              ]
+            },
+            "tables": {
+              "audit_logs": [
+                {
+                  "id": 1,
+                  "trace_id": "offline_dv18_1",
+                  "action": "cancel_order",
+                  "payload": "ORD10003",
+                  "created_at": "2026-11-05T07:12:57.199395"
+                }
+              ],
+              "idempotency_keys": [
+                {
+                  "key": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+                  "fingerprint": "7ef7ddf40a57e5166d06ddd67f1fb2ee7f6db6c1198457da2393c98185577cf1",
+                  "response_json": "{\"order_id\": \"ORD10003\", \"status\": \"cancelled\"}",
+                  "created_at": "2026-11-05T07:12:57.208908"
+                }
+              ],
+              "messages": [
+                {
+                  "id": 1,
+                  "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                  "role": "user",
+                  "content": "请取消订单 ORD10003，我不要这笔了。",
+                  "created_at": "2026-11-05T07:12:57.157796"
+                },
+                {
+                  "id": 2,
+                  "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                  "role": "assistant",
+                  "content": "确认后将取消订单 ORD10003。请核对订单号。",
+                  "created_at": "2026-11-05T07:12:57.159926"
+                },
+                {
+                  "id": 3,
+                  "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                  "role": "user",
+                  "content": "确认取消这一笔。",
+                  "created_at": "2026-11-05T07:12:57.209915"
+                },
+                {
+                  "id": 4,
+                  "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                  "role": "assistant",
+                  "content": "订单 ORD10003 已取消。",
+                  "created_at": "2026-11-05T07:12:57.211917"
+                }
+              ],
+              "order_items": [
+                {
+                  "id": 1,
+                  "order_id": "ORD10001",
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                },
+                {
+                  "id": 2,
+                  "order_id": "ORD10002",
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "quantity": 1,
+                  "unit_price_cents": 3900,
+                  "customized": true
+                },
+                {
+                  "id": 3,
+                  "order_id": "ORD10003",
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "orders": [
+                {
+                  "order_id": "ORD10001",
+                  "user_id": "u_demo",
+                  "status": "shipped",
+                  "total_cents": 29900,
+                  "created_at": "2026-11-02T06:34:33.069559",
+                  "paid_at": "2026-11-02T06:34:33.069559",
+                  "shipped_at": "2026-11-03T06:34:33.069559",
+                  "delivered_at": null,
+                  "tracking_no": "SF1234567890",
+                  "receiver_city": "上海"
+                },
+                {
+                  "order_id": "ORD10002",
+                  "user_id": "u_demo",
+                  "status": "delivered",
+                  "total_cents": 3900,
+                  "created_at": "2026-10-16T06:34:33.069559",
+                  "paid_at": "2026-10-16T06:34:33.069559",
+                  "shipped_at": "2026-10-17T06:34:33.069559",
+                  "delivered_at": "2026-10-24T06:34:33.069559",
+                  "tracking_no": "YT998877",
+                  "receiver_city": "北京"
+                },
+                {
+                  "order_id": "ORD10003",
+                  "user_id": "u_demo",
+                  "status": "cancelled",
+                  "total_cents": 7900,
+                  "created_at": "2026-11-05T01:34:33.069559",
+                  "paid_at": "2026-11-05T01:34:33.069559",
+                  "shipped_at": null,
+                  "delivered_at": null,
+                  "tracking_no": null,
+                  "receiver_city": "杭州"
+                }
+              ],
+              "products": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "category": "数码",
+                  "price_cents": 29900,
+                  "inventory": 42,
+                  "tags": "耳机,降噪",
+                  "description": "头戴式主动降噪耳机"
+                },
+                {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "category": "家居",
+                  "price_cents": 3900,
+                  "inventory": 200,
+                  "tags": "定制,杯子",
+                  "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                },
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "category": "服饰",
+                  "price_cents": 7900,
+                  "inventory": 0,
+                  "tags": "衣服,基础款",
+                  "description": "基础纯棉短袖"
+                }
+              ],
+              "refunds": [],
+              "returns": [],
+              "sessions": [
+                {
+                  "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+                  "user_id": "u_demo",
+                  "summary": "",
+                  "created_at": "2026-11-05T07:12:57.136258",
+                  "updated_at": "2026-11-05T07:12:57.211917"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "runtime_settings": {
+        "llm_timeout_seconds": 30.0,
+        "llm_max_retries": 3,
+        "llm_judge_max_tokens": 512,
+        "retrieval_top_k_simple": 3,
+        "retrieval_top_k_complex": 8,
+        "memory_mode": "M2",
+        "memory_recent_messages": 8,
+        "memory_context_max_chars": 1800,
+        "memory_summary_ttl_seconds": 86400,
+        "retrieval_cache_ttl_seconds": 60,
+        "agent_tracing_enabled": false,
+        "agent_tracing_backend": "local",
+        "agent_trace_max_spans": 256,
+        "agent_trace_queue_size": 32,
+        "agent_langsmith_endpoint": "https://api.smith.langchain.com",
+        "agent_langsmith_project": "adaptive-rag",
+        "database": "isolated_sqlite_in_memory",
+        "provider": "ReplayLLM"
+      },
+      "database_initial": {
+        "business": {
+          "orders": {
+            "ORD10001": {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T06:34:33.069559",
+              "paid_at": "2026-11-02T06:34:33.069559",
+              "shipped_at": "2026-11-03T06:34:33.069559",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            "ORD10002": {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T06:34:33.069559",
+              "paid_at": "2026-10-16T06:34:33.069559",
+              "shipped_at": "2026-10-17T06:34:33.069559",
+              "delivered_at": "2026-10-24T06:34:33.069559",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            "ORD10003": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T01:34:33.069559",
+              "paid_at": "2026-11-05T01:34:33.069559",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          },
+          "items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "audit": []
+        },
+        "tables": {
+          "audit_logs": [],
+          "idempotency_keys": [],
+          "messages": [],
+          "order_items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "orders": [
+            {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T06:34:33.069559",
+              "paid_at": "2026-11-02T06:34:33.069559",
+              "shipped_at": "2026-11-03T06:34:33.069559",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T06:34:33.069559",
+              "paid_at": "2026-10-16T06:34:33.069559",
+              "shipped_at": "2026-10-17T06:34:33.069559",
+              "delivered_at": "2026-10-24T06:34:33.069559",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T01:34:33.069559",
+              "paid_at": "2026-11-05T01:34:33.069559",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "sessions": []
+        }
+      },
+      "database_final": {
+        "business": {
+          "orders": {
+            "ORD10001": {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T06:34:33.069559",
+              "paid_at": "2026-11-02T06:34:33.069559",
+              "shipped_at": "2026-11-03T06:34:33.069559",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            "ORD10002": {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T06:34:33.069559",
+              "paid_at": "2026-10-16T06:34:33.069559",
+              "shipped_at": "2026-10-17T06:34:33.069559",
+              "delivered_at": "2026-10-24T06:34:33.069559",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            "ORD10003": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "cancelled",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T01:34:33.069559",
+              "paid_at": "2026-11-05T01:34:33.069559",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          },
+          "items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "audit": [
+            {
+              "id": 1,
+              "trace_id": "offline_dv18_1",
+              "action": "cancel_order",
+              "payload": "ORD10003",
+              "created_at": "2026-11-05T07:12:57.199395"
+            }
+          ]
+        },
+        "tables": {
+          "audit_logs": [
+            {
+              "id": 1,
+              "trace_id": "offline_dv18_1",
+              "action": "cancel_order",
+              "payload": "ORD10003",
+              "created_at": "2026-11-05T07:12:57.199395"
+            }
+          ],
+          "idempotency_keys": [
+            {
+              "key": "act_9141ac853e6f4c709e1a5f97f7ab1d73",
+              "fingerprint": "7ef7ddf40a57e5166d06ddd67f1fb2ee7f6db6c1198457da2393c98185577cf1",
+              "response_json": "{\"order_id\": \"ORD10003\", \"status\": \"cancelled\"}",
+              "created_at": "2026-11-05T07:12:57.208908"
+            }
+          ],
+          "messages": [
+            {
+              "id": 1,
+              "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+              "role": "user",
+              "content": "请取消订单 ORD10003，我不要这笔了。",
+              "created_at": "2026-11-05T07:12:57.157796"
+            },
+            {
+              "id": 2,
+              "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+              "role": "assistant",
+              "content": "确认后将取消订单 ORD10003。请核对订单号。",
+              "created_at": "2026-11-05T07:12:57.159926"
+            },
+            {
+              "id": 3,
+              "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+              "role": "user",
+              "content": "确认取消这一笔。",
+              "created_at": "2026-11-05T07:12:57.209915"
+            },
+            {
+              "id": 4,
+              "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+              "role": "assistant",
+              "content": "订单 ORD10003 已取消。",
+              "created_at": "2026-11-05T07:12:57.211917"
+            }
+          ],
+          "order_items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "orders": [
+            {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T06:34:33.069559",
+              "paid_at": "2026-11-02T06:34:33.069559",
+              "shipped_at": "2026-11-03T06:34:33.069559",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T06:34:33.069559",
+              "paid_at": "2026-10-16T06:34:33.069559",
+              "shipped_at": "2026-10-17T06:34:33.069559",
+              "delivered_at": "2026-10-24T06:34:33.069559",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "cancelled",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T01:34:33.069559",
+              "paid_at": "2026-11-05T01:34:33.069559",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "sessions": [
+            {
+              "session_id": "sess_adb344136fb2451cb2d3fec56477dedd",
+              "user_id": "u_demo",
+              "summary": "",
+              "created_at": "2026-11-05T07:12:57.136258",
+              "updated_at": "2026-11-05T07:12:57.211917"
+            }
+          ]
+        }
+      },
+      "provider_calls": [],
+      "scorer_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "dv18",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 300.6936999736354
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "hitl_confirmed_cancel",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "90b347e5-b570-4042-ab5a-a3070308cabc",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": null,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": null,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": true,
+              "refused": false
+            },
+            {
+              "turn": 1,
+              "error": null,
+              "root_run_id": "ab0915d9-391f-43f8-b4f5-628b33c5d6eb",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "cancel_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 1,
+              "output": {
+                "order_id": "ORD10003",
+                "status": "cancelled"
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "cancelled"
+          },
+          "span_count": 41,
+          "known_limitation": null
+        },
+        "dataset_sha256": "634317b75ed575321c66feed9e8b6347d70ca2b9a03208493f62797c812e7bb4",
+        "model_evaluation": "NOT_RUN"
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "origin": "Strict local replay of completed paid responses; source/request hashes matched, live artifacts unchanged, no new API calls",
+  "comparison": "Both variants have8of8 completed source groups replayed with equivalent original oracles",
+  "metadata_defect": "Initial replay helper used int0 instead of the actual provider's float0.0; first hashes failed closed. RED differential wire test then exact float fix; prior UNKNOWN artifacts preserved and v2 succeeds. No digest normalization or live ledger edit.",
+  "findings": [
+    {"case":"P2R-B31","variants":["R0","R1"],"classification":"FALLBACK_CONTROL_FLOW_ERROR","observed":"Generate correctly notes insufficient SKU-specific warranty evidence; Judge512truncation triggers final fallback that falsely says the generation model is unconfigured and quotes unrelated battery/consumable policy","source_boundary":"Unchanged faithfulness fallback reuses offline answer wording","strict_oracle":"FAIL already, due missing get_warranty; no score change","semantic_assessment":"Final answer does not fulfill the SKU warranty goal; provider was demonstrably configured and connected"},
+    {"case":"dv06","variants":["R0","R1"],"classification":"INSUFFICIENT_FINAL_ANSWER_COVERAGE","observed":"Judge truncation replaces the generated mixed order-status and shipment response with only a shipment-status sentence","strict_oracle":"PASS from required tool/state evidence retained","semantic_assessment":"Original oracle does not assess final-answer coverage; do not equate tool/state PASS with complete semantic success"}
+  ],
+  "policy": "No production change after blind freeze; both are retained limitations, not converted to passing cases or a revised Gold. Any later fix needs new review and independent evaluation."
+}
