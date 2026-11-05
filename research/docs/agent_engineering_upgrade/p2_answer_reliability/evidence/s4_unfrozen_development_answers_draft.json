@@ -1,0 +1,2395 @@
+{
+  "PSD01": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "订单事实"
+      ],
+      "facts": [
+        {
+          "id": "订单事实_ORD10001",
+          "goal": "订单事实",
+          "subject": "ORD10001",
+          "patterns": [
+            "已发货",
+            "shipped"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "status",
+              "expected": "shipped"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "总额_ORD10001",
+          "goal": "订单事实",
+          "subject": "ORD10001",
+          "patterns": [
+            "299.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "total_cents",
+              "expected": 29900
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD02": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "物流"
+      ],
+      "facts": [
+        {
+          "id": "物流_ORD10002",
+          "goal": "物流",
+          "subject": "ORD10002",
+          "patterns": [
+            "已签收",
+            "delivered"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "track_shipment",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "events.2.status",
+              "expected": "delivered"
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD03": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "订单事实",
+        "商品件数"
+      ],
+      "facts": [
+        {
+          "id": "订单事实_ORD10002",
+          "goal": "订单事实",
+          "subject": "ORD10002",
+          "patterns": [
+            "已签收",
+            "delivered"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "status",
+              "expected": "delivered"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "总额_ORD10002",
+          "goal": "订单事实",
+          "subject": "ORD10002",
+          "patterns": [
+            "39.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "total_cents",
+              "expected": 3900
+            }
+          ],
+          "required": false
+        },
+        {
+          "id": "商品件数_SKU-MUG-CUSTOM",
+          "goal": "商品件数",
+          "subject": "SKU-MUG-CUSTOM",
+          "patterns": [
+            "(?:数量[：:]?)?1\\s*件"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "items.0.quantity",
+              "expected": 1
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD04": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "订单事实"
+      ],
+      "facts": [
+        {
+          "id": "订单事实_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "已支付",
+            "paid"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "status",
+              "expected": "paid"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "总额_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "79.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "total_cents",
+              "expected": 7900
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD05": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "订单事实",
+        "物流"
+      ],
+      "facts": [
+        {
+          "id": "订单事实_ORD10001",
+          "goal": "订单事实",
+          "subject": "ORD10001",
+          "patterns": [
+            "已发货",
+            "shipped"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "status",
+              "expected": "shipped"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "总额_ORD10001",
+          "goal": "订单事实",
+          "subject": "ORD10001",
+          "patterns": [
+            "299.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "total_cents",
+              "expected": 29900
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "物流_ORD10001",
+          "goal": "物流",
+          "subject": "ORD10001",
+          "patterns": [
+            "运输中",
+            "in_transit"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "track_shipment",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "events.1.status",
+              "expected": "in_transit"
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD06": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "订单事实"
+      ],
+      "facts": [
+        {
+          "id": "订单事实_ORD10001",
+          "goal": "订单事实",
+          "subject": "ORD10001",
+          "patterns": [
+            "已发货",
+            "shipped"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "status",
+              "expected": "shipped"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "总额_ORD10001",
+          "goal": "订单事实",
+          "subject": "ORD10001",
+          "patterns": [
+            "299.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "total_cents",
+              "expected": 29900
+            }
+          ],
+          "required": false
+        },
+        {
+          "id": "订单事实_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "已支付",
+            "paid"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "status",
+              "expected": "paid"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "总额_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "79.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "total_cents",
+              "expected": 7900
+            }
+          ],
+          "required": false
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD07": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "库存"
+      ],
+      "facts": [
+        {
+          "id": "库存_SKU-TEE",
+          "goal": "库存",
+          "subject": "SKU-TEE",
+          "patterns": [
+            "0\\s*件"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "check_inventory",
+              "arguments": {
+                "sku": "SKU-TEE"
+              },
+              "path": "inventory",
+              "expected": 0
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD08": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "商品价格",
+        "库存",
+        "商品名称",
+        "商品资料"
+      ],
+      "facts": [
+        {
+          "id": "商品价格_SKU-HEADSET",
+          "goal": "商品价格",
+          "subject": "SKU-HEADSET",
+          "patterns": [
+            "299.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "price_cents",
+              "expected": 29900
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "库存_SKU-HEADSET",
+          "goal": "库存",
+          "subject": "SKU-HEADSET",
+          "patterns": [
+            "42\\s*件"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "inventory",
+              "expected": 42
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "商品名称_SKU-HEADSET",
+          "goal": "商品名称",
+          "subject": "SKU-HEADSET",
+          "patterns": [
+            "降噪耳机\\ Pro"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "name",
+              "expected": "降噪耳机 Pro"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "商品资料_SKU-HEADSET",
+          "goal": "商品资料",
+          "subject": "SKU-HEADSET",
+          "patterns": [
+            "头戴式主动降噪耳机"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "description",
+              "expected": "头戴式主动降噪耳机"
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD09": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "商品价格",
+        "库存",
+        "商品名称",
+        "商品资料"
+      ],
+      "facts": [
+        {
+          "id": "商品价格_SKU-MUG-CUSTOM",
+          "goal": "商品价格",
+          "subject": "SKU-MUG-CUSTOM",
+          "patterns": [
+            "39.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "price_cents",
+              "expected": 3900
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "库存_SKU-MUG-CUSTOM",
+          "goal": "库存",
+          "subject": "SKU-MUG-CUSTOM",
+          "patterns": [
+            "200\\s*件"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "inventory",
+              "expected": 200
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "商品名称_SKU-MUG-CUSTOM",
+          "goal": "商品名称",
+          "subject": "SKU-MUG-CUSTOM",
+          "patterns": [
+            "定制马克杯"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "name",
+              "expected": "定制马克杯"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "商品资料_SKU-MUG-CUSTOM",
+          "goal": "商品资料",
+          "subject": "SKU-MUG-CUSTOM",
+          "patterns": [
+            "支持印字的定制杯，定制商品不适用7天无理由"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "description",
+              "expected": "支持印字的定制杯，定制商品不适用7天无理由"
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD10": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "保修期",
+        "保修排除"
+      ],
+      "facts": [
+        {
+          "id": "保修期_SKU-HEADSET",
+          "goal": "保修期",
+          "subject": "SKU-HEADSET",
+          "patterns": [
+            "12\\s*个?月"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_warranty",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "warranty_months",
+              "expected": 12
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "保修排除_SKU-HEADSET",
+          "goal": "保修排除",
+          "subject": "SKU-HEADSET",
+          "patterns": [
+            "人为损坏不在保",
+            "人为损坏不属于保修"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_warranty",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "note",
+              "expected": "人为损坏不在保，电子凭证见订单详情"
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD11": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "退款记录"
+      ],
+      "facts": [
+        {
+          "id": "退款记录_",
+          "goal": "退款记录",
+          "subject": "",
+          "patterns": [
+            "暂未发现退款申请记录",
+            "没有退款记录",
+            "暂无退款记录"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_refund_status",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "refunds",
+              "expected": []
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD12": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "商品件数"
+      ],
+      "facts": [
+        {
+          "id": "商品件数_SKU-HEADSET",
+          "goal": "商品件数",
+          "subject": "SKU-HEADSET",
+          "patterns": [
+            "(?:数量[：:]?)?1\\s*件"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "items.0.quantity",
+              "expected": 1
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD13": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    }
+  ],
+  "PSD14": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    }
+  ],
+  "PSD15": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "取消结果"
+      ],
+      "facts": [
+        {
+          "id": "取消结果_ORD10003",
+          "goal": "取消结果",
+          "subject": "ORD10003",
+          "patterns": [
+            "已取消",
+            "取消成功"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "cancel_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "status",
+              "expected": "cancelled"
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD16": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    }
+  ],
+  "PSD17": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    }
+  ],
+  "PSD18": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "物流"
+      ],
+      "facts": [
+        {
+          "id": "物流_ORD10001",
+          "goal": "物流",
+          "subject": "ORD10001",
+          "patterns": [
+            "运输中",
+            "in_transit"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "track_shipment",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "events.1.status",
+              "expected": "in_transit"
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    }
+  ],
+  "PSD19": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    }
+  ],
+  "PSD20": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "库存"
+      ],
+      "facts": [
+        {
+          "id": "库存_SKU-TEE",
+          "goal": "库存",
+          "subject": "SKU-TEE",
+          "patterns": [
+            "0\\s*件"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "check_inventory",
+              "arguments": {
+                "sku": "SKU-TEE"
+              },
+              "path": "inventory",
+              "expected": 0
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    }
+  ],
+  "PSD21": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "商品价格",
+        "库存",
+        "商品名称",
+        "商品资料"
+      ],
+      "facts": [
+        {
+          "id": "商品价格_SKU-HEADSET",
+          "goal": "商品价格",
+          "subject": "SKU-HEADSET",
+          "patterns": [
+            "299.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "price_cents",
+              "expected": 29900
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "库存_SKU-HEADSET",
+          "goal": "库存",
+          "subject": "SKU-HEADSET",
+          "patterns": [
+            "42\\s*件"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "inventory",
+              "expected": 42
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "商品名称_SKU-HEADSET",
+          "goal": "商品名称",
+          "subject": "SKU-HEADSET",
+          "patterns": [
+            "降噪耳机\\ Pro"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "name",
+              "expected": "降噪耳机 Pro"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "商品资料_SKU-HEADSET",
+          "goal": "商品资料",
+          "subject": "SKU-HEADSET",
+          "patterns": [
+            "头戴式主动降噪耳机"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "description",
+              "expected": "头戴式主动降噪耳机"
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD22": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "订单事实"
+      ],
+      "facts": [
+        {
+          "id": "订单事实_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "已支付",
+            "paid"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "status",
+              "expected": "paid"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "总额_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "79.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "total_cents",
+              "expected": 7900
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "订单事实"
+      ],
+      "facts": [
+        {
+          "id": "订单事实_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "已取消",
+            "cancelled"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "status",
+              "expected": "cancelled"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "总额_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "79.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "total_cents",
+              "expected": 7900
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSD23": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "订单事实"
+      ],
+      "facts": [
+        {
+          "id": "订单事实_ORD10001",
+          "goal": "订单事实",
+          "subject": "ORD10001",
+          "patterns": [
+            "已发货",
+            "shipped"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "status",
+              "expected": "shipped"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "总额_ORD10001",
+          "goal": "订单事实",
+          "subject": "ORD10001",
+          "patterns": [
+            "299.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "total_cents",
+              "expected": 29900
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": true,
+      "semantic_required": true
+    }
+  ],
+  "PSD24": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "订单事实"
+      ],
+      "facts": [
+        {
+          "id": "订单事实_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "已支付",
+            "paid"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "status",
+              "expected": "paid"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "总额_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "79.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "total_cents",
+              "expected": 7900
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "开放语义"
+      ],
+      "facts": [],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "订单事实"
+      ],
+      "facts": [
+        {
+          "id": "订单事实_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "已支付",
+            "paid"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "status",
+              "expected": "paid"
+            }
+          ],
+          "required": true
+        },
+        {
+          "id": "总额_ORD10003",
+          "goal": "订单事实",
+          "subject": "ORD10003",
+          "patterns": [
+            "79.00\\s*元"
+          ],
+          "evidence_any_of": [
+            {
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "total_cents",
+              "expected": 7900
+            }
+          ],
+          "required": true
+        }
+      ],
+      "forbidden_patterns": [
+        "当前未配置生成模型",
+        "退款成功",
+        "款项已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "人民币",
+        "当前订单状态",
+        "订单状态",
+        "总金额",
+        "的物流状态",
+        "物流状态",
+        "订单商品",
+        "订单",
+        "商品",
+        "数量",
+        "库存",
+        "价格",
+        "保修期",
+        "名称",
+        "资料",
+        "工具原文",
+        "['\\\"]"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ]
+}

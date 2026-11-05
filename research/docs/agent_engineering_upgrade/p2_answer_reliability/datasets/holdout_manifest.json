@@ -1,0 +1,182 @@
+{
+  "schema_version": "holdout-manifest-v1",
+  "purpose": "Independent holdout: concrete inputs, Gold and results withheld from implementer until application and scorer freeze.",
+  "scenario_count": 30,
+  "turn_count": 41,
+  "answer_gold_count": 41,
+  "fact_count": 46,
+  "semantic_required_turns": 14,
+  "closed_factual_turns": 27,
+  "expected_open_semantic_status": "NOT_ASSESSED without independently authorized semantic evaluation",
+  "coverage_by_case": {
+    "PSH01": [
+      "explicit_order",
+      "status_money"
+    ],
+    "PSH02": [
+      "shipment"
+    ],
+    "PSH03": [
+      "items"
+    ],
+    "PSH04": [
+      "refund",
+      "negation"
+    ],
+    "PSH05": [
+      "inventory",
+      "negative_fact"
+    ],
+    "PSH06": [
+      "productprice",
+      "inventory",
+      "multigoal"
+    ],
+    "PSH07": [
+      "warranty"
+    ],
+    "PSH08": [
+      "followup",
+      "context"
+    ],
+    "PSH09": [
+      "followup",
+      "context",
+      "order_switch"
+    ],
+    "PSH10": [
+      "multigoal",
+      "money",
+      "inventory"
+    ],
+    "PSH11": [
+      "negation",
+      "status"
+    ],
+    "PSH12": [
+      "conditional_read",
+      "shipment"
+    ],
+    "PSH13": [
+      "conditional_read",
+      "negative_fact"
+    ],
+    "PSH14": [
+      "policy_business",
+      "items"
+    ],
+    "PSH15": [
+      "clarify",
+      "shipment"
+    ],
+    "PSH16": [
+      "clarify",
+      "inventory"
+    ],
+    "PSH17": [
+      "owner",
+      "abstention"
+    ],
+    "PSH18": [
+      "HITL",
+      "cancel",
+      "followup"
+    ],
+    "PSH19": [
+      "HITL",
+      "refund",
+      "money"
+    ],
+    "PSH20": [
+      "HITL",
+      "return",
+      "refund_boundary"
+    ],
+    "PSH21": [
+      "cross_session",
+      "clarify"
+    ],
+    "PSH22": [
+      "state_change",
+      "freshness"
+    ],
+    "PSH23": [
+      "inventory",
+      "unsupported_forecast"
+    ],
+    "PSH24": [
+      "policy",
+      "multigoal"
+    ],
+    "PSH25": [
+      "coupon",
+      "policy_boundary"
+    ],
+    "PSH26": [
+      "human",
+      "handoff_boundary"
+    ],
+    "PSH27": [
+      "policy_business",
+      "warranty",
+      "multigoal"
+    ],
+    "PSH28": [
+      "negation",
+      "context",
+      "money"
+    ],
+    "PSH29": [
+      "shipment",
+      "negative_fact"
+    ],
+    "PSH30": [
+      "multigoal",
+      "productprice",
+      "money"
+    ]
+  },
+  "frozen_sha256": {
+    "holdout.json": "1691b2f55b71dd107113ac243777432489d776e84c18cb4025c66aacfb426e80",
+    "holdout_answers.json": "425dd9baae45bfc2369c6420f3464f17d7c1df734a6151feae3052dc9e13811b"
+  },
+  "validation": [
+    "Public Scenario/Turn schema PASS via AST-isolated classes",
+    "UTF-8 and no U+FFFD PASS",
+    "Natural Chinese every goal/turn PASS",
+    "Unique IDs/goals PASS",
+    "One Gold per turn PASS",
+    "Fact-goal references and non-null output evidence PASS",
+    "Regex compilation PASS",
+    "No wildcard-only allowed extras PASS",
+    "Fixture/output consistency manually checked",
+    "Every fact expected value/path independently checked against AST-extracted fixture literals and public tool output contract PASS"
+  ],
+  "limitations": [
+    "Scenario driver has no controllable tool-failure injection; unavailable/timeout/malformed failures require separate unit injection and are not fabricated.",
+    "Open policy, clarification, ownership, pending confirmation and other semantic clauses remain NOT_ASSESSED without semantic evaluation.",
+    "Generated refund/return/ticket IDs and policy chunk ordering are not constrained.",
+    "No application results collected; frozen hashes attest authored artifacts only.",
+    "No APIs, credentials, implementation scorers, Planner, Router, Intent, Generate, faithfulness, answer_evidence, development datasets/results or implementation tests read.",
+    "External state_changes targets are included in allowed_mutations; they are fixture events and create no Agent write audit."
+  ],
+  "read_sources": [
+    "eval/contracts.py",
+    "eval/multiturn.py public Scenario/Turn schema",
+    "eval/environment.py",
+    "app/services/seed.py",
+    "app/tools/order_tools.py",
+    "app/tools/logistics_tools.py",
+    "app/tools/product_tools.py",
+    "app/tools/aftersale_tools.py",
+    "app/tools/knowledge_tools.py",
+    "app/tools/permissions.py",
+    "app/repositories/order_repository.py public ownership/write contracts (coordinator authorized)",
+    "knowledge/return_policy.md",
+    "knowledge/refund_timeline.md",
+    "knowledge/warranty.md",
+    "knowledge/shipping.md",
+    "knowledge/price_protect.md"
+  ],
+  "freeze_state": "FROZEN_BEFORE_APPLICATION_AND_SCORER_EVALUATION"
+}

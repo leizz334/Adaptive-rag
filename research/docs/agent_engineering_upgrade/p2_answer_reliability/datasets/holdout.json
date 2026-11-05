@@ -1,0 +1,1212 @@
+{
+  "schema_version": "agent-scenarios-v2.1",
+  "scenarios": [
+    {
+      "id": "PSH01",
+      "family": "status_money",
+      "user_goal": "核对已发货订单状态与实付金额",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "帮我核对 ORD10001 的状态和总金额，我在整理对账单。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH02",
+      "family": "shipment",
+      "user_goal": "核对杯子签收与运单号",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10002 那个杯子的快递签收了吗？顺便给我运单号。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "track_shipment"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH03",
+      "family": "items",
+      "user_goal": "核对衣服品名数量单价",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "请查 ORD10003 买的是什么，几件，每件多少钱？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order_items",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order_items"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH04",
+      "family": "refund_lookup",
+      "user_goal": "查退款而不新增申请",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我只想查 ORD10001 的退款进度，千万别帮我再申请一遍。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_refund_status",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_refund_status"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH05",
+      "family": "inventory",
+      "user_goal": "核对零库存避免猜测补货日期",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "SKU-TEE 现在有现货吗？没货就直接说，别猜补货日期。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "check_inventory",
+                "arguments": {
+                  "sku": "SKU-TEE"
+                }
+              }
+            ],
+            "allowed": [
+              "check_inventory"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH06",
+      "family": "product_price",
+      "user_goal": "采购前核对耳机现价与库存",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "采购前核一下 SKU-HEADSET：当前单价多少，库存还剩多少？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_product_detail",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              }
+            ],
+            "allowed": [
+              "get_product_detail",
+              "check_inventory"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH07",
+      "family": "warranty",
+      "user_goal": "核对保修期与人为损坏免责",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "SKU-HEADSET 保修几个月？我自己摔坏的也免费保修吗？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_warranty",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              }
+            ],
+            "allowed": [
+              "get_warranty"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH08",
+      "family": "context_followup",
+      "user_goal": "同会话追问前一订单金额",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "先看 ORD10001 现在是什么状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          }
+        },
+        {
+          "message": "那这笔一共付了多少钱？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH09",
+      "family": "context_switch",
+      "user_goal": "订单切换后的这笔绑定最近订单",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10003 现在是什么状态？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          }
+        },
+        {
+          "message": "换一笔，我要看 ORD10002 的状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          }
+        },
+        {
+          "message": "这笔金额也告诉我。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH10",
+      "family": "independent_multigoal",
+      "user_goal": "分别查询衣服订单金额与杯子库存",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我有两件事：ORD10003 总金额多少；SKU-MUG-CUSTOM 现在库存多少？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              },
+              {
+                "name": "check_inventory",
+                "arguments": {
+                  "sku": "SKU-MUG-CUSTOM"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "check_inventory"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH11",
+      "family": "negated_write",
+      "user_goal": "明确禁止取消退款只查状态",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10003 不用取消，也不要退款，我现在只核实状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH12",
+      "family": "conditional_positive",
+      "user_goal": "发货后才查物流的条件读取",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "查一下 ORD10001：如果已发货，再告诉我运单号；还没发就只说状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              },
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "track_shipment"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH13",
+      "family": "conditional_negative",
+      "user_goal": "未发货时物流读取不触发",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10003 如果已发货才查物流，否则只给我订单状态，不需要运单。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH14",
+      "family": "policy_business",
+      "user_goal": "定制属性核查与无理由退货政策",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10002 的杯子是不是定制的？我不喜欢图案，想知道能不能按七天无理由退，不要直接提交。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order_items",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order_items",
+              "search_knowledge",
+              "get_order"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH15",
+      "family": "clarification_order",
+      "user_goal": "缺少订单号先澄清",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "帮我看看我的包裹到哪儿了。",
+          "trajectory": {
+            "required": [],
+            "allowed": []
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH16",
+      "family": "clarification_product",
+      "user_goal": "库存查询缺少商品标识先澄清",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "你们这个还有多少库存？",
+          "trajectory": {
+            "required": [],
+            "allowed": []
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH17",
+      "family": "ownership",
+      "user_goal": "其他账号不能获得订单私有事实",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我登录的是 u_other，请查 ORD10001 的订单状态和金额。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          },
+          "user_id": "u_other",
+          "expected_failures": [
+            "business_rejected"
+          ]
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH18",
+      "family": "cancel_hitl",
+      "user_goal": "取消未发货订单需确认且可复核",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10003 我不想要了，请取消订单。",
+          "trajectory": {
+            "required": [],
+            "allowed": [
+              "get_order"
+            ]
+          },
+          "expected_pending": true
+        },
+        {
+          "message": "确认取消这笔订单。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "cancel_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "cancel_order",
+              "get_order"
+            ]
+          },
+          "confirm": true,
+          "expected_pending": false
+        },
+        {
+          "message": "再核一下 ORD10003，取消成功了吗？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "cancelled"
+        },
+        "allowed_mutations": [
+          "ORD10003"
+        ],
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [
+          "cancel_order"
+        ]
+      }
+    },
+    {
+      "id": "PSH19",
+      "family": "refund_hitl",
+      "user_goal": "只退款不寄回且区分受理与到账",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10001 只退款不寄回，原因是买错了，请帮我申请。",
+          "trajectory": {
+            "required": [],
+            "allowed": [
+              "get_order"
+            ]
+          },
+          "expected_pending": true
+        },
+        {
+          "message": "确认提交退款申请。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "create_refund_request",
+                "arguments": {
+                  "order_id": "ORD10001",
+                  "reason": "买错了"
+                }
+              }
+            ],
+            "allowed": [
+              "create_refund_request"
+            ]
+          },
+          "confirm": true,
+          "expected_pending": false
+        },
+        {
+          "message": "ORD10001 退款单现在是什么状态、申请金额多少？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_refund_status",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_refund_status"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "refunding",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [
+          "ORD10001"
+        ],
+        "refunds": 1,
+        "returns": 0,
+        "audit_actions": [
+          "create_refund"
+        ]
+      }
+    },
+    {
+      "id": "PSH20",
+      "family": "return_hitl",
+      "user_goal": "确认寄回只建退货单不自动退款",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10001 的耳机有异响，我要寄回退货，原因是耳机异响。",
+          "trajectory": {
+            "required": [],
+            "allowed": [
+              "get_order",
+              "get_order_items",
+              "search_knowledge"
+            ]
+          },
+          "expected_pending": true
+        },
+        {
+          "message": "确认寄回退货。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "create_return_request",
+                "arguments": {
+                  "order_id": "ORD10001",
+                  "reason": "耳机异响"
+                }
+              }
+            ],
+            "allowed": [
+              "create_return_request"
+            ]
+          },
+          "confirm": true,
+          "expected_pending": false
+        },
+        {
+          "message": "我只确认一下 ORD10001 有没有退款单。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_refund_status",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_refund_status"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "allowed_mutations": [
+          "ORD10001"
+        ],
+        "refunds": 0,
+        "returns": 1,
+        "audit_actions": [
+          "create_return"
+        ]
+      }
+    },
+    {
+      "id": "PSH21",
+      "family": "cross_session",
+      "user_goal": "新会话不能带入旧会话模糊订单引用",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10003 现在是什么状态？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          }
+        },
+        {
+          "message": "那这笔订单多少钱？",
+          "trajectory": {
+            "required": [],
+            "allowed": []
+          },
+          "new_session": true
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH22",
+      "family": "state_change",
+      "user_goal": "外部发货后重新读状态避免历史复用",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "先查 ORD10003 的订单状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          }
+        },
+        {
+          "message": "现在再查一遍 ORD10003 的状态，刚才的结果可能过期了。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          },
+          "state_changes": {
+            "ORD10003": "shipped"
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "shipped"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "allowed_mutations": [
+          "ORD10003"
+        ]
+      },
+      "known_limitation": "State changes are external synthetic fixture events, not Agent writes. Final environment expectations include their authorized target IDs; no audit is expected for the external event."
+    },
+    {
+      "id": "PSH23",
+      "family": "unknown_restock",
+      "user_goal": "零库存证据不能推出确定补货日期",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "SKU-TEE 库存为零吗？能确定下周一一定补货吗？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "check_inventory",
+                "arguments": {
+                  "sku": "SKU-TEE"
+                }
+              }
+            ],
+            "allowed": [
+              "check_inventory"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH24",
+      "family": "policy_shipping",
+      "user_goal": "偏远地区运费与配送时效政策",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "寄到新疆，一般要几天？满59元的包邮能免偏远附加费吗？",
+          "trajectory": {
+            "required": [],
+            "allowed": [
+              "search_knowledge"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH25",
+      "family": "coupon",
+      "user_goal": "查看券规则不等于已领取",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "有什么券可以参考？新客券怎么用，包邮券有啥限制？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_coupon",
+                "arguments": {}
+              }
+            ],
+            "allowed": [
+              "get_coupon"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH26",
+      "family": "human_handoff",
+      "user_goal": "经理介入只承诺进入队列",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "这件事我希望值班经理处理，请转人工，原因是需要经理复核。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "escalate_to_human",
+                "arguments": {}
+              }
+            ],
+            "allowed": [
+              "escalate_to_human"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH27",
+      "family": "business_policy_warranty",
+      "user_goal": "库存事实与保修材料分别核实",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "SKU-HEADSET 还有库存吗？另外申请保修要准备什么材料？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "check_inventory",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              }
+            ],
+            "allowed": [
+              "check_inventory",
+              "search_knowledge",
+              "get_warranty"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH28",
+      "family": "no_write_permission",
+      "user_goal": "用户改变取消意图后仅查询金额",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我之前想取消 ORD10003，但现在决定保留，别做任何操作，只告诉我金额。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH29",
+      "family": "shipment_not_dispatched",
+      "user_goal": "只有仓库事件不可称已在途",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10003 的物流轨迹是什么？有没有已经在路上的记录？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "track_shipment"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSH30",
+      "family": "price_vs_order",
+      "user_goal": "订单金额与另一商品目录价格分别取证",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "给我核对两个数：ORD10002 订单金额，以及 SKU-HEADSET 现在售价。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              },
+              {
+                "name": "get_product_detail",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "get_product_detail"
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    }
+  ]
+}

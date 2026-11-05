@@ -34,6 +34,7 @@ class EvidenceRequirement(Contract):
 class FactAssertion(Contract):
     id: str
     goal: str
+    required: bool = True
     subject: str = ""
     patterns: list[str] = Field(min_length=1)
     forbidden_patterns: list[str] = Field(default_factory=list)
@@ -179,11 +180,22 @@ def score_answer(
         )
         facts.append(
             dict(
-                id=fact.id, goal=fact.goal, matched=matched, contradiction=wrong, evidence=evidence
+                id=fact.id,
+                goal=fact.goal,
+                required=fact.required,
+                matched=matched,
+                contradiction=wrong,
+                evidence=evidence,
             )
         )
-    unknown_goals = [g for g in gold.subgoals if not any(f["goal"] == g for f in facts)]
-    missing = [g for g in gold.subgoals if any(f["goal"] == g and not f["matched"] for f in facts)]
+    unknown_goals = [
+        g for g in gold.subgoals if not any(f["goal"] == g and f["required"] for f in facts)
+    ]
+    missing = [
+        g
+        for g in gold.subgoals
+        if any(f["goal"] == g and f["required"] and not f["matched"] for f in facts)
+    ]
     completeness = sum(g not in missing and g not in unknown_goals for g in gold.subgoals) / len(
         gold.subgoals
     )

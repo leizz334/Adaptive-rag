@@ -199,3 +199,41 @@ def test_static_policy_can_pass_closed_fact_contract_with_actual_retrieval():
         environment_success=True,
     )
     assert value["OVERALL_TASK_SUCCESS"] == "PASS"
+
+
+def test_verified_optional_fact_is_not_a_required_subgoal():
+    from eval.answer_scoring import FactAssertion, score_answer
+
+    gold = contract()
+    gold.facts[1] = FactAssertion(
+        **(gold.facts[1].model_dump() | dict(required=False, goal="订单状态"))
+    )
+    gold.subgoals = ["订单状态"]
+    value = score_answer(
+        answer="ORD7000已支付。",
+        gold=gold,
+        calls=observation(),
+        tool_success=True,
+        environment_success=True,
+    )
+    assert value["OVERALL_TASK_SUCCESS"] == "PASS"
+
+
+def test_optional_fact_still_requires_actual_evidence_if_communicated():
+    from eval.answer_scoring import FactAssertion, score_answer
+
+    gold = contract()
+    gold.facts[1] = FactAssertion(
+        **(gold.facts[1].model_dump() | dict(required=False, goal="订单状态"))
+    )
+    gold.subgoals = ["订单状态"]
+    calls = observation()
+    calls[0]["output"]["total_cents"] = 9999
+    value = score_answer(
+        answer="ORD7000已支付。总金额12.50元。",
+        gold=gold,
+        calls=calls,
+        tool_success=True,
+        environment_success=True,
+    )
+    assert value["OVERALL_TASK_SUCCESS"] == "FAIL"

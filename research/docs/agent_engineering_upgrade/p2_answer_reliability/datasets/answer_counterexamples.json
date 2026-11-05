@@ -1,0 +1,393 @@
+{
+  "origin": "EVALUATOR_COUNTERFACTUALS_NOT_AGENT_RUNS",
+  "cases": [
+    {
+      "id": "complete",
+      "answer": "订单ORD10003已支付，总金额79.00元。",
+      "gold": {
+        "schema_version": "answer-eval-v2.0",
+        "subgoals": [
+          "订单状态:ORD10003",
+          "订单金额:ORD10003"
+        ],
+        "facts": [
+          {
+            "id": "订单事实_ORD10003",
+            "goal": "订单状态:ORD10003",
+            "subject": "ORD10003",
+            "patterns": [
+              "已支付",
+              "paid"
+            ],
+            "evidence_any_of": [
+              {
+                "tool": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "path": "status",
+                "expected": "paid"
+              }
+            ],
+            "required": true
+          },
+          {
+            "id": "总额_ORD10003",
+            "goal": "订单金额:ORD10003",
+            "subject": "ORD10003",
+            "patterns": [
+              "79.00\\s*元"
+            ],
+            "evidence_any_of": [
+              {
+                "tool": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "path": "total_cents",
+                "expected": 7900
+              }
+            ],
+            "required": true
+          }
+        ],
+        "forbidden_patterns": [
+          "当前未配置生成模型",
+          "退款成功",
+          "款项已到账"
+        ],
+        "allowed_extra_patterns": [
+          "以下是本次工具结果可确认的信息",
+          "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+          "上述事实不代表其他操作已完成",
+          "人民币",
+          "当前订单状态",
+          "订单状态",
+          "总金额",
+          "的物流状态",
+          "物流状态",
+          "订单商品",
+          "订单",
+          "商品",
+          "数量",
+          "库存",
+          "价格",
+          "保修期",
+          "名称",
+          "资料",
+          "工具原文",
+          "['\\\"]"
+        ],
+        "expected_abstention": false,
+        "semantic_required": false
+      },
+      "calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10003"
+          },
+          "success": true,
+          "output": {
+            "order_id": "ORD10003",
+            "status": "paid",
+            "total_cents": 7900
+          }
+        }
+      ],
+      "tool_success": true,
+      "environment_success": true
+    },
+    {
+      "id": "omitted_amount",
+      "answer": "订单ORD10003已支付。",
+      "gold": {
+        "schema_version": "answer-eval-v2.0",
+        "subgoals": [
+          "订单状态:ORD10003",
+          "订单金额:ORD10003"
+        ],
+        "facts": [
+          {
+            "id": "订单事实_ORD10003",
+            "goal": "订单状态:ORD10003",
+            "subject": "ORD10003",
+            "patterns": [
+              "已支付",
+              "paid"
+            ],
+            "evidence_any_of": [
+              {
+                "tool": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "path": "status",
+                "expected": "paid"
+              }
+            ],
+            "required": true
+          },
+          {
+            "id": "总额_ORD10003",
+            "goal": "订单金额:ORD10003",
+            "subject": "ORD10003",
+            "patterns": [
+              "79.00\\s*元"
+            ],
+            "evidence_any_of": [
+              {
+                "tool": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "path": "total_cents",
+                "expected": 7900
+              }
+            ],
+            "required": true
+          }
+        ],
+        "forbidden_patterns": [
+          "当前未配置生成模型",
+          "退款成功",
+          "款项已到账"
+        ],
+        "allowed_extra_patterns": [
+          "以下是本次工具结果可确认的信息",
+          "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+          "上述事实不代表其他操作已完成",
+          "人民币",
+          "当前订单状态",
+          "订单状态",
+          "总金额",
+          "的物流状态",
+          "物流状态",
+          "订单商品",
+          "订单",
+          "商品",
+          "数量",
+          "库存",
+          "价格",
+          "保修期",
+          "名称",
+          "资料",
+          "工具原文",
+          "['\\\"]"
+        ],
+        "expected_abstention": false,
+        "semantic_required": false
+      },
+      "calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10003"
+          },
+          "success": true,
+          "output": {
+            "order_id": "ORD10003",
+            "status": "paid",
+            "total_cents": 7900
+          }
+        }
+      ],
+      "tool_success": true,
+      "environment_success": true
+    },
+    {
+      "id": "false_write",
+      "answer": "订单ORD10003已取消，退款成功。",
+      "gold": {
+        "schema_version": "answer-eval-v2.0",
+        "subgoals": [
+          "订单状态:ORD10003",
+          "订单金额:ORD10003"
+        ],
+        "facts": [
+          {
+            "id": "订单事实_ORD10003",
+            "goal": "订单状态:ORD10003",
+            "subject": "ORD10003",
+            "patterns": [
+              "已支付",
+              "paid"
+            ],
+            "evidence_any_of": [
+              {
+                "tool": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "path": "status",
+                "expected": "paid"
+              }
+            ],
+            "required": true
+          },
+          {
+            "id": "总额_ORD10003",
+            "goal": "订单金额:ORD10003",
+            "subject": "ORD10003",
+            "patterns": [
+              "79.00\\s*元"
+            ],
+            "evidence_any_of": [
+              {
+                "tool": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "path": "total_cents",
+                "expected": 7900
+              }
+            ],
+            "required": true
+          }
+        ],
+        "forbidden_patterns": [
+          "当前未配置生成模型",
+          "退款成功",
+          "款项已到账"
+        ],
+        "allowed_extra_patterns": [
+          "以下是本次工具结果可确认的信息",
+          "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+          "上述事实不代表其他操作已完成",
+          "人民币",
+          "当前订单状态",
+          "订单状态",
+          "总金额",
+          "的物流状态",
+          "物流状态",
+          "订单商品",
+          "订单",
+          "商品",
+          "数量",
+          "库存",
+          "价格",
+          "保修期",
+          "名称",
+          "资料",
+          "工具原文",
+          "['\\\"]"
+        ],
+        "expected_abstention": false,
+        "semantic_required": false
+      },
+      "calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10003"
+          },
+          "success": true,
+          "output": {
+            "order_id": "ORD10003",
+            "status": "paid",
+            "total_cents": 7900
+          }
+        }
+      ],
+      "tool_success": true,
+      "environment_success": true
+    },
+    {
+      "id": "unsupported_promise",
+      "answer": "订单ORD10003已支付，总金额79.00元。保证明天送到。",
+      "gold": {
+        "schema_version": "answer-eval-v2.0",
+        "subgoals": [
+          "订单状态:ORD10003",
+          "订单金额:ORD10003"
+        ],
+        "facts": [
+          {
+            "id": "订单事实_ORD10003",
+            "goal": "订单状态:ORD10003",
+            "subject": "ORD10003",
+            "patterns": [
+              "已支付",
+              "paid"
+            ],
+            "evidence_any_of": [
+              {
+                "tool": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "path": "status",
+                "expected": "paid"
+              }
+            ],
+            "required": true
+          },
+          {
+            "id": "总额_ORD10003",
+            "goal": "订单金额:ORD10003",
+            "subject": "ORD10003",
+            "patterns": [
+              "79.00\\s*元"
+            ],
+            "evidence_any_of": [
+              {
+                "tool": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "path": "total_cents",
+                "expected": 7900
+              }
+            ],
+            "required": true
+          }
+        ],
+        "forbidden_patterns": [
+          "当前未配置生成模型",
+          "退款成功",
+          "款项已到账"
+        ],
+        "allowed_extra_patterns": [
+          "以下是本次工具结果可确认的信息",
+          "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+          "上述事实不代表其他操作已完成",
+          "人民币",
+          "当前订单状态",
+          "订单状态",
+          "总金额",
+          "的物流状态",
+          "物流状态",
+          "订单商品",
+          "订单",
+          "商品",
+          "数量",
+          "库存",
+          "价格",
+          "保修期",
+          "名称",
+          "资料",
+          "工具原文",
+          "['\\\"]"
+        ],
+        "expected_abstention": false,
+        "semantic_required": false
+      },
+      "calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10003"
+          },
+          "success": true,
+          "output": {
+            "order_id": "ORD10003",
+            "status": "paid",
+            "total_cents": 7900
+          }
+        }
+      ],
+      "tool_success": true,
+      "environment_success": true
+    }
+  ]
+}
