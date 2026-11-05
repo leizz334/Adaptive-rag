@@ -37,17 +37,15 @@ def verified_facts(results: list[ToolResult]) -> list[str]:
         oid = _identifier(data.get("order_id"))
         sku = _identifier(data.get("sku"))
         stale_status = (
-            result.name in {"get_order", "track_shipment", "get_order_items"}
+            result.name == "get_order"
             and oid
             and any(
-                later.name in {"cancel_order", "create_refund_request", "create_return_request"}
+                later.name in {"cancel_order", "create_refund_request"}
                 and later.success
                 and later.output.get("order_id") == oid
                 for later in results[index + 1 :]
             )
         )
-        if stale_status and result.name != "get_order":
-            continue
         if result.name == "get_order" and oid:
             status = ORDER_STATUS.get(str(data.get("status")))
             if status and not stale_status:
