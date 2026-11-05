@@ -174,6 +174,7 @@ async def test_later_confirmed_write_invalidates_earlier_status_in_answer():
     ]
     value = await faithfulness_node(state(tools), FaithfulnessChecker(llm), llm)
     assert "已取消" in value["final_answer"] and "已支付" not in value["final_answer"]
+    assert "156.78" in value["final_answer"]
 
 
 @pytest.mark.parametrize(

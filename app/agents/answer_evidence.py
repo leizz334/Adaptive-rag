@@ -36,7 +36,7 @@ def verified_facts(results: list[ToolResult]) -> list[str]:
         data = result.output
         oid = _identifier(data.get("order_id"))
         sku = _identifier(data.get("sku"))
-        if (
+        stale_status = (
             result.name in {"get_order", "track_shipment", "get_order_items"}
             and oid
             and any(
@@ -45,11 +45,12 @@ def verified_facts(results: list[ToolResult]) -> list[str]:
                 and later.output.get("order_id") == oid
                 for later in results[index + 1 :]
             )
-        ):
+        )
+        if stale_status and result.name != "get_order":
             continue
         if result.name == "get_order" and oid:
             status = ORDER_STATUS.get(str(data.get("status")))
-            if status:
+            if status and not stale_status:
                 facts.append(f"订单 {oid} 当前订单状态：{status}。")
             amount = _money(data.get("total_cents"))
             if amount:
