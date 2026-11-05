@@ -75,6 +75,28 @@ def test_current_explicit_target_and_policy_switch_are_not_overridden():
     assert policy.order_id is None and not policy.needs_clarification
 
 
+def test_first_reference_cannot_mean_first_surviving_window_message():
+    context = ContextBuilder(
+        Settings(_env_file=None, memory_mode="M2", memory_recent_messages=2)
+    ).build(
+        "回到第一次提到的订单，查现在状态。",
+        [
+            ChatMessage(role="user", content="ORD86420"),
+            ChatMessage(role="user", content="你好"),
+            ChatMessage(role="user", content="ORD97531"),
+        ],
+        summary_orders=["ORD86420"],
+        summary="older covered messages",
+    )
+    assert context.needs_clarification and context.order_id is None
+
+
+def test_conjunctive_explicit_financial_read_is_not_a_single_target_guess():
+    context = build("请把 ORD86420 和 ORD97531 的金额列给我。")
+    assert not context.needs_clarification
+    assert context.order_ids == ("ORD86420", "ORD97531")
+
+
 async def test_context_scope_bound_after_session_owner_validation():
     from unittest.mock import patch
 

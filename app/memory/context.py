@@ -167,12 +167,31 @@ class ContextBuilder:
         recent = history[-self.settings.memory_recent_messages :]
         candidates = direct
         source = "current_user" if direct else "none"
+        coordinated_goal = bool(re.search(r"和|以及|与|、|分别|比较|对比", query)) and any(
+            cue in query
+            for cue in ("状态", "金额", "支付", "付款", "物流", "运单", "明细", "商品", "发货")
+        )
         joint_read = (
             len(direct) > 1
-            and any(
-                cue in query for cue in ("分别", "比较", "对比", "都要看", "都要核对", "两笔都")
+            and (
+                coordinated_goal
+                or any(
+                    cue in query for cue in ("分别", "比较", "对比", "都要看", "都要核对", "两笔都")
+                )
             )
-            and not any(cue in query for cue in ("取消", "申请退款", "申请退货", "不要操作"))
+            and not any(
+                cue in query
+                for cue in (
+                    "取消",
+                    "申请退款",
+                    "申请退货",
+                    "不要操作",
+                    "报错",
+                    "更正",
+                    "不是",
+                    "实际要查",
+                )
+            )
         )
         if joint_read:
             return SelectedContext(
@@ -184,6 +203,10 @@ class ContextBuilder:
             )
         if not candidates and reference:
             if first_reference:
+                if summary_orders or summary or len(history) > len(recent):
+                    # Recent-entity summaries do not establish the first entity
+                    # of an entire session; never claim ordinal provenance.
+                    return SelectedContext(query, needs_clarification=True, original_query=query)
                 chronological = list(
                     dict.fromkeys(
                         order
