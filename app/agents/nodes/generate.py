@@ -7,9 +7,10 @@ import time
 
 from pydantic import BaseModel, Field
 
+from app.agents.answer_evidence import safe_answer
 from app.agents.state import AgentState
 from app.core.enums import RetrievalStrategy
-from app.core.exceptions import LLMOutputError, LLMProviderError
+from app.core.exceptions import LLMOutputError, LLMProviderError, LLMTruncationError
 from app.memory.context import node_context, node_query
 from app.observability.tracing import traced
 from app.prompts.answer import ANSWER_SYSTEM, ANSWER_USER
@@ -106,12 +107,22 @@ async def generate_node(state: AgentState, llm: LLMProvider) -> dict:
             max_tokens=700,
             response_format={"type": "json_object"},
         )
+        if response.finish_reason == "length":
+            raise LLMTruncationError()
         payload = parse_model(response.content, AnswerPayload)
         usage = response.usage
-    except (LLMProviderError, LLMOutputError):
+        generation_error = None
+    except (LLMProviderError, LLMOutputError) as exc:
+        generation_error = (
+            "TRUNCATED"
+            if isinstance(exc, LLMTruncationError)
+            else "INVALID_OUTPUT"
+            if isinstance(exc, LLMOutputError)
+            else "API_ERROR"
+        )
         payload = AnswerPayload(
-            answer=_extractive_fallback(state["user_query"], evidence, tool_text),
-            citation_chunk_ids=[chunks[0].chunk_id] if chunks else [],
+            answer=safe_answer(tools),
+            citation_chunk_ids=[],
         )
         usage = TokenUsage()
     citations = [
@@ -138,6 +149,7 @@ async def generate_node(state: AgentState, llm: LLMProvider) -> dict:
         "refused": payload.refused,
         "latency": latency,
         "token_usage": merged,
+        "extra": {**(state.get("extra") or {}), "generation_error": generation_error},
     }
 
 
@@ -151,11 +163,6 @@ async def refuse_node(state: AgentState) -> dict:
 
 
 def _extractive_fallback(query: str, evidence: str, tool_text: str) -> str:
-    if evidence and evidence != "(无检索结果)":
-        snippet = evidence.split("\n", 1)[-1][:240].strip()
-        return f"暂时无法生成完整答复。相关资料节选：\n\n> {snippet}\n\n请以原文为准。"
-    if tool_text and tool_text != "(无)":
-        return "已查询到系统数据，但暂时无法可靠地整理答复。请稍后重试或转人工。"
     return "暂时无法基于现有信息给出可靠答复，请补充相关信息或转人工。"
 
 

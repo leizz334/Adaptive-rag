@@ -120,7 +120,10 @@ def register():
         + git("ls-files", "--others", "--exclude-standard", root=users).splitlines()
         + [".env"]
     )
-    sha = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+
+    def sha(p):
+        return hashlib.sha256(p.read_bytes()).hexdigest()
+
     frozen = {
         p: sha(ROOT / p) for p in prior if not p.endswith(("feature-list.json", "progress.txt"))
     }

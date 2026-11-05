@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from enum import Enum
 
-from pydantic import BaseModel, Field, StrictBool, model_validator
+from pydantic import BaseModel, Field, StrictBool, ValidationError, model_validator
 
-from app.core.exceptions import LLMOutputError
+from app.core.exceptions import LLMOutputError, LLMTruncationError
 from app.prompts.faithfulness import FAITHFULNESS_SYSTEM, FAITHFULNESS_USER
 from app.providers.base import LLMProvider
-from app.providers.json_parser import parse_model
+from app.providers.json_parser import extract_json_object
 from app.schemas.retrieval import RetrievedChunk
 
 
@@ -24,8 +24,9 @@ class FaithfulnessStatus(str, Enum):
 class FaithfulnessResult(BaseModel):
     status: FaithfulnessStatus
     supported: StrictBool
-    hallucinated_spans: list[str] = Field(default_factory=list)
-    rationale: str = ""
+    hallucinated_spans: list[str] = Field(default_factory=list, max_length=3)
+    rationale: str = Field(default="", max_length=160)
+    error_kind: str | None = None
 
     @model_validator(mode="before")
     @classmethod
@@ -83,23 +84,47 @@ class FaithfulnessChecker:
                 max_tokens=self._max_tokens,
                 response_format={"type": "json_object"},
             )
+            if response.finish_reason == "length":
+                raise LLMTruncationError()
+        except LLMTruncationError:
+            return FaithfulnessResult(
+                status=FaithfulnessStatus.INVALID_OUTPUT,
+                supported=False,
+                rationale="judge_output_truncated",
+                error_kind="TRUNCATED",
+            )
         except LLMOutputError:
             return FaithfulnessResult(
                 status=FaithfulnessStatus.INVALID_OUTPUT,
                 supported=False,
                 rationale="invalid_or_truncated_judge_output",
+                error_kind="INVALID_OUTPUT",
             )
         except Exception:
             return FaithfulnessResult(
                 status=FaithfulnessStatus.JUDGE_ERROR,
                 supported=False,
                 rationale="checker_unavailable",
+                error_kind="API_ERROR",
             )
         try:
-            return parse_model(response.content, FaithfulnessResult)
+            payload = extract_json_object(response.content)
         except (LLMOutputError, ValueError, TypeError, AttributeError):
             return FaithfulnessResult(
                 status=FaithfulnessStatus.INVALID_OUTPUT,
                 supported=False,
+                rationale="invalid_judge_json",
+                error_kind="MALFORMED_JSON",
+            )
+        try:
+            result = FaithfulnessResult.model_validate(payload)
+            if result.status in {FaithfulnessStatus.JUDGE_ERROR, FaithfulnessStatus.INVALID_OUTPUT}:
+                raise ValueError("Model cannot declare infrastructure verdict")
+            return result
+        except (ValidationError, ValueError, TypeError, AttributeError):
+            return FaithfulnessResult(
+                status=FaithfulnessStatus.INVALID_OUTPUT,
+                supported=False,
                 rationale="invalid_judge_output",
+                error_kind="SCHEMA_ERROR",
             )

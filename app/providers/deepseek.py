@@ -163,19 +163,32 @@ class DeepSeekProvider:
                     raise LLMProviderError(f"DeepSeek HTTP {response.status_code}")
                 if response.status_code >= 400:
                     raise LLMProviderError(f"DeepSeek HTTP {response.status_code}")
+                finished = False
                 async for line in response.aiter_lines():
                     if not line.startswith("data: "):
                         continue
                     data = line[6:].strip()
-                    if not data or data == "[DONE]":
+                    if data == "[DONE]":
+                        finished = True
+                        continue
+                    if not data:
                         continue
                     try:
                         chunk = json.loads(data)
                         delta = chunk["choices"][0].get("delta", {}).get("content") or ""
+                        ending = chunk["choices"][0].get("finish_reason")
+                        if ending == "length":
+                            raise LLMTruncationError()
+                        if ending == "stop":
+                            finished = True
                     except (json.JSONDecodeError, KeyError, IndexError, TypeError):
                         continue
                     if delta:
                         yield delta
+                if not finished:
+                    raise LLMProviderError(
+                        "DeepSeek stream ended before completion", retryable=False
+                    )
         except httpx.TimeoutException as exc:
             raise LLMProviderError("DeepSeek stream timed out", timeout=True) from exc
         except httpx.HTTPError as exc:
