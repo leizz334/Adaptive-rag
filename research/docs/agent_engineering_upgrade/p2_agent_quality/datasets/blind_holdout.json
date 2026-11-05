@@ -1,0 +1,1193 @@
+{
+  "schema_version": "agent-scenarios-v2.1",
+  "scenarios": [
+    {
+      "id": "P2R-B01",
+      "family": "explicit_status",
+      "user_goal": "核实待发货订单状态及已付金额",
+      "turns": [
+        {
+          "message": "麻烦核对 ORD10003 付款有没有成功，订单合计多少钱。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B02",
+      "family": "explicit_shipment",
+      "user_goal": "查看已发货订单实际物流轨迹",
+      "turns": [
+        {
+          "message": "ORD10001 的包裹这几天经过哪些节点了，运单号也给我。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "track_shipment": 1,
+              "get_order": 1
+            },
+            "valid_paths": [
+              [
+                "track_shipment"
+              ],
+              [
+                "get_order",
+                "track_shipment"
+              ],
+              [
+                "track_shipment",
+                "get_order"
+              ]
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B03",
+      "family": "explicit_refund",
+      "user_goal": "确认订单是否存在退款申请",
+      "turns": [
+        {
+          "message": "我记不清 ORD10002 有没有退款申请，帮我看一下退款单列表。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_refund_status",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "get_refund_status": 1
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B04",
+      "family": "explicit_items",
+      "user_goal": "查询具体订单的商品明细",
+      "turns": [
+        {
+          "message": "ORD10001 里面具体买了什么、几件，把明细列出来。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order_items",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "get_order_items": 1
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B05",
+      "family": "recent_reference",
+      "user_goal": "最近明确订单在省略追问中仍是物流查询目标",
+      "turns": [
+        {
+          "message": "先查一下订单 ORD10001 当前状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "这笔的快递路线呢，帮我看看。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "track_shipment": 1,
+              "get_order": 1
+            },
+            "valid_paths": [
+              [
+                "track_shipment"
+              ],
+              [
+                "get_order",
+                "track_shipment"
+              ],
+              [
+                "track_shipment",
+                "get_order"
+              ]
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B06",
+      "family": "explicit_current_target",
+      "user_goal": "明确切换到另一笔订单后保持当前目标",
+      "turns": [
+        {
+          "message": "ORD10001 是什么状态，先看它。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "接下来改看 ORD10003，有没有支付成功。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "刚切换的这笔现在到哪个订单阶段了。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B07",
+      "family": "explicit_correction",
+      "user_goal": "用户更正订单号后不沿用旧目标",
+      "turns": [
+        {
+          "message": "看一下 ORD10003 的订单状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "我报错单号了，要查的是 ORD10001，给我它的物流节点。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "track_shipment": 1,
+              "get_order": 1
+            },
+            "valid_paths": [
+              [
+                "track_shipment"
+              ],
+              [
+                "get_order",
+                "track_shipment"
+              ],
+              [
+                "track_shipment",
+                "get_order"
+              ]
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B08",
+      "family": "reference_across_policy",
+      "user_goal": "一般政策插话后保留明确订单引用",
+      "turns": [
+        {
+          "message": "我的 ORD10001 目前什么订单状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "顺便问个一般规则：偏远地区运费怎么算。",
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          }
+        },
+        {
+          "message": "回到刚才那笔订单，包裹的运单和轨迹查一下。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "track_shipment": 1,
+              "get_order": 1
+            },
+            "valid_paths": [
+              [
+                "track_shipment"
+              ],
+              [
+                "get_order",
+                "track_shipment"
+              ],
+              [
+                "track_shipment",
+                "get_order"
+              ]
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B09",
+      "family": "multiple_status_targets",
+      "user_goal": "同一轮分别核实两笔订单状态",
+      "turns": [
+        {
+          "message": "把 ORD10003 和 ORD10002 的订单状态分别核对一下，我在整理付款记录。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              },
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 2
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B10",
+      "family": "multiple_shipment_targets",
+      "user_goal": "两笔订单分别读取物流信息",
+      "turns": [
+        {
+          "message": "ORD10002、ORD10001 这两个包裹的运单和快递节点都查查，别混在一起。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              },
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "track_shipment": 2,
+              "get_order": 2
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B11",
+      "family": "ambiguous_history",
+      "user_goal": "平行引入两个候选订单时省略指代应等待澄清",
+      "turns": [
+        {
+          "message": "我有 ORD10001 和 ORD10003 两笔订单，先不用查询，等我确定问哪笔。",
+          "trajectory": {},
+          "expected_pending": false
+        },
+        {
+          "message": "那一单现在是什么情况。",
+          "trajectory": {},
+          "expected_pending": false
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B12",
+      "family": "ambiguous_same_turn",
+      "user_goal": "同轮两个平行订单不能猜测其一",
+      "turns": [
+        {
+          "message": "ORD10001 跟 ORD10003 我都在关心，不过我说的那笔到底到什么阶段了。",
+          "trajectory": {},
+          "expected_pending": false
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B13",
+      "family": "missing_reference",
+      "user_goal": "新会话缺少指代对象时不编造订单",
+      "turns": [
+        {
+          "message": "它现在处理到哪一步了，帮我查查。",
+          "trajectory": {},
+          "expected_pending": false
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B14",
+      "family": "clarification_recovery",
+      "user_goal": "用户补足歧义后恢复正常查询",
+      "turns": [
+        {
+          "message": "ORD10002 和 ORD10003 先记着，不用查，我还没选要问哪个。",
+          "trajectory": {}
+        },
+        {
+          "message": "就查这一个吧。",
+          "trajectory": {},
+          "expected_pending": false
+        },
+        {
+          "message": "我明确一下：查 ORD10003 的支付状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B15",
+      "family": "live_state_change",
+      "user_goal": "新状态事件后重新读取当前订单状态",
+      "turns": [
+        {
+          "message": "ORD10003 现在有没有发货，核对订单状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "再确认一下这笔现在的订单状态，我刚收到出库提醒。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          },
+          "state_changes": {
+            "ORD10003": "shipped"
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10003": "shipped"
+        },
+        "allowed_mutations": [
+          "ORD10003"
+        ],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003",
+              "status": "shipped"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2R-B16",
+      "family": "live_delivery_change",
+      "user_goal": "同一订单跨轮状态更新不可复述旧观察",
+      "turns": [
+        {
+          "message": "给我 ORD10001 目前的订单状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "刚又有通知了，这笔如今算签收了吗，重新查订单状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          },
+          "state_changes": {
+            "ORD10001": "delivered"
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "delivered"
+        },
+        "allowed_mutations": [
+          "ORD10001"
+        ],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001",
+              "status": "delivered"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2R-B17",
+      "family": "cancel_confirmed",
+      "user_goal": "只有真实确认后才取消可取消订单",
+      "turns": [
+        {
+          "message": "ORD10003 还没发货，我决定不要了，请帮我取消订单。",
+          "trajectory": {
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          },
+          "expected_pending": true
+        },
+        {
+          "message": "我确认取消刚才这笔订单，请执行。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "cancel_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "cancel_order": 1,
+              "get_order": 1
+            }
+          },
+          "confirm": true,
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10003": "cancelled"
+        },
+        "allowed_mutations": [
+          "ORD10003"
+        ],
+        "audit_actions": [
+          "cancel_order"
+        ]
+      }
+    },
+    {
+      "id": "P2R-B18",
+      "family": "cancel_unconfirmed",
+      "user_goal": "未给确认凭据时只生成待确认操作",
+      "turns": [
+        {
+          "message": "帮我取消 ORD10003 吧，衣服不买了。",
+          "trajectory": {
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          },
+          "expected_pending": true
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10003": "paid"
+        }
+      }
+    },
+    {
+      "id": "P2R-B19",
+      "family": "business_denial",
+      "user_goal": "已发货订单不能被取消且不擅自改为退货",
+      "turns": [
+        {
+          "message": "我只想取消 ORD10001，不要替我申请退款或退货；先核实能不能取消。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "search_knowledge",
+              "get_order_items"
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "search_knowledge": 2,
+              "get_order_items": 1
+            }
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped"
+        }
+      }
+    },
+    {
+      "id": "P2R-B20",
+      "family": "new_session_isolation",
+      "user_goal": "新会话不继承上一个会话的订单指代",
+      "turns": [
+        {
+          "message": "请查 ORD10003 的付款情况。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "刚才那一单是什么状态。",
+          "trajectory": {},
+          "new_session": true,
+          "expected_pending": false
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B21",
+      "family": "owner_session_isolation",
+      "user_goal": "不同用户不能复用原用户的会话",
+      "turns": [
+        {
+          "message": "我想核实 ORD10001 的订单状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "沿用这段对话，把刚才订单的信息给我。",
+          "trajectory": {},
+          "user_id": "u_p2r_other",
+          "expected_error": "INVALID_REQUEST"
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B22",
+      "family": "policy_after_order",
+      "user_goal": "切换到一般政策时不额外读取历史订单",
+      "turns": [
+        {
+          "message": "ORD10002 订单状态帮我看一眼。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "接下来只问通用规则：定制品适用七天无理由吗，不需要查询我的订单。",
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B23",
+      "family": "policy_without_order",
+      "user_goal": "未提供订单时一般时效问题无需猜订单",
+      "turns": [
+        {
+          "message": "一般发货后几天送达，偏远地区配送时效也一样吗。",
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B24",
+      "family": "greeting_no_tools",
+      "user_goal": "寒暄无需访问业务工具",
+      "turns": [
+        {
+          "message": "你好呀，我先看看客服怎么用。",
+          "trajectory": {},
+          "expected_pending": false
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B25",
+      "family": "acknowledgement_no_tools",
+      "user_goal": "结束对话无需重新查询上一笔订单",
+      "turns": [
+        {
+          "message": "核实 ORD10003 的订单状态就行。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "明白了，谢谢，今天就到这里。",
+          "trajectory": {},
+          "expected_pending": false
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B26",
+      "family": "shipment_combo",
+      "user_goal": "同一目标同时查询实付金额与实际物流",
+      "turns": [
+        {
+          "message": "ORD10001 我想一起核对实付总额，以及包裹的实际运输节点。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              },
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1,
+              "track_shipment": 1
+            },
+            "valid_paths": [
+              [
+                "get_order",
+                "track_shipment"
+              ],
+              [
+                "track_shipment",
+                "get_order"
+              ]
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B27",
+      "family": "history_disambiguated_reference",
+      "user_goal": "显式回指较早订单不应误用较新的订单",
+      "turns": [
+        {
+          "message": "先核对 ORD10001 的订单状态。麻烦按本轮明确的问题来处理。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "再核对 ORD10003 的订单状态。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "回去看第一笔 ORD10001，查它的物流轨迹。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "track_shipment": 1,
+              "get_order": 1
+            },
+            "valid_paths": [
+              [
+                "track_shipment"
+              ],
+              [
+                "get_order",
+                "track_shipment"
+              ],
+              [
+                "track_shipment",
+                "get_order"
+              ]
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B28",
+      "family": "status_only_shipping_words",
+      "user_goal": "是否发货属于订单状态而非必须查完整物流",
+      "turns": [
+        {
+          "message": "ORD10003 有没有发货，只核实订单阶段就好，不用列物流轨迹。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B29",
+      "family": "no_target_cancel",
+      "user_goal": "缺少订单目标时取消请求不得创建待确认写操作",
+      "turns": [
+        {
+          "message": "我想取消那笔订单，但我没在这里说过单号，你先告诉我还需要什么信息。",
+          "trajectory": {},
+          "expected_pending": false
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B30",
+      "family": "product_inventory",
+      "user_goal": "明确SKU的库存问题无需查订单",
+      "turns": [
+        {
+          "message": "SKU-TEE 现在还有库存吗，只看件数就行。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "check_inventory",
+                "arguments": {
+                  "sku": "SKU-TEE"
+                }
+              }
+            ],
+            "max_calls": {
+              "check_inventory": 1
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B31",
+      "family": "warranty_specific_sku",
+      "user_goal": "SKU保修规则查询与订单历史分离",
+      "turns": [
+        {
+          "message": "ORD10003 的订单状态核实一下。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "另一个问题，SKU-HEADSET 的保修是几个月，人为损坏保不保。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_warranty",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              }
+            ],
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "get_warranty": 1,
+              "search_knowledge": 1
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "P2R-B32",
+      "family": "failure_recovery_bad_product",
+      "user_goal": "错误商品编号读取失败后接受用户纠正且不沿用错误参数",
+      "turns": [
+        {
+          "message": "帮我查 SKU-NOT-EXISTS 这款商品的详细资料。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_product_detail",
+                "arguments": {
+                  "sku": "SKU-NOT-EXISTS"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_product_detail": 1
+            }
+          },
+          "expected_failures": [
+            "business_rejected"
+          ]
+        },
+        {
+          "message": "刚才编号打错了，正确的是 SKU-HEADSET，请查这款的详细资料。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_product_detail",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_product_detail": 1
+            }
+          }
+        }
+      ],
+      "expected": {
+        "observations": [
+          {
+            "name": "get_product_detail",
+            "arguments": {
+              "sku": "SKU-HEADSET"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "P2R-B33",
+      "family": "invalid_confirmation",
+      "user_goal": "伪造确认引用不能取消订单",
+      "turns": [
+        {
+          "message": "我想取消 ORD10003，请先给我确认操作。",
+          "expected_pending": true,
+          "trajectory": {
+            "allowed": [
+              "get_order"
+            ],
+            "max_calls": {
+              "get_order": 1
+            }
+          }
+        },
+        {
+          "message": "这是我的取消确认，请处理这笔订单。",
+          "invalid_confirmation": true,
+          "expected_error": "INVALID_REQUEST",
+          "trajectory": {}
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10003": "paid"
+        }
+      }
+    }
+  ]
+}

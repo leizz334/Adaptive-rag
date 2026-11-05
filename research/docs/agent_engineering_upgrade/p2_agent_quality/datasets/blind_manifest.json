@@ -1,0 +1,167 @@
+{
+  "schema_version": "p2-r-blind-freeze-v1",
+  "artifact": "research/docs/agent_engineering_upgrade/p2_agent_quality/datasets/blind_holdout.json",
+  "dataset_schema_version": "agent-scenarios-v2.1",
+  "sha256": "4b20f92f24d53afeafea4c6375e5da3edab04a75ee48fa31c1272448dbc5b275",
+  "bytes": 30394,
+  "case_count": 33,
+  "turn_count": 54,
+  "family_count": 33,
+  "frozen_at_utc": "2026-11-05T05:34:13.676141+00:00",
+  "authoring_source_commit": "09819352cc6df98b9f8cb42ffb56e9c8365b5793",
+  "lifecycle": {
+    "status": "FROZEN_BEFORE_FIRST_EXECUTION",
+    "scenario_execution": "NOT_RUN",
+    "model_evaluation": "NOT_RUN",
+    "model_or_api_calls": 0,
+    "application_startup": "NOT_RUN",
+    "post_freeze_rule": "Do not edit this artifact after first evaluation. Any correction requires a new version and retained original results; no denominator filtering or overwritten failures."
+  },
+  "isolation": {
+    "independent_blind_author": true,
+    "production_context_builder_inspected": false,
+    "production_planner_inspected": false,
+    "implementation_results_inspected": false,
+    "development_set_inspected": false,
+    "prior_dataset_input_displayed": false,
+    "prior_dataset_gold_used": false,
+    "prior_datasets_decoded_only_for_overlap_checks": true,
+    "tuned_to_implementation": false,
+    "only_owned_artifacts_modified": true,
+    "no_product_multi_agent_architecture": true,
+    "parent_disclosure": "Until explicit release after candidate freeze: only aggregate counts, hashes, paths and schema/static validation findings. Do not expose task messages, Gold or per-case results.",
+    "sources": "Approved evaluator schemas/scorers/environment contracts, tool definitions, seeded fixture facts, cancel audit repository contract, and ChatService._resolve_confirmation contract only. No application/runtime service execution."
+  },
+  "execution_constraints": {
+    "database": "Isolated in-memory synthetic SQLite via unchanged BusinessEnvironment only; no production DSN.",
+    "memory_mode": "M0",
+    "public_cross_session_M3": "OFF",
+    "no_live_credentials_or_provider_calls": true
+  },
+  "source_sha256": {
+    "eval/contracts.py": "24187e7f77535b84e6e29790c1201bfb56e256527ae38a6daed0c60b2b1d7eb9",
+    "eval/multiturn.py": "7d0988603053e15d8f4101b3be3888cf92c48e4599a1d7971ea05bd902e3839a",
+    "eval/environment.py": "9a4a5990c0079937beaa7791b039e5899902985eab8361b031446a0187905f9b",
+    "eval/tool_scoring.py": "62946bc4afe29cafe9f3113fcc45ef7c5dd9f31e0d628e2aa828bc8eade158b6",
+    "eval/goal_scoring.py": "87696b8313bad6d33e90ef7777011e94d416b6a4c05711b2dee56f4d496532a0",
+    "app/services/seed.py": "708fd451b7ad7721b8bb680d6423a7b0fe0599e69c922341653b2369026c7e1d",
+    "app/tools/order_tools.py": "82f761eb6dce269f451fd3b818ee5fc7e38b80ced9c54a6e8a34bec1a054c90f",
+    "app/tools/logistics_tools.py": "9920c3119abe4bc6fd0f7b9a4bc03565141c6aa0bd99ec11d102b0f1ebbc818e",
+    "app/tools/aftersale_tools.py": "39eb36360006050f8ed1f35f88b0161b3084782e8101ac0b37dfde11705c4727",
+    "app/tools/knowledge_tools.py": "5480dfc60d7b87aeea8508c6075cd5eaa283296997dcae657f416a4ebbebdc0d",
+    "app/tools/product_tools.py": "6ff9dfcbe70599c4bdb63f6ee4561ca04d451c988d49bbb22328be0b1de210cd",
+    "app/tools/base.py": "162f2d8e1052470b21e1fbe384c0a83fc954cd4ec024ba6cc2f9bf3d44c4b93a",
+    "app/repositories/order_repository.py": "5834e0ce4b7bf7da71e7caf2e70ce4b3fd41e059570492fb12f9165b1f5c65a2",
+    "app/services/chat_service.py": "2f4c9af1452b4ef79ac617aa280f59d9b8d112a6dc569e7d32dc92973fcddfff"
+  },
+  "coverage": [
+    "explicit order/status/amount",
+    "actual shipment-event retrieval",
+    "order item details",
+    "existing refund status without invented refunds",
+    "recent reference",
+    "explicit target switch",
+    "explicit correction",
+    "multiple explicit order targets",
+    "multiple shipment targets",
+    "historical explicit reference",
+    "intervening general policy",
+    "current target",
+    "ellipsis",
+    "ambiguous same-turn and historical referents",
+    "clarification followed by resolved request",
+    "fresh state observations after external events",
+    "status-only shipping question",
+    "combined amount and shipment request",
+    "cancel pending and legitimate confirmation",
+    "unconfirmed cancellation safety",
+    "invalid confirmation rejection",
+    "business denial for shipped cancellation",
+    "owner/session rejection",
+    "new-session reference isolation",
+    "policy questions and policy switches",
+    "greeting and acknowledgement without tools",
+    "missing-target cancellation safety",
+    "SKU inventory and warranty",
+    "business-error correction recovery"
+  ],
+  "oracle_design": {
+    "original_oracle_modified": false,
+    "policy_tool_evidence": "General policy may use RAG without registered tool events; search_knowledge is optional with max_calls=2.",
+    "actual_shipment_evidence": "track_shipment required for actual event requests; optional get_order permitted because either route can enforce ownership. Valid single-target path orderings are explicit.",
+    "status_evidence": "Status-only requests require get_order; reading shipment events is not mandatory for a status question.",
+    "multi_target_evidence": "All explicitly requested order targets require distinct argument-matched observations; max_calls permits the needed cardinality.",
+    "mutation_evidence": "Only valid confirmed seeded fixture cancellation may write. Final state and exact repository audit action are predeclared. External fixture state changes are explicitly allowed and need fresh successful observations.",
+    "negative_evidence": "Missing/ambiguous target and new-session references allow no active business tools or pending writes. No answer-text judgement is inferred from that absence.",
+    "argument_matching": "Required calls constrain relevant entity IDs. The unchanged scorer checks optional call names/counts/paths but not optional arguments independently."
+  },
+  "unsupported_coverage": [
+    {
+      "topic": "Injected transient failure, timeout, retry exhaustion, retrieval outage",
+      "reason": "The unchanged Turn schema/driver has no fault injector or transient/retry schedule. No silently ignored injection fields were added. Only a real seeded missing-product business error followed by user correction is expressible here; it does not establish transient recovery.",
+      "separate_evidence": "Parent-owned integration tests, outside this frozen standard dataset."
+    },
+    {
+      "topic": "Controlled assistant-only antecedent or malicious injected tool-output authority",
+      "reason": "The unchanged schema accepts user messages and service-generated responses, not controlled assistant/tool history injection. No generated assistant antecedent is treated as a fixed fixture."
+    },
+    {
+      "topic": "Semantic policy/clarification/final-answer quality",
+      "reason": "The unchanged goal scorer inspects tool and committed-state evidence; it does not score response prose. Optional policy-tool paths and no-tool negatives cannot independently establish answer correctness."
+    },
+    {
+      "topic": "Production authorization and persistent cross-session M3",
+      "reason": "Synthetic actor/session fixtures are local safety checks only. Public cross-session M3 is disabled and this dataset does not claim production authorization coverage."
+    }
+  ],
+  "overlap_checks": [
+    {
+      "path": "eval/dataset/agent_v2.json",
+      "sha256": "97045d20b42414cf5278ad32243d53adc734182443de5106b34b34be13ddcb38",
+      "overlapping_ids": 0,
+      "overlapping_messages": 0,
+      "entity_normalized_overlapping_messages": 0
+    },
+    {
+      "path": "eval/dataset/agent_v2_extended.json",
+      "sha256": "89005ffbcd721760e851f5b7f47eaabd13153adb7ee037e75cb65eb082535eb7",
+      "overlapping_ids": 0,
+      "overlapping_messages": 0,
+      "entity_normalized_overlapping_messages": 0
+    },
+    {
+      "path": "research/docs/agent_engineering_upgrade/p2_evidence/heldout_reference.json",
+      "sha256": "f1200034a4048b20768ba2097bc408097f760dd7974ae8fe2ed093a15343fefc",
+      "overlapping_ids": 0,
+      "overlapping_messages": 0,
+      "entity_normalized_overlapping_messages": 0
+    },
+    {
+      "path": "research/docs/agent_engineering_upgrade/p2_quality/new_unseen.json",
+      "sha256": "a974c33ea360eee6fc3c92771298fecb3886ef9d57861cc65901af2eef715064",
+      "overlapping_ids": 0,
+      "overlapping_messages": 0,
+      "entity_normalized_overlapping_messages": 0
+    }
+  ],
+  "validation": {
+    "status": "PASS",
+    "scope": "SCHEMA_AND_STATIC_CONSISTENCY_ONLY",
+    "method": "Parse unchanged Turn/Scenario class AST into unchanged eval.contracts/Pydantic namespace without importing eval.multiturn or starting application. Check schema, unique IDs/messages, entity-normalized uniqueness/overlap, UTF-8 integrity, tool names, trajectory cardinality and valid-path compatibility, seeded entities, roles, confirmation prerequisites, expected observations, state mutations and audit action consistency.",
+    "case_count": 33,
+    "turn_count": 54,
+    "chinese_input_count": 54,
+    "unique_entity_normalized_input_count": 54,
+    "replacement_character_count": 0,
+    "ascii_question_mark_count": 0,
+    "no_active_tool_turn_count": 12,
+    "confirmation_turn_count": 1,
+    "invalid_confirmation_turn_count": 1,
+    "external_state_event_count": 2,
+    "expected_failure_turn_count": 1,
+    "expected_error_turn_count": 2,
+    "pre_freeze_overlap_only_reworded_turn_count": 1,
+    "scenario_execution": "NOT_RUN",
+    "network_calls": 0
+  }
+}

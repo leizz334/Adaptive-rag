@@ -1,0 +1,926 @@
+{
+  "schema_version": "agent-scenarios-v2.1",
+  "labeling": "Development: explicitly authored independent task goals before candidate; permissible RAG policy paths; fixed unchanged tool/state oracle, no model output used",
+  "scenarios": [
+    {
+      "id": "dv01",
+      "family": "explicit_header",
+      "user_goal": "自然口吻核对订单当前阶段，仅需订单头事实",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "劳烦核实 ORD10001 目前走到哪个订单阶段了。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv02",
+      "family": "amount",
+      "user_goal": "查询总金额不等于要求物流事件",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10003 这笔一共付了多少钱，麻烦读一下金额。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv03",
+      "family": "payment",
+      "user_goal": "只核验付款状态，不根据旧对话声称支付成功",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "想核对 ORD10003 的付款是不是成功了。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv04",
+      "family": "transport_history",
+      "user_goal": "运输状态及历史节点需要物流能力，不能被状态词裁掉",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "帮我看看 ORD10001 运输过程中各个历史节点。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv05",
+      "family": "shipment_only",
+      "user_goal": "只要快递轨迹，Owner验证由追踪工具内部执行",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "只展示 ORD10001 最新快递轨迹即可，不用展开订单金额。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv06",
+      "family": "combined_evidence",
+      "user_goal": "两个不同证据目标都必须满足",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10001 的订单状态和物流轨迹都请核对后告诉我。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              },
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv07",
+      "family": "order_items",
+      "user_goal": "商品明细已有专用工具，不是物流问题",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "查下 ORD10002 里面有哪些商品，各买了几件。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order_items",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv08",
+      "family": "recent_demonstrative",
+      "user_goal": "张量词指代唯一最近用户订单",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "查询订单 ORD10003 状态",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "message": "这张订单现在怎么样了，重新读一下订单状态。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv09",
+      "family": "elliptic_followup",
+      "user_goal": "省略编号的明确付款追问继承唯一当前任务对象",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "查询订单 ORD10003 状态",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "message": "再核验一次付款是否成功，刚才没看清。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv10",
+      "family": "long_window",
+      "user_goal": "近期窗口外的实体由现有摘要恢复，状态必须新查",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "查询订单 ORD10001 状态",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "message": "你好",
+          "expected_pending": false,
+          "trajectory": {}
+        },
+        {
+          "message": "您好",
+          "expected_pending": false,
+          "trajectory": {}
+        },
+        {
+          "message": "hello",
+          "expected_pending": false,
+          "trajectory": {}
+        },
+        {
+          "message": "hi",
+          "expected_pending": false,
+          "trajectory": {}
+        },
+        {
+          "message": "你好！",
+          "expected_pending": false,
+          "trajectory": {}
+        },
+        {
+          "message": "您好！",
+          "expected_pending": false,
+          "trajectory": {}
+        },
+        {
+          "message": "之前那张订单的状态请读取最新的。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv11",
+      "family": "explicit_multi_target",
+      "user_goal": "多个明确请求读取目标不应被单实体假设拦截",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "请比较 ORD10001 和 ORD10003 的订单状态，两笔分别读给我。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              },
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "max_calls": {
+              "get_order": 2
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv12",
+      "family": "ambiguous_after_pair",
+      "user_goal": "两笔等价引入之后，单数指代必须澄清",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我手上有 ORD10001 和 ORD10003，先不要操作。",
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          },
+          "expected_pending": false
+        },
+        {
+          "message": "那一笔现在的订单状态呢？",
+          "expected_pending": false,
+          "trajectory": {}
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv13",
+      "family": "explicit_target_change",
+      "user_goal": "用户明确换目标后，追问绑定新订单",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "查询订单 ORD10002 状态",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "message": "改看 ORD10003，读取当前订单状态。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "message": "这单的订单状态再确认一下。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv14",
+      "family": "first_target_reference",
+      "user_goal": "两个先后目标后回指第一笔，不任意使用最后一个",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "查询订单 ORD10001 状态",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "message": "另外查询订单 ORD10002 状态",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "message": "回到第一次提到的订单，重新读取订单状态。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv15",
+      "family": "topic_policy",
+      "user_goal": "咨询通用规则不能把之前订单当授权对象",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "查询订单 ORD10001 状态",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "message": "另外咨询通用退货政策，不申请办理任何订单。",
+          "expected_pending": false,
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv16",
+      "family": "fresh_external_event",
+      "user_goal": "轮次间已从付款转发货，后轮必须得到新观察",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "查询订单 ORD10003 状态",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "message": "现在这张订单什么状态？请查最新的。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          },
+          "state_changes": {
+            "ORD10003": "shipped"
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10003": "shipped"
+        },
+        "allowed_mutations": [
+          "ORD10003"
+        ],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003",
+              "status": "shipped"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "dv17",
+      "family": "eligibility_not_write",
+      "user_goal": "问订单能否取消不是明确执行授权",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10001 已经发货了吗？我只想问它是否能取消，不要替我操作。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv18",
+      "family": "hitl_confirmed_cancel",
+      "user_goal": "只有复用服务端确认记录后才真正取消",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "请取消订单 ORD10003，我不要这笔了。",
+          "expected_pending": true,
+          "trajectory": {}
+        },
+        {
+          "message": "确认取消这一笔。",
+          "confirm": true,
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "cancel_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10003": "cancelled"
+        },
+        "allowed_mutations": [
+          "ORD10003"
+        ],
+        "audit_actions": [
+          "cancel_order"
+        ]
+      }
+    },
+    {
+      "id": "dv19",
+      "family": "hitl_wait",
+      "user_goal": "明确取消请求未确认不能改变业务状态",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "请取消订单 ORD10003，我不要这笔了。",
+          "expected_pending": true,
+          "trajectory": {}
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv20",
+      "family": "invalid_confirmation",
+      "user_goal": "不存在的确认ID必须在节点执行前拒绝",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "确认刚才那个操作。",
+          "invalid_confirmation": true,
+          "expected_error": "INVALID_REQUEST",
+          "trajectory": {}
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv21",
+      "family": "confirmation_new_session",
+      "user_goal": "确认动作不能跨会话授权",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "请取消订单 ORD10003，我不要这笔了。",
+          "expected_pending": true,
+          "trajectory": {}
+        },
+        {
+          "message": "确认。",
+          "confirm": true,
+          "new_session": true,
+          "expected_error": "INVALID_REQUEST",
+          "trajectory": {}
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv22",
+      "family": "session_owner",
+      "user_goal": "不同用户不能复用已有Session上下文",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "查询订单 ORD10002 状态",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "message": "把那张订单的状态给我看看。",
+          "user_id": "u_dev_other",
+          "expected_error": "INVALID_REQUEST",
+          "trajectory": {}
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv23",
+      "family": "foreign_order",
+      "user_goal": "知道编号不代表拥有订单；拒绝后无多余重查",
+      "user_id": "u_dev_other",
+      "turns": [
+        {
+          "message": "麻烦读出 ORD10001 的订单状态。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ]
+          },
+          "expected_failures": [
+            "business_rejected"
+          ]
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv24",
+      "family": "generic_policy",
+      "user_goal": "通用配送规则允许合法RAG路径，无需订单工具",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "普通商品一般怎样配送？请介绍通用时效规则。",
+          "expected_pending": false,
+          "trajectory": {
+            "allowed": [
+              "search_knowledge"
+            ],
+            "max_calls": {
+              "search_knowledge": 2
+            }
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv25",
+      "family": "social_no_tool",
+      "user_goal": "寒暄无需业务查询",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "您好！",
+          "expected_pending": false,
+          "trajectory": {}
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv26",
+      "family": "missing_identifier",
+      "user_goal": "新会话中没有目标，不能给工具空参数",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我还没给订单号，能查那张订单现在的状态吗？",
+          "expected_pending": false,
+          "trajectory": {}
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv27",
+      "family": "missing_record",
+      "user_goal": "不存在的显式编号保持确定性业务拒绝",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "核对 ORD99999 的订单状态，谢谢。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD99999"
+                }
+              }
+            ]
+          },
+          "expected_failures": [
+            "business_rejected"
+          ]
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv28",
+      "family": "warehouse_shipment",
+      "user_goal": "未发货订单也可查真实物流/仓库事件，不编造已出库",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10003 目前的物流事件有哪些？看看仓库记录。",
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "dv29",
+      "family": "confirmation_live_rule",
+      "user_goal": "确认前已发货，写入时必须重新检查当前状态并拒绝",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "请取消订单 ORD10003，我不要这笔了。",
+          "expected_pending": true,
+          "trajectory": {}
+        },
+        {
+          "message": "确认取消这一笔。",
+          "confirm": true,
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "cancel_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          },
+          "state_changes": {
+            "ORD10003": "shipped"
+          },
+          "expected_failures": [
+            "business_rejected"
+          ]
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10003": "shipped"
+        },
+        "allowed_mutations": [
+          "ORD10003"
+        ]
+      }
+    },
+    {
+      "id": "dv30",
+      "family": "idempotent_confirm",
+      "user_goal": "同一确认再次提交不得重复产生取消审计",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "请取消订单 ORD10003，我不要这笔了。",
+          "expected_pending": true,
+          "trajectory": {}
+        },
+        {
+          "message": "确认取消这一笔。",
+          "confirm": true,
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "cancel_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "message": "再确认一次刚才那一项。",
+          "confirm": true,
+          "expected_pending": false,
+          "trajectory": {
+            "required": [
+              {
+                "name": "cancel_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10003": "cancelled"
+        },
+        "allowed_mutations": [
+          "ORD10003"
+        ],
+        "audit_actions": [
+          "cancel_order"
+        ]
+      }
+    }
+  ]
+}
