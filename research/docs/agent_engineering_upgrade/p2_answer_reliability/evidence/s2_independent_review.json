@@ -1,0 +1,98 @@
+{
+  "schema_version": "p2-s-independent-review-v1",
+  "reviewer": "independent read-only review subagent",
+  "scope": [
+    "S1 safe evidence fallback",
+    "S2 deterministic answer scoring"
+  ],
+  "restrictions": {
+    "paid_api_calls": 0,
+    "blind_data_access": false,
+    "production_edits": false,
+    "commits_created": false
+  },
+  "initial_reproduction": {
+    "command": "D:/MiniAnaconda3/envs/adaptive-rag/python.exe -m pytest tests/unit/test_p2s_review.py -q --tb=short",
+    "result": "5 failed",
+    "purpose": "Independent failing counterexamples before corrections"
+  },
+  "regrade": {
+    "command": "D:/MiniAnaconda3/envs/adaptive-rag/python.exe -m pytest tests/unit/test_p2s_review.py -q --tb=short",
+    "exit_code": 0,
+    "result": "5 passed, 1 warning in 1.43s",
+    "raw_output": ".....                                                                    [100%]\r\n============================== warnings summary ===============================\r\n..\\..\\..\\..\\MiniAnaconda3\\envs\\adaptive-rag\\Lib\\site-packages\\langgraph\\checkpoint\\base\\__init__.py:18\r\n  D:\\MiniAnaconda3\\envs\\adaptive-rag\\Lib\\site-packages\\langgraph\\checkpoint\\base\\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.\r\n    from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n5 passed, 1 warning in 1.43s\r\n"
+  },
+  "findings": [
+    {
+      "id": "R1",
+      "priority": "P1",
+      "finding": "Additional claim for ORD7999 stripped as if covered by ORD7000 evidence",
+      "original_test": "test_extra_wrong_entity_claim_is_not_erased_as_known_fact",
+      "regrade": "PASS",
+      "status": "resolved_for_reproduced_case",
+      "source": "eval/answer_scoring.py:_fact_spans/_unknown_clauses"
+    },
+    {
+      "id": "R2",
+      "priority": "P1",
+      "finding": "Missing evidence path treated as explicit null",
+      "original_test": "test_missing_evidence_path_is_not_explicit_null",
+      "regrade": "PASS",
+      "status": "resolved_for_reproduced_case",
+      "source": "eval/answer_scoring.py:_path/_observed"
+    },
+    {
+      "id": "R3",
+      "priority": "P2",
+      "finding": "Truncated tool observation counted as complete supporting evidence",
+      "original_test": "test_truncated_observation_is_not_complete_evidence",
+      "regrade": "PASS",
+      "status": "resolved_for_reproduced_case",
+      "source": "eval/answer_scoring.py:_observed"
+    },
+    {
+      "id": "R4",
+      "priority": "P2",
+      "finding": "Later writes discard facts they do not change",
+      "original_test": "test_cancel_does_not_discard_verified_order_amount",
+      "regrade": "PASS",
+      "status": "partially_resolved",
+      "source": "app/agents/answer_evidence.py:verified_facts",
+      "remaining": [
+        {
+          "case": "get_order(delivered,total_cents=1250) followed by create_return_request(requested)",
+          "actual": "Amount retained; delivered order status omitted",
+          "expected": "Retain delivered order status because create_return does not update order.status"
+        },
+        {
+          "case": "track_shipment(events=[delivered]) followed by create_refund_request(requested)",
+          "actual": "Delivered shipment fact omitted",
+          "expected": "Retain shipment fact because create_refund only updates order.status, not shipment timestamps"
+        }
+      ],
+      "minimal_fix": "Invalidate get_order.status for affirmatively confirmed cancel/refund writes only. Preserve shipment events and item facts unless newer evidence actually changes them.",
+      "validation": "Executed two read-only synthetic safe_answer calls; retains_delivered_fact was false in both. Inspected app/repositories/order_repository.py:create_return/create_refund."
+    },
+    {
+      "id": "R5",
+      "priority": "P2",
+      "finding": "Abstention correctness PASS despite unassessed extra claim",
+      "original_test": "test_abstention_with_unassessed_extra_claim_is_not_certified",
+      "regrade": "PASS",
+      "status": "resolved_for_reproduced_case",
+      "source": "eval/answer_scoring.py:score_answer"
+    }
+  ],
+  "residual_red_validation": {
+  "command": "D:/MiniAnaconda3/envs/adaptive-rag/python.exe -m pytest tests/unit/test_p2s_review.py -q --tb=short",
+  "exit_code": 1,
+  "result": "2 failed, 5 passed, 1 warning in 2.36s",
+  "failing_tests": [
+    "test_return_request_preserves_order_status",
+    "test_refund_request_preserves_actual_shipment_events"
+  ],
+  "raw_output": ".....FF                                                                  [100%]\r\n================================== FAILURES ===================================\r\n_________________ test_return_request_preserves_order_status __________________\r\ntests\\unit\\test_p2s_review.py:152: in test_return_request_preserves_order_status\r\n    assert \"��ǩ��\" in result, result\r\nE   AssertionError: �����Ǳ��ι��߽����ȷ�ϵ���Ϣ��\r\nE     ���� ORD7000 �ܽ�12.50Ԫ������ң���\r\nE     ���� ORD7000 ���˻��������ύ���в���������ˡ�\r\nE     �������������ʱ�޷��ɿ�ȷ�ϣ��벹����Ϣ��ת�˹���������ʵ������������������ɡ�\r\nE   assert '��ǩ��' in '�����Ǳ��ι��߽����ȷ�ϵ���Ϣ��\\n���� ORD7000 �ܽ�12.50Ԫ������ң���\\n���� ORD7000 ���˻��������ύ���в���������ˡ�\\n�������������ʱ�޷��ɿ�ȷ�ϣ��벹����Ϣ��ת�˹���������ʵ������������������ɡ�'\r\n____________ test_refund_request_preserves_actual_shipment_events _____________\r\ntests\\unit\\test_p2s_review.py:164: in test_refund_request_preserves_actual_shipment_events\r\n    assert \"��ǩ��\" in result, result\r\nE   AssertionError: �����Ǳ��ι��߽����ȷ�ϵ���Ϣ��\r\nE     ���� ORD7000 ���˿��������ύ���в���������ˡ�\r\nE     �������������ʱ�޷��ɿ�ȷ�ϣ��벹����Ϣ��ת�˹���������ʵ������������������ɡ�\r\nE   assert '��ǩ��' in '�����Ǳ��ι��߽����ȷ�ϵ���Ϣ��\\n���� ORD7000 ���˿��������ύ���в���������ˡ�\\n�������������ʱ�޷��ɿ�ȷ�ϣ��벹����Ϣ��ת�˹���������ʵ������������������ɡ�'\r\n============================== warnings summary ===============================\r\n..\\..\\..\\..\\MiniAnaconda3\\envs\\adaptive-rag\\Lib\\site-packages\\langgraph\\checkpoint\\base\\__init__.py:18\r\n  D:\\MiniAnaconda3\\envs\\adaptive-rag\\Lib\\site-packages\\langgraph\\checkpoint\\base\\__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.\r\n    from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n=========================== short test summary info ===========================\r\nFAILED tests/unit/test_p2s_review.py::test_return_request_preserves_order_status\r\nFAILED tests/unit/test_p2s_review.py::test_refund_request_preserves_actual_shipment_events\r\n2 failed, 5 passed, 1 warning in 2.36s\r\n"
+},
+  "assessment": "All original five focused tests pass. Two added independent tests reproduce one residual P2 fallback completeness issue from field invalidation. No remaining demonstrated scorer false PASS among the reviewed cases.",
+  "limits": "This is deterministic synthetic regression review, not human calibration of arbitrary semantics or a broad security audit. No new general semantic correctness claim."
+}
