@@ -226,6 +226,28 @@ def select_blind(ids):
     return sorted(ids, key=lambda case: (digest(("P2S-20261105" + case).encode()), case))[:6]
 
 
+def verify_application_freeze(snapshots, freeze):
+    # The candidate freeze intentionally records Python app source only. Full
+    # snapshots additionally include skill JSON and other runtime contracts.
+    candidate_python = {
+        p: h
+        for p, h in snapshots["R1"]["files"].items()
+        if p.startswith("app/") and p.endswith(".py")
+    }
+    if candidate_python != freeze["app_hashes"]:
+        raise SafetyStop("candidate frozen application hash conflict")
+    non_python = [
+        {
+            p: h
+            for p, h in snapshots[arm]["files"].items()
+            if p.startswith("app/") and not p.endswith(".py")
+        }
+        for arm in ("R0", "R1")
+    ]
+    if non_python[0] != non_python[1]:
+        raise SafetyStop("source pairs differ in non-Python app contracts/metadata")
+
+
 def prepare(args):
     """Explicit future setup may fingerprint its supplied env; never sends HTTP."""
     run = args.run_dir.resolve()
@@ -236,9 +258,7 @@ def prepare(args):
     freeze = read(FREEZE)
     if snapshots["R0"]["head"] != BASE:
         raise SafetyStop("baseline commit mismatch")
-    candidate_app = {p: h for p, h in snapshots["R1"]["files"].items() if p.startswith("app/")}
-    if candidate_app != freeze["app_hashes"]:
-        raise SafetyStop("candidate frozen application hash conflict")
+    verify_application_freeze(snapshots, freeze)
     if digest(SCORER.read_bytes()) != freeze["scorer_sha256"]:
         raise SafetyStop("frozen answer scorer conflict")
     for key in ("provider_settings_sha256", "ambient_settings_sha256", "endpoint", "model", "caps"):

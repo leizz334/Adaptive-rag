@@ -262,10 +262,12 @@ async def test_full_mock_prepare_probe_capture_and_crash_resume(r, tmp_path, mon
         )
         files[split] = (path, answers)
     freeze = tmp_path / "candidate_freeze.json"
+    frozen_python = {f"app/module_{i}.py": f"python-{i}" for i in range(128)}
+    app_metadata = {f"app/skills/definitions/contract_{i}.json": f"contract-{i}" for i in range(4)}
     r.write(
         freeze,
         dict(
-            app_hashes={},
+            app_hashes=frozen_python,
             scorer_sha256=r.digest(r.SCORER.read_bytes()),
             app_source_commit="synthetic-candidate",
             datasets={p.name: r.digest(p.read_bytes()) for paths in files.values() for p in paths},
@@ -273,7 +275,7 @@ async def test_full_mock_prepare_probe_capture_and_crash_resume(r, tmp_path, mon
     )
     monkeypatch.setattr(r, "FREEZE", freeze)
     common = dict(
-        files={},
+        files=frozen_python | app_metadata,
         source_sha256="source",
         imports={},
         provider_settings_sha256="settings",
@@ -458,3 +460,27 @@ def test_signature_caps_record_actual_judge_default(r, tmp_path):
         "def judge(*,max_tokens=512):\n    pass\n", encoding="utf-8"
     )
     assert r.signature_caps(tmp_path) == {"app/example.py": ["judge:Constant(value=512)"]}
+
+
+def test_python_freeze_accepts_all_128_python_and_four_unchanged_json_contracts(r):
+    python = {f"app/module_{i}.py": f"candidate-python-{i}" for i in range(128)}
+    metadata = {f"app/skills/definitions/contract_{i}.json": f"contract-{i}" for i in range(4)}
+    snapshots = {
+        "R0": {"files": {**{p: "baseline-python" for p in python}, **metadata}},
+        "R1": {"files": {**python, **metadata}},
+    }
+    r.verify_application_freeze(snapshots, {"app_hashes": python})
+    assert len(snapshots["R1"]["files"]) == 132
+
+
+def test_python_freeze_still_rejects_changed_missing_or_added_app_json_contracts(r):
+    python = {"app/example.py": "candidate-python"}
+    metadata = {"app/skills/definitions/order_tracking.json": "unchanged"}
+    for changed in (
+        {"app/skills/definitions/order_tracking.json": "changed"},
+        {},
+        metadata | {"app/skills/definitions/new.json": "added"},
+    ):
+        snapshots = {"R0": {"files": python | metadata}, "R1": {"files": python | changed}}
+        with pytest.raises(r.SafetyStop, match="non-Python|contract|metadata"):
+            r.verify_application_freeze(snapshots, {"app_hashes": python})

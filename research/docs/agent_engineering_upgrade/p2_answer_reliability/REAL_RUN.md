@@ -28,10 +28,14 @@ application setting is changed to fit the experiment. Published alias details
 do not independently verify backend weights. Thinking may consume the small
 output budget and cause truncation; that outcome is retained.
 
-The candidate app must exactly match `evidence/candidate_freeze.json` (app source
+The candidate Python app source must exactly match `evidence/candidate_freeze.json` (app source
 commit `37a7e47d241175c0af9a110686ef6bf90c621c62`); R0 must be clean at
 `e74f01db65fb9f3df929cdf5932919e1f10e453e`. Current metadata HEADs are recorded at
-preparation. Metadata-only checkpoint commits afterward are allowed only while
+preparation. The freeze contains 128 Python hashes; the full source snapshots also
+contain four skill JSON contracts. Non-Python app contracts must exactly match
+the clean R0 baseline, including the same file set; changed, missing, or added
+contracts are rejected. All 132 files remain in the immutable source fingerprint.
+Metadata-only checkpoint commits afterward are allowed only while
 all frozen runtime source/helper/scorer/data bytes remain identical. Shared
 evaluator, knowledge, seed, settings, and call-site caps must match. Actual
 signature defaults are recorded separately, including intentional Judge changes.
@@ -63,7 +67,7 @@ $taskPython = 'D:/MiniAnaconda3/envs/adaptive-rag/python.exe'
 $taskRoot = 'D:/Code/Adaptive-rag/.worktrees/p2-answer-reliability'
 $taskPhase = "$taskRoot/research/docs/agent_engineering_upgrade/p2_answer_reliability"
 $taskHarness = "$taskPhase/real_pairs.py"
-$taskRun = "$taskPhase/runs/real-source-pairs-20261105"
+$taskRun = "$taskPhase/runs/20261105_S6_pairs_02"
 & $taskPython $taskHarness prepare --run-dir $taskRun --env-file 'D:/Code/Adaptive-rag/.env' --r0-root 'D:/Code/Adaptive-rag/.worktrees/p2-agent-quality' --r1-root $taskRoot --dev-dataset "$taskPhase/datasets/development.json" --dev-answers "$taskPhase/datasets/development_answers.json" --blind-dataset "$taskPhase/datasets/holdout.json" --blind-answers "$taskPhase/datasets/holdout_answers.json" --input-price 0.30 --output-price 1.20 --pricing-url 'https://api-docs.deepseek.com/quick_start/pricing/' --pricing-verified-date '2026-11-05'
 & $taskPython $taskHarness probe --run-dir $taskRun --source-root 'D:/Code/Adaptive-rag/.worktrees/p2-agent-quality' --variant R0
 & $taskPython $taskHarness pilot --run-dir $taskRun
