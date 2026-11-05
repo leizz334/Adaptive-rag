@@ -1,0 +1,17 @@
+{
+  "status": "POST_FREEZE_DIAGNOSTIC_ONLY_NO_TUNING",
+  "candidate_commit": "44f1031f651637fc96ef5f962f89018b9c1e9748",
+  "trace_directory": "evidence/post_blind_failures/traces",
+  "policy": "All frozen inputs/Gold and first scores retained. No production change follows these holdout findings.",
+  "failures": [
+    {"id":"P2R-B03","first_boundary":"Intent/skill and Planner catalog","category":"PLANNER_TOOL_OMISSION","observed":"Refund-list request routes agent but executes get_order plus track_shipment; no get_refund_status","cause":"Order-centric intent/skill/fallback does not expose/select required refund capability; need separate source review for model-versus-overlay responsibility","baseline_regression":false},
+    {"id":"P2R-B06","first_boundary":"Planner fallback","category":"PLANNER_TOOL_OMISSION","observed":"Final target ORD10003 is correct; asks order stage but selects track_shipment","cause":"Deterministic capability ontology misreads stage/location wording; entity binding itself is correct","baseline_regression":false},
+    {"id":"P2R-B26","first_boundary":"Planner fallback","category":"PLANNER_TOOL_OMISSION","observed":"Mixed actual-paid-total plus shipment-node goal selects only track_shipment","cause":"Header detector misses financial-total paraphrase; previous fixed two-tool skill happened to satisfy both","baseline_regression":true},
+    {"id":"P2R-B28","first_boundary":"Planner fallback","category":"PLANNER_EXTRA_TOOL","observed":"Explicit no-logistics clause still generates get_order plus track_shipment","cause":"Small offline capability proxy does not model negated evidence goals","baseline_regression":false},
+    {"id":"P2R-B30","first_boundary":"Router","category":"WRONG_ROUTING","observed":"Explicit SKU inventory request takes single RAG path with no inventory tool","cause":"Offline intent/router heuristics miss current SKU-specific data requirement; real model behavior not inferred","baseline_regression":false},
+    {"id":"P2R-B31","first_boundary":"Router / tool-contract boundary","category":"WRONG_ROUTING","observed":"SKU-specific warranty follow-up takes single RAG path; get_warranty absent","cause":"General policy versus structured SKU contract distinction remains incomplete; RAG answer semantics are not certified by scripted generation","baseline_regression":false},
+    {"id":"P2R-B32","first_boundary":"Router","category":"WRONG_ROUTING","observed":"Both nonexistent and corrected SKU requests take single RAG path; no get_product_detail observation","cause":"SKU/catalog tool route is not selected, so argument correction and tool-rejection recovery are never actually exercised","baseline_regression":false}
+  ],
+  "counts":{"heldout_failures":7,"new_regressions_relative_to_C0":1,"observed_hard_safety_violations":0},
+  "limitations":"These are actual offline node paths, not claims about real DeepSeek semantics. Raw final answers, selected contexts, plans, tool results and DB snapshots remain in the traces. No new blinded set or retraining claim follows this diagnostic pass."
+}
