@@ -7,7 +7,7 @@ import logging
 import time
 from collections.abc import AsyncIterator
 from contextlib import suppress
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import cast
 
 from langsmith import tracing_context
@@ -200,6 +200,7 @@ class ChatService:
         )
         if confirmed_action is not None:
             context = SelectedContext(request.message)
+        context = replace(context, owner_user_id=request.user_id, session_id=session_id)
         preferences = {}
         identity = current_memory_identity()
         if (
