@@ -1,0 +1,404 @@
+"""Source-bound S5 ENGINEERING_FIXTURE controls; never real LLM evidence."""
+
+from __future__ import annotations
+
+import argparse
+import asyncio
+import hashlib
+import importlib.util
+import json
+import logging
+import os
+import sys
+from datetime import datetime
+from pathlib import Path
+from unittest.mock import patch
+
+os.environ["LANGCHAIN_TRACING_V2"] = "false"
+os.environ["LANGSMITH_TRACING"] = "false"
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[3]
+FIXED_SEED_CLOCK = datetime(2026, 11, 5, 0, 0, 0)
+
+
+def seed_digest(snapshot):
+    return hashlib.sha256(
+        json.dumps(
+            {key: snapshot["business"][key] for key in ("orders", "items", "products")},
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    ).hexdigest()
+
+
+def load(name, path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def save(path, value):
+    with path.open("x", encoding="utf-8", newline="\n") as out:
+        json.dump(value, out, ensure_ascii=False, indent=2)
+        out.write("\n")
+
+
+async def faults():
+    from app.agents.nodes.generate import generate_node
+    from app.agents.nodes.faithfulness import faithfulness_node
+    from app.core.enums import RetrievalStrategy
+    from app.core.exceptions import LLMProviderError, LLMTruncationError
+    from app.guardrails.hallucination import FaithfulnessChecker
+    from app.providers.base import LLMResponse
+    from app.schemas.agent import ToolResult
+    from app.schemas.retrieval import RetrievedChunk
+
+    class Fault:
+        def __init__(self, kind):
+            self.kind = kind
+            self.calls = 0
+
+        async def generate(self, *args, **kwargs):
+            self.calls += 1
+            if self.kind == "truncated_exception":
+                raise LLMTruncationError()
+            if self.kind == "api_error":
+                raise LLMProviderError("synthetic offline fault")
+            if self.kind == "length_marker":
+                return LLMResponse('{"answer":"partial","supported":true}', finish_reason="length")
+            if self.kind == "malformed":
+                return LLMResponse("{")
+            return LLMResponse('{"supported":"yes","answer":7}')
+
+    tools = [
+        ToolResult(
+            name="get_order",
+            success=True,
+            output=dict(order_id="ORD8080", status="paid", total_cents=15678),
+        ),
+        ToolResult(
+            name="track_shipment",
+            success=True,
+            output=dict(order_id="ORD8080", events=[dict(status="in_transit")]),
+        ),
+    ]
+    output = []
+    for evidence in ("two_business_facts", "unrelated_retrieval"):
+        state = dict(
+            user_query="查询订单ORD8080总金额和物流",
+            strategy=RetrievalStrategy.AGENT,
+            final_answer="原答复",
+            tool_results=tools,
+        )
+        if evidence == "unrelated_retrieval":
+            state.update(
+                user_query="SKU-X1人为损坏能保修吗",
+                strategy=RetrievalStrategy.SINGLE,
+                tool_results=[],
+                retrieved_chunks=[
+                    RetrievedChunk(
+                        chunk_id="c",
+                        document_id="d",
+                        title="无关政策",
+                        content="电池与耗材的其他规则",
+                        score=1,
+                    )
+                ],
+            )
+        for kind in ("truncated_exception", "length_marker", "api_error", "malformed", "schema"):
+            judge = Fault(kind)
+            checker = FaithfulnessChecker(judge)
+            verdict = await checker.check(
+                query=state["user_query"],
+                answer=state["final_answer"],
+                chunks=state.get("retrieved_chunks", []),
+                tool_results_text=str([t.model_dump() for t in state["tool_results"]]),
+            )
+            generated = Fault(kind)
+            gen_result = await generate_node(state, generated)
+            failed_judge = Fault(kind)
+            faithful = await faithfulness_node(
+                state, FaithfulnessChecker(failed_judge), failed_judge
+            )
+            output.append(
+                dict(
+                    evidence=evidence,
+                    fault=kind,
+                    verdict=verdict.model_dump(mode="json"),
+                    generation=gen_result,
+                    faithfulness=faithful,
+                    calls=dict(
+                        checker=judge.calls,
+                        generate=generated.calls,
+                        faithfulness=failed_judge.calls,
+                    ),
+                )
+            )
+    return output
+
+
+async def run(args):
+    source = args.source_root.resolve()
+    sys.path.insert(0, str(source))
+    import app
+    import eval
+    from eval.memory_ablation import long_window_case
+    from eval.multiturn import load_scenarios
+
+    assert Path(app.__file__).resolve().is_relative_to(source)
+    assert Path(eval.__file__).resolve().is_relative_to(source)
+    instrument = load("s5_instrument", HERE.parent / "p2_agent_quality/instrumented.py")
+    instrument.ROOT = source
+    instrument.STATE_FIELDS = instrument.STATE_FIELDS | {"extra"}
+    scoring = load("s5_common_answer_scoring", ROOT / "eval/answer_scoring.py")
+    benchmark = load("s5_common_benchmark", HERE.parent / "p2_agent_quality/benchmark.py")
+    from eval.environment import BusinessEnvironment
+
+    seed_checks = []
+    with (
+        instrument.offline_network(),
+        patch("app.services.seed.utcnow", return_value=FIXED_SEED_CLOCK),
+    ):
+        for _ in range(2):
+            async with BusinessEnvironment(memory_mode="M2") as env:
+                seed_checks.append(seed_digest(await instrument.database_value(env)))
+    assert seed_checks[0] == seed_checks[1], "Nonrepeatable seeded business fixture"
+    freeze = json.loads((HERE / "evidence/candidate_freeze.json").read_bytes())
+    assert sha(ROOT / "eval/answer_scoring.py") == freeze["scorer_sha256"]
+    paths = dict(
+        original80=ROOT / "eval/dataset/agent_v2_extended.json",
+        old16=HERE.parent / "p2_quality/new_unseen.json",
+        former_development30=HERE.parent / "p2_agent_quality/datasets/development.json",
+        former_holdout33=HERE.parent / "p2_agent_quality/datasets/blind_holdout.json",
+        development24=HERE / "datasets/development.json",
+        holdout30=HERE / "datasets/holdout.json",
+    )
+    data_hashes = {name: sha(path) for name, path in paths.items()}
+    # Gold bytes are hashed before execution, parsed only after each completed service run.
+    gold_hashes = {
+        name: sha(HERE / f"datasets/{name}_answers.json") for name in ("development", "holdout")
+    }
+    before = dict(
+        app=instrument.hashes((source / "app").rglob("*.py")),
+        prompts=instrument.hashes((source / "app/prompts").rglob("*.py")),
+        old_scorers=instrument.hashes((source / "eval").rglob("*.py")),
+        common_scorer=sha(ROOT / "eval/answer_scoring.py"),
+        data=data_hashes,
+        gold=gold_hashes,
+    )
+    args.output.mkdir(parents=True, exist_ok=False)
+    save(
+        args.output / "config.json",
+        dict(
+            label=args.label,
+            source_root=str(source),
+            fixture="ENGINEERING_FIXTURE_OFFLINE_SCRIPTED_NOT_REAL_LLM_LANGUAGE",
+            mode="M2",
+            network="BLOCKED",
+            gold_to_agent=False,
+            before=before,
+            seed_clock=FIXED_SEED_CLOCK.isoformat(),
+            seed_clock_timezone="naive UTC fixture, SQLite persisted timestamps",
+            seed_patch="app.services.seed.utcnow only; no application tool currently uses a runtime eligibility clock",
+            seed_preflight_hashes=seed_checks,
+            seed_hash_tables=["orders", "items", "products"],
+            harness_sha256=sha(Path(__file__)),
+            temperature="source production node defaults",
+            paid_calls=0,
+        ),
+    )
+    if args.preflight_only:
+        print(json.dumps(dict(label=args.label, seed_hash=seed_checks[0], preflight="PASS")))
+        return
+    groups, answer_rows = {}, []
+    initial_seed_hashes = {}
+    for group in (*paths, "long_window"):
+        if group == "long_window":
+            cases = [long_window_case()]
+            digest = hashlib.sha256(cases[0].model_dump_json().encode()).hexdigest()
+        else:
+            cases, digest = load_scenarios(paths[group])
+        with patch("app.services.seed.utcnow", return_value=FIXED_SEED_CLOCK):
+            result = await instrument.evaluate_cases(
+                cases, dataset_sha256=digest, mode="M2", provider="scripted"
+            )
+        traces = result.pop("traces")
+        for trace in traces:
+            current_seed = seed_digest(trace["database_initial"])
+            assert current_seed == seed_checks[0], f"Seed fixture mismatch: {trace['case_id']}"
+            initial_seed_hashes[trace["case_id"]] = current_seed
+        annotations = None
+        if group in ("development24", "holdout30"):
+            split = "development" if group == "development24" else "holdout"
+            annotations = json.loads((HERE / f"datasets/{split}_answers.json").read_bytes())
+        case_map = {case.id: case for case in cases}
+        summaries = []
+        target = args.output / group
+        target.mkdir()
+        (target / "traces").mkdir()
+        for row, trace in zip(result["results"], traces, strict=True):
+            for index, turn in enumerate(trace["turns"]):
+                old = row["evidence"]["turns"][index]
+                calls = [c for c in row["evidence"]["tool_calls"] if c["turn"] == index]
+                retrieved = [
+                    chunk
+                    for node in turn["nodes"]
+                    for chunk in node.get("output", {}).get("retrieved_chunks", [])
+                ]
+                text = turn.get("response", {}).get(
+                    "answer", turn.get("final_state", {}).get("final_answer", "")
+                )
+                # Turn-level original oracle reasons include argument/trajectory,
+                # pending/refusal, actual failure and confirmation constraints.
+                turn_failures = [r for r in row["reasons"] if r.startswith(f"turn:{index}:")]
+                if annotations is None:
+                    score = dict(
+                        OVERALL_TASK_SUCCESS="NOT_ASSESSED",
+                        ANSWER_FACTUAL_CORRECTNESS="NOT_ASSESSED",
+                        ANSWER_FAITHFULNESS="NOT_ASSESSED",
+                        ANSWER_COMPLETENESS=None,
+                        reason="Historical Scenario has no AnswerGold; no fabricated semantic annotation",
+                    )
+                else:
+                    score = scoring.score_answer(
+                        answer=text,
+                        gold=scoring.AnswerGold.model_validate(annotations[row["case_id"]][index]),
+                        calls=calls,
+                        retrieved=retrieved,
+                        tool_success=not turn_failures,
+                        environment_success=bool(row["metrics"]["environment_state_correct"]),
+                        judge_status=(
+                            turn.get("final_state", {}).get("extra", {}).get("faithfulness") or {}
+                        ).get("status"),
+                    )
+                record = dict(
+                    dataset=group,
+                    case_id=row["case_id"],
+                    turn=index,
+                    final_answer=text,
+                    score=score,
+                    tool_oracle_reasons=turn_failures,
+                    environment_scope="original case-final environment oracle",
+                    actual_tool_calls=calls,
+                    retrieved=retrieved,
+                )
+                summaries.append(record)
+                answer_rows.append(record)
+            if (
+                annotations is not None
+                or row["status"] != "PASS"
+                or row["case_id"] in {"B31", "dv06", "B26", "B03"}
+            ):
+                save(target / "traces" / f"{row['case_id']}.json", trace)
+        save(target / "results.json", result)
+        save(target / "answers.json", summaries)
+        groups[group] = benchmark.metrics(result["results"], case_map)
+        groups[group]["scripted_calls"] = sum(len(t["provider_calls"]) for t in traces)
+        groups[group]["estimated_input_utf8_bound"] = sum(
+            call["input_utf8_bound"] for t in traces for call in t["provider_calls"]
+        )
+        print(
+            json.dumps(
+                dict(
+                    label=args.label, dataset=group, passed=result["passed"], cases=result["cases"]
+                )
+            ),
+            flush=True,
+        )
+    counterexamples = json.loads((HERE / "datasets/answer_counterexamples.json").read_bytes())
+    calibration = []
+    for example in counterexamples["cases"]:
+        value = {k: v for k, v in example.items() if k != "id"}
+        value["gold"] = scoring.AnswerGold.model_validate(value["gold"])
+        calibration.append(dict(id=example["id"], score=scoring.score_answer(**value)))
+    save(
+        args.output / "evaluator_counterexamples.json",
+        dict(origin=counterexamples["origin"], results=calibration),
+    )
+    with instrument.offline_network():
+        matrix = await faults()
+    # Safe serializer includes Pydantic node results but no hidden model fields.
+    save(
+        args.output / "fault_matrix.json",
+        dict(
+            origin="MOCK_JUDGE_GENERATE_FAULTS_NOT_AGENT_TASKS_NOT_REAL_LLM",
+            results=instrument.safe_value(matrix),
+        ),
+    )
+    after = dict(
+        app=instrument.hashes((source / "app").rglob("*.py")),
+        prompts=instrument.hashes((source / "app/prompts").rglob("*.py")),
+        old_scorers=instrument.hashes((source / "eval").rglob("*.py")),
+        common_scorer=sha(ROOT / "eval/answer_scoring.py"),
+        data={name: sha(path) for name, path in paths.items()},
+        gold={
+            name: sha(HERE / f"datasets/{name}_answers.json") for name in ("development", "holdout")
+        },
+    )
+    save(
+        args.output / "validation.json",
+        dict(
+            unchanged=before == after,
+            after=after,
+            source_bound=True,
+            answer_gold_entered_only_after_service=True,
+            seed_clock=FIXED_SEED_CLOCK.isoformat(),
+            initial_seed_hashes=initial_seed_hashes,
+            all_case_seed_hashes_match_preflight=all(
+                d == seed_checks[0] for d in initial_seed_hashes.values()
+            ),
+            paid_calls=0,
+            network="BLOCKED",
+        ),
+    )
+    save(
+        args.output / "summary.json",
+        dict(
+            label=args.label,
+            groups=groups,
+            answers={
+                g: {
+                    key: {
+                        status: sum(
+                            row["score"].get(key) == status
+                            for row in answer_rows
+                            if row["dataset"] == g
+                        )
+                        for status in ("PASS", "FAIL", "NOT_ASSESSED")
+                    }
+                    for key in (
+                        "OVERALL_TASK_SUCCESS",
+                        "ANSWER_FACTUAL_CORRECTNESS",
+                        "ANSWER_FAITHFULNESS",
+                    )
+                }
+                for g in groups
+            },
+            coverage={
+                g: [
+                    row["score"].get("ANSWER_COMPLETENESS")
+                    for row in answer_rows
+                    if row["dataset"] == g
+                ]
+                for g in groups
+            },
+        ),
+    )
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source-root", required=True, type=Path)
+    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--label", required=True)
+    parser.add_argument("--preflight-only", action="store_true")
+    args = parser.parse_args()
+    logging.disable(logging.CRITICAL)
+    asyncio.run(run(args))

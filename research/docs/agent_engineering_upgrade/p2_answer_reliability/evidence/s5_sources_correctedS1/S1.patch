@@ -1,0 +1,41 @@
+diff --git a/app/agents/answer_evidence.py b/app/agents/answer_evidence.py
+index 266cf8d..259dd84 100644
+--- a/app/agents/answer_evidence.py
++++ b/app/agents/answer_evidence.py
+@@ -75,6 +75,10 @@ def verified_facts(results: list[ToolResult]) -> list[str]:
+             if type(inventory) is int and inventory >= 0:
+                 facts.append(f"商品 {sku} 库存：{inventory}件。")
+             if result.name == "get_product_detail":
++                for key, field_label in (("name", "名称"), ("description", "资料")):
++                    value = data.get(key)
++                    if isinstance(value, str) and value.strip() and len(value) <= 300:
++                        facts.append(f"商品 {sku} {field_label}（工具原文）：{value.strip()!r}。")
+                 price = _money(data.get("price_cents"))
+                 if price:
+                     facts.append(f"商品 {sku} 价格：{price}。")
+diff --git a/app/agents/nodes/faithfulness.py b/app/agents/nodes/faithfulness.py
+index 2943180..c4f8970 100644
+--- a/app/agents/nodes/faithfulness.py
++++ b/app/agents/nodes/faithfulness.py
+@@ -81,7 +81,7 @@ async def faithfulness_node(
+ ) -> dict:
+     answer = state.get("final_answer") or ""
+     if (
+-        state.get("refused")
++        (state.get("refused") and not (state.get("extra") or {}).get("generated_refusal"))
+         or (state.get("selected_context") and state["selected_context"].needs_clarification)
+         or state.get("pending_action")
+         or (state.get("extra") or {}).get("missing_order_id")
+diff --git a/app/agents/nodes/generate.py b/app/agents/nodes/generate.py
+index 64dd204..a2532b0 100644
+--- a/app/agents/nodes/generate.py
++++ b/app/agents/nodes/generate.py
+@@ -149,7 +149,7 @@ async def generate_node(state: AgentState, llm: LLMProvider) -> dict:
+         "refused": payload.refused,
+         "latency": latency,
+         "token_usage": merged,
+-        "extra": {**(state.get("extra") or {}), "generation_error": generation_error},
++        "extra": {**(state.get("extra") or {}), "generation_error": generation_error, "generated_refusal": payload.refused},
+     }
+ 
+ 

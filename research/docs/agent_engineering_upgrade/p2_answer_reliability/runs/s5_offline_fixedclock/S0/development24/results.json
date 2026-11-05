@@ -1,0 +1,2184 @@
+{
+  "schema_version": "p2r-runtime-evidence-v1",
+  "model_evaluation": "OFFLINE",
+  "real_model_evaluation": "NOT_RUN",
+  "evidence_origin": "SOURCEFROZEN_REEXECUTION",
+  "provider": "OFFLINE_SCRIPTED",
+  "mode": "M2",
+  "paid_api_calls": 0,
+  "paid_tokens": 0,
+  "raw_scorer_model_evaluation_note": "NOT_RUN is the original contract default; this run is explicitly OFFLINE",
+  "cases": 24,
+  "passed": 12,
+  "results": [
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD01",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 453.20809999248013
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD01",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "ca669a4a-7c4a-4587-8b7d-9ababef6fdb1",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "items": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 29900,
+              "created_at": "2026-11-02T00:00:00",
+              "paid_at": "2026-11-02T00:00:00",
+              "shipped_at": "2026-11-03T00:00:00",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 15,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD02",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 396.5358000132255
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD02",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "53572f22-5534-446c-a95f-ae88b36d28b0",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "track_shipment",
+            "arguments": {
+              "order_id": "ORD10002"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10002",
+              "tracking_no": "YT998877",
+              "city": "北京",
+              "events": [
+                {
+                  "status": "warehouse",
+                  "at": "2026-10-16T00:00:00"
+                },
+                {
+                  "status": "in_transit",
+                  "tracking_no": "YT998877",
+                  "at": "2026-10-17T00:00:00"
+                },
+                {
+                  "status": "delivered",
+                  "at": "2026-10-24T00:00:00"
+                }
+              ]
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 15,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD03",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 394.01759998872876
+      },
+      "reasons": [
+        "turn:0:missing_tool",
+        "turn:0:trajectory_invalid",
+        "turn:0:wrong_arguments"
+      ],
+      "evidence": {
+        "family": "answer_PSD03",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "0e710d50-e50e-43f5-8441-2e7a17d22fac",
+            "scores": {
+              "tool_selection_accuracy": 0.5,
+              "tool_argument_accuracy": 0.5,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 1
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order_items",
+            "arguments": {
+              "order_id": "ORD10002"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "items": [
+                {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "quantity": 1,
+                  "unit_price_cents": 3900,
+                  "customized": true
+                }
+              ]
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 15,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD04",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 390.754799998831
+      },
+      "reasons": [
+        "turn:0:trajectory_invalid"
+      ],
+      "evidence": {
+        "family": "answer_PSD04",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "0feb86f0-f7e0-49e6-8e5b-9059722b605a",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 1,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "items": [
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 7900,
+              "created_at": "2026-11-04T19:00:00",
+              "paid_at": "2026-11-04T19:00:00",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          },
+          {
+            "name": "track_shipment",
+            "arguments": {
+              "order_id": "ORD10003"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10003",
+              "tracking_no": null,
+              "city": "杭州",
+              "events": [
+                {
+                  "status": "warehouse",
+                  "at": "2026-11-04T19:00:00"
+                }
+              ]
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 16,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD05",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 685.8463999815285
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD05",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "bae01cfc-4944-4280-824b-4184c4387b55",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "items": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 29900,
+              "created_at": "2026-11-02T00:00:00",
+              "paid_at": "2026-11-02T00:00:00",
+              "shipped_at": "2026-11-03T00:00:00",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            }
+          },
+          {
+            "name": "track_shipment",
+            "arguments": {
+              "order_id": "ORD10001"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10001",
+              "tracking_no": "SF1234567890",
+              "city": "上海",
+              "events": [
+                {
+                  "status": "warehouse",
+                  "at": "2026-11-02T00:00:00"
+                },
+                {
+                  "status": "in_transit",
+                  "tracking_no": "SF1234567890",
+                  "at": "2026-11-03T00:00:00"
+                }
+              ]
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 16,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD06",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 415.3141000424512
+      },
+      "reasons": [
+        "turn:0:trajectory_invalid"
+      ],
+      "evidence": {
+        "family": "answer_PSD06",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "301887c1-2150-46a0-8f61-5795f1b6c3c7",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 1,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "items": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 29900,
+              "created_at": "2026-11-02T00:00:00",
+              "paid_at": "2026-11-02T00:00:00",
+              "shipped_at": "2026-11-03T00:00:00",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            }
+          },
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "items": [
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 7900,
+              "created_at": "2026-11-04T19:00:00",
+              "paid_at": "2026-11-04T19:00:00",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 16,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD07",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 388.0178999970667
+      },
+      "reasons": [
+        "turn:0:missing_tool",
+        "turn:0:trajectory_invalid",
+        "turn:0:wrong_arguments"
+      ],
+      "evidence": {
+        "family": "answer_PSD07",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "40ab1432-85e1-4bcc-b282-6f8754e340d5",
+            "scores": {
+              "tool_selection_accuracy": 0.0,
+              "tool_argument_accuracy": 0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 1
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 19,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD08",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 366.0852999892086
+      },
+      "reasons": [
+        "turn:0:missing_tool",
+        "turn:0:trajectory_invalid",
+        "turn:0:wrong_arguments"
+      ],
+      "evidence": {
+        "family": "answer_PSD08",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "2889d8a4-e7ee-48fe-a09c-bcfe2cee0c42",
+            "scores": {
+              "tool_selection_accuracy": 0.0,
+              "tool_argument_accuracy": 0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 1
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 19,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD09",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 364.3891999963671
+      },
+      "reasons": [
+        "turn:0:missing_tool",
+        "turn:0:trajectory_invalid",
+        "turn:0:wrong_arguments"
+      ],
+      "evidence": {
+        "family": "answer_PSD09",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "18f152d1-27e7-4244-ac98-e26d0e3b94e0",
+            "scores": {
+              "tool_selection_accuracy": 0.0,
+              "tool_argument_accuracy": 0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 1
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 19,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD10",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 427.77419998310506
+      },
+      "reasons": [
+        "turn:0:missing_tool",
+        "turn:0:trajectory_invalid",
+        "turn:0:wrong_arguments"
+      ],
+      "evidence": {
+        "family": "answer_PSD10",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "c8b81f69-d519-432e-b40d-f788b9b6f058",
+            "scores": {
+              "tool_selection_accuracy": 0.0,
+              "tool_argument_accuracy": 0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 1
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 19,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD11",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 415.86070001358166
+      },
+      "reasons": [
+        "turn:0:missing_tool",
+        "turn:0:trajectory_invalid",
+        "turn:0:wrong_arguments"
+      ],
+      "evidence": {
+        "family": "answer_PSD11",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "5e844b16-ad1f-4c70-8d91-c1f8f3b6c720",
+            "scores": {
+              "tool_selection_accuracy": 0.0,
+              "tool_argument_accuracy": 0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 2,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 1
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10002"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "items": [
+                {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "quantity": 1,
+                  "unit_price_cents": 3900,
+                  "customized": true
+                }
+              ],
+              "total_cents": 3900,
+              "created_at": "2026-10-16T00:00:00",
+              "paid_at": "2026-10-16T00:00:00",
+              "shipped_at": "2026-10-17T00:00:00",
+              "delivered_at": "2026-10-24T00:00:00",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            }
+          },
+          {
+            "name": "track_shipment",
+            "arguments": {
+              "order_id": "ORD10002"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10002",
+              "tracking_no": "YT998877",
+              "city": "北京",
+              "events": [
+                {
+                  "status": "warehouse",
+                  "at": "2026-10-16T00:00:00"
+                },
+                {
+                  "status": "in_transit",
+                  "tracking_no": "YT998877",
+                  "at": "2026-10-17T00:00:00"
+                },
+                {
+                  "status": "delivered",
+                  "at": "2026-10-24T00:00:00"
+                }
+              ]
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 16,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD12",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 377.550000033807
+      },
+      "reasons": [
+        "turn:0:missing_tool",
+        "turn:0:trajectory_invalid",
+        "turn:0:wrong_arguments"
+      ],
+      "evidence": {
+        "family": "answer_PSD12",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "9f5996c1-834d-42d5-aa54-6616ebe27910",
+            "scores": {
+              "tool_selection_accuracy": 0.0,
+              "tool_argument_accuracy": 0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 2,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 1
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "items": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 29900,
+              "created_at": "2026-11-02T00:00:00",
+              "paid_at": "2026-11-02T00:00:00",
+              "shipped_at": "2026-11-03T00:00:00",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            }
+          },
+          {
+            "name": "track_shipment",
+            "arguments": {
+              "order_id": "ORD10001"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10001",
+              "tracking_no": "SF1234567890",
+              "city": "上海",
+              "events": [
+                {
+                  "status": "warehouse",
+                  "at": "2026-11-02T00:00:00"
+                },
+                {
+                  "status": "in_transit",
+                  "tracking_no": "SF1234567890",
+                  "at": "2026-11-03T00:00:00"
+                }
+              ]
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 16,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD13",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 402.45380002306774
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD13",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "796a273a-d153-46b2-8eed-55be20d5d892",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": true,
+            "refused": false
+          }
+        ],
+        "tool_calls": [],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 14,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD14",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 470.172300003469
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD14",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "ad1eef1d-55a5-4b7c-96c8-20f5893ea89c",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": true,
+            "refused": false
+          },
+          {
+            "turn": 1,
+            "error": null,
+            "root_run_id": "929a5af9-f357-47f3-aed2-f0a71674cafe",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 0.0,
+              "failure_counts": {
+                "business_rejected": 1
+              },
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "cancel_order",
+            "arguments": {
+              "order_id": "ORD10001"
+            },
+            "status": "executed",
+            "success": false,
+            "failure_kind": "business_rejected",
+            "turn": 1,
+            "output": {}
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 29,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD15",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 459.0033999993466
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD15",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "dbc52355-d116-49b9-978a-cc9e5b545412",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": true,
+            "refused": false
+          },
+          {
+            "turn": 1,
+            "error": null,
+            "root_run_id": "0e41320a-3e62-43ea-a14d-b317d28bc4f7",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "cancel_order",
+            "arguments": {
+              "order_id": "ORD10003"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 1,
+            "output": {
+              "order_id": "ORD10003",
+              "status": "cancelled"
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "cancelled"
+        },
+        "span_count": 29,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD16",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 424.3247999693267
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD16",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "2d08f56c-ca40-40b3-8091-e00a2a5b6e68",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 0.0,
+              "failure_counts": {
+                "business_rejected": 1
+              },
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001"
+            },
+            "status": "executed",
+            "success": false,
+            "failure_kind": "business_rejected",
+            "turn": 0,
+            "output": {}
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 15,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD17",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 365.2866000193171
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD17",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "510e91c7-7594-425a-8901-b88d4ff829df",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 19,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD18",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 388.1245000520721
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD18",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "544dc321-59e0-476d-a4c1-9f97c376d24a",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "track_shipment",
+            "arguments": {
+              "order_id": "ORD10001"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10001",
+              "tracking_no": "SF1234567890",
+              "city": "上海",
+              "events": [
+                {
+                  "status": "warehouse",
+                  "at": "2026-11-02T00:00:00"
+                },
+                {
+                  "status": "in_transit",
+                  "tracking_no": "SF1234567890",
+                  "at": "2026-11-03T00:00:00"
+                }
+              ]
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 15,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD19",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 701.4020999777131
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD19",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "d3266442-3462-4c13-9f04-8ef915378cfe",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 12,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD20",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 382.22290005069226
+      },
+      "reasons": [
+        "turn:0:missing_tool",
+        "turn:0:trajectory_invalid",
+        "turn:0:wrong_arguments"
+      ],
+      "evidence": {
+        "family": "answer_PSD20",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "528d2fe5-d703-4ac0-b8d8-29b2f3cba277",
+            "scores": {
+              "tool_selection_accuracy": 0.0,
+              "tool_argument_accuracy": 0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 1,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 1
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "items": [
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 7900,
+              "created_at": "2026-11-04T19:00:00",
+              "paid_at": "2026-11-04T19:00:00",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 15,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD21",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 443.04009998450056
+      },
+      "reasons": [
+        "turn:0:missing_tool",
+        "turn:0:trajectory_invalid",
+        "turn:0:wrong_arguments",
+        "turn:1:missing_tool",
+        "turn:1:trajectory_invalid",
+        "turn:1:wrong_arguments"
+      ],
+      "evidence": {
+        "family": "answer_PSD21",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "69408ec3-aaff-4db5-bb61-1dc58360c632",
+            "scores": {
+              "tool_selection_accuracy": 0.0,
+              "tool_argument_accuracy": 0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 1
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 1,
+            "error": null,
+            "root_run_id": "8f8110c7-79d4-45b3-95f4-aefdfd9b6765",
+            "scores": {
+              "tool_selection_accuracy": 0.0,
+              "tool_argument_accuracy": 0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 1
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 38,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD22",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 472.6405999972485
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD22",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "bfd85798-3e00-4478-8f37-6c63857827b2",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 1,
+            "error": null,
+            "root_run_id": "328db11d-d758-4d5b-b9d8-9072480cc92b",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "items": [
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 7900,
+              "created_at": "2026-11-04T19:00:00",
+              "paid_at": "2026-11-04T19:00:00",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          },
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 1,
+            "output": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "cancelled",
+              "items": [
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 7900,
+              "created_at": "2026-11-04T19:00:00",
+              "paid_at": "2026-11-04T19:00:00",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "cancelled"
+        },
+        "span_count": 30,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD23",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 411.34549997514114
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "answer_PSD23",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "470ad95a-222d-48e2-86bc-c1923c6b4bcf",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 1,
+            "error": null,
+            "root_run_id": "050e9726-dc32-4b4b-8745-c1fe0ade68d3",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "items": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 29900,
+              "created_at": "2026-11-02T00:00:00",
+              "paid_at": "2026-11-02T00:00:00",
+              "shipped_at": "2026-11-03T00:00:00",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 25,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    },
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSD24",
+      "status": "FAIL",
+      "metrics": {
+        "agent_task_success": 0.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 1120.6016999785788
+      },
+      "reasons": [
+        "turn:0:trajectory_invalid"
+      ],
+      "evidence": {
+        "family": "answer_PSD24",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "981bef0d-e88d-4122-abdf-aff88f8318c8",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 0,
+              "unnecessary_tool_calls": 1,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 1,
+            "error": null,
+            "root_run_id": "471d2029-accb-4931-8728-e4ade81cc62a",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 2,
+            "error": null,
+            "root_run_id": "836c358c-7263-4047-a9de-a147e610a4e4",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 3,
+            "error": null,
+            "root_run_id": "eb41ad20-8ea1-4b7d-b3e4-b23481781851",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 4,
+            "error": null,
+            "root_run_id": "1da18d71-5ea7-495a-a6d8-4a0e32dddd73",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 5,
+            "error": null,
+            "root_run_id": "93395947-c136-4795-9307-aecdd288bd06",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 6,
+            "error": null,
+            "root_run_id": "de158baa-bfd3-47ea-be45-dc53a08cfefb",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 7,
+            "error": null,
+            "root_run_id": "012e3823-65e2-45c4-88af-f80fadfd606c",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 8,
+            "error": null,
+            "root_run_id": "768d3760-1ec2-40c2-9d31-33210bb194b3",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 9,
+            "error": null,
+            "root_run_id": "8a3d493d-7275-42cf-aff8-fe2a300a9e7a",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 10,
+            "error": null,
+            "root_run_id": "02c23a0c-ede1-4ce6-991f-01ad7e4489fe",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": null,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": null,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          },
+          {
+            "turn": 11,
+            "error": null,
+            "root_run_id": "9b44be64-60cb-4a37-93ae-eb0bc7c85d96",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "items": [
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 7900,
+              "created_at": "2026-11-04T19:00:00",
+              "paid_at": "2026-11-04T19:00:00",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          },
+          {
+            "name": "track_shipment",
+            "arguments": {
+              "order_id": "ORD10003"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10003",
+              "tracking_no": null,
+              "city": "杭州",
+              "events": [
+                {
+                  "status": "warehouse",
+                  "at": "2026-11-04T19:00:00"
+                }
+              ]
+            }
+          },
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 11,
+            "output": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "items": [
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "total_cents": 7900,
+              "created_at": "2026-11-04T19:00:00",
+              "paid_at": "2026-11-04T19:00:00",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 221,
+        "known_limitation": null
+      },
+      "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+      "model_evaluation": "NOT_RUN"
+    }
+  ]
+}

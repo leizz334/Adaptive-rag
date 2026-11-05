@@ -1,0 +1,2889 @@
+[
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH01",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10001 当前订单状态：已发货。\n订单 ORD10001 总金额：299.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认订单状态",
+          "goal": "确认订单状态",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        },
+        {
+          "id": "核对实付金额",
+          "goal": "核对实付金额",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "当前状态："
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10001",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "items": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            }
+          ],
+          "total_cents": 29900,
+          "created_at": "2026-11-02T00:00:00",
+          "paid_at": "2026-11-02T00:00:00",
+          "shipped_at": "2026-11-03T00:00:00",
+          "delivered_at": null,
+          "tracking_no": "SF1234567890",
+          "receiver_city": "上海"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH02",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10002 的物流状态：已签收。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "PASS",
+      "ANSWER_COMPLETENESS": 0.5,
+      "ANSWER_FAITHFULNESS": "PASS",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认物流签收",
+          "goal": "确认物流签收",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        },
+        {
+          "id": "核对运单号",
+          "goal": "核对运单号",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [
+        "核对运单号"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "track_shipment",
+        "arguments": {
+          "order_id": "ORD10002"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10002",
+          "tracking_no": "YT998877",
+          "city": "北京",
+          "events": [
+            {
+              "status": "warehouse",
+              "at": "2026-10-16T00:00:00"
+            },
+            {
+              "status": "in_transit",
+              "tracking_no": "YT998877",
+              "at": "2026-10-17T00:00:00"
+            },
+            {
+              "status": "delivered",
+              "at": "2026-10-24T00:00:00"
+            }
+          ]
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH03",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单商品 SKU-TEE 数量：1件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "核对商品名称",
+          "goal": "核对商品名称",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": true
+        },
+        {
+          "id": "核对购买数量",
+          "goal": "核对购买数量",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": true
+        },
+        {
+          "id": "核对商品单价",
+          "goal": "核对商品单价",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [
+        "核对商品名称",
+        "核对购买数量",
+        "核对商品单价"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "SKU-TEE 数量：1件"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order_items",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "items": [
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ]
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH04",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n本次查询暂未发现退款申请记录，不能据此声称退款完成。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认退款记录",
+          "goal": "确认退款记录",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [
+        "确认退款记录"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "本次查询暂未发现退款申请记录，不能据此声称退款完成"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_refund_status",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "refunds": []
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH05",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n商品 SKU-TEE 库存：0件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "PASS",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "PASS",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "PASS",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认库存",
+          "goal": "确认库存",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "check_inventory",
+        "arguments": {
+          "sku": "SKU-TEE"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "sku": "SKU-TEE",
+          "inventory": 0
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH06",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n商品 SKU-HEADSET 库存：42件。\n商品 SKU-HEADSET 名称（工具原文）：'降噪耳机 Pro'。\n商品 SKU-HEADSET 资料（工具原文）：'头戴式主动降噪耳机'。\n商品 SKU-HEADSET 价格：299.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "核对商品价格",
+          "goal": "核对商品价格",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        },
+        {
+          "id": "确认库存",
+          "goal": "确认库存",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "名称（工具原文）：'降噪耳机 Pro'",
+        "资料（工具原文）：'头戴式主动降噪耳机'"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_product_detail",
+        "arguments": {
+          "sku": "SKU-HEADSET"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "sku": "SKU-HEADSET",
+          "name": "降噪耳机 Pro",
+          "category": "数码",
+          "price_cents": 29900,
+          "inventory": 42,
+          "tags": [
+            "耳机",
+            "降噪"
+          ],
+          "description": "头戴式主动降噪耳机"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH07",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n商品 SKU-HEADSET 保修期：12个月。\n商品 SKU-HEADSET 人为损坏不在保，电子凭证见订单详情。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认保修期限",
+          "goal": "确认保修期限",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        },
+        {
+          "id": "确认人为损坏免责",
+          "goal": "确认人为损坏免责",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "，电子凭证见详情"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_warranty",
+        "arguments": {
+          "sku": "SKU-HEADSET"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "sku": "SKU-HEADSET",
+          "warranty_months": 12,
+          "note": "人为损坏不在保，电子凭证见订单详情"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH08",
+    "turn": 0,
+    "final_answer": "[{\"order_id\": \"ORD10001\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T00:00:00\", \"paid_at\": \"2026-11-02T00:00:00\", \"shipped_at\": \"2026-11-03T00:00:00\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}]",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认订单状态",
+          "goal": "确认订单状态",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "[{\"order_id\": \"\", \"user_id\": \"u_demo\", \"status\": \"       \", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T00:00:00\", \"paid_at\": \"2026-11-02T00:00:00\", \"shipped_at\": \"2026-11-03T00:00:00\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}]"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10001",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "items": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            }
+          ],
+          "total_cents": 29900,
+          "created_at": "2026-11-02T00:00:00",
+          "paid_at": "2026-11-02T00:00:00",
+          "shipped_at": "2026-11-03T00:00:00",
+          "delivered_at": null,
+          "tracking_no": "SF1234567890",
+          "receiver_city": "上海"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH08",
+    "turn": 1,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10001 当前订单状态：已发货。\n订单 ORD10001 总金额：299.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "核对实付金额",
+          "goal": "核对实付金额",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "当前状态：已发货"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 1,
+        "output": {
+          "order_id": "ORD10001",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "items": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            }
+          ],
+          "total_cents": 29900,
+          "created_at": "2026-11-02T00:00:00",
+          "paid_at": "2026-11-02T00:00:00",
+          "shipped_at": "2026-11-03T00:00:00",
+          "delivered_at": null,
+          "tracking_no": "SF1234567890",
+          "receiver_city": "上海"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH09",
+    "turn": 0,
+    "final_answer": "[{\"order_id\": \"ORD10003\", \"user_id\": \"u_demo\", \"status\": \"paid\", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-04T19:00:00\", \"paid_at\": \"2026-11-04T19:00:00\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认订单状态",
+          "goal": "确认订单状态",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "[{\"order_id\": \"\", \"user_id\": \"u_demo\", \"status\": \"    \", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-04T19:00:00\", \"paid_at\": \"2026-11-04T19:00:00\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "paid",
+          "items": [
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "total_cents": 7900,
+          "created_at": "2026-11-04T19:00:00",
+          "paid_at": "2026-11-04T19:00:00",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH09",
+    "turn": 1,
+    "final_answer": "[{\"order_id\": \"ORD10002\", \"user_id\": \"u_demo\", \"status\": \"delivered\", \"items\": [{\"sku\": \"SKU-MUG-CUSTOM\", \"name\": \"定制马克杯\", \"quantity\": 1, \"unit_price_cents\": 3900, \"customized\": true}], \"total_cents\": 3900, \"created_at\": \"2026-10-16T00:00:00\", \"paid_at\": \"2026-10-16T00:00:00\", \"shipped_at\": \"2026-10-17T00:00:00\", \"delivered_at\": \"2026-10-24T00:00:00\", \"tracking_no\": \"YT998877\", \"receiver_city\": \"北京\"}]",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认订单状态",
+          "goal": "确认订单状态",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "[{\"order_id\": \"\", \"user_id\": \"u_demo\", \"status\": \"         \", \"items\": [{\"sku\": \"SKU-MUG-CUSTOM\", \"name\": \"定制马克杯\", \"quantity\": 1, \"unit_price_cents\": 3900, \"customized\": true}], \"total_cents\": 3900, \"created_at\": \"2026-10-16T00:00:00\", \"paid_at\": \"2026-10-16T00:00:00\", \"shipped_at\": \"2026-10-17T00:00:00\", \"delivered_at\": \"2026-10-24T00:00:00\", \"tracking_no\": \"YT998877\", \"receiver_city\": \"北京\"}]"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10002"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 1,
+        "output": {
+          "order_id": "ORD10002",
+          "user_id": "u_demo",
+          "status": "delivered",
+          "items": [
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            }
+          ],
+          "total_cents": 3900,
+          "created_at": "2026-10-16T00:00:00",
+          "paid_at": "2026-10-16T00:00:00",
+          "shipped_at": "2026-10-17T00:00:00",
+          "delivered_at": "2026-10-24T00:00:00",
+          "tracking_no": "YT998877",
+          "receiver_city": "北京"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH09",
+    "turn": 2,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10002 当前订单状态：已签收。\n订单 ORD10002 总金额：39.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "核对实付金额",
+          "goal": "核对实付金额",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "当前状态：已签收"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10002"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 2,
+        "output": {
+          "order_id": "ORD10002",
+          "user_id": "u_demo",
+          "status": "delivered",
+          "items": [
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            }
+          ],
+          "total_cents": 3900,
+          "created_at": "2026-10-16T00:00:00",
+          "paid_at": "2026-10-16T00:00:00",
+          "shipped_at": "2026-10-17T00:00:00",
+          "delivered_at": "2026-10-24T00:00:00",
+          "tracking_no": "YT998877",
+          "receiver_city": "北京"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH10",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n商品 SKU-MUG-CUSTOM 库存：200件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "核对实付金额",
+          "goal": "核对实付金额",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        },
+        {
+          "id": "确认库存",
+          "goal": "确认库存",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "当前状态：已支付"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "paid",
+          "items": [
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "total_cents": 7900,
+          "created_at": "2026-11-04T19:00:00",
+          "paid_at": "2026-11-04T19:00:00",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        }
+      },
+      {
+        "name": "check_inventory",
+        "arguments": {
+          "sku": "SKU-MUG-CUSTOM"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "sku": "SKU-MUG-CUSTOM",
+          "inventory": 200
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH11",
+    "turn": 0,
+    "final_answer": "[{\"order_id\": \"ORD10003\", \"user_id\": \"u_demo\", \"status\": \"paid\", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-04T19:00:00\", \"paid_at\": \"2026-11-04T19:00:00\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认订单状态",
+          "goal": "确认订单状态",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "[{\"order_id\": \"\", \"user_id\": \"u_demo\", \"status\": \"    \", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-04T19:00:00\", \"paid_at\": \"2026-11-04T19:00:00\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "paid",
+          "items": [
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "total_cents": 7900,
+          "created_at": "2026-11-04T19:00:00",
+          "paid_at": "2026-11-04T19:00:00",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH12",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10001 当前订单状态：已发货。\n订单 ORD10001 总金额：299.00元（人民币）。\n订单 ORD10001 的物流状态：运输中。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.5,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认订单状态",
+          "goal": "确认订单状态",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        },
+        {
+          "id": "核对运单号",
+          "goal": "核对运单号",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [
+        "核对运单号"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "当前状态：",
+        "：299.00元（）",
+        "：运输中"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10001",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "items": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            }
+          ],
+          "total_cents": 29900,
+          "created_at": "2026-11-02T00:00:00",
+          "paid_at": "2026-11-02T00:00:00",
+          "shipped_at": "2026-11-03T00:00:00",
+          "delivered_at": null,
+          "tracking_no": "SF1234567890",
+          "receiver_city": "上海"
+        }
+      },
+      {
+        "name": "track_shipment",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10001",
+          "tracking_no": "SF1234567890",
+          "city": "上海",
+          "events": [
+            {
+              "status": "warehouse",
+              "at": "2026-11-02T00:00:00"
+            },
+            {
+              "status": "in_transit",
+              "tracking_no": "SF1234567890",
+              "at": "2026-11-03T00:00:00"
+            }
+          ]
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH13",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n订单 ORD10003 的物流状态：仓库处理中。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "FAIL",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认订单状态",
+          "goal": "确认订单状态",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "当前状态：",
+        "：79.00元（）",
+        "：仓库处理中"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [
+      "turn:0:trajectory_invalid"
+    ],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "paid",
+          "items": [
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "total_cents": 7900,
+          "created_at": "2026-11-04T19:00:00",
+          "paid_at": "2026-11-04T19:00:00",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        }
+      },
+      {
+        "name": "track_shipment",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10003",
+          "tracking_no": null,
+          "city": "杭州",
+          "events": [
+            {
+              "status": "warehouse",
+              "at": "2026-11-04T19:00:00"
+            }
+          ]
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH14",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单商品 SKU-MUG-CUSTOM 数量：1件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认定制属性",
+          "goal": "确认定制属性",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [
+        "确认定制属性"
+      ],
+      "unknown_subgoals": [
+        "解释无理由退货政策"
+      ],
+      "unverified_clauses": [
+        "SKU-MUG-CUSTOM 数量：1件"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order_items",
+        "arguments": {
+          "order_id": "ORD10002"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "items": [
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            }
+          ]
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH15",
+    "turn": 0,
+    "final_answer": "请提供要处理的订单号，确认后我才能继续。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "FAIL",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "DETERMINISTIC_NO_LLM_JUDGE",
+      "facts": [],
+      "missing_subgoals": [],
+      "unknown_subgoals": [
+        "补充订单号"
+      ],
+      "unverified_clauses": [
+        "请提供要处理的号，确认后我才能继续"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH16",
+    "turn": 0,
+    "final_answer": "离线固定证据答复",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "FAIL",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [],
+      "missing_subgoals": [],
+      "unknown_subgoals": [
+        "补充商品标识"
+      ],
+      "unverified_clauses": [
+        "离线固定证据答复"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [],
+    "retrieved": [
+      {
+        "chunk_id": "restock_notify_8fe4d981_02",
+        "document_id": "restock_notify_8fe4d981",
+        "title": "restock_notify",
+        "content": "到货通知不是库存预留合同,大促可能瞬时售罄。",
+        "score": 0.18181818181818182,
+        "rank": 1,
+        "source": "rerank",
+        "category": "product",
+        "section": "不保证",
+        "chunk_index": 2,
+        "policy_version": "v1",
+        "metadata": {
+          "source": "D:\\Code\\Adaptive-rag\\.worktrees\\p2s-s2\\knowledge\\restock_notify.md",
+          "parser": "markdown"
+        }
+      },
+      {
+        "chunk_id": "shipping_address_7242689a_01",
+        "document_id": "shipping_address_7242689a",
+        "title": "shipping_address",
+        "content": "支付后、仓库未拣货前可修改收货地址,每个订单限 1 次。改到偏远地区需补 8 元附加费。",
+        "score": 0.18181818181818182,
+        "rank": 2,
+        "source": "rerank",
+        "category": "shipping",
+        "section": "未出库",
+        "chunk_index": 1,
+        "policy_version": "v1",
+        "metadata": {
+          "source": "D:\\Code\\Adaptive-rag\\.worktrees\\p2s-s2\\knowledge\\shipping_address.md",
+          "parser": "markdown"
+        }
+      },
+      {
+        "chunk_id": "live_presale_2eba858e_02",
+        "document_id": "live_presale_2eba858e",
+        "title": "live_presale",
+        "content": "尾款支付窗口通常 24-48 小时,超时定金没收且不保留库存。",
+        "score": 0.18181818181818182,
+        "rank": 3,
+        "source": "rerank",
+        "category": "coupon",
+        "section": "尾款",
+        "chunk_index": 2,
+        "policy_version": "v1",
+        "metadata": {
+          "source": "D:\\Code\\Adaptive-rag\\.worktrees\\p2s-s2\\knowledge\\live_presale.md",
+          "parser": "markdown"
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH17",
+    "turn": 0,
+    "final_answer": "暂时无法查到相关业务数据，请核对订单号或稍后重试。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "FAIL",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [],
+      "missing_subgoals": [],
+      "unknown_subgoals": [
+        "保护订单所有者信息"
+      ],
+      "unverified_clauses": [
+        "暂时无法查到相关业务数据，请核对号或稍后重试"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": false,
+        "failure_kind": "business_rejected",
+        "turn": 0,
+        "output": {}
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH18",
+    "turn": 0,
+    "final_answer": "确认后将取消订单 ORD10003。请核对订单号。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "FAIL",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "DETERMINISTIC_NO_LLM_JUDGE",
+      "facts": [],
+      "missing_subgoals": [],
+      "unknown_subgoals": [
+        "请求取消确认"
+      ],
+      "unverified_clauses": [
+        "确认后将取消 ORD10003",
+        "请核对号"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH18",
+    "turn": 1,
+    "final_answer": "[{\"order_id\": \"ORD10003\", \"status\": \"cancelled\"}]",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认取消执行",
+          "goal": "确认取消执行",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "[{\"order_id\": \"\", \"status\": \"         \"}]"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "cancel_order",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 1,
+        "output": {
+          "order_id": "ORD10003",
+          "status": "cancelled"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH18",
+    "turn": 2,
+    "final_answer": "确认后将取消订单 ORD10003。请核对订单号。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "FAIL",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "DETERMINISTIC_NO_LLM_JUDGE",
+      "facts": [
+        {
+          "id": "确认订单状态",
+          "goal": "确认订单状态",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": false
+        }
+      ],
+      "missing_subgoals": [
+        "确认订单状态"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "确认后将取消",
+        "请核对号"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [
+      "turn:2:missing_tool",
+      "turn:2:trajectory_invalid",
+      "turn:2:wrong_arguments"
+    ],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH19",
+    "turn": 0,
+    "final_answer": "[{\"order_id\": \"ORD10001\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T00:00:00\", \"paid_at\": \"2026-11-02T00:00:00\", \"shipped_at\": \"2026-11-03T00:00:00\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}, {\"order_id\": \"ORD10001\", \"tracking_no\": \"SF1234567890\", \"city\": \"上海\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-02T00:00:00\"}, {\"status\": \"in_transit\", \"tracking_no\": \"SF1234567890\", \"at\": \"2026-11-03T00:00:00\"}]}]",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "FAIL",
+      "ENVIRONMENT_SUCCESS": "FAIL",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "FAIL",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [],
+      "missing_subgoals": [],
+      "unknown_subgoals": [
+        "请求退款确认"
+      ],
+      "unverified_clauses": [
+        "[{\"order_id\": \"ORD10001\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T00:00:00\", \"paid_at\": \"2026-11-02T00:00:00\", \"shipped_at\": \"2026-11-03T00:00:00\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}, {\"order_id\": \"ORD10001\", \"tracking_no\": \"SF1234567890\", \"city\": \"上海\", \"events\": [{\"status\": \"warehouse\", \"at\": \"2026-11-02T00:00:00\"}, {\"status\": \"in_transit\", \"tracking_no\": \"SF1234567890\", \"at\": \"2026-11-03T00:00:00\"}]}]"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [
+      "turn:0:pending_mismatch",
+      "turn:0:trajectory_invalid"
+    ],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10001",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "items": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            }
+          ],
+          "total_cents": 29900,
+          "created_at": "2026-11-02T00:00:00",
+          "paid_at": "2026-11-02T00:00:00",
+          "shipped_at": "2026-11-03T00:00:00",
+          "delivered_at": null,
+          "tracking_no": "SF1234567890",
+          "receiver_city": "上海"
+        }
+      },
+      {
+        "name": "track_shipment",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10001",
+          "tracking_no": "SF1234567890",
+          "city": "上海",
+          "events": [
+            {
+              "status": "warehouse",
+              "at": "2026-11-02T00:00:00"
+            },
+            {
+              "status": "in_transit",
+              "tracking_no": "SF1234567890",
+              "at": "2026-11-03T00:00:00"
+            }
+          ]
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH19",
+    "turn": 1,
+    "final_answer": "",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "FAIL",
+      "ENVIRONMENT_SUCCESS": "FAIL",
+      "ANSWER_FACTUAL_CORRECTNESS": "PASS",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "PASS",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "DETERMINISTIC_NO_LLM_JUDGE",
+      "facts": [
+        {
+          "id": "确认退款申请受理",
+          "goal": "确认退款申请受理",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": false
+        }
+      ],
+      "missing_subgoals": [
+        "确认退款申请受理"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [
+      "turn:1:missing_confirmation_reference",
+      "turn:1:missing_response",
+      "turn:1:missing_tool",
+      "turn:1:trajectory_invalid",
+      "turn:1:unexpected_error:INVALID_REQUEST",
+      "turn:1:wrong_arguments"
+    ],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH19",
+    "turn": 2,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10001 当前订单状态：已发货。\n订单 ORD10001 总金额：299.00元（人民币）。\n本次查询暂未发现退款申请记录，不能据此声称退款完成。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "FAIL",
+      "ENVIRONMENT_SUCCESS": "FAIL",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.5,
+      "ANSWER_FAITHFULNESS": "FAIL",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认退款单状态",
+          "goal": "确认退款单状态",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": false
+        },
+        {
+          "id": "核对退款申请金额",
+          "goal": "核对退款申请金额",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": false
+        }
+      ],
+      "missing_subgoals": [
+        "确认退款单状态"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "当前状态：已发货",
+        "本次查询暂未发现退款申请记录，不能据此声称退款完成"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [
+      "turn:2:trajectory_invalid"
+    ],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 2,
+        "output": {
+          "order_id": "ORD10001",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "items": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            }
+          ],
+          "total_cents": 29900,
+          "created_at": "2026-11-02T00:00:00",
+          "paid_at": "2026-11-02T00:00:00",
+          "shipped_at": "2026-11-03T00:00:00",
+          "delivered_at": null,
+          "tracking_no": "SF1234567890",
+          "receiver_city": "上海"
+        }
+      },
+      {
+        "name": "get_refund_status",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 2,
+        "output": {
+          "refunds": []
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH20",
+    "turn": 0,
+    "final_answer": "[{\"order_id\": \"ORD10001\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T00:00:00\", \"paid_at\": \"2026-11-02T00:00:00\", \"shipped_at\": \"2026-11-03T00:00:00\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}, {\"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}]}, {\"chunks\": [{\"chunk_id\": \"return_electronics_ecb5e89c_01\", \"title\": \"return_electronics\", \"content\": \"耳机、手机配件等一旦在系统中绑定 SN/IMEI,即视为激活。激活后不适用 7 天无理由,仅质量问题(无法开机、原厂功能失效)可走退货。\"}, {\"chunk_id\": \"cross_border_60f6605a_03\", \"title\": \"cross_border\", \"content\": \"页面标价含税。订单金额超过个人年度免税额度时,海关可能补税,补税凭证可提交客服协助咨询,税款用户自理。\"}, {\"chunk_id\": \"warranty_battery_a9dec946_02\", \"title\": \"warranty_battery\", \"content\": \"鼓包因过充、暴晒、非原装充电器导致的,不在保。检测报告会写明原因。\"}, {\"chunk_id\": \"return_custom_d31491b4_02\", \"title\": \"return_custom\", \"content\": \"屏幕色差不属于质量问题。印刷错字、漏印、图案颠倒按质量问题全额退,运费平台承担。\"}]}]",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "FAIL",
+      "ENVIRONMENT_SUCCESS": "FAIL",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "FAIL",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [],
+      "missing_subgoals": [],
+      "unknown_subgoals": [
+        "请求退货确认"
+      ],
+      "unverified_clauses": [
+        "[{\"order_id\": \"ORD10001\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}], \"total_cents\": 29900, \"created_at\": \"2026-11-02T00:00:00\", \"paid_at\": \"2026-11-02T00:00:00\", \"shipped_at\": \"2026-11-03T00:00:00\", \"delivered_at\": null, \"tracking_no\": \"SF1234567890\", \"receiver_city\": \"上海\"}, {\"items\": [{\"sku\": \"SKU-HEADSET\", \"name\": \"降噪耳机 Pro\", \"quantity\": 1, \"unit_price_cents\": 29900, \"customized\": false}]}, {\"chunks\": [{\"chunk_id\": \"return_electronics_ecb5e89c_01\", \"title\": \"return_electronics\", \"content\": \"耳机、手机配件等一旦在系统中绑定 SN/IMEI,即视为激活",
+        "激活后不适用 7 天无理由,仅质量问题(无法开机、原厂功能失效)可走退货",
+        "\"}, {\"chunk_id\": \"cross_border_60f6605a_03\", \"title\": \"cross_border\", \"content\": \"页面标价含税",
+        "金额超过个人年度免税额度时,海关可能补税,补税凭证可提交客服协助咨询,税款用户自理",
+        "\"}, {\"chunk_id\": \"warranty_battery_a9dec946_02\", \"title\": \"warranty_battery\", \"content\": \"鼓包因过充、暴晒、非原装充电器导致的,不在保",
+        "检测报告会写明原因",
+        "\"}, {\"chunk_id\": \"return_custom_d31491b4_02\", \"title\": \"return_custom\", \"content\": \"屏幕色差不属于质量问题",
+        "印刷错字、漏印、图案颠倒按质量问题全额退,运费平台承担",
+        "\"}]}]"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [
+      "turn:0:pending_mismatch"
+    ],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10001",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "items": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            }
+          ],
+          "total_cents": 29900,
+          "created_at": "2026-11-02T00:00:00",
+          "paid_at": "2026-11-02T00:00:00",
+          "shipped_at": "2026-11-03T00:00:00",
+          "delivered_at": null,
+          "tracking_no": "SF1234567890",
+          "receiver_city": "上海"
+        }
+      },
+      {
+        "name": "get_order_items",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "items": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            }
+          ]
+        }
+      },
+      {
+        "name": "search_knowledge",
+        "arguments": {
+          "query": "ORD10001 的耳机有异响，我要寄回退货，原因是耳机异响。"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "chunks": [
+            {
+              "chunk_id": "return_electronics_ecb5e89c_01",
+              "title": "return_electronics",
+              "content": "耳机、手机配件等一旦在系统中绑定 SN/IMEI,即视为激活。激活后不适用 7 天无理由,仅质量问题(无法开机、原厂功能失效)可走退货。"
+            },
+            {
+              "chunk_id": "cross_border_60f6605a_03",
+              "title": "cross_border",
+              "content": "页面标价含税。订单金额超过个人年度免税额度时,海关可能补税,补税凭证可提交客服协助咨询,税款用户自理。"
+            },
+            {
+              "chunk_id": "warranty_battery_a9dec946_02",
+              "title": "warranty_battery",
+              "content": "鼓包因过充、暴晒、非原装充电器导致的,不在保。检测报告会写明原因。"
+            },
+            {
+              "chunk_id": "return_custom_d31491b4_02",
+              "title": "return_custom",
+              "content": "屏幕色差不属于质量问题。印刷错字、漏印、图案颠倒按质量问题全额退,运费平台承担。"
+            }
+          ]
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH20",
+    "turn": 1,
+    "final_answer": "",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "FAIL",
+      "ENVIRONMENT_SUCCESS": "FAIL",
+      "ANSWER_FACTUAL_CORRECTNESS": "PASS",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "PASS",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "DETERMINISTIC_NO_LLM_JUDGE",
+      "facts": [
+        {
+          "id": "确认退货申请受理",
+          "goal": "确认退货申请受理",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": false
+        }
+      ],
+      "missing_subgoals": [
+        "确认退货申请受理"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [
+      "turn:1:missing_confirmation_reference",
+      "turn:1:missing_response",
+      "turn:1:missing_tool",
+      "turn:1:trajectory_invalid",
+      "turn:1:unexpected_error:INVALID_REQUEST",
+      "turn:1:wrong_arguments"
+    ],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH20",
+    "turn": 2,
+    "final_answer": "以下是本次工具结果可确认的信息：\n本次查询暂未发现退款申请记录，不能据此声称退款完成。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "FAIL",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认退款记录",
+          "goal": "确认退款记录",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [
+        "确认退款记录"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "本次查询暂未发现退款申请记录，不能据此声称退款完成"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_refund_status",
+        "arguments": {
+          "order_id": "ORD10001"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 2,
+        "output": {
+          "refunds": []
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH21",
+    "turn": 0,
+    "final_answer": "[{\"order_id\": \"ORD10003\", \"user_id\": \"u_demo\", \"status\": \"paid\", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-04T19:00:00\", \"paid_at\": \"2026-11-04T19:00:00\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认订单状态",
+          "goal": "确认订单状态",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "[{\"order_id\": \"\", \"user_id\": \"u_demo\", \"status\": \"    \", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-04T19:00:00\", \"paid_at\": \"2026-11-04T19:00:00\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "paid",
+          "items": [
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "total_cents": 7900,
+          "created_at": "2026-11-04T19:00:00",
+          "paid_at": "2026-11-04T19:00:00",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH21",
+    "turn": 1,
+    "final_answer": "请明确需要处理的订单号；当前会话指代不明确。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "FAIL",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "DETERMINISTIC_NO_LLM_JUDGE",
+      "facts": [],
+      "missing_subgoals": [],
+      "unknown_subgoals": [
+        "补充订单号"
+      ],
+      "unverified_clauses": [
+        "请明确需要处理的号",
+        "当前会话指代不明确"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH22",
+    "turn": 0,
+    "final_answer": "[{\"order_id\": \"ORD10003\", \"user_id\": \"u_demo\", \"status\": \"paid\", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-04T19:00:00\", \"paid_at\": \"2026-11-04T19:00:00\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认订单状态",
+          "goal": "确认订单状态",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "[{\"order_id\": \"\", \"user_id\": \"u_demo\", \"status\": \"    \", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-04T19:00:00\", \"paid_at\": \"2026-11-04T19:00:00\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "paid",
+          "items": [
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "total_cents": 7900,
+          "created_at": "2026-11-04T19:00:00",
+          "paid_at": "2026-11-04T19:00:00",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH22",
+    "turn": 1,
+    "final_answer": "[{\"order_id\": \"ORD10003\", \"user_id\": \"u_demo\", \"status\": \"shipped\", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-04T19:00:00\", \"paid_at\": \"2026-11-04T19:00:00\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "重新确认订单状态",
+          "goal": "重新确认订单状态",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "[{\"order_id\": \"\", \"user_id\": \"u_demo\", \"status\": \"       \", \"items\": [{\"sku\": \"SKU-TEE\", \"name\": \"纯棉T恤\", \"quantity\": 1, \"unit_price_cents\": 7900, \"customized\": false}], \"total_cents\": 7900, \"created_at\": \"2026-11-04T19:00:00\", \"paid_at\": \"2026-11-04T19:00:00\", \"shipped_at\": null, \"delivered_at\": null, \"tracking_no\": null, \"receiver_city\": \"杭州\"}]"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 1,
+        "output": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "items": [
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "total_cents": 7900,
+          "created_at": "2026-11-04T19:00:00",
+          "paid_at": "2026-11-04T19:00:00",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH23",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n商品 SKU-TEE 库存：0件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.5,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认库存",
+          "goal": "确认库存",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [
+        "保留补货时间不确定性"
+      ],
+      "unverified_clauses": [],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "check_inventory",
+        "arguments": {
+          "sku": "SKU-TEE"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "sku": "SKU-TEE",
+          "inventory": 0
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH24",
+    "turn": 0,
+    "final_answer": "离线固定证据答复",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [],
+      "missing_subgoals": [],
+      "unknown_subgoals": [
+        "解释偏远地区时效",
+        "解释偏远附加费规则"
+      ],
+      "unverified_clauses": [
+        "离线固定证据答复"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [],
+    "retrieved": [
+      {
+        "chunk_id": "shipping_6c5f3232_01",
+        "document_id": "shipping_6c5f3232",
+        "title": "shipping",
+        "content": "订单实付满 59 元包邮。偏远地区加收 8 元偏远附加费,包邮券不可抵该附加费。",
+        "score": 0.4230769230769231,
+        "rank": 1,
+        "source": "rerank",
+        "category": "shipping",
+        "section": "包邮门槛",
+        "chunk_index": 1,
+        "policy_version": "v1",
+        "metadata": {
+          "source": "D:\\Code\\Adaptive-rag\\.worktrees\\p2s-s2\\knowledge\\shipping.md",
+          "parser": "markdown"
+        }
+      },
+      {
+        "chunk_id": "coupons_2d68704d_01",
+        "document_id": "coupons_2d68704d",
+        "title": "coupons",
+        "content": "满 59 免基础运费,不可抵偏远附加费。",
+        "score": 0.34615384615384615,
+        "rank": 2,
+        "source": "rerank",
+        "category": "coupon",
+        "section": "包邮券 SHIP0",
+        "chunk_index": 1,
+        "policy_version": "v1",
+        "metadata": {
+          "source": "D:\\Code\\Adaptive-rag\\.worktrees\\p2s-s2\\knowledge\\coupons.md",
+          "parser": "markdown"
+        }
+      },
+      {
+        "chunk_id": "return_policy_2f2e66b9_04",
+        "document_id": "return_policy_2f2e66b9",
+        "title": "return_policy",
+        "content": "超过 7 天无理由且无法证明质量问题的,不能退货。可转保修或人工复核。",
+        "score": 0.11538461538461539,
+        "rank": 3,
+        "source": "rerank",
+        "category": "return_policy",
+        "section": "已过时效",
+        "chunk_index": 4,
+        "policy_version": "v1",
+        "metadata": {
+          "source": "D:\\Code\\Adaptive-rag\\.worktrees\\p2s-s2\\knowledge\\return_policy.md",
+          "parser": "markdown"
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH25",
+    "turn": 0,
+    "final_answer": "离线固定证据答复",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "FAIL",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "new_code",
+          "goal": "确认新客优惠券规则",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": false
+        },
+        {
+          "id": "new_rule",
+          "goal": "确认新客优惠券规则",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": false
+        },
+        {
+          "id": "ship_code",
+          "goal": "确认包邮优惠券规则",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": false
+        },
+        {
+          "id": "ship_rule",
+          "goal": "确认包邮优惠券规则",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": false
+        }
+      ],
+      "missing_subgoals": [
+        "确认新客优惠券规则",
+        "确认包邮优惠券规则"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "离线固定证据答复"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [
+      "turn:0:missing_tool",
+      "turn:0:trajectory_invalid",
+      "turn:0:wrong_arguments"
+    ],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [],
+    "retrieved": [
+      {
+        "chunk_id": "promo_stacking_a3820716_02",
+        "document_id": "promo_stacking_a3820716",
+        "title": "promo_stacking",
+        "content": "秒杀价商品不可用 NEW10、SHOP50。可使用包邮券 SHIP0(满 59)。",
+        "score": 0.2631578947368421,
+        "rank": 1,
+        "source": "rerank",
+        "category": "coupon",
+        "section": "秒杀",
+        "chunk_index": 2,
+        "policy_version": "v1",
+        "metadata": {
+          "source": "D:\\Code\\Adaptive-rag\\.worktrees\\p2s-s2\\knowledge\\promo_stacking.md",
+          "parser": "markdown"
+        }
+      },
+      {
+        "chunk_id": "return_apparel_bef262ac_02",
+        "document_id": "return_apparel_bef262ac",
+        "title": "return_apparel",
+        "content": "已洗涤、已穿着有明显褶皱汗渍、内裤/袜子/泳衣已拆封,不适用无理由。质量问题(开线、色差严重、尺码与吊牌不符超过 1.5cm)可换货。",
+        "score": 0.15789473684210525,
+        "rank": 2,
+        "source": "rerank",
+        "category": "return_policy",
+        "section": "洗涤与贴身",
+        "chunk_index": 2,
+        "policy_version": "v1",
+        "metadata": {
+          "source": "D:\\Code\\Adaptive-rag\\.worktrees\\p2s-s2\\knowledge\\return_apparel.md",
+          "parser": "markdown"
+        }
+      },
+      {
+        "chunk_id": "handoff_hours_2d7a34e9_01",
+        "document_id": "handoff_hours_2d7a34e9",
+        "title": "handoff_hours",
+        "content": "人工坐席 9:00-24:00 与在线客服一致。00:00-9:00 仅机器人处理物流查询,退款审核次日 10:00 起排队。",
+        "score": 0.05263157894736842,
+        "rank": 3,
+        "source": "rerank",
+        "category": "aftersale",
+        "section": "时段",
+        "chunk_index": 1,
+        "policy_version": "v1",
+        "metadata": {
+          "source": "D:\\Code\\Adaptive-rag\\.worktrees\\p2s-s2\\knowledge\\handoff_hours.md",
+          "parser": "markdown"
+        }
+      }
+    ]
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH26",
+    "turn": 0,
+    "final_answer": "[{\"chunks\": [{\"chunk_id\": \"complaint_sla_f6fe97f8_01\", \"title\": \"complaint_sla\", \"content\": \"一般投诉(态度、延误)24 小时内首次回复。升级投诉(涉嫌欺诈、安全)4 小时内值班经理接入。\"}, {\"chunk_id\": \"warranty_1f88fd5f_02\", \"title\": \"warranty\", \"content\": \"申请保修需提供订单号与故障照片。检测周期 3-7 个工作日,在保免费维修或换新。\"}, {\"chunk_id\": \"return_policy_2f2e66b9_04\", \"title\": \"return_policy\", \"content\": \"超过 7 天无理由且无法证明质量问题的,不能退货。可转保修或人工复核。\"}, {\"chunk_id\": \"repair_onsite_ede3d888_03\", \"title\": \"repair_onsite\", \"content\": \"无现货备件时最长等待 15 天。超过 15 天可选择退货退款(需设备可回收)。\"}]}]",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "FAIL",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认进入人工队列",
+          "goal": "确认进入人工队列",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": false
+        }
+      ],
+      "missing_subgoals": [
+        "确认进入人工队列"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "[{\"chunks\": [{\"chunk_id\": \"complaint_sla_f6fe97f8_01\", \"title\": \"complaint_sla\", \"content\": \"一般投诉(态度、延误)24 小时内首次回复",
+        "升级投诉(涉嫌欺诈、安全)4 小时内值班经理接入",
+        "\"}, {\"chunk_id\": \"warranty_1f88fd5f_02\", \"title\": \"warranty\", \"content\": \"申请保修需提供号与故障照片",
+        "检测周期 3-7 个工作日,在保免费维修或换新",
+        "\"}, {\"chunk_id\": \"return_policy_2f2e66b9_04\", \"title\": \"return_policy\", \"content\": \"超过 7 天无理由且无法证明质量问题的,不能退货",
+        "可转保修或人工复核",
+        "\"}, {\"chunk_id\": \"repair_onsite_ede3d888_03\", \"title\": \"repair_onsite\", \"content\": \"无现货备件时最长等待 15 天",
+        "超过 15 天可选择退货退款(需设备可回收)",
+        "\"}]}]"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [
+      "turn:0:missing_tool",
+      "turn:0:trajectory_invalid",
+      "turn:0:wrong_arguments"
+    ],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "search_knowledge",
+        "arguments": {
+          "query": "这件事我希望值班经理处理，请转人工，原因是需要经理复核。"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "chunks": [
+            {
+              "chunk_id": "complaint_sla_f6fe97f8_01",
+              "title": "complaint_sla",
+              "content": "一般投诉(态度、延误)24 小时内首次回复。升级投诉(涉嫌欺诈、安全)4 小时内值班经理接入。"
+            },
+            {
+              "chunk_id": "warranty_1f88fd5f_02",
+              "title": "warranty",
+              "content": "申请保修需提供订单号与故障照片。检测周期 3-7 个工作日,在保免费维修或换新。"
+            },
+            {
+              "chunk_id": "return_policy_2f2e66b9_04",
+              "title": "return_policy",
+              "content": "超过 7 天无理由且无法证明质量问题的,不能退货。可转保修或人工复核。"
+            },
+            {
+              "chunk_id": "repair_onsite_ede3d888_03",
+              "title": "repair_onsite",
+              "content": "无现货备件时最长等待 15 天。超过 15 天可选择退货退款(需设备可回收)。"
+            }
+          ]
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH27",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n商品 SKU-HEADSET 库存：42件。\n商品 SKU-HEADSET 保修期：12个月。\n商品 SKU-HEADSET 人为损坏不在保，电子凭证见订单详情。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.5,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认库存",
+          "goal": "确认库存",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [
+        "解释保修材料"
+      ],
+      "unverified_clauses": [
+        "：12个月",
+        "人为损坏不在保，电子凭证见详情"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "check_inventory",
+        "arguments": {
+          "sku": "SKU-HEADSET"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "sku": "SKU-HEADSET",
+          "inventory": 42
+        }
+      },
+      {
+        "name": "get_warranty",
+        "arguments": {
+          "sku": "SKU-HEADSET"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "sku": "SKU-HEADSET",
+          "warranty_months": 12,
+          "note": "人为损坏不在保，电子凭证见订单详情"
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH28",
+    "turn": 0,
+    "final_answer": "确认后将取消订单 ORD10003。请核对订单号。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "FAIL",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "DETERMINISTIC_NO_LLM_JUDGE",
+      "facts": [
+        {
+          "id": "核对实付金额",
+          "goal": "核对实付金额",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": false
+        }
+      ],
+      "missing_subgoals": [
+        "核对实付金额"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "确认后将取消",
+        "请核对号"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [
+      "turn:0:missing_tool",
+      "turn:0:pending_mismatch",
+      "turn:0:trajectory_invalid",
+      "turn:0:wrong_arguments"
+    ],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH29",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10003 的物流状态：仓库处理中。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 1.0,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "确认物流事件",
+          "goal": "确认物流事件",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        }
+      ],
+      "missing_subgoals": [],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "：  处理中"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "track_shipment",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10003",
+          "tracking_no": null,
+          "city": "杭州",
+          "events": [
+            {
+              "status": "warehouse",
+              "at": "2026-11-04T19:00:00"
+            }
+          ]
+        }
+      }
+    ],
+    "retrieved": []
+  },
+  {
+    "dataset": "holdout30",
+    "case_id": "PSH30",
+    "turn": 0,
+    "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10002 当前订单状态：已签收。\n订单 ORD10002 总金额：39.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "score": {
+      "schema_version": "answer-eval-v2.0",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "FAIL",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": 0.5,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "FAIL",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "核对实付金额",
+          "goal": "核对实付金额",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        },
+        {
+          "id": "核对商品价格",
+          "goal": "核对商品价格",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": false
+        }
+      ],
+      "missing_subgoals": [
+        "核对商品价格"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "当前状态：已签收"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    "tool_oracle_reasons": [
+      "turn:0:missing_tool",
+      "turn:0:trajectory_invalid",
+      "turn:0:wrong_arguments"
+    ],
+    "environment_scope": "original case-final environment oracle",
+    "actual_tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10002"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "turn": 0,
+        "output": {
+          "order_id": "ORD10002",
+          "user_id": "u_demo",
+          "status": "delivered",
+          "items": [
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            }
+          ],
+          "total_cents": 3900,
+          "created_at": "2026-10-16T00:00:00",
+          "paid_at": "2026-10-16T00:00:00",
+          "shipped_at": "2026-10-17T00:00:00",
+          "delivered_at": "2026-10-24T00:00:00",
+          "tracking_no": "YT998877",
+          "receiver_city": "北京"
+        }
+      }
+    ],
+    "retrieved": []
+  }
+]
