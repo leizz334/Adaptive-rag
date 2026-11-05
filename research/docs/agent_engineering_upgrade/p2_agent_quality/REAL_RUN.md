@@ -23,8 +23,8 @@ The parent controls interleaving and continuation after inspecting the pilot.
 
 The official pricing page was reverified by the parent on 2026-11-05:
 <https://api-docs.deepseek.com/quick_start/pricing/>. Use peak cache-miss input
-USD 0.30/M and output USD 1.20/M without cache discounts. The observed service
-alias supplied by the parent was `DeepSeek-V4.1-Flash-1017`; the experiment
+USD 0.30/M and output USD 1.20/M without cache discounts. The published service
+alias was `DeepSeek-V4.1-Flash-1017`; backend weights are not independently verified. The experiment
 records the configured model/endpoint and actual public response model. Price
 estimates are not invoices. The 420k-token cap implies at most USD 0.504 at the
 maximum of these two rates, conditional on usage accounting/reservation bounds.

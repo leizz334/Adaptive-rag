@@ -1,0 +1,47 @@
+{
+  "status": "FAIL",
+  "checks": [
+    {
+      "command": [
+        "D:\\MiniAnaconda3\\envs\\adaptive-rag\\python.exe",
+        "-B",
+        "-m",
+        "ruff",
+        "check",
+        "."
+      ],
+      "exit_code": 1,
+      "stdout": "research\\docs\\agent_engineering_upgrade\\p2_agent_quality\\final_validation.py:110:21: UP038 Use `X | Y` in `isinstance` call instead of `(X, Y)`\n    |\n108 |                 for n in old_tree.body\n109 |                 if not (\n110 |                     isinstance(n, (ast.Import, ast.ImportFrom))\n    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ UP038\n111 |                     and len(n.names) == 1\n112 |                     and n.names[0].name == unused\n    |\n    = help: Convert to `X | Y`\n\nFound 1 error.\nNo fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "D:\\MiniAnaconda3\\envs\\adaptive-rag\\python.exe",
+        "-B",
+        "-m",
+        "ruff",
+        "format",
+        "--check",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "782 files already formatted\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "D:\\MiniAnaconda3\\envs\\adaptive-rag\\python.exe",
+        "-B",
+        "-m",
+        "mypy"
+      ],
+      "exit_code": 0,
+      "stdout": "app\\observability\\execution.py:12: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]\napp\\observability\\tracing.py:244: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]\neval\\memory_ablation.py:54: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]\nSuccess: no issues found in 137 source files\n",
+      "stderr": ""
+    }
+  ],
+  "pytest_xml": "r6_all_pytest.xml",
+  "pytest_passed": 344,
+  "initial_lint": "I001 one import-layout issue; three unformatted phase scripts; fixed experiment code only",
+  "mypy_source_files": 137
+}
