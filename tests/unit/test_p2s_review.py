@@ -141,24 +141,51 @@ def test_abstention_with_unassessed_extra_claim_is_not_certified():
 
 
 def test_return_request_preserves_order_status():
-    result = safe_answer([
-        ToolResult(name="get_order", success=True, output={
-            "order_id": "ORD7000", "status": "delivered", "total_cents": 1250,
-        }),
-        ToolResult(name="create_return_request", success=True, output={
-            "order_id": "ORD7000", "status": "requested", "return_id": "rt_demo",
-        }),
-    ])
+    result = safe_answer(
+        [
+            ToolResult(
+                name="get_order",
+                success=True,
+                output={
+                    "order_id": "ORD7000",
+                    "status": "delivered",
+                    "total_cents": 1250,
+                },
+            ),
+            ToolResult(
+                name="create_return_request",
+                success=True,
+                output={
+                    "order_id": "ORD7000",
+                    "status": "requested",
+                    "return_id": "rt_demo",
+                },
+            ),
+        ]
+    )
     assert "已签收" in result, result
 
 
 def test_refund_request_preserves_actual_shipment_events():
-    result = safe_answer([
-        ToolResult(name="track_shipment", success=True, output={
-            "order_id": "ORD7000", "events": [{"status": "delivered"}],
-        }),
-        ToolResult(name="create_refund_request", success=True, output={
-            "order_id": "ORD7000", "status": "requested", "refund_id": "rf_demo",
-        }),
-    ])
+    result = safe_answer(
+        [
+            ToolResult(
+                name="track_shipment",
+                success=True,
+                output={
+                    "order_id": "ORD7000",
+                    "events": [{"status": "delivered"}],
+                },
+            ),
+            ToolResult(
+                name="create_refund_request",
+                success=True,
+                output={
+                    "order_id": "ORD7000",
+                    "status": "requested",
+                    "refund_id": "rf_demo",
+                },
+            ),
+        ]
+    )
     assert "已签收" in result, result

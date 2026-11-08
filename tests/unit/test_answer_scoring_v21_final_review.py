@@ -108,18 +108,26 @@ def test_eleven_completed_requests_copy_once_and_charge_10003_tokens(tmp_path):
     parent, config, snapshots = helpers.ancestor.__wrapped__(r, tmp_path)
     probe = r.read(parent / "requests.json")[0]
     probe["usage"] = dict(prompt_tokens=1, completion_tokens=2, total_tokens=3)
-    rows = [probe] + [dict(
-        probe, group=f"REVIEWCASE{i}:R0:0", sequence=0,
-        usage=dict(prompt_tokens=900, completion_tokens=100, total_tokens=1000),
-    ) for i in range(10)]
+    rows = [probe] + [
+        dict(
+            probe,
+            group=f"REVIEWCASE{i}:R0:0",
+            sequence=0,
+            usage=dict(prompt_tokens=900, completion_tokens=100, total_tokens=1000),
+        )
+        for i in range(10)
+    ]
     result = r.read(parent / "results.json")
     result["groups"] = [dict(group=row["group"]) for row in rows[1:]]
     r.write(parent / "requests.json", rows)
     r.write(parent / "results.json", result)
     original = {p.name: p.read_bytes() for p in parent.iterdir() if p.is_file()}
     history, inherited, inherited_probe = r.inherit_budget(
-        parent, snapshots=snapshots, roots=config["roots"],
-        env_file=helpers.Path(config["env_file"]), pricing=config["pricing"],
+        parent,
+        snapshots=snapshots,
+        roots=config["roots"],
+        env_file=helpers.Path(config["env_file"]),
+        pricing=config["pricing"],
     )
     assert inherited == rows and history["totals"]["http_attempts"] == 11
     assert history["totals"]["accounted_tokens"] == 10003
