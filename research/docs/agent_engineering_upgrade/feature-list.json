@@ -1118,7 +1118,7 @@
   },
   "p2_answer_reliability": {
     "phase": "P2-S",
-    "status": "in_progress",
+    "status": "PARTIAL_PASS",
     "baseline_commit": "e74f01db65fb9f3df929cdf5932919e1f10e453e",
     "tasks": [
       {
@@ -1159,7 +1159,12 @@
         "validation": "364fullbeforefieldfix;20focusedafterindependentreview",
         "commit_hash": "0a876ae35d3d108d46d51eed4a75381b5805cfae",
         "next_action": "S2scorerreviewfixandcommit",
-        "reviewed_source_commit": "1c6b5067c742684a760b1a873b214318df9a89c1"
+        "reviewed_source_commit": "1c6b5067c742684a760b1a873b214318df9a89c1",
+        "checkpoint_commits": [
+          "0a876ae35d3d108d46d51eed4a75381b5805cfae",
+          "fcec992a850b92620b101d341e432c2060c8bfed",
+          "1c6b5067c742684a760b1a873b214318df9a89c1"
+        ]
       },
       {
         "TASK_ID": "P2-S2",
@@ -1282,12 +1287,18 @@
         "commit_hash": "7db6907ad64fadd877c21ae1443d7021ad5d76bd",
         "next_action": "S7finalchecks,report,scopeaudit,ordinarypushandlsremote;NO_MORE_PAID_CALLS",
         "paid_http_requests": 77,
-        "paid_tokens": 75467
+        "paid_tokens": 75467,
+        "checkpoint_commits": [
+          "c116ea36fb6fba015f452cd26a536326ecc02b82",
+          "f8ab5fd9dfa7259ac2b805dbaf40b25fdb6f0391",
+          "d355ecd1c106aa0bb20dddcd6f3ce2a55c04c02a",
+          "7db6907ad64fadd877c21ae1443d7021ad5d76bd"
+        ]
       },
       {
         "TASK_ID": "P2-S7",
-        "status": "validated_local_delivery_pending",
-        "passes": false,
+        "status": "completed_verified_partial_delivery",
+        "passes": true,
         "dependencies": [
           "P2-S6"
         ],
@@ -1300,11 +1311,12 @@
           "evidence/s7_all_pytest.xml",
           "evidence/s7_checks.json",
           "evidence/s7_preservation.json",
-          "evidence/s7_p1_compatibility.json"
+          "evidence/s7_scope_audit.json",
+          "evidence/delivery.json"
         ],
-        "validation": "475pytestPASS;Ruffcheck/formatPASS;Mypy140PASS;368oldartifacts20userfilesunchanged;original80stable;boundedrealpairscompleted;finalsemanticPARTIAL",
-        "commit_hash": null,
-        "next_action": "Commit S7validation;verify authorized origin/branch;normalpush;lsremote;recordactualdeliveryandSTOP"
+        "validation": "475pytestPASS;Ruff/MypyPASS;historical/userpreservationPASS;ordinarypushandlsremoteverified4e97cdb;phasePARTIAL_PASS",
+        "commit_hash": "4e97cdbc355042b967e6a84a10adf087d23a6057",
+        "next_action": "STOP after final metadata normalpush+lsremote;NO_MORE_API;noP3/P4"
       }
     ],
     "budget": {
@@ -1315,6 +1327,13 @@
       "concurrency": 1
     },
     "p3_started": false,
-    "p4_started": false
+    "p4_started": false,
+    "execution_complete": true,
+    "real_semantic_status": "PARTIAL_NOT_ASSESSED",
+    "http_requests": 77,
+    "tokens": 75467,
+    "estimated_usd": 0.0391668,
+    "delivery_validation_commit": "4e97cdbc355042b967e6a84a10adf087d23a6057",
+    "remote_verified_commit": "4e97cdbc355042b967e6a84a10adf087d23a6057"
   }
 }
