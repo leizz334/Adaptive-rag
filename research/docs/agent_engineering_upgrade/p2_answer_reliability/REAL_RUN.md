@@ -102,3 +102,59 @@ Mock validation (use a fresh basetemp path if the system temp ACL is unavailable
 ```powershell
 & $taskPython -m pytest "$taskPhase/test_p2s_real_pairs.py" -q --tb=short --basetemp "$taskRoot/.pytest_cache/p2s-real-fresh"
 ```
+
+## V2.1 continuation after the pilot scorer correction
+
+Run02's original answers, scores, journal, and exact V2.0 source copies remain
+immutable. The pilot used 11 HTTP attempts and 10,003 reported/accounted tokens,
+estimated US$0.0045516. These are spent global budget, never a fresh allowance.
+The old holdout is consumed; it must not be described as fresh validation.
+
+The new explicit freeze is `evidence/candidate_freeze_v21.json`. An alternate
+freeze requires `--budget-parent-run`; it cannot silently create a zero-spend
+budget. The continuation reads the direct parent's config/requests/results,
+requires complete responses with valid usage and one successful stored P2S_OK
+probe, and validates provider/settings/environment/model/pricing/source controls.
+Only `eval/answer_scoring.py` may differ within the app/eval/knowledge source map.
+Original Q/R5/instrumentation helpers must remain unchanged. No env file is read
+when validating the ancestor itself; explicit preparation still fingerprints its
+configured env through source workers.
+
+Completed parent request dictionaries are copied once, unchanged, at the start
+of the new journal. Every request's pre-dispatch check revalidates parent artifact
+hashes and the exact inherited prefix. Pending rows, missing/inconsistent usage,
+duplicate sequences, parent mutation, missing rows, or control conflicts stop the
+run. Inherited rows count toward all 350/300k/US$3 global limits. They cannot be
+replayed by a fresh planned group. Direct ancestry is supported; nested ancestry
+is rejected for explicit audit rather than inferred or deduplicated speculatively.
+
+Run03 reuses the successful physical probe by a hashed parent-results reference;
+it must not issue another probe or replay PSD03. Its paid plan contains only six
+fresh PSV IDs selected from exactly 24 IDs by
+SHA256(`P2S-V21-20261105` + ID), with alternating source order. Development paths
+may remain fingerprinted in the config, but no development cases enter this paid
+plan. Previously captured development answers can be rescored locally; missing
+old captures are not invented or filled by paid calls.
+
+The V2.1 adapter uses exactly same-turn tool calls and that turn's failure-prefix
+for TOOL_SUCCESS. Actual retrieved chunks come from the captured final state.
+ENVIRONMENT_SUCCESS remains the original final case-wide environment oracle;
+it is not a per-turn DB-state claim. Original V2.0 scores keep their original
+case-wide tool/cumulative-evidence meaning. The new adapter does not rewrite old
+scores, old Gold, captured answers, or raw driver output. Open semantics remain
+NOT_ASSESSED without independent semantic calibration.
+
+After the parent freezes and commits the corrected scorer/new validation data:
+
+```powershell
+$taskParentRun = "$taskPhase/runs/20261105_S6_pairs_02"
+$taskBaseline = 'D:/Code/Adaptive-rag/.worktrees/p2-agent-quality'
+$taskRun = "$taskPhase/runs/20261105_S6_pairs_03"
+& $taskPython $taskHarness prepare --run-dir $taskRun --freeze-file "$taskPhase/evidence/candidate_freeze_v21.json" --budget-parent-run $taskParentRun --env-file 'D:/Code/Adaptive-rag/.env' --r0-root $taskBaseline --r1-root $taskRoot --dev-dataset "$taskPhase/datasets/development.json" --dev-answers "$taskPhase/datasets/development_answers.json" --blind-dataset "$taskPhase/datasets/validation_holdout_v21.json" --blind-answers "$taskPhase/datasets/validation_holdout_v21_answers.json" --input-price 0.30 --output-price 1.20 --pricing-url 'https://api-docs.deepseek.com/quick_start/pricing/' --pricing-verified-date '2026-11-05'
+& $taskPython $taskHarness summary --run-dir $taskRun
+```
+
+Prepare prints selected IDs/group order and inherited spend only, never Gold.
+Subsequent `run-group`, `pilot`, or `run` workers resolve the frozen file path from
+the new config before loading helpers. No new probe command is needed. Parent
+review of the fresh plan and global accounting precedes further paid commands.

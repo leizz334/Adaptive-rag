@@ -1,0 +1,179 @@
+{
+  "schema_version": "validation-holdout-manifest-v2.1",
+  "authorship": "Fresh independent validation after coordinator-declared application and evaluator freeze; old holdout is consumed regression and has not been modified.",
+  "freeze_state": "FROZEN_BEFORE_ANY_VALIDATION_APPLICATION_RUN",
+  "application_freeze_reference": "37a, coordinator supplied; application implementation not inspected by author",
+  "scorer_contract": "V2.1, coordinator supplied; scorer implementation/results not inspected by author",
+  "scenario_count": 24,
+  "turn_count": 26,
+  "answer_gold_count": 26,
+  "fact_count": 46,
+  "semantic_required_turns": 2,
+  "closed_factual_turns": 24,
+  "expected_open_semantic_status": "NOT_ASSESSED unless independent semantic assessment is separately authorized",
+  "frozen_sha256": {
+    "validation_holdout_v21.json": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+    "validation_holdout_v21_answers.json": "0a1c5a728b55f839e1db2b297b150a5057fd8a531835f0268905a56639d993ab"
+  },
+  "coverage_by_case": {
+    "PSV01": [
+      "money",
+      "multiple_orders",
+      "entity_binding",
+      "no_unasked_sum"
+    ],
+    "PSV02": [
+      "inventory",
+      "multiple_products",
+      "quantity_before_or_after_identity"
+    ],
+    "PSV03": [
+      "product_price",
+      "multiple_products",
+      "equivalent_cny_formats"
+    ],
+    "PSV04": [
+      "single_implied_product",
+      "purchased_quantity",
+      "correction"
+    ],
+    "PSV05": [
+      "items",
+      "customized",
+      "negation",
+      "single_implied_product"
+    ],
+    "PSV06": [
+      "items",
+      "explicitly_requested_sku",
+      "product_identity"
+    ],
+    "PSV07": [
+      "static_warranty",
+      "document_location",
+      "negation"
+    ],
+    "PSV08": [
+      "static_warranty",
+      "sku_specific_contract",
+      "single_implied_product"
+    ],
+    "PSV09": [
+      "shipment",
+      "multiple_orders",
+      "entity_binding"
+    ],
+    "PSV10": [
+      "shipment",
+      "negation",
+      "no_forecast"
+    ],
+    "PSV11": [
+      "status",
+      "refund",
+      "negation",
+      "multiple_resources"
+    ],
+    "PSV12": [
+      "product_detail",
+      "negation",
+      "closed_description"
+    ],
+    "PSV13": [
+      "static_rule_and_live_price",
+      "policy_boundary",
+      "negation"
+    ],
+    "PSV14": [
+      "coupon",
+      "static_and_live",
+      "negation",
+      "no_unasked_eligibility"
+    ],
+    "PSV15": [
+      "inventory",
+      "static_warranty",
+      "negation",
+      "multiple_resources"
+    ],
+    "PSV16": [
+      "static_warranty",
+      "multiple_products",
+      "shared_value_identity"
+    ],
+    "PSV17": [
+      "refund",
+      "multiple_orders",
+      "negative_facts",
+      "negation"
+    ],
+    "PSV18": [
+      "followup",
+      "product_context",
+      "static_warranty"
+    ],
+    "PSV19": [
+      "followup",
+      "cross_resource_identity",
+      "live_inventory",
+      "negation"
+    ],
+    "PSV20": [
+      "live_business_and_open_policy",
+      "semantic_not_assessed",
+      "no_delivery_promise"
+    ],
+    "PSV21": [
+      "purchase_vs_catalog",
+      "multiple_entities",
+      "unit_price",
+      "inventory"
+    ],
+    "PSV22": [
+      "status",
+      "refund",
+      "independent_live_facts"
+    ],
+    "PSV23": [
+      "product_detail",
+      "negative_intent",
+      "closed_description"
+    ],
+    "PSV24": [
+      "human_handoff",
+      "live_amount",
+      "negation",
+      "semantic_not_assessed"
+    ]
+  },
+  "identity_policy": "Subject identifies the logical evidence entity. Printed SKU/order tokens are not independent answer obligations unless explicitly requested. Name or unique implied identity and quantity before or after identity are legitimate. Ambiguous identity remains unknown.",
+  "currency_policy": "Equivalent exact CNY amounts allow yuan, currency symbols, RMB/CNY prefix or suffix, and cents; no rounding or amount changes authorized.",
+  "validation": [
+    "Public Scenario/Turn schemas PASS using isolated AST classes",
+    "UTF-8 and no U+FFFD PASS",
+    "Chinese business purpose and messages PASS",
+    "One Gold per turn; unique case/fact IDs and required goals PASS",
+    "Fact goal membership and non-null observed-output evidence contracts PASS",
+    "Every evidence path/value matched AST-extracted fixture plus public output contract PASS",
+    "All regex patterns compile PASS; wildcard-only allowed-extra patterns absent",
+    "No duplicate terminal queries or full message sequences with old holdout PASS",
+    "No duplicate terminal queries within fresh set PASS",
+    "Natural goal/wording variety and unasked identifier obligations reviewed independently"
+  ],
+  "limitations": [
+    "No application, scorer, paid provider, or semantic evaluator was run by author.",
+    "Open policy and handoff semantic conclusions remain NOT_ASSESSED without semantic evaluation.",
+    "The existing driver cannot inject timeout, unavailable or malformed tool outputs; separate unit injection is required.",
+    "Generated ticket IDs and retrieval chunk ordering are not constrained.",
+    "The set uses the small existing synthetic fixture, so products and orders recur across distinct business goals.",
+    "No APIs, credentials, environment secrets, product/scorer implementation, development data or result artifacts were inspected."
+  ],
+  "sources": [
+    "eval/contracts.py",
+    "eval/multiturn.py public Scenario/Turn classes",
+    "app/services/seed.py",
+    "app/tools/knowledge_tools.py",
+    "Public order/product/logistics/aftersale output contracts already inspected before prior author freeze",
+    "datasets/holdout.json input messages only for overlap avoidance; no old Gold or results read"
+  ]
+}

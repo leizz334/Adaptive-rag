@@ -1,0 +1,375 @@
+{
+  "probe": {
+    "connected": true,
+    "completion_valid": true,
+    "model": "deepseek-flash"
+  },
+  "groups": [
+    {
+      "case_id": "PSD03",
+      "variant": "R0",
+      "rep": 0,
+      "split": "development",
+      "group": "PSD03:R0:0",
+      "status": "PASS",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSD03",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 10578.195900015999
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "answer_PSD03",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "cefa272e-a5c7-4f5e-b7dd-8c169136c34e",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "order_id": "ORD10002",
+                "user_id": "u_demo",
+                "status": "delivered",
+                "items": [
+                  {
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "quantity": 1,
+                    "unit_price_cents": 3900,
+                    "customized": true
+                  }
+                ],
+                "total_cents": 3900,
+                "created_at": "2026-10-16T14:43:59.522826",
+                "paid_at": "2026-10-16T14:43:59.522826",
+                "shipped_at": "2026-10-17T14:43:59.522826",
+                "delivered_at": "2026-10-24T14:43:59.522826",
+                "tracking_no": "YT998877",
+                "receiver_city": "北京"
+              }
+            },
+            {
+              "name": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "items": [
+                  {
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "quantity": 1,
+                    "unit_price_cents": 3900,
+                    "customized": true
+                  }
+                ]
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 26,
+          "known_limitation": null
+        },
+        "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "9fea56bb57b29502563b846681a8e24e4a4e4ba8f222688a62bfb7d2c2fb732d",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 4887,
+      "accounted_tokens_group": 4887,
+      "request_errors": [],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "PASS",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": 0.5,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "FAIL",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "订单事实_ORD10002",
+              "goal": "订单状态:ORD10002",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            },
+            {
+              "id": "总额_ORD10002",
+              "goal": "订单状态:ORD10002",
+              "required": false,
+              "matched": false,
+              "contradiction": false,
+              "evidence": true
+            },
+            {
+              "id": "商品件数_SKU-MUG-CUSTOM",
+              "goal": "商品件数",
+              "required": true,
+              "matched": false,
+              "contradiction": false,
+              "evidence": true
+            }
+          ],
+          "missing_subgoals": [
+            "商品件数"
+          ],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "的阶段为「已送达」（status:          ）：该已于 2026-10-24 完成签收，收货城市为北京",
+            "为 1 件，是定制马克杯（），单价 39.00 元，合计 39.00 元",
+            "由于本次没有检索到可供引用的政策或知识片段，以上信息均来自查询工具的实时返回结果",
+            "如果需要核对物流签收详情或售后规则，请补充说明具体需求",
+            "如需人工复核，也可以转接人工客服"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSD03",
+      "variant": "R1",
+      "rep": 0,
+      "split": "development",
+      "group": "PSD03:R1:0",
+      "status": "PASS",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSD03",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 12968.739199975971
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "answer_PSD03",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "704684ee-acb7-4ae4-9e37-52eafddc3158",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "order_id": "ORD10002",
+                "user_id": "u_demo",
+                "status": "delivered",
+                "items": [
+                  {
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "quantity": 1,
+                    "unit_price_cents": 3900,
+                    "customized": true
+                  }
+                ],
+                "total_cents": 3900,
+                "created_at": "2026-10-16T14:43:59.522826",
+                "paid_at": "2026-10-16T14:43:59.522826",
+                "shipped_at": "2026-10-17T14:43:59.522826",
+                "delivered_at": "2026-10-24T14:43:59.522826",
+                "tracking_no": "YT998877",
+                "receiver_city": "北京"
+              }
+            },
+            {
+              "name": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "items": [
+                  {
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "quantity": 1,
+                    "unit_price_cents": 3900,
+                    "customized": true
+                  }
+                ]
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 26,
+          "known_limitation": null
+        },
+        "dataset_sha256": "cfdc3732da378fb64365da94b34ef7aad4baa50d1393c957427378833d461d1b",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "ed4b86f8944d3b7c0856e580ff76c7a347fb3a308403d7af0c6754ddfce2c763",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 5062,
+      "accounted_tokens_group": 5062,
+      "request_errors": [],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "PASS",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": 0.5,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "FAIL",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "订单事实_ORD10002",
+              "goal": "订单状态:ORD10002",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            },
+            {
+              "id": "总额_ORD10002",
+              "goal": "订单状态:ORD10002",
+              "required": false,
+              "matched": false,
+              "contradiction": false,
+              "evidence": true
+            },
+            {
+              "id": "商品件数_SKU-MUG-CUSTOM",
+              "goal": "商品件数",
+              "required": true,
+              "matched": false,
+              "contradiction": false,
+              "evidence": true
+            }
+          ],
+          "missing_subgoals": [
+            "商品件数"
+          ],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "的两项信息如下：",
+            "1. 阶段：已送达（status =          ），送达时间为 2026-10-24",
+            "2. ：共 1 件，为「定制马克杯」（），单价 39.00 元，属定制",
+            "以上两项均已核对，依据当前实时工具结果（get_order、get_order_items）",
+            "本次没有检索到可引用的文档片段",
+            "如您还需要修改收货信息、申请售后或查询物流详情，请告知具体诉求，我再进一步处理"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "semantic_human_calibration": "NOT_RUN"
+    }
+  ],
+  "status": "RUNNING",
+  "summary": {
+    "status": "RUNNING",
+    "completed_groups": 2,
+    "requests": {
+      "http_attempts": 11,
+      "accounted_tokens": 10003,
+      "reported_tokens": 10003,
+      "estimated_usd": 0.004551599999999999,
+      "unknown_usage_requests": 0
+    },
+    "limits": {
+      "requests": 350,
+      "tokens": 300000,
+      "usd": 3.0
+    },
+    "model_evaluation": "REAL_PROVIDER_EXPERIMENT",
+    "semantic_human_calibration": "NOT_RUN"
+  }
+}

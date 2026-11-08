@@ -1,0 +1,45 @@
+{
+  "reviewer_role": "independent synthetic code review",
+  "review_base_head": "f8ab5fd",
+  "reviewed_work": "uncommitted V2.1 scorer and continuation runner changes",
+  "findings": [
+    {
+      "severity": "important",
+      "status": "resolved and independently verified",
+      "location": "real_pairs.py:Ledger.check_pending",
+      "problem": "A completed response with missing usage did not stop further dispatch.",
+      "regression_test": "test_missing_usage_response_stops_the_next_dispatch"
+    },
+    {
+      "severity": "important",
+      "status": "resolved and independently verified",
+      "location": "eval/answer_scoring.py:_observed",
+      "problem": "A quantity row with the desired SKU but explicit foreign root order_id supported the requested order.",
+      "regression_test": "test_foreign_response_order_cannot_support_requested_order_quantity"
+    },
+    {
+      "severity": "important",
+      "status": "resolved and independently verified",
+      "location": "eval/answer_scoring.py:score_answer contradiction classification",
+      "problem": "An annotated SKU fact fulfilled correctly plus an unannotated foreign SKU quantity was classified FAIL instead of NOT_ASSESSED.",
+      "regression_test": "test_unknown_extra_sku_quantity_is_not_a_verified_contradiction"
+    }
+  ],
+  "verification": {
+    "pre_fix_existing_scoped_suite": "53 passed; scratch/p2s-review-new-baseline.xml",
+    "pre_fix_independent_counterexamples": "3 failed, observed in tool output; original raw JUnit was overwritten",
+    "red_record": "s6_v21_final_review_red.xml is explicitly labeled reconstructed observation, not raw JUnit",
+    "post_fix_independent_suite": "4 passed; s6_v21_independent_review_green.xml",
+    "additional_positive_probe": "Synthetic 11 completed requests / 10003 total tokens inherit once, preserve parent bytes and probe reference, and count against 350 HTTP / 300000 token / USD3 caps",
+    "scorer_examples": "Existing scoped tests include negative CNY rejection, foreign SKU evidence rejection, and unknown paraphrase NOT_ASSESSED"
+  },
+  "review_limits": [
+    "No concrete V2.1 holdout dataset, answers, Gold or manifest contents read",
+    "No .env file read and no paid API or real socket calls",
+    "No application, implementation, persisted task state or commit changes by reviewer",
+    "Existing V2.0 evidence preserved",
+    "Review verifies bounded deterministic behavior and runner safeguards, not whole semantic truth",
+    "Post-fix independent rerun covers the four probes; broader post-fix verification belongs to the coordinating agent"
+  ],
+  "unresolved_critical_or_important_findings": []
+}

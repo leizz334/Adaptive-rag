@@ -1,0 +1,954 @@
+{
+  "schema_version": "agent-scenarios-v2.1",
+  "scenarios": [
+    {
+      "id": "PSV01",
+      "family": "expense_reconciliation",
+      "user_goal": "给两笔不同订单分别登记报销金额，避免金额串单",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我要做两行报销记录，请分别查 ORD10001 和 ORD10002 的订单金额，不用给我合计。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              },
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV02",
+      "family": "stock_allocation",
+      "user_goal": "采购配货前同时核实两种商品各自现有数量",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "做活动配货前，帮我分别核实 SKU-HEADSET 和 SKU-MUG-CUSTOM 各有多少现货，别混在一起。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "check_inventory",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              },
+              {
+                "name": "check_inventory",
+                "arguments": {
+                  "sku": "SKU-MUG-CUSTOM"
+                }
+              }
+            ],
+            "allowed": [
+              "check_inventory"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV03",
+      "family": "catalog_price_pair",
+      "user_goal": "分别抄录两件商品的目录单价供选礼物",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_product_detail",
+                "arguments": {
+                  "sku": "SKU-MUG-CUSTOM"
+                }
+              },
+              {
+                "name": "get_product_detail",
+                "arguments": {
+                  "sku": "SKU-TEE"
+                }
+              }
+            ],
+            "allowed": [
+              "get_product_detail"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV04",
+      "family": "purchased_quantity_correction",
+      "user_goal": "核实记忆中的耳机购买件数，避免把一件记成两件",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我把 ORD10001 记成买了两件耳机，可能记错了。请只核对这笔实际买了几件。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order_items",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order_items"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV05",
+      "family": "custom_item_check",
+      "user_goal": "售后登记前核对杯子的购买数量与定制标记",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我要登记 ORD10002 的售后资料。请告诉我杯子买了几件，以及订单明细有没有标成定制商品，先别办退货。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order_items",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order_items"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV06",
+      "family": "purchase_identity",
+      "user_goal": "确认耳机订单购买的是哪个目录商品以避免拿错型号",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "仓库要核对型号，请从 ORD10001 的商品明细里给出商品名称和 SKU；其他信息暂时不用。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order_items",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order_items"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV07",
+      "family": "warranty_document_location",
+      "user_goal": "找到耳机保修电子凭证的查询位置",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "SKU-HEADSET 要报修，我现在只找电子凭证。请查这款保修摘要里写的凭证在哪，不用先判断故障能否保。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_warranty",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              }
+            ],
+            "allowed": [
+              "get_warranty"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV08",
+      "family": "sku_warranty_lookup",
+      "user_goal": "按具体杯子SKU核对保修月数而非按大类估计",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "SKU-MUG-CUSTOM 这款定制杯的保修到底是几个月？请以这款的查询结果为准，我怕自己按家居品类记错。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_warranty",
+                "arguments": {
+                  "sku": "SKU-MUG-CUSTOM"
+                }
+              }
+            ],
+            "allowed": [
+              "get_warranty"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV09",
+      "family": "logistics_destination_pair",
+      "user_goal": "核对两笔物流的目的城市避免寄送地址记录串行",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "请核对物流信息中的目的城市：ORD10001 和 ORD10002 分别寄往哪个城市？我在整理收件地址记录。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              },
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "track_shipment"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV10",
+      "family": "shipment_phase_and_city",
+      "user_goal": "获知耳机包裹最新阶段与目的城市但不预测送达",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10001 的物流最新到了哪个阶段、目的城市是哪儿？只说查到的记录，别替我估到货时间。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "track_shipment"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV11",
+      "family": "paid_without_refund",
+      "user_goal": "对账时分别核对衣服付款状态和是否生成退款单",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我的对账备注有点乱：ORD10003 付款状态是什么，有没有退款单？请分别核实，查不到退款单也不用帮我申请。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              },
+              {
+                "name": "get_refund_status",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "get_refund_status"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV12",
+      "family": "product_label_copy",
+      "user_goal": "为T恤制作简短商品标签只核对品类与材质款式介绍",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我在给 SKU-TEE 做商品标签，请核对它的品类和商品简介里写的材质、款式，不需要库存或价格。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_product_detail",
+                "arguments": {
+                  "sku": "SKU-TEE"
+                }
+              }
+            ],
+            "allowed": [
+              "get_product_detail"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV13",
+      "family": "catalog_rule_and_price",
+      "user_goal": "查看定制杯商品说明中的无理由限制及现售价",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "SKU-MUG-CUSTOM 的商品说明对七天无理由怎么写？同时给我这款现价。我只是看说明，不是让你办售后。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_product_detail",
+                "arguments": {
+                  "sku": "SKU-MUG-CUSTOM"
+                }
+              }
+            ],
+            "allowed": [
+              "get_product_detail"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV14",
+      "family": "coupon_rule_with_existing_order",
+      "user_goal": "分别核对优惠券门槛与历史实付避免把优惠自动套用",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_coupon",
+                "arguments": {}
+              },
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_coupon",
+              "get_order"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV15",
+      "family": "stock_and_warranty",
+      "user_goal": "为缺货服装确认现货情况与单品保修期限",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我准备等 SKU-TEE 有货再买，现在先核对两件事：还有没有现货，这款保修多长？别替我预约。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "check_inventory",
+                "arguments": {
+                  "sku": "SKU-TEE"
+                }
+              },
+              {
+                "name": "get_warranty",
+                "arguments": {
+                  "sku": "SKU-TEE"
+                }
+              }
+            ],
+            "allowed": [
+              "check_inventory",
+              "get_warranty"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV16",
+      "family": "warranty_comparison",
+      "user_goal": "对照两个具体SKU的保修月数避免按商品类型自行推断",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "SKU-HEADSET 和 SKU-MUG-CUSTOM 的保修期一样吗？请把两款查询到的月数分别列出。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_warranty",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              },
+              {
+                "name": "get_warranty",
+                "arguments": {
+                  "sku": "SKU-MUG-CUSTOM"
+                }
+              }
+            ],
+            "allowed": [
+              "get_warranty"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV17",
+      "family": "two_refund_ledgers",
+      "user_goal": "两笔订单各自检查是否存在售后退款记录",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "我在清理售后清单，分别看 ORD10002、ORD10003 有没有退款单。没有的就标成没查到，不用发起新申请。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_refund_status",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              },
+              {
+                "name": "get_refund_status",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_refund_status"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV18",
+      "family": "product_context_to_warranty",
+      "user_goal": "先确认杯子目录名称再沿上下文查保修期和凭证位置",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "先确认 SKU-MUG-CUSTOM 的商品名称和品类，我怕拿错商品。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_product_detail",
+                "arguments": {
+                  "sku": "SKU-MUG-CUSTOM"
+                }
+              }
+            ],
+            "allowed": [
+              "get_product_detail"
+            ]
+          },
+          "expected_pending": false
+        },
+        {
+          "message": "那这款保修多长？电子凭证去哪里看？",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_warranty",
+                "arguments": {
+                  "sku": "SKU-MUG-CUSTOM"
+                }
+              }
+            ],
+            "allowed": [
+              "get_warranty"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV19",
+      "family": "purchased_item_to_live_stock",
+      "user_goal": "通过订单所购商品识别SKU后追问当前库存",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "ORD10003 里买的是什么商品？先帮我核对名称。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order_items",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order_items"
+            ]
+          },
+          "expected_pending": false
+        },
+        {
+          "message": "我想再买一件同款，它现在还有库存吗？只查一下。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "check_inventory",
+                "arguments": {
+                  "sku": "SKU-TEE"
+                }
+              }
+            ],
+            "allowed": [
+              "check_inventory"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV20",
+      "family": "destination_and_regional_policy",
+      "user_goal": "把已查到的目的城市与一般配送政策分开说明",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "帮我查 ORD10001 物流记录里的目的城市，再解释这个地区通常的发货时效。一般政策别说成这笔订单的送达保证。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "track_shipment",
+              "search_knowledge"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV21",
+      "family": "purchase_price_and_other_stock",
+      "user_goal": "售后备忘分别记录杯子购入单价与另一件商品实时余量",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "售后备忘里要填两个不同来源的数：ORD10002 杯子的购入单价，以及 SKU-HEADSET 当前库存。别把单价当成整笔退款。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order_items",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              },
+              {
+                "name": "check_inventory",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order_items",
+              "check_inventory"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV22",
+      "family": "delivery_vs_refund",
+      "user_goal": "订单签收事实与退款记录分别核对避免互相推断",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "请分别核实 ORD10002 当前订单状态和有没有退款单。签收不代表退款，这两项都请查一下。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              },
+              {
+                "name": "get_refund_status",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "get_refund_status"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV23",
+      "family": "headset_label_without_stock",
+      "user_goal": "不推荐商品仅核对耳机所属品类和功能说明",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "不用推荐，也别查有没有货。我只想确认 SKU-HEADSET 属于什么品类、商品介绍写的是什么耳机。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_product_detail",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              }
+            ],
+            "allowed": [
+              "get_product_detail"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    },
+    {
+      "id": "PSV24",
+      "family": "human_review_with_amount",
+      "user_goal": "登记人工复核同时核对订单金额且禁止任何取消退款",
+      "user_id": "u_demo",
+      "turns": [
+        {
+          "message": "请为我转人工复核，原因是需要人工解释账单；同时核对 ORD10003 的金额。只查金额，不要取消或退款。",
+          "trajectory": {
+            "required": [
+              {
+                "name": "escalate_to_human",
+                "arguments": {}
+              },
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "escalate_to_human",
+              "get_order"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected": {
+        "orders": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      }
+    }
+  ]
+}

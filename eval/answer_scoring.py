@@ -8,6 +8,7 @@ natural-language truth; unsupported extra clauses remain unknown.
 from __future__ import annotations
 
 import re
+from decimal import Decimal
 from typing import Any, Literal
 
 from pydantic import Field, model_validator
@@ -18,8 +19,12 @@ _ENTITY = re.compile(r"(?:ORD\d+|SKU-[A-Za-z0-9_-]+)", re.I)
 _NEGATIVE = re.compile(
     r"(?:并非|不是|不为|尚未|未|没有|不能确认|无法确认|不确定)[^，,。；;\n]{0,4}$"
 )
-_NEUTRAL = re.compile(r"[\s，,:：、（）()；;。.!！?？\-]*")
+_NEUTRAL = re.compile(r"(?:[\s，,:：、（）()；;。.!！?？\-]|数量)*")
 _MISSING = object()
+_CNY = re.compile(
+    r"(?<![A-Za-z0-9_.$€£])(?P<prefix>[¥￥]|人民币|CNY)?\s*(?P<number>\d+(?:\.\d{1,2})?)(?![\d.])\s*(?P<suffix>元|人民币|CNY)?",
+    re.I,
+)
 
 
 class EvidenceRequirement(Contract):
@@ -78,12 +83,12 @@ def _path(value, path):
     return value
 
 
-def _observed(requirement, calls, retrieved):
+def _observed(requirement, calls, retrieved, subject=""):
     values = (
-        retrieved
+        [(value, {}) for value in retrieved]
         if requirement.source == "retrieval"
         else [
-            c.get("output", {})
+            (c.get("output", {}), c.get("arguments", {}))
             for c in calls
             if c.get("name") == requirement.tool
             and c.get("success") is True
@@ -92,7 +97,32 @@ def _observed(requirement, calls, retrieved):
             and all(c.get("arguments", {}).get(k) == v for k, v in requirement.arguments.items())
         ]
     )
-    for value in values:
+    for value, arguments in values:
+        if (
+            requirement.source == "tool"
+            and isinstance(value, dict)
+            and any(
+                key in value and value[key] != arguments[key]
+                for key in ("order_id", "sku")
+                if key in arguments
+            )
+        ):
+            continue
+        if requirement.source == "tool" and subject:
+            family = _family(subject)
+            parent_path = requirement.path.rpartition(".")[0]
+            parent = _path(value, parent_path) if parent_path else value
+            key = "sku" if family == "SKU" else "order_id" if family == "ORD" else None
+            if key:
+                identity = (
+                    parent.get(key)
+                    if isinstance(parent, dict) and key in parent
+                    else value.get(key)
+                    if isinstance(value, dict) and key in value
+                    else arguments.get(key)
+                )
+                if not isinstance(identity, str) or identity.upper() != subject.upper():
+                    continue
         actual = _path(value, requirement.path)
         if actual is _MISSING:
             continue
@@ -120,18 +150,89 @@ def _positive_matches(pattern, text):
     ]
 
 
-def _fact_spans(fact, answer):
-    subjects = {e.upper() for e in _ENTITY.findall(answer)}
-    if fact.subject and fact.subject.upper() not in subjects:
-        return []
+def _family(identifier):
+    return (
+        "SKU"
+        if identifier.upper().startswith("SKU")
+        else "ORD"
+        if identifier.upper().startswith("ORD")
+        else "OTHER"
+    )
+
+
+def _region(text, start, end, separators):
+    left = max((text.rfind(c, 0, start) for c in separators), default=-1) + 1
+    following = [text.find(c, end) for c in separators]
+    right = min((p for p in following if p >= 0), default=len(text))
+    return text[left:right]
+
+
+def _bound(fact, answer, start, end, scope):
+    if not fact.subject:
+        return True
+    family = _family(fact.subject)
+    subject = fact.subject.upper()
+
+    def entities(text):
+        return {e.upper() for e in _ENTITY.findall(text) if _family(e) == family}
+
+    sentence = _region(answer, start, end, "。！？;；\n")
+    local = entities(sentence)
+    if local == {subject}:
+        return True
+    if len(local) > 1:
+        clause = entities(_region(answer, start, end, "。！？;；\n，,"))
+        return clause == {subject}
+    all_explicit = entities(answer)
+    scoped = {s.upper() for s in scope if s and _family(s) == family}
+    # Unique implied subject is allowed; never infer across an explicit foreign
+    # or ambiguous entity. Evidence requirements remain mandatory afterward.
+    return scoped == {subject} and (not all_explicit or all_explicit == {subject})
+
+
+def _canonical_cny(answer):
+    pieces = []
     spans = []
+    cursor = 0
+    for match in _CNY.finditer(answer):
+        if not match.group("prefix") and not match.group("suffix"):
+            continue
+        for index in range(cursor, match.start()):
+            pieces.append(answer[index])
+            spans.append((index, index + 1))
+        replacement = f"{Decimal(match.group('number')):.2f}元"
+        pieces.extend(replacement)
+        spans.extend([(match.start(), match.end())] * len(replacement))
+        cursor = match.end()
+    for index in range(cursor, len(answer)):
+        pieces.append(answer[index])
+        spans.append((index, index + 1))
+    return "".join(pieces), spans
+
+
+def _fact_spans(fact, answer, scope):
+    spans = []
+    monetary = any(req.path.endswith("_cents") for req in fact.evidence_any_of)
+
+    def negative_money(start):
+        return monetary and re.search(
+            r"[-−]\s*(?:[¥￥]|人民币|CNY)?\s*$", answer[max(0, start - 12) : start], re.I
+        )
+
     for pattern in fact.patterns:
         for match in _positive_matches(pattern, answer):
-            earlier = list(_ENTITY.finditer(answer[: match.start()]))
-            if not fact.subject or (
-                earlier and earlier[-1].group().upper() == fact.subject.upper()
+            if not negative_money(match.start()) and _bound(
+                fact, answer, match.start(), match.end(), scope
             ):
                 spans.append((match.start(), match.end()))
+    if monetary:
+        canonical, mapping = _canonical_cny(answer)
+        for pattern in fact.patterns:
+            for match in _positive_matches(pattern, canonical):
+                if match.end() > match.start():
+                    start, end = mapping[match.start()][0], mapping[match.end() - 1][1]
+                    if not negative_money(start) and _bound(fact, answer, start, end, scope):
+                        spans.append((start, end))
     return spans
 
 
@@ -139,8 +240,9 @@ def _unknown_clauses(answer, gold):
     # Remove only annotated fact phrases, allowed presentation, and identifiers.
     # Unmatched natural language is not silently accepted as faithful.
     chars = list(answer)
+    scope = {f.subject for f in gold.facts if f.subject}
     for fact in gold.facts:
-        for start, end in _fact_spans(fact, answer):
+        for start, end in _fact_spans(fact, answer, scope):
             chars[start:end] = " " * (end - start)
     remainder = "".join(chars)
     for pattern in gold.allowed_extra_patterns:
@@ -169,12 +271,36 @@ def score_answer(
     """Evaluate a supplied final answer after execution; never runs the Agent."""
     retrieved = retrieved or []
     facts = []
+    scope = {f.subject for f in gold.facts if f.subject}
     violations = [p for p in gold.forbidden_patterns if _positive_matches(p, answer)]
     for fact in gold.facts:
-        matched = bool(_fact_spans(fact, answer))
+        matched = bool(_fact_spans(fact, answer, scope))
         wrong = any(_positive_matches(p, answer) for p in fact.forbidden_patterns)
+        for pattern in fact.patterns:
+            for match in re.finditer(pattern, answer, re.I):
+                positive = not _NEGATIVE.search(answer[max(0, match.start() - 12) : match.start()])
+                bound = _bound(fact, answer, match.start(), match.end(), scope)
+                local_entities = (
+                    {
+                        e.upper()
+                        for e in _ENTITY.findall(
+                            _region(answer, match.start(), match.end(), "。！？;；\n")
+                        )
+                        if _family(e) == _family(fact.subject)
+                    }
+                    if fact.subject
+                    else set()
+                )
+                if (bound and not positive) or (
+                    not matched
+                    and positive
+                    and fact.subject
+                    and local_entities
+                    and fact.subject.upper() not in local_entities
+                ):
+                    wrong = True
         evidence = (
-            any(_observed(req, calls, retrieved) for req in fact.evidence_any_of)
+            any(_observed(req, calls, retrieved, fact.subject) for req in fact.evidence_any_of)
             if fact.evidence_any_of
             else None
         )
@@ -200,6 +326,8 @@ def score_answer(
         gold.subgoals
     )
     unverified = _unknown_clauses(answer, gold)
+    unresolved = list(dict.fromkeys([*unknown_goals, *(missing if unverified else [])]))
+    verified_missing = missing if not unverified else []
     false_facts = bool(violations or any(f["contradiction"] for f in facts))
     unsupported = any(f["matched"] and f["evidence"] is False for f in facts)
     no_evidence = (
@@ -223,9 +351,9 @@ def score_answer(
     environment = (
         "NOT_ASSESSED" if environment_success is None else "PASS" if environment_success else "FAIL"
     )
-    if "FAIL" in (tool, environment, correctness, faithful) or missing:
+    if "FAIL" in (tool, environment, correctness, faithful) or verified_missing:
         overall = "FAIL"
-    elif "NOT_ASSESSED" in (tool, environment, correctness, faithful) or unknown_goals:
+    elif "NOT_ASSESSED" in (tool, environment, correctness, faithful) or unresolved:
         overall = "NOT_ASSESSED"
     else:
         overall = "PASS"
@@ -242,18 +370,20 @@ def score_answer(
         else "NOT_ASSESSED"
     )
     return dict(
-        schema_version="answer-eval-v2.0",
+        schema_version="answer-eval-v2.1",
         scope="DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
         TOOL_SUCCESS=tool,
         ENVIRONMENT_SUCCESS=environment,
         ANSWER_FACTUAL_CORRECTNESS=correctness,
-        ANSWER_COMPLETENESS=completeness,
+        ANSWER_COMPLETENESS=None if unresolved else completeness,
+        VERIFIED_GOAL_COVERAGE_LOWER_BOUND=completeness,
         ANSWER_FAITHFULNESS=faithful,
         ABSTENTION_CORRECTNESS=abstention,
         OVERALL_TASK_SUCCESS=overall,
         JUDGE_VALIDITY=judge_status or "DETERMINISTIC_NO_LLM_JUDGE",
         facts=facts,
-        missing_subgoals=missing,
+        missing_subgoals=verified_missing,
+        unresolved_subgoals=unresolved,
         unknown_subgoals=unknown_goals,
         unverified_clauses=unverified,
         forbidden_claims=violations,

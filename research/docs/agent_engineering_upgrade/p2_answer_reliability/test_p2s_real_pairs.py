@@ -484,3 +484,366 @@ def test_python_freeze_still_rejects_changed_missing_or_added_app_json_contracts
         snapshots = {"R0": {"files": python | metadata}, "R1": {"files": python | changed}}
         with pytest.raises(r.SafetyStop, match="non-Python|contract|metadata"):
             r.verify_application_freeze(snapshots, {"app_hashes": python})
+
+
+@pytest.fixture
+def ancestor(r, tmp_path):
+    root = tmp_path / "parent-run"
+    root.mkdir()
+    common = dict(
+        files={"app/a.py": "app", "eval/answer_scoring.py": "v20"},
+        source_sha256="old-source",
+        provider_settings_sha256="settings",
+        ambient_settings_sha256="ambient",
+        endpoint="https://example.invalid",
+        model="test",
+        caps={},
+        signature_caps={},
+        imports={},
+    )
+    snapshots = {arm: dict(common) for arm in ("R0", "R1")}
+    config = dict(
+        schema="p2s-real-pairs-v1",
+        snapshots=snapshots,
+        roots={arm: str(r.SOURCE_ROOT) for arm in snapshots},
+        env_file=str((tmp_path / "fake.env").resolve()),
+        pricing={"input": 0.30, "output": 1.20},
+        provider_class="p2s.real_pairs.Provider",
+        mode="M2",
+        limits=r.LIMITS,
+        helper_hashes={
+            str(p.resolve()): r.digest(p.read_bytes())
+            for p in (r.Q_HELPER, r.R5_HELPER, r.INSTRUMENTATION)
+        },
+    )
+    config["config_sha256"] = r.digest(config)
+    row = dict(
+        schema="p2s-request-v1",
+        group="__probe__:R0:0",
+        sequence=0,
+        status="RESPONSE",
+        http_status=200,
+        source_sha256="old-source",
+        config_sha256=config["config_sha256"],
+        request_sha256="request",
+        reserve_input=1024,
+        reserve_output=32,
+        usage=dict(prompt_tokens=10, completion_tokens=2, total_tokens=12),
+        response=reply("P2S_OK"),
+        model_error=None,
+    )
+    r.write(root / "experiment_config.json", config)
+    r.write(root / "requests.json", [row])
+    r.write(
+        root / "results.json",
+        dict(probe=dict(connected=True, completion_valid=True), groups=[], status="RUNNING"),
+    )
+    newer = {
+        arm: dict(
+            common,
+            files={"app/a.py": "app", "eval/answer_scoring.py": "v21"},
+            source_sha256="new-source",
+        )
+        for arm in snapshots
+    }
+    return root, config, newer
+
+
+def test_ancestor_budget_clones_once_and_probe_is_reference_only(r, ancestor, tmp_path):
+    parent, config, snapshots = ancestor
+    history, rows, probe = r.inherit_budget(
+        parent,
+        snapshots=snapshots,
+        roots=config["roots"],
+        env_file=Path(config["env_file"]),
+        pricing=config["pricing"],
+    )
+    assert rows == r.read(parent / "requests.json") and probe["completion_valid"]
+    child = tmp_path / "child"
+    child.mkdir()
+    r.write(child / "experiment_config.json", dict(history_ancestor=history))
+    r.write(child / "requests.json", rows)
+    assert r.Ledger(child).totals()["http_attempts"] == 1
+    assert r.Ledger(child).totals()["accounted_tokens"] == 12
+    assert r.Ledger(child).rows == rows
+    r.write(child / "requests.json", rows + rows)
+    with pytest.raises(r.SafetyStop, match="ancestor|duplicate|conflict"):
+        r.Ledger(child)
+
+
+@pytest.mark.parametrize(
+    "fault", ["pending", "usage", "duplicate", "settings", "provider", "source", "pricing"]
+)
+def test_ancestor_rejects_uncertainty_or_control_conflict(r, ancestor, fault):
+    parent, config, snapshots = ancestor
+    rows = r.read(parent / "requests.json")
+    if fault == "pending":
+        rows[0]["status"] = "PENDING"
+    if fault == "usage":
+        rows[0]["usage"] = None
+    if fault == "duplicate":
+        rows += rows
+    if fault in {"pending", "usage", "duplicate"}:
+        r.write(parent / "requests.json", rows)
+    if fault == "settings":
+        snapshots["R0"]["provider_settings_sha256"] = "changed"
+    if fault == "source":
+        snapshots["R0"]["files"] = {"app/a.py": "changed"}
+    if fault == "provider":
+        config["provider_class"] = "different"
+        config["config_sha256"] = r.digest(
+            {k: v for k, v in config.items() if k != "config_sha256"}
+        )
+        rows[0]["config_sha256"] = config["config_sha256"]
+        r.write(parent / "experiment_config.json", config)
+        r.write(parent / "requests.json", rows)
+    if fault == "pricing":
+        config["pricing"] = {"input": 2.0, "output": 4.0}
+    with pytest.raises(r.SafetyStop):
+        r.inherit_budget(
+            parent,
+            snapshots=snapshots,
+            roots=config["roots"],
+            env_file=Path(config["env_file"]),
+            pricing=config["pricing"],
+        )
+
+
+def test_ancestor_mutation_after_child_freeze_rejected(r, ancestor, tmp_path):
+    parent, config, snapshots = ancestor
+    history, rows, _ = r.inherit_budget(
+        parent,
+        snapshots=snapshots,
+        roots=config["roots"],
+        env_file=Path(config["env_file"]),
+        pricing=config["pricing"],
+    )
+    child = tmp_path / "child"
+    child.mkdir()
+    r.write(child / "experiment_config.json", dict(history_ancestor=history))
+    r.write(child / "requests.json", rows)
+    parent_results = r.read(parent / "results.json")
+    parent_results["status"] = "changed"
+    r.write(parent / "results.json", parent_results)
+    with pytest.raises(r.SafetyStop, match="ancestor|hash|mutation"):
+        r.Ledger(child)
+
+
+def test_v21_selection_uses_only_six_fresh_ids_and_new_salt(r):
+    import hashlib
+
+    ids = [f"PSV{i:02}" for i in range(1, 25)]
+    assert (
+        r.select_validation(ids)
+        == sorted(ids, key=lambda x: hashlib.sha256(("P2S-V21-20261105" + x).encode()).hexdigest())[
+            :6
+        ]
+    )
+    with pytest.raises(r.SafetyStop):
+        r.select_validation(ids[:-1])
+
+
+def test_v21_adapter_has_same_turn_calls_and_turn_specific_failure(r):
+    calls = [
+        dict(
+            name="get_order",
+            arguments={"order_id": "ORD7000"},
+            success=True,
+            status="executed",
+            turn=0,
+            output={"status": "paid"},
+        )
+    ]
+    raw = dict(
+        reasons=["turn:1:missing_tool"],
+        metrics={"environment_state_correct": 1},
+        evidence={"tool_calls": calls},
+    )
+    evidence = dict(
+        results=[raw],
+        traces=[
+            dict(
+                turns=[
+                    dict(turn=i, nodes=[], final_state={}, response=dict(answer="ORD7000已支付。"))
+                    for i in range(2)
+                ]
+            )
+        ],
+    )
+    gold = [
+        dict(
+            subgoals=["status"],
+            semantic_required=False,
+            facts=[
+                dict(
+                    id="paid",
+                    goal="status",
+                    subject="ORD7000",
+                    patterns=["已支付"],
+                    evidence_any_of=[
+                        dict(
+                            tool="get_order",
+                            arguments={"order_id": "ORD7000"},
+                            path="status",
+                            expected="paid",
+                        )
+                    ],
+                )
+            ],
+        )
+    ] * 2
+    scores = r.score_captured(evidence, gold, adapter="v21")
+    assert scores[0]["TOOL_SUCCESS"] == "PASS"
+    assert scores[1]["TOOL_SUCCESS"] == "FAIL"
+    assert scores[1]["ANSWER_FAITHFULNESS"] == "FAIL"
+
+
+async def test_v21_full_prepare_inherits_budget_probe_and_only_fresh_plan(
+    r, ancestor, tmp_path, monkeypatch
+):
+    from argparse import Namespace
+
+    parent, oldconfig, snapshots = ancestor
+    ids = [f"PSV{i:02}" for i in range(1, 25)]
+    data, answers = tmp_path / "validation.json", tmp_path / "validation_answers.json"
+    r.write(data, dict(schema_version="agent-scenarios-v2.1", scenarios=[dict(id=x) for x in ids]))
+    r.write(answers, {})
+    freeze = tmp_path / "candidate_freeze_v21.json"
+    r.write(
+        freeze,
+        dict(
+            app_hashes={"app/a.py": "app"},
+            scorer_sha256=r.digest(r.SCORER.read_bytes()),
+            app_source_commit="unchanged-app",
+            datasets={p.name: r.digest(p.read_bytes()) for p in (data, answers)},
+        ),
+    )
+    monkeypatch.setattr(r, "FREEZE", freeze)
+    for arm in snapshots:
+        snapshots[arm].update(head=r.BASE if arm == "R0" else "metadata", prompts={})
+    pending = iter(snapshots.values())
+    monkeypatch.setattr(r, "worker_snapshot", lambda *args: next(pending))
+    env = Path(oldconfig["env_file"])
+    env.write_text("DEEPSEEK_API_KEY=SYNTHETIC_TEST_ONLY\n", encoding="utf-8")
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "SYNTHETIC_TEST_ONLY")
+    monkeypatch.setattr(r, "fingerprint", lambda *args: snapshots["R0"])
+    child = tmp_path / "new-v21"
+    child.mkdir()
+    args = Namespace(
+        run_dir=child,
+        r0_root=r.SOURCE_ROOT,
+        r1_root=r.SOURCE_ROOT,
+        env_file=env,
+        freeze_file=freeze,
+        budget_parent_run=parent,
+        blind_dataset=data,
+        blind_answers=answers,
+        input_price=0.30,
+        output_price=1.20,
+        pricing_url="https://example.invalid/pricing",
+        pricing_verified_date="2026-11-05",
+    )
+    result = r.prepare(args)
+    assert result["inherited_http_attempts"] == 1 and result["paid_http_attempts"] == 0
+    config = r.read(child / "experiment_config.json")
+    assert config["freeze_file"] == str(freeze.resolve()) and config["score_adapter"] == "v21"
+    assert len(config["planned"]) == 12 and all(
+        g["case_id"].startswith("PSV") for g in config["planned"]
+    )
+    assert r.Ledger(child).totals()["accounted_tokens"] == 12
+    assert r.read(child / "results.json")["probe"]["inherited_from"] == str(parent.resolve())
+    args.command, args.variant, args.rep, args.case_id = "probe", "R0", 0, None
+    with pytest.raises(r.SafetyStop, match="probe already"):
+        await r.execute(args)
+    args.command, args.case_id = "run-group", "PSD03"
+    with pytest.raises(r.SafetyStop, match="frozen|order"):
+        await r.execute(args)
+    assert len(r.Ledger(child).rows) == 1
+    assert r.read(parent / "requests.json") == r.Ledger(child).rows
+
+
+def test_ancestor_spend_is_included_before_next_request_budget(r, ancestor, tmp_path):
+    parent, config, snapshots = ancestor
+    history, rows, _ = r.inherit_budget(
+        parent,
+        snapshots=snapshots,
+        roots=config["roots"],
+        env_file=Path(config["env_file"]),
+        pricing=config["pricing"],
+    )
+    child = tmp_path / "child"
+    child.mkdir()
+    r.write(child / "experiment_config.json", dict(history_ancestor=history))
+    r.write(child / "requests.json", rows)
+    ledger = r.Ledger(child)
+    with pytest.raises(r.SafetyStop):
+        ledger.forecast(350, 0, 0)
+    with pytest.raises(r.SafetyStop):
+        ledger.forecast(0, 300000, 0)
+    with pytest.raises(r.SafetyStop):
+        ledger.forecast(0, 0, 3.0)
+
+
+def test_run_config_selects_freeze_before_helpers_in_fresh_worker(r, tmp_path):
+    import subprocess
+    import sys
+
+    config = tmp_path / "experiment_config.json"
+    chosen = tmp_path / "candidate_freeze_v21.json"
+    r.write(config, dict(freeze_file=str(chosen)))
+    code = "import runpy,sys; sys.argv=sys.argv[1:]; value=runpy.run_path(sys.argv[0]); print(value['FREEZE'])"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            code,
+            str(HERE / "real_pairs.py"),
+            "_imports",
+            "--run-dir",
+            str(tmp_path),
+        ],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert Path(completed.stdout.strip()) == chosen
+
+
+def test_alternate_freeze_cannot_reset_budget_without_parent(r, tmp_path):
+    from argparse import Namespace
+
+    run = tmp_path / "fresh"
+    run.mkdir()
+    args = Namespace(
+        run_dir=run, freeze_file=tmp_path / "candidate_freeze_v21.json", budget_parent_run=None
+    )
+    with pytest.raises(r.SafetyStop, match="budget|ancestor"):
+        r.prepare(args)
+
+
+async def test_ancestor_hashes_are_rechecked_before_each_http_dispatch(r, ancestor, tmp_path):
+    parent, config, snapshots = ancestor
+    history, rows, _ = r.inherit_budget(
+        parent,
+        snapshots=snapshots,
+        roots=config["roots"],
+        env_file=Path(config["env_file"]),
+        pricing=config["pricing"],
+    )
+    child = tmp_path / "child"
+    child.mkdir()
+    r.write(child / "experiment_config.json", dict(history_ancestor=history))
+    r.write(child / "requests.json", rows)
+    ledger = r.Ledger(child)
+    result = r.read(parent / "results.json")
+    result["status"] = "changed after ledger load"
+    r.write(parent / "results.json", result)
+    with pytest.raises(r.SafetyStop, match="ancestor"):
+        await post(
+            r,
+            ledger,
+            group="PSV01:R0:0",
+            handler=lambda _: pytest.fail("Ancestor drift dispatched HTTP"),
+        )
+    assert len(ledger.rows) == 1

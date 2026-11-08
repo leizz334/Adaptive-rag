@@ -1,0 +1,1828 @@
+{
+  "PSV01": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "登记耳机订单金额",
+        "登记杯子订单金额"
+      ],
+      "facts": [
+        {
+          "id": "headset_order_amount",
+          "goal": "登记耳机订单金额",
+          "patterns": [
+            "(?<![\\d.])299(?:\\.0{1,2})?(?![\\d.])\\s*(?:元|人民币)",
+            "(?:¥|￥|CNY|RMB)\\s*(?<![\\d.])299(?:\\.0{1,2})?(?![\\d.])",
+            "(?<![\\d.])299(?:\\.0{1,2})?(?![\\d.])\\s*(?:CNY|RMB)",
+            "(?<!\\d)29900(?!\\d)\\s*分",
+            "(?:金额|售价|单价|价格|实付)[：:为是\\s]*299(?:\\.0{1,2})?(?![\\d.])"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "total_cents",
+              "expected": 29900,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10001"
+        },
+        {
+          "id": "mug_order_amount",
+          "goal": "登记杯子订单金额",
+          "patterns": [
+            "(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])\\s*(?:元|人民币)",
+            "(?:¥|￥|CNY|RMB)\\s*(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])",
+            "(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])\\s*(?:CNY|RMB)",
+            "(?<!\\d)3900(?!\\d)\\s*分",
+            "(?:金额|售价|单价|价格|实付)[：:为是\\s]*39(?:\\.0{1,2})?(?![\\d.])"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "total_cents",
+              "expected": 3900,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10002"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV02": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对耳机现货数量",
+        "核对杯子现货数量"
+      ],
+      "facts": [
+        {
+          "id": "headset_inventory",
+          "goal": "核对耳机现货数量",
+          "patterns": [
+            "(?:库存|余量|剩余|现货|还有|可用|可售)[^。；\\n]{0,10}(?<!\\d)42(?![\\d.])",
+            "(?<![\\d.])42(?![\\d.])\\s*(?:件|个|台|只|副|套)"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "check_inventory",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "inventory",
+              "expected": 42,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-HEADSET"
+        },
+        {
+          "id": "mug_inventory",
+          "goal": "核对杯子现货数量",
+          "patterns": [
+            "(?:库存|余量|剩余|现货|还有|可用|可售)[^。；\\n]{0,10}(?<!\\d)200(?![\\d.])",
+            "(?<![\\d.])200(?![\\d.])\\s*(?:件|个|台|只|副|套)"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "check_inventory",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "inventory",
+              "expected": 200,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-MUG-CUSTOM"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV03": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对杯子目录单价",
+        "核对T恤目录单价"
+      ],
+      "facts": [
+        {
+          "id": "mug_catalog_price",
+          "goal": "核对杯子目录单价",
+          "patterns": [
+            "(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])\\s*(?:元|人民币)",
+            "(?:¥|￥|CNY|RMB)\\s*(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])",
+            "(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])\\s*(?:CNY|RMB)",
+            "(?<!\\d)3900(?!\\d)\\s*分",
+            "(?:金额|售价|单价|价格|实付)[：:为是\\s]*39(?:\\.0{1,2})?(?![\\d.])"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "price_cents",
+              "expected": 3900,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-MUG-CUSTOM"
+        },
+        {
+          "id": "tee_catalog_price",
+          "goal": "核对T恤目录单价",
+          "patterns": [
+            "(?<![\\d.])79(?:\\.0{1,2})?(?![\\d.])\\s*(?:元|人民币)",
+            "(?:¥|￥|CNY|RMB)\\s*(?<![\\d.])79(?:\\.0{1,2})?(?![\\d.])",
+            "(?<![\\d.])79(?:\\.0{1,2})?(?![\\d.])\\s*(?:CNY|RMB)",
+            "(?<!\\d)7900(?!\\d)\\s*分",
+            "(?:金额|售价|单价|价格|实付)[：:为是\\s]*79(?:\\.0{1,2})?(?![\\d.])"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-TEE"
+              },
+              "path": "price_cents",
+              "expected": 7900,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-TEE"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV04": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对耳机购买件数"
+      ],
+      "facts": [
+        {
+          "id": "purchased_headset_quantity",
+          "goal": "核对耳机购买件数",
+          "patterns": [
+            "(?<!\\d)(?:1|一)\\s*(?:件|个|只|副)",
+            "(?:数量|买了|购买了|下单了)[：:为是\\s]*(?:1|一)(?!\\d)"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "items.0.quantity",
+              "expected": 1,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10001"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV05": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对杯子购买件数",
+        "核对杯子定制标记"
+      ],
+      "facts": [
+        {
+          "id": "purchased_mug_quantity",
+          "goal": "核对杯子购买件数",
+          "patterns": [
+            "(?<!\\d)(?:1|一)\\s*(?:件|个|只|副)",
+            "(?:数量|买了|购买了|下单了)[：:为是\\s]*(?:1|一)(?!\\d)"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "items.0.quantity",
+              "expected": 1,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10002"
+        },
+        {
+          "id": "customized_mug",
+          "goal": "核对杯子定制标记",
+          "patterns": [
+            "(?:属于|是|为)[^。；\\n]{0,5}定制|定制(?:商品|马克杯|杯子)|定制[：:为是\\s]*(?:是|true)"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "items.0.customized",
+              "expected": true,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10002"
+        }
+      ],
+      "forbidden_patterns": [
+        "已提交退货|退货申请已受理|退货单已创建"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV06": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "确认所购耳机名称",
+        "确认所购耳机SKU"
+      ],
+      "facts": [
+        {
+          "id": "headset_item_name",
+          "goal": "确认所购耳机名称",
+          "patterns": [
+            "降噪耳机\\s*[Pp][Rr][Oo]"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "items.0.name",
+              "expected": "降噪耳机 Pro",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10001"
+        },
+        {
+          "id": "headset_item_sku",
+          "goal": "确认所购耳机SKU",
+          "patterns": [
+            "SKU-HEADSET"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "items.0.sku",
+              "expected": "SKU-HEADSET",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10001"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV07": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "确认电子凭证位置"
+      ],
+      "facts": [
+        {
+          "id": "receipt_location",
+          "goal": "确认电子凭证位置",
+          "patterns": [
+            "电子凭证[^。；\\n]{0,15}订单详情|订单详情[^。；\\n]{0,15}电子凭证|凭证[^。；\\n]{0,10}订单详情"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_warranty",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "note",
+              "expected": "电子凭证见订单详情",
+              "comparison": "contains"
+            }
+          ],
+          "subject": "SKU-HEADSET"
+        }
+      ],
+      "forbidden_patterns": [
+        "已经报修|报修单已创建|已安排维修"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV08": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对杯子SKU保修期"
+      ],
+      "facts": [
+        {
+          "id": "mug_warranty_months",
+          "goal": "核对杯子SKU保修期",
+          "patterns": [
+            "(?<!\\d)12\\s*个?月|十二个月|(?<!\\d)1\\s*年|一年"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_warranty",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "warranty_months",
+              "expected": 12,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-MUG-CUSTOM"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV09": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对耳机物流目的城市",
+        "核对杯子物流目的城市"
+      ],
+      "facts": [
+        {
+          "id": "headset_destination",
+          "goal": "核对耳机物流目的城市",
+          "patterns": [
+            "上海"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "track_shipment",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "city",
+              "expected": "上海",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10001"
+        },
+        {
+          "id": "mug_destination",
+          "goal": "核对杯子物流目的城市",
+          "patterns": [
+            "北京"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "track_shipment",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "city",
+              "expected": "北京",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10002"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV10": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "确认耳机最新物流阶段",
+        "确认耳机目的城市"
+      ],
+      "facts": [
+        {
+          "id": "latest_shipment_phase",
+          "goal": "确认耳机最新物流阶段",
+          "patterns": [
+            "运输中|在途|运输途中|已发货|正在运输|in_transit"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "track_shipment",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "events.1.status",
+              "expected": "in_transit",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10001"
+        },
+        {
+          "id": "shipment_city",
+          "goal": "确认耳机目的城市",
+          "patterns": [
+            "上海"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "track_shipment",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "city",
+              "expected": "上海",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10001"
+        }
+      ],
+      "forbidden_patterns": [
+        "保证[^。；\\n]{0,8}送达|预计[^。；\\n]{0,12}到货|明天到货|明天送达"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV11": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对衣服订单付款状态",
+        "核对衣服订单退款记录"
+      ],
+      "facts": [
+        {
+          "id": "tee_paid_state",
+          "goal": "核对衣服订单付款状态",
+          "patterns": [
+            "已支付|已付款|付款成功|paid"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "status",
+              "expected": "paid",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10003"
+        },
+        {
+          "id": "tee_refund_absence",
+          "goal": "核对衣服订单退款记录",
+          "patterns": [
+            "(?:暂无|没有|未查到|未找到|尚无|不存在)[^。；\\n]{0,10}退款(?:单|记录|申请)",
+            "退款(?:单|记录|列表)[^。；\\n]{0,6}(?:为空|没有|暂无|0\\s*(?:笔|条|个))"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_refund_status",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "refunds",
+              "expected": [],
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10003"
+        }
+      ],
+      "forbidden_patterns": [
+        "已提交退款|退款申请已受理|已退款成功|已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV12": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "确认T恤目录品类",
+        "确认T恤材质款式介绍"
+      ],
+      "facts": [
+        {
+          "id": "tee_category",
+          "goal": "确认T恤目录品类",
+          "patterns": [
+            "服饰|服装"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-TEE"
+              },
+              "path": "category",
+              "expected": "服饰",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-TEE"
+        },
+        {
+          "id": "tee_description",
+          "goal": "确认T恤材质款式介绍",
+          "patterns": [
+            "基础[^。；\\n]{0,8}纯棉[^。；\\n]{0,8}短袖|纯棉[^。；\\n]{0,8}基础[^。；\\n]{0,8}短袖|基础纯棉短袖"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-TEE"
+              },
+              "path": "description",
+              "expected": "基础纯棉短袖",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-TEE"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV13": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "确认商品说明中的无理由限制",
+        "核对定制杯现售价"
+      ],
+      "facts": [
+        {
+          "id": "custom_return_rule",
+          "goal": "确认商品说明中的无理由限制",
+          "patterns": [
+            "定制[^。；\\n]{0,10}不适用[^。；\\n]{0,8}(?:7|七)\\s*天[^。；\\n]{0,6}无理由|不(?:适用|支持)[^。；\\n]{0,8}(?:7|七)\\s*天[^。；\\n]{0,6}无理由"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "description",
+              "expected": "定制商品不适用7天无理由",
+              "comparison": "contains"
+            }
+          ],
+          "subject": "SKU-MUG-CUSTOM"
+        },
+        {
+          "id": "custom_mug_price",
+          "goal": "核对定制杯现售价",
+          "patterns": [
+            "(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])\\s*(?:元|人民币)",
+            "(?:¥|￥|CNY|RMB)\\s*(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])",
+            "(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])\\s*(?:CNY|RMB)",
+            "(?<!\\d)3900(?!\\d)\\s*分",
+            "(?:金额|售价|单价|价格|实付)[：:为是\\s]*39(?:\\.0{1,2})?(?![\\d.])"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "price_cents",
+              "expected": 3900,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-MUG-CUSTOM"
+        }
+      ],
+      "forbidden_patterns": [
+        "已提交退货|已申请退款|已受理售后"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV14": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对新客券满减门槛",
+        "核对杯子订单原有金额"
+      ],
+      "facts": [
+        {
+          "id": "new_customer_threshold",
+          "goal": "核对新客券满减门槛",
+          "patterns": [
+            "满\\s*99(?:\\.0{1,2})?\\s*元?[^。；\\n]{0,8}减\\s*10(?:\\.0{1,2})?\\s*元?|满九十九[^。；\\n]{0,8}减十"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_coupon",
+              "arguments": {},
+              "path": "coupons.0.desc",
+              "expected": "新客满 99 减 10，不与品类券叠用",
+              "comparison": "eq"
+            }
+          ]
+        },
+        {
+          "id": "historical_mug_amount",
+          "goal": "核对杯子订单原有金额",
+          "patterns": [
+            "(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])\\s*(?:元|人民币)",
+            "(?:¥|￥|CNY|RMB)\\s*(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])",
+            "(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])\\s*(?:CNY|RMB)",
+            "(?<!\\d)3900(?!\\d)\\s*分",
+            "(?:金额|售价|单价|价格|实付)[：:为是\\s]*39(?:\\.0{1,2})?(?![\\d.])"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "total_cents",
+              "expected": 3900,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10002"
+        }
+      ],
+      "forbidden_patterns": [
+        "已抵扣|已补用|已改价|已领券|已经领取|已为你使用优惠券"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV15": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对T恤当前库存",
+        "核对T恤单品保修期"
+      ],
+      "facts": [
+        {
+          "id": "tee_available_stock",
+          "goal": "核对T恤当前库存",
+          "patterns": [
+            "暂无库存|没有库存|无库存|库存为零|库存[：:为是\\s]*0(?!\\d)|已售罄|无货|缺货|暂时没货",
+            "(?<!\\d)0\\s*(?:件|个|台|只|副|套)"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "check_inventory",
+              "arguments": {
+                "sku": "SKU-TEE"
+              },
+              "path": "inventory",
+              "expected": 0,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-TEE"
+        },
+        {
+          "id": "tee_warranty_months",
+          "goal": "核对T恤单品保修期",
+          "patterns": [
+            "(?<!\\d)12\\s*个?月|十二个月|(?<!\\d)1\\s*年|一年"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_warranty",
+              "arguments": {
+                "sku": "SKU-TEE"
+              },
+              "path": "warranty_months",
+              "expected": 12,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-TEE"
+        }
+      ],
+      "forbidden_patterns": [
+        "已预约|已预订|已登记补货通知"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV16": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对耳机保修月数",
+        "核对杯子保修月数"
+      ],
+      "facts": [
+        {
+          "id": "headset_warranty",
+          "goal": "核对耳机保修月数",
+          "patterns": [
+            "(?<!\\d)12\\s*个?月|十二个月|(?<!\\d)1\\s*年|一年"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_warranty",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "warranty_months",
+              "expected": 12,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-HEADSET"
+        },
+        {
+          "id": "mug_warranty",
+          "goal": "核对杯子保修月数",
+          "patterns": [
+            "(?<!\\d)12\\s*个?月|十二个月|(?<!\\d)1\\s*年|一年"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_warranty",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "warranty_months",
+              "expected": 12,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-MUG-CUSTOM"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV17": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对杯子订单退款记录",
+        "核对衣服订单退款记录"
+      ],
+      "facts": [
+        {
+          "id": "mug_no_refund",
+          "goal": "核对杯子订单退款记录",
+          "patterns": [
+            "(?:暂无|没有|未查到|未找到|尚无|不存在)[^。；\\n]{0,10}退款(?:单|记录|申请)",
+            "退款(?:单|记录|列表)[^。；\\n]{0,6}(?:为空|没有|暂无|0\\s*(?:笔|条|个))"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_refund_status",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "refunds",
+              "expected": [],
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10002"
+        },
+        {
+          "id": "tee_no_refund",
+          "goal": "核对衣服订单退款记录",
+          "patterns": [
+            "(?:暂无|没有|未查到|未找到|尚无|不存在)[^。；\\n]{0,10}退款(?:单|记录|申请)",
+            "退款(?:单|记录|列表)[^。；\\n]{0,6}(?:为空|没有|暂无|0\\s*(?:笔|条|个))"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_refund_status",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "refunds",
+              "expected": [],
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10003"
+        }
+      ],
+      "forbidden_patterns": [
+        "已申请退款|退款申请已提交|退款已成功|已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV18": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "确认杯子商品名称",
+        "确认杯子商品品类"
+      ],
+      "facts": [
+        {
+          "id": "mug_name",
+          "goal": "确认杯子商品名称",
+          "patterns": [
+            "定制马克杯"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "name",
+              "expected": "定制马克杯",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-MUG-CUSTOM"
+        },
+        {
+          "id": "mug_category",
+          "goal": "确认杯子商品品类",
+          "patterns": [
+            "家居"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "category",
+              "expected": "家居",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-MUG-CUSTOM"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对上下文商品保修期",
+        "核对上下文商品凭证位置"
+      ],
+      "facts": [
+        {
+          "id": "context_mug_warranty",
+          "goal": "核对上下文商品保修期",
+          "patterns": [
+            "(?<!\\d)12\\s*个?月|十二个月|(?<!\\d)1\\s*年|一年"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_warranty",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "warranty_months",
+              "expected": 12,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-MUG-CUSTOM"
+        },
+        {
+          "id": "context_receipt_location",
+          "goal": "核对上下文商品凭证位置",
+          "patterns": [
+            "电子凭证[^。；\\n]{0,15}订单详情|订单详情[^。；\\n]{0,15}电子凭证|凭证[^。；\\n]{0,10}订单详情"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_warranty",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "path": "note",
+              "expected": "电子凭证见订单详情",
+              "comparison": "contains"
+            }
+          ],
+          "subject": "SKU-MUG-CUSTOM"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV19": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "确认原订单商品名称"
+      ],
+      "facts": [
+        {
+          "id": "purchased_tee_name",
+          "goal": "确认原订单商品名称",
+          "patterns": [
+            "纯棉\\s*T\\s*恤|纯棉短袖"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "items.0.name",
+              "expected": "纯棉T恤",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10003"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    },
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对同款当前库存"
+      ],
+      "facts": [
+        {
+          "id": "repeat_purchase_stock",
+          "goal": "核对同款当前库存",
+          "patterns": [
+            "暂无库存|没有库存|无库存|库存为零|库存[：:为是\\s]*0(?!\\d)|已售罄|无货|缺货|暂时没货",
+            "(?<!\\d)0\\s*(?:件|个|台|只|副|套)"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "check_inventory",
+              "arguments": {
+                "sku": "SKU-TEE"
+              },
+              "path": "inventory",
+              "expected": 0,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-TEE"
+        }
+      ],
+      "forbidden_patterns": [
+        "已下单|下单成功|已为你购买"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV20": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对实际物流目的城市",
+        "解释目的地区的一般发货政策"
+      ],
+      "facts": [
+        {
+          "id": "observed_destination",
+          "goal": "核对实际物流目的城市",
+          "patterns": [
+            "上海"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "track_shipment",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "path": "city",
+              "expected": "上海",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10001"
+        }
+      ],
+      "forbidden_patterns": [
+        "保证[^。；\\n]{0,12}送达|一定[^。；\\n]{0,12}送达"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    }
+  ],
+  "PSV21": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对杯子购买单价",
+        "核对耳机实时库存"
+      ],
+      "facts": [
+        {
+          "id": "mug_purchased_unit_price",
+          "goal": "核对杯子购买单价",
+          "patterns": [
+            "(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])\\s*(?:元|人民币)",
+            "(?:¥|￥|CNY|RMB)\\s*(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])",
+            "(?<![\\d.])39(?:\\.0{1,2})?(?![\\d.])\\s*(?:CNY|RMB)",
+            "(?<!\\d)3900(?!\\d)\\s*分",
+            "(?:金额|售价|单价|价格|实付)[：:为是\\s]*39(?:\\.0{1,2})?(?![\\d.])"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "items.0.unit_price_cents",
+              "expected": 3900,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10002"
+        },
+        {
+          "id": "other_product_inventory",
+          "goal": "核对耳机实时库存",
+          "patterns": [
+            "(?:库存|余量|剩余|现货|还有|可用|可售)[^。；\\n]{0,10}(?<!\\d)42(?![\\d.])",
+            "(?<![\\d.])42(?![\\d.])\\s*(?:件|个|台|只|副|套)"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "check_inventory",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "inventory",
+              "expected": 42,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-HEADSET"
+        }
+      ],
+      "forbidden_patterns": [
+        "已退款|退款已完成|已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV22": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "核对杯子订单当前状态",
+        "核对已签收订单退款记录"
+      ],
+      "facts": [
+        {
+          "id": "delivered_order_state",
+          "goal": "核对杯子订单当前状态",
+          "patterns": [
+            "已签收|已送达|delivered"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "status",
+              "expected": "delivered",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10002"
+        },
+        {
+          "id": "delivered_order_refunds",
+          "goal": "核对已签收订单退款记录",
+          "patterns": [
+            "(?:暂无|没有|未查到|未找到|尚无|不存在)[^。；\\n]{0,10}退款(?:单|记录|申请)",
+            "退款(?:单|记录|列表)[^。；\\n]{0,6}(?:为空|没有|暂无|0\\s*(?:笔|条|个))"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_refund_status",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "path": "refunds",
+              "expected": [],
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10002"
+        }
+      ],
+      "forbidden_patterns": [
+        "已退款成功|退款已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV23": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "确认耳机所属品类",
+        "确认耳机功能简介"
+      ],
+      "facts": [
+        {
+          "id": "headset_category",
+          "goal": "确认耳机所属品类",
+          "patterns": [
+            "数码"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "category",
+              "expected": "数码",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-HEADSET"
+        },
+        {
+          "id": "headset_description",
+          "goal": "确认耳机功能简介",
+          "patterns": [
+            "头戴式[^。；\\n]{0,8}主动降噪[^。；\\n]{0,8}耳机|主动降噪[^。；\\n]{0,8}头戴式[^。；\\n]{0,8}耳机"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "path": "description",
+              "expected": "头戴式主动降噪耳机",
+              "comparison": "eq"
+            }
+          ],
+          "subject": "SKU-HEADSET"
+        }
+      ],
+      "forbidden_patterns": [],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": false
+    }
+  ],
+  "PSV24": [
+    {
+      "schema_version": "answer-eval-v2.0",
+      "subgoals": [
+        "确认创建人工队列记录",
+        "核对待复核订单金额"
+      ],
+      "facts": [
+        {
+          "id": "human_review_queue",
+          "goal": "确认创建人工队列记录",
+          "patterns": [
+            "已[^。；\\n]{0,8}(?:进入|加入|转入|转交|转)[^。；\\n]{0,8}(?:人工|队列)|已[^。；\\n]{0,8}(?:创建|提交)[^。；\\n]{0,8}(?:人工工单|工单)|已排队"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "escalate_to_human",
+              "arguments": {},
+              "path": "queue",
+              "expected": "human",
+              "comparison": "eq"
+            }
+          ]
+        },
+        {
+          "id": "review_order_amount",
+          "goal": "核对待复核订单金额",
+          "patterns": [
+            "(?<![\\d.])79(?:\\.0{1,2})?(?![\\d.])\\s*(?:元|人民币)",
+            "(?:¥|￥|CNY|RMB)\\s*(?<![\\d.])79(?:\\.0{1,2})?(?![\\d.])",
+            "(?<![\\d.])79(?:\\.0{1,2})?(?![\\d.])\\s*(?:CNY|RMB)",
+            "(?<!\\d)7900(?!\\d)\\s*分",
+            "(?:金额|售价|单价|价格|实付)[：:为是\\s]*79(?:\\.0{1,2})?(?![\\d.])"
+          ],
+          "forbidden_patterns": [],
+          "evidence_any_of": [
+            {
+              "source": "tool",
+              "tool": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "path": "total_cents",
+              "expected": 7900,
+              "comparison": "eq"
+            }
+          ],
+          "subject": "ORD10003"
+        }
+      ],
+      "forbidden_patterns": [
+        "已接通人工|人工已接听|经理已接听|已取消|已提交退款|已退款成功|已到账"
+      ],
+      "allowed_extra_patterns": [
+        "以下是本次工具结果可确认的信息",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成",
+        "按当前查询结果",
+        "查询结果如下",
+        "以下为查询到的信息",
+        "人民币",
+        "订单",
+        "当前订单状态",
+        "总金额",
+        "的物流状态",
+        "商品",
+        "库存",
+        "价格",
+        "保修期"
+      ],
+      "expected_abstention": false,
+      "semantic_required": true
+    }
+  ]
+}

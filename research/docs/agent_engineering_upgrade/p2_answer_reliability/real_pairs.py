@@ -26,6 +26,8 @@ HERE = Path(__file__).resolve().parent
 HARNESS_ROOT = HERE.parents[3]
 _bootstrap = argparse.ArgumentParser(add_help=False)
 _bootstrap.add_argument("--source-root", type=Path)
+_bootstrap.add_argument("--freeze-file", type=Path)
+_bootstrap.add_argument("--run-dir", type=Path)
 _binding, _ = _bootstrap.parse_known_args()
 SOURCE_ROOT = (_binding.source_root or HARNESS_ROOT).resolve()
 sys.path.insert(0, str(SOURCE_ROOT))
@@ -47,7 +49,15 @@ R5_HELPER = HERE.parent / "p2_agent_quality/real_pairs.py"
 Q_HELPER = HERE.parent / "p2_quality/real.py"
 INSTRUMENTATION = HERE.parent / "p2_agent_quality/instrumented.py"
 SCORER = HARNESS_ROOT / "eval/answer_scoring.py"
-FREEZE = HERE / "evidence/candidate_freeze.json"
+_config_path = _binding.run_dir / "experiment_config.json" if _binding.run_dir else None
+_configured_freeze = (
+    json.loads(_config_path.read_bytes()).get("freeze_file")
+    if _config_path and _config_path.exists()
+    else None
+)
+FREEZE = (
+    _binding.freeze_file or Path(_configured_freeze or HERE / "evidence/candidate_freeze.json")
+).resolve()
 r5 = absolute_module("_p2s_frozen_r5_helpers", R5_HELPER)
 old = r5.old
 SafetyStop, digest, read, write, exclusive = (
@@ -92,6 +102,25 @@ class Ledger(r5.Ledger):
         ):
             raise SafetyStop("foreign or corrupt ledger schema; never load P2-Q/P2-R pending")
         self.active_group, self.metadata, self.inflight = None, {}, False
+        self._check_ancestry()
+
+    def _check_ancestry(self):
+        config_path = self.run / "experiment_config.json"
+        if config_path.exists() and (history := read(config_path).get("history_ancestor")):
+            parent_config, inherited, _ = read_ancestor(history["root"], expected=history)
+            if self.pricing != parent_config["pricing"]:
+                raise SafetyStop("ancestor pricing conflict; spent requests cannot be repriced")
+            if self.rows[: len(inherited)] != inherited:
+                raise SafetyStop("ancestor rows missing, mutated or deduplicated incorrectly")
+            ancestor_groups = {row["group"] for row in inherited}
+            if any(row["group"] in ancestor_groups for row in self.rows[len(inherited) :]):
+                raise SafetyStop("ancestor row/group duplication conflict")
+
+    def check_pending(self):
+        self._check_ancestry()
+        super().check_pending()
+        if any(old.usage(row.get("usage")) is None for row in self.rows):
+            raise SafetyStop("unknown response usage reserved; stop further paid dispatch")
 
 
 class Transport(old.ReplayTransport):
@@ -152,10 +181,17 @@ class Provider(r5.Provider):
         old.DeepSeekProvider.__init__(self, frozen, client=self.client)
 
 
-def helper_hashes():
+def helper_hashes(freeze_file=None):
     return {
         str(p.resolve()): digest(p.read_bytes())
-        for p in (Path(__file__), R5_HELPER, Q_HELPER, INSTRUMENTATION, SCORER, FREEZE)
+        for p in (
+            Path(__file__),
+            R5_HELPER,
+            Q_HELPER,
+            INSTRUMENTATION,
+            SCORER,
+            freeze_file or FREEZE,
+        )
     }
 
 
@@ -226,6 +262,171 @@ def select_blind(ids):
     return sorted(ids, key=lambda case: (digest(("P2S-20261105" + case).encode()), case))[:6]
 
 
+def select_validation(ids):
+    if (
+        len(ids) != 24
+        or len(set(ids)) != 24
+        or any(not isinstance(case, str) or not case.startswith("PSV") for case in ids)
+    ):
+        raise SafetyStop("V21 requires exactly 24 distinct fresh PSV IDs")
+    return sorted(ids, key=lambda case: (digest(("P2S-V21-20261105" + case).encode()), case))[:6]
+
+
+def read_ancestor(root, *, expected=None):
+    """Read a completed direct parent without locks/writes or old response replay."""
+    root = Path(root).resolve()
+    paths = {
+        name: root / name for name in ("experiment_config.json", "requests.json", "results.json")
+    }
+    if not all(path.is_file() for path in paths.values()):
+        raise SafetyStop("ancestor journal/config/results missing")
+    raw = {name: path.read_bytes() for name, path in paths.items()}
+    hashes = {name: digest(value) for name, value in raw.items()}
+    if expected and (str(root) != expected["root"] or hashes != expected["hashes"]):
+        raise SafetyStop("ancestor artifact hash mutation; continuation forbidden")
+    config, rows, result = (json.loads(raw[name]) for name in paths)
+    if (
+        config.get("schema") != "p2s-real-pairs-v1"
+        or config.get("limits") != LIMITS
+        or config.get("history_ancestor")
+        or digest({k: v for k, v in config.items() if k != "config_sha256"})
+        != config.get("config_sha256")
+    ):
+        raise SafetyStop("ancestor config hash/schema conflict or unsupported nested ancestry")
+    if (
+        not isinstance(rows, list)
+        or not rows
+        or not isinstance(result.get("probe"), dict)
+        or not result["probe"].get("completion_valid")
+    ):
+        raise SafetyStop("ancestor requires completed requests and a successful probe")
+    seen = set()
+    sequences = {}
+    complete_groups = {g["group"] for g in result.get("groups", [])}
+    probe_rows = []
+    for row in rows:
+        if (
+            not isinstance(row, dict)
+            or row.get("schema") != "p2s-request-v1"
+            or row.get("status") != "RESPONSE"
+            or old.usage(row.get("usage")) is None
+            or row.get("transport_error_type")
+        ):
+            raise SafetyStop("ancestor pending/unknown usage/corrupt request cannot be inherited")
+        key = (row["group"], row["sequence"])
+        if key in seen or type(row["sequence"]) is not int or row["sequence"] < 0:
+            raise SafetyStop("ancestor duplicate request sequence conflict")
+        seen.add(key)
+        sequences.setdefault(row["group"], []).append(row["sequence"])
+        parts = row["group"].rsplit(":", 2)
+        if len(parts) != 3 or parts[1] not in config["snapshots"]:
+            raise SafetyStop("ancestor group/source conflict")
+        if (
+            row.get("config_sha256") != config["config_sha256"]
+            or row.get("source_sha256") != config["snapshots"][parts[1]]["source_sha256"]
+        ):
+            raise SafetyStop("ancestor request source/config hash conflict")
+        if row["group"].startswith("__probe__:"):
+            probe_rows.append(row)
+        elif row["group"] not in complete_groups:
+            raise SafetyStop("ancestor contains a request group without completed results")
+    if any(values != list(range(len(values))) for values in sequences.values()):
+        raise SafetyStop("ancestor request sequence is incomplete")
+    if (
+        len(probe_rows) != 1
+        or probe_rows[0].get("http_status") != 200
+        or probe_rows[0].get("model_error")
+        or probe_rows[0]
+        .get("response", {})
+        .get("choices", [{}])[0]
+        .get("message", {})
+        .get("content", "")
+        .strip()
+        != "P2S_OK"
+    ):
+        raise SafetyStop("ancestor probe response invalid")
+    if expected and len(rows) != expected["row_count"]:
+        raise SafetyStop("ancestor row count conflict")
+    if any(digest(path.read_bytes()) != hashes[name] for name, path in paths.items()):
+        raise SafetyStop("ancestor changed while reading")
+    return config, rows, result
+
+
+def inherit_budget(root, *, snapshots, roots, env_file, pricing):
+    config, rows, result = read_ancestor(root)
+    if (
+        config.get("roots") != roots
+        or config.get("env_file") != str(env_file.resolve())
+        or config.get("pricing") != pricing
+        or config.get("mode") != "M2"
+        or config.get("provider_class") != "p2s.real_pairs.Provider"
+    ):
+        raise SafetyStop("ancestor source/provider/environment/pricing control conflict")
+    for arm in ("R0", "R1"):
+        before, after = config["snapshots"][arm], snapshots[arm]
+        for key in (
+            "provider_settings_sha256",
+            "ambient_settings_sha256",
+            "endpoint",
+            "model",
+            "caps",
+            "signature_caps",
+            "imports",
+        ):
+            if before.get(key) != after.get(key):
+                raise SafetyStop(
+                    "ancestor configured source/provider/environment fingerprint conflict"
+                )
+        if {p: h for p, h in before["files"].items() if p != "eval/answer_scoring.py"} != {
+            p: h for p, h in after["files"].items() if p != "eval/answer_scoring.py"
+        }:
+            raise SafetyStop("ancestor application/shared source conflict")
+    for path in (Q_HELPER, R5_HELPER, INSTRUMENTATION):
+        if config["helper_hashes"].get(str(path.resolve())) != digest(path.read_bytes()):
+            raise SafetyStop("ancestor frozen safety helper conflict")
+    usage = [old.usage(row["usage"]) for row in rows]
+    totals = dict(
+        http_attempts=len(rows),
+        accounted_tokens=sum(u["total_tokens"] for u in usage),
+        estimated_usd=sum(
+            u["prompt_tokens"] * pricing["input"] + u["completion_tokens"] * pricing["output"]
+            for u in usage
+        )
+        / 1000000,
+    )
+    if any(
+        totals[k] > LIMITS[b]
+        for k, b in (
+            ("http_attempts", "requests"),
+            ("accounted_tokens", "tokens"),
+            ("estimated_usd", "usd"),
+        )
+    ):
+        raise SafetyStop("ancestor already exceeds global hard limits")
+    root = Path(root).resolve()
+    hashes = {
+        name: digest((root / name).read_bytes())
+        for name in ("experiment_config.json", "requests.json", "results.json")
+    }
+    history = dict(
+        root=str(root),
+        hashes=hashes,
+        row_count=len(rows),
+        totals=totals,
+        seed_clock=config.get("seed_clock"),
+        probe_group=next(row["group"] for row in rows if row["group"].startswith("__probe__:")),
+    )
+    # Re-read under the frozen manifest so configuration and ledger cannot come
+    # from different parent revisions. Old dictionaries are never annotated.
+    _, confirmed, _ = read_ancestor(root, expected=history)
+    if confirmed != rows:
+        raise SafetyStop("ancestor changed while freezing continuation")
+    probe = dict(
+        result["probe"], inherited_from=str(root), parent_results_sha256=hashes["results.json"]
+    )
+    return history, rows, probe
+
+
 def verify_application_freeze(snapshots, freeze):
     # The candidate freeze intentionally records Python app source only. Full
     # snapshots additionally include skill JSON and other runtime contracts.
@@ -253,9 +454,25 @@ def prepare(args):
     run = args.run_dir.resolve()
     if any(p.name != ".lock" for p in run.iterdir()):
         raise SafetyStop("prepare cannot overwrite an existing experiment")
+    parent_run = getattr(args, "budget_parent_run", None)
+    explicit_freeze = getattr(args, "freeze_file", None)
+    if (
+        explicit_freeze
+        and Path(explicit_freeze).resolve() != (HERE / "evidence/candidate_freeze.json").resolve()
+        and not parent_run
+    ):
+        raise SafetyStop(
+            "alternate freeze requires budget-parent-run; never reset the global budget"
+        )
     roots = {"R0": args.r0_root.resolve(), "R1": args.r1_root.resolve()}
     snapshots = {v: worker_snapshot(p, args.env_file.resolve()) for v, p in roots.items()}
-    freeze = read(FREEZE)
+    freeze_file = Path(getattr(args, "freeze_file", None) or FREEZE).resolve()
+    freeze = read(freeze_file)
+    adapter = "v21" if parent_run else "v20"
+    if parent_run and not getattr(args, "freeze_file", None):
+        raise SafetyStop("V21 continuation requires an explicit new freeze file")
+    if parent_run and Path(parent_run).resolve() == run:
+        raise SafetyStop("ancestor cannot be the new run")
     if snapshots["R0"]["head"] != BASE:
         raise SafetyStop("baseline commit mismatch")
     verify_application_freeze(snapshots, freeze)
@@ -283,10 +500,17 @@ def prepare(args):
     ]
     if any(snapshots["R0"]["files"][p] != snapshots["R1"]["files"].get(p) for p in shared):
         raise SafetyStop("source pairs differ in shared evaluator/knowledge/seed")
-    datasets = {"development": args.dev_dataset.resolve(), "blind": args.blind_dataset.resolve()}
-    answers = {"development": args.dev_answers.resolve(), "blind": args.blind_answers.resolve()}
+    datasets = {"blind": args.blind_dataset.resolve()}
+    answers = {"blind": args.blind_answers.resolve()}
+    if adapter == "v20" or (
+        getattr(args, "dev_dataset", None) and getattr(args, "dev_answers", None)
+    ):
+        datasets["development"], answers["development"] = (
+            args.dev_dataset.resolve(),
+            args.dev_answers.resolve(),
+        )
     ids = {s: r5.dataset_ids(p) for s, p in datasets.items()}
-    if not set(DEV_IDS) <= set(ids["development"]):
+    if adapter == "v20" and not set(DEV_IDS) <= set(ids["development"]):
         raise SafetyStop("predeclared development IDs absent")
     for path in [*datasets.values(), *answers.values()]:
         if freeze["datasets"].get(path.name) != digest(path.read_bytes()):
@@ -295,20 +519,40 @@ def prepare(args):
         raise SafetyStop("explicit verified pricing source/date required")
     pricing = {"input": args.input_price, "output": args.output_price}
     Ledger(run, pricing=pricing)
-    selected = [dict(id=x, split="development") for x in DEV_IDS] + [
-        dict(id=x, split="blind") for x in select_blind(ids["blind"])
-    ]
+    history, inherited_rows, inherited_probe = None, [], None
+    if parent_run:
+        history, inherited_rows, inherited_probe = inherit_budget(
+            parent_run,
+            snapshots=snapshots,
+            roots={v: str(p) for v, p in roots.items()},
+            env_file=args.env_file,
+            pricing=pricing,
+        )
+        selected = [dict(id=x, split="blind") for x in select_validation(ids["blind"])]
+    else:
+        selected = [dict(id=x, split="development") for x in DEV_IDS] + [
+            dict(id=x, split="blind") for x in select_blind(ids["blind"])
+        ]
     planned = [
         dict(case_id=case["id"], split=case["split"], variant=variant, rep=0)
         for index, case in enumerate(selected)
         for variant in (("R0", "R1") if index % 2 == 0 else ("R1", "R0"))
     ]
+    ancestor_groups = {row["group"] for row in inherited_rows}
+    if any(f"{g['case_id']}:{g['variant']}:{g['rep']}" in ancestor_groups for g in planned):
+        raise SafetyStop("new plan conflicts with an ancestor paid group; never replay old cases")
     config = dict(
-        schema="p2s-real-pairs-v1",
+        schema="p2s-real-pairs-v2.1" if parent_run else "p2s-real-pairs-v1",
+        score_adapter=adapter,
+        score_scope="same-turn calls and tool-reason prefix; final case-wide environment oracle"
+        if parent_run
+        else "case-cumulative calls and tool status",
+        freeze_file=str(freeze_file),
+        history_ancestor=history,
         created_at=old.stamp(),
         roots={v: str(p) for v, p in roots.items()},
         snapshots=snapshots,
-        helper_hashes=helper_hashes(),
+        helper_hashes=helper_hashes(freeze_file),
         candidate_app_source_commit=freeze["app_source_commit"],
         metadata_commit_policy="HEAD recorded at preparation; later metadata-only commits allowed only with identical frozen source bytes",
         datasets={
@@ -323,10 +567,12 @@ def prepare(args):
         },
         selected=selected,
         planned=planned,
-        selection_rule="four predeclared development IDs; first six IDs by SHA256('P2S-20261105'+ID), no outcomes",
+        selection_rule="six fresh validation IDs by SHA256('P2S-V21-20261105'+ID), no paid development"
+        if parent_run
+        else "four predeclared development IDs; first six IDs by SHA256('P2S-20261105'+ID), no outcomes",
         mode="M2",
         database="fresh isolated SQLite memory per scenario",
-        seed_clock=old.stamp(),
+        seed_clock=(history or {}).get("seed_clock") or old.stamp(),
         business_clock_controls=[
             "app.core.time.utcnow",
             "app.services.seed.utcnow",
@@ -357,12 +603,14 @@ def prepare(args):
     )
     config["config_sha256"] = digest(config)
     write(run / "experiment_config.json", config)
-    write(run / "requests.json", [])
-    write(run / "results.json", dict(probe=None, groups=[], status="PREPARED"))
+    write(run / "requests.json", inherited_rows)
+    write(run / "results.json", dict(probe=inherited_probe, groups=[], status="PREPARED"))
     return dict(
         status="PREPARED",
         planned_groups=len(planned),
         paid_http_attempts=0,
+        inherited_http_attempts=len(inherited_rows),
+        inherited_budget=(history or {}).get("totals"),
         selected_ids=[case["id"] for case in selected],
         planned_order=[f"{group['case_id']}:{group['variant']}:0" for group in planned],
     )
@@ -373,12 +621,13 @@ def verify(run, env_file, variant):
     if digest({k: v for k, v in config.items() if k != "config_sha256"}) != config["config_sha256"]:
         raise SafetyStop("config fingerprint hash conflict")
     if (
-        config["schema"] != "p2s-real-pairs-v1"
+        config["schema"] not in {"p2s-real-pairs-v1", "p2s-real-pairs-v2.1"}
         or config["limits"] != LIMITS
         or config["per_group_http_limit"] != GROUP_LIMIT
         or config["concurrency"] != 1
         or config["mode"] != "M2"
-        or config["helper_hashes"] != helper_hashes()
+        or config.get("freeze_file", str(FREEZE)) != str(FREEZE.resolve())
+        or config["helper_hashes"] != helper_hashes(Path(config.get("freeze_file", FREEZE)))
         or str(env_file.resolve()) != config["env_file"]
         or str(SOURCE_ROOT) != config["roots"][variant]
     ):
@@ -398,7 +647,7 @@ def verify(run, env_file, variant):
     return config, old.settings(str(env_file))
 
 
-def score_captured(evidence, gold_rows):
+def score_captured(evidence, gold_rows, *, adapter="v20"):
     """Load current frozen scorer absolutely, only after Agent execution ends."""
     scorer = absolute_module("_p2s_frozen_answer_scoring", SCORER)
     trace, raw = evidence["traces"][0], evidence["results"][0]
@@ -410,6 +659,13 @@ def score_captured(evidence, gold_rows):
         raise SafetyStop("captured turn/answer annotation count mismatch")
     scores = []
     for turn, spec in zip(trace["turns"], gold_rows, strict=True):
+        if adapter not in {"v20", "v21"}:
+            raise SafetyStop("unknown score adapter")
+        turn_tool_ok = (
+            not any(reason.startswith(f"turn:{turn['turn']}:") for reason in raw["reasons"])
+            if adapter == "v21"
+            else tool_ok
+        )
         state = turn.get("final_state", {})
         answer = (turn.get("response") or {}).get("answer", state.get("final_answer", ""))
         judged = next(
@@ -424,8 +680,16 @@ def score_captured(evidence, gold_rows):
             scorer.score_answer(
                 answer=answer,
                 gold=scorer.AnswerGold.model_validate(spec),
-                calls=[c for c in calls if c.get("turn", 0) <= turn["turn"]],
-                tool_success=tool_ok,
+                calls=[
+                    c
+                    for c in calls
+                    if (
+                        c.get("turn", 0) == turn["turn"]
+                        if adapter == "v21"
+                        else c.get("turn", 0) <= turn["turn"]
+                    )
+                ],
+                tool_success=turn_tool_ok,
                 environment_success=env_ok,
                 retrieved=state.get("retrieved_chunks") or [],
                 judge_status=(judged or {}).get("status"),
@@ -677,7 +941,10 @@ async def execute(args):
                     for row in rows
                     if row.get("model_error") or row.get("transport_error_type")
                 ],
-                answer_scores=score_captured(evidence, gold),
+                answer_scores=score_captured(
+                    evidence, gold, adapter=config.get("score_adapter", "v20")
+                ),
+                score_scope=config.get("score_scope", "case-cumulative calls and tool status"),
                 semantic_human_calibration="NOT_RUN",
             )
             result["groups"].append(value)
@@ -703,7 +970,9 @@ def orchestrate(args):
             ledger = Ledger(run, pricing=config["pricing"])
             ledger.check_pending()
             group = next_group(config, result)
-            if group is None or (args.command == "pilot" and group["case_id"] != DEV_IDS[0]):
+            if group is None or (
+                args.command == "pilot" and group["case_id"] != config["selected"][0]["id"]
+            ):
                 return summarize(result, ledger)
         completed = subprocess.run(
             [
@@ -749,6 +1018,8 @@ def main():
     parser.add_argument("--source-root", type=Path, default=SOURCE_ROOT)
     parser.add_argument("--run-dir", type=Path)
     parser.add_argument("--env-file", type=Path, default=ENV_FILE)
+    parser.add_argument("--freeze-file", type=Path)
+    parser.add_argument("--budget-parent-run", type=Path)
     parser.add_argument("--r0-root", type=Path)
     parser.add_argument("--r1-root", type=Path)
     parser.add_argument("--dev-dataset", type=Path)
@@ -780,15 +1051,15 @@ def main():
                 required = [
                     args.r0_root,
                     args.r1_root,
-                    args.dev_dataset,
                     args.blind_dataset,
-                    args.dev_answers,
                     args.blind_answers,
                     args.input_price,
                     args.output_price,
                     args.pricing_url,
                     args.pricing_verified_date,
                 ]
+                if not args.budget_parent_run:
+                    required.extend([args.dev_dataset, args.dev_answers])
                 if any(v is None for v in required):
                     parser.error(
                         "prepare requires both roots, datasets, answer annotations and verified prices/date"
