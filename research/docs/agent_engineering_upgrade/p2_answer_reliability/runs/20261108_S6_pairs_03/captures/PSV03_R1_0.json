@@ -1,0 +1,2076 @@
+{
+  "schema_version": "p2r-runtime-evidence-v1",
+  "model_evaluation": "REAL_PROVIDER",
+  "real_model_evaluation": "REAL_PROVIDER",
+  "evidence_origin": "REAL_PROVIDER_COMPLETIONS",
+  "provider": "p2s.real_pairs.Provider",
+  "mode": "M2",
+  "paid_api_calls": 5,
+  "paid_tokens": 4328,
+  "raw_scorer_model_evaluation_note": "NOT_RUN is the original contract default; this run is explicitly OFFLINE",
+  "cases": 1,
+  "passed": 1,
+  "results": [
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSV03",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 9959.585999999945
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "catalog_price_pair",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "4fc1c01c-7b01-404f-b866-9b9fca7dd91d",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_product_detail",
+            "arguments": {
+              "sku": "SKU-MUG-CUSTOM"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": [
+                "定制",
+                "杯子"
+              ],
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            }
+          },
+          {
+            "name": "get_product_detail",
+            "arguments": {
+              "sku": "SKU-TEE"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": [
+                "衣服",
+                "基础款"
+              ],
+              "description": "基础纯棉短袖"
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 26,
+        "known_limitation": null
+      },
+      "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+      "model_evaluation": "NOT_RUN"
+    }
+  ],
+  "traces": [
+    {
+      "case_id": "PSV03",
+      "evidence_origin": "SOURCEFROZEN_REEXECUTION",
+      "turns": [
+        {
+          "turn": 0,
+          "trace_id": "offline_PSV03_0",
+          "request": {
+            "message": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+            "session_id": null,
+            "user_id": "u_demo",
+            "stream": false,
+            "confirm_action_id": null,
+            "idempotency_key": null
+          },
+          "nodes": [
+            {
+              "sequence": 0,
+              "node": "apply_guardrail",
+              "input": {
+                "trace_id": "offline_PSV03_0",
+                "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+                "user_id": "u_demo",
+                "user_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "resolved_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "selected_context": {
+                  "effective_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [],
+                  "original_query": "",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.0,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {}
+            },
+            {
+              "sequence": 1,
+              "node": "classify_intent",
+              "input": {
+                "trace_id": "offline_PSV03_0",
+                "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+                "user_id": "u_demo",
+                "user_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "resolved_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "selected_context": {
+                  "effective_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [],
+                  "original_query": "",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.0,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "intent": {
+                  "label": "recommendation",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "latency": {
+                  "intent_ms": 2139.427799999794,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 2,
+              "node": "route_complexity",
+              "input": {
+                "trace_id": "offline_PSV03_0",
+                "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+                "user_id": "u_demo",
+                "user_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "resolved_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "selected_context": {
+                  "effective_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [],
+                  "original_query": "",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "recommendation",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 2139.427799999794,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.95
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 2139.427799999794,
+                  "routing_ms": 1879.2464000000564,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 3,
+              "node": "plan_tasks",
+              "input": {
+                "trace_id": "offline_PSV03_0",
+                "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+                "user_id": "u_demo",
+                "user_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "resolved_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "selected_context": {
+                  "effective_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [],
+                  "original_query": "",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "recommendation",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.95
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 2139.427799999794,
+                  "routing_ms": 1879.2464000000564,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "查询 SKU-MUG-CUSTOM 的单价与名称",
+                      "tool_name": "get_product_detail",
+                      "arguments": {
+                        "sku": "SKU-MUG-CUSTOM"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "查询 SKU-TEE 的单价与名称",
+                      "tool_name": "get_product_detail",
+                      "arguments": {
+                        "sku": "SKU-TEE"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "sequence": 4,
+              "node": "execute_tools",
+              "input": {
+                "trace_id": "offline_PSV03_0",
+                "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+                "user_id": "u_demo",
+                "user_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "resolved_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "selected_context": {
+                  "effective_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [],
+                  "original_query": "",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "recommendation",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.95
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "查询 SKU-MUG-CUSTOM 的单价与名称",
+                      "tool_name": "get_product_detail",
+                      "arguments": {
+                        "sku": "SKU-MUG-CUSTOM"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "查询 SKU-TEE 的单价与名称",
+                      "tool_name": "get_product_detail",
+                      "arguments": {
+                        "sku": "SKU-TEE"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [],
+                "pending_action": null,
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 2139.427799999794,
+                  "routing_ms": 1879.2464000000564,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "get_product_detail",
+                    "success": true,
+                    "output": {
+                      "sku": "SKU-MUG-CUSTOM",
+                      "name": "定制马克杯",
+                      "category": "家居",
+                      "price_cents": 3900,
+                      "inventory": 200,
+                      "tags": [
+                        "定制",
+                        "杯子"
+                      ],
+                      "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "get_product_detail",
+                    "success": true,
+                    "output": {
+                      "sku": "SKU-TEE",
+                      "name": "纯棉T恤",
+                      "category": "服饰",
+                      "price_cents": 7900,
+                      "inventory": 0,
+                      "tags": [
+                        "衣服",
+                        "基础款"
+                      ],
+                      "description": "基础纯棉短袖"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 2,
+                "latency": {
+                  "intent_ms": 2139.427799999794,
+                  "routing_ms": 1879.2464000000564,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 2.268400000048132,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 5,
+              "node": "generate_answer",
+              "input": {
+                "trace_id": "offline_PSV03_0",
+                "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+                "user_id": "u_demo",
+                "user_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "resolved_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "selected_context": {
+                  "effective_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [],
+                  "original_query": "",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "recommendation",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.95
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "查询 SKU-MUG-CUSTOM 的单价与名称",
+                      "tool_name": "get_product_detail",
+                      "arguments": {
+                        "sku": "SKU-MUG-CUSTOM"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "查询 SKU-TEE 的单价与名称",
+                      "tool_name": "get_product_detail",
+                      "arguments": {
+                        "sku": "SKU-TEE"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [
+                  {
+                    "name": "get_product_detail",
+                    "success": true,
+                    "output": {
+                      "sku": "SKU-MUG-CUSTOM",
+                      "name": "定制马克杯",
+                      "category": "家居",
+                      "price_cents": 3900,
+                      "inventory": 200,
+                      "tags": [
+                        "定制",
+                        "杯子"
+                      ],
+                      "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "get_product_detail",
+                    "success": true,
+                    "output": {
+                      "sku": "SKU-TEE",
+                      "name": "纯棉T恤",
+                      "category": "服饰",
+                      "price_cents": 7900,
+                      "inventory": 0,
+                      "tags": [
+                        "衣服",
+                        "基础款"
+                      ],
+                      "description": "基础纯棉短袖"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "pending_action": null,
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 2,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 2139.427799999794,
+                  "routing_ms": 1879.2464000000564,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 2.268400000048132,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "final_answer": "SKU-MUG-CUSTOM（定制马克杯）单价：¥39.00；SKU-TEE（纯棉T恤）单价：¥79.00。",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 2139.427799999794,
+                  "routing_ms": 1879.2464000000564,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 2.268400000048132,
+                  "llm_ms": 2613.90009999991,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 548,
+                  "completion_tokens": 270,
+                  "total_tokens": 818
+                },
+                "extra": {
+                  "generation_error": null,
+                  "goal_coverage": [
+                    {
+                      "goal": "商品价格",
+                      "tool": "get_product_detail",
+                      "observed": true,
+                      "conveyed": true
+                    }
+                  ],
+                  "generated_refusal": false
+                }
+              }
+            },
+            {
+              "sequence": 6,
+              "node": "check_faithfulness",
+              "input": {
+                "trace_id": "offline_PSV03_0",
+                "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+                "user_id": "u_demo",
+                "user_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "resolved_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "selected_context": {
+                  "effective_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [],
+                  "original_query": "",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "recommendation",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.95
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "查询 SKU-MUG-CUSTOM 的单价与名称",
+                      "tool_name": "get_product_detail",
+                      "arguments": {
+                        "sku": "SKU-MUG-CUSTOM"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "查询 SKU-TEE 的单价与名称",
+                      "tool_name": "get_product_detail",
+                      "arguments": {
+                        "sku": "SKU-TEE"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [
+                  {
+                    "name": "get_product_detail",
+                    "success": true,
+                    "output": {
+                      "sku": "SKU-MUG-CUSTOM",
+                      "name": "定制马克杯",
+                      "category": "家居",
+                      "price_cents": 3900,
+                      "inventory": 200,
+                      "tags": [
+                        "定制",
+                        "杯子"
+                      ],
+                      "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "get_product_detail",
+                    "success": true,
+                    "output": {
+                      "sku": "SKU-TEE",
+                      "name": "纯棉T恤",
+                      "category": "服饰",
+                      "price_cents": 7900,
+                      "inventory": 0,
+                      "tags": [
+                        "衣服",
+                        "基础款"
+                      ],
+                      "description": "基础纯棉短袖"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "pending_action": null,
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "final_answer": "SKU-MUG-CUSTOM（定制马克杯）单价：¥39.00；SKU-TEE（纯棉T恤）单价：¥79.00。",
+                "citations": [],
+                "refused": false,
+                "step_count": 2,
+                "token_usage": {
+                  "prompt_tokens": 548,
+                  "completion_tokens": 270,
+                  "total_tokens": 818
+                },
+                "latency": {
+                  "intent_ms": 2139.427799999794,
+                  "routing_ms": 1879.2464000000564,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 2.268400000048132,
+                  "llm_ms": 2613.90009999991,
+                  "total_ms": 0.0
+                },
+                "extra": {
+                  "generation_error": null,
+                  "goal_coverage": [
+                    {
+                      "goal": "商品价格",
+                      "tool": "get_product_detail",
+                      "observed": true,
+                      "conveyed": true
+                    }
+                  ],
+                  "generated_refusal": false
+                }
+              },
+              "output": {
+                "extra": {
+                  "faithfulness": {
+                    "status": "SUPPORTED",
+                    "supported": true,
+                    "hallucinated_spans": [],
+                    "error_kind": null
+                  },
+                  "generation_error": null,
+                  "goal_coverage": [
+                    {
+                      "goal": "商品价格",
+                      "tool": "get_product_detail",
+                      "observed": true,
+                      "conveyed": true
+                    }
+                  ],
+                  "self_corrected": false,
+                  "generated_refusal": false
+                }
+              }
+            },
+            {
+              "sequence": 7,
+              "node": "compact_memory",
+              "input": {
+                "trace_id": "offline_PSV03_0",
+                "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+                "user_id": "u_demo",
+                "user_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "resolved_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "selected_context": {
+                  "effective_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                  "order_id": null,
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "none",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [],
+                  "original_query": "",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "recommendation",
+                  "confidence": 0.93,
+                  "prompt_version": "intent_v3"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.95
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "查询 SKU-MUG-CUSTOM 的单价与名称",
+                      "tool_name": "get_product_detail",
+                      "arguments": {
+                        "sku": "SKU-MUG-CUSTOM"
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "查询 SKU-TEE 的单价与名称",
+                      "tool_name": "get_product_detail",
+                      "arguments": {
+                        "sku": "SKU-TEE"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [
+                  {
+                    "name": "get_product_detail",
+                    "success": true,
+                    "output": {
+                      "sku": "SKU-MUG-CUSTOM",
+                      "name": "定制马克杯",
+                      "category": "家居",
+                      "price_cents": 3900,
+                      "inventory": 200,
+                      "tags": [
+                        "定制",
+                        "杯子"
+                      ],
+                      "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "get_product_detail",
+                    "success": true,
+                    "output": {
+                      "sku": "SKU-TEE",
+                      "name": "纯棉T恤",
+                      "category": "服饰",
+                      "price_cents": 7900,
+                      "inventory": 0,
+                      "tags": [
+                        "衣服",
+                        "基础款"
+                      ],
+                      "description": "基础纯棉短袖"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "pending_action": null,
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "final_answer": "SKU-MUG-CUSTOM（定制马克杯）单价：¥39.00；SKU-TEE（纯棉T恤）单价：¥79.00。",
+                "citations": [],
+                "refused": false,
+                "step_count": 2,
+                "token_usage": {
+                  "prompt_tokens": 548,
+                  "completion_tokens": 270,
+                  "total_tokens": 818
+                },
+                "latency": {
+                  "intent_ms": 2139.427799999794,
+                  "routing_ms": 1879.2464000000564,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 2.268400000048132,
+                  "llm_ms": 2613.90009999991,
+                  "total_ms": 0.0
+                },
+                "extra": {
+                  "faithfulness": {
+                    "status": "SUPPORTED",
+                    "supported": true,
+                    "hallucinated_spans": [],
+                    "error_kind": null
+                  },
+                  "generation_error": null,
+                  "goal_coverage": [
+                    {
+                      "goal": "商品价格",
+                      "tool": "get_product_detail",
+                      "observed": true,
+                      "conveyed": true
+                    }
+                  ],
+                  "self_corrected": false,
+                  "generated_refusal": false
+                }
+              },
+              "output": {
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "SKU-MUG-CUSTOM（定制马克杯）单价：¥39.00；SKU-TEE（纯棉T恤）单价：¥79.00。",
+                    "name": null
+                  }
+                ],
+                "tool_results": [
+                  {
+                    "name": "get_product_detail",
+                    "success": true,
+                    "output": {
+                      "sku": "SKU-MUG-CUSTOM",
+                      "name": "定制马克杯",
+                      "category": "家居",
+                      "price_cents": 3900,
+                      "inventory": 200,
+                      "tags": [
+                        "定制",
+                        "杯子"
+                      ],
+                      "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "get_product_detail",
+                    "success": true,
+                    "output": {
+                      "sku": "SKU-TEE",
+                      "name": "纯棉T恤",
+                      "category": "服饰",
+                      "price_cents": 7900,
+                      "inventory": 0,
+                      "tags": [
+                        "衣服",
+                        "基础款"
+                      ],
+                      "description": "基础纯棉短袖"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "summary": ""
+              }
+            }
+          ],
+          "pending_before": {},
+          "initial_state": {
+            "trace_id": "offline_PSV03_0",
+            "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+            "user_id": "u_demo",
+            "user_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+            "resolved_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+            "selected_context": {
+              "effective_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+              "order_id": null,
+              "needs_clarification": false,
+              "history": [],
+              "source": "none",
+              "summary": "",
+              "max_chars": 1800,
+              "order_ids": [],
+              "original_query": "",
+              "owner_user_id": "u_demo",
+              "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337"
+            },
+            "messages": [],
+            "summary": "",
+            "memory_managed": true,
+            "memory_preferences": {},
+            "retrieved_chunks": [],
+            "tool_results": [],
+            "citations": [],
+            "refused": false,
+            "step_count": 0,
+            "token_usage": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0
+            },
+            "latency": {
+              "intent_ms": 0.0,
+              "routing_ms": 0.0,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 0.0,
+              "llm_ms": 0.0,
+              "total_ms": 0.0
+            },
+            "confirm_action_id": null,
+            "confirmed_action": null,
+            "idempotency_key": null
+          },
+          "final_state": {
+            "trace_id": "offline_PSV03_0",
+            "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+            "user_id": "u_demo",
+            "user_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+            "resolved_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+            "selected_context": {
+              "effective_query": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+              "order_id": null,
+              "needs_clarification": false,
+              "history": [],
+              "source": "none",
+              "summary": "",
+              "max_chars": 1800,
+              "order_ids": [],
+              "original_query": "",
+              "owner_user_id": "u_demo",
+              "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337"
+            },
+            "memory_managed": true,
+            "memory_preferences": {},
+            "messages": [
+              {
+                "role": "user",
+                "content": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                "name": null
+              },
+              {
+                "role": "assistant",
+                "content": "SKU-MUG-CUSTOM（定制马克杯）单价：¥39.00；SKU-TEE（纯棉T恤）单价：¥79.00。",
+                "name": null
+              }
+            ],
+            "summary": "",
+            "intent": {
+              "label": "recommendation",
+              "confidence": 0.93,
+              "prompt_version": "intent_v3"
+            },
+            "complexity": {
+              "complexity": "tool_required",
+              "strategy": "agent",
+              "confidence": 0.95
+            },
+            "strategy": "agent",
+            "query_complexity": "tool_required",
+            "retrieved_chunks": [],
+            "plan": {
+              "steps": [
+                {
+                  "step_id": 1,
+                  "goal": "查询 SKU-MUG-CUSTOM 的单价与名称",
+                  "tool_name": "get_product_detail",
+                  "arguments": {
+                    "sku": "SKU-MUG-CUSTOM"
+                  },
+                  "needs_retrieval": false
+                },
+                {
+                  "step_id": 2,
+                  "goal": "查询 SKU-TEE 的单价与名称",
+                  "tool_name": "get_product_detail",
+                  "arguments": {
+                    "sku": "SKU-TEE"
+                  },
+                  "needs_retrieval": false
+                }
+              ]
+            },
+            "tool_results": [
+              {
+                "name": "get_product_detail",
+                "success": true,
+                "output": {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "category": "家居",
+                  "price_cents": 3900,
+                  "inventory": 200,
+                  "tags": [
+                    "定制",
+                    "杯子"
+                  ],
+                  "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                },
+                "error": null,
+                "risk": "read",
+                "truncated": false
+              },
+              {
+                "name": "get_product_detail",
+                "success": true,
+                "output": {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "category": "服饰",
+                  "price_cents": 7900,
+                  "inventory": 0,
+                  "tags": [
+                    "衣服",
+                    "基础款"
+                  ],
+                  "description": "基础纯棉短袖"
+                },
+                "error": null,
+                "risk": "read",
+                "truncated": false
+              }
+            ],
+            "pending_action": null,
+            "confirmed_action": null,
+            "confirm_action_id": null,
+            "idempotency_key": null,
+            "final_answer": "SKU-MUG-CUSTOM（定制马克杯）单价：¥39.00；SKU-TEE（纯棉T恤）单价：¥79.00。",
+            "citations": [],
+            "refused": false,
+            "step_count": 2,
+            "token_usage": {
+              "prompt_tokens": 548,
+              "completion_tokens": 270,
+              "total_tokens": 818
+            },
+            "latency": {
+              "intent_ms": 2139.427799999794,
+              "routing_ms": 1879.2464000000564,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 2.268400000048132,
+              "llm_ms": 2613.90009999991,
+              "total_ms": 0.0
+            },
+            "extra": {
+              "faithfulness": {
+                "status": "SUPPORTED",
+                "supported": true,
+                "hallucinated_spans": [],
+                "error_kind": null
+              },
+              "generation_error": null,
+              "goal_coverage": [
+                {
+                  "goal": "商品价格",
+                  "tool": "get_product_detail",
+                  "observed": true,
+                  "conveyed": true
+                }
+              ],
+              "self_corrected": false,
+              "generated_refusal": false
+            }
+          },
+          "response": {
+            "answer": "SKU-MUG-CUSTOM（定制马克杯）单价：¥39.00；SKU-TEE（纯棉T恤）单价：¥79.00。",
+            "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+            "trace_id": "offline_PSV03_0",
+            "root_run_id": "4fc1c01c-7b01-404f-b866-9b9fca7dd91d",
+            "intent": "recommendation",
+            "complexity": "tool_required",
+            "strategy": "agent",
+            "citations": [],
+            "pending_action": null,
+            "refused": false,
+            "error_code": null,
+            "token_usage": {
+              "prompt_tokens": 548,
+              "completion_tokens": 270,
+              "total_tokens": 818
+            },
+            "latency": {
+              "intent_ms": 2139.427799999794,
+              "routing_ms": 1879.2464000000564,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 2.268400000048132,
+              "llm_ms": 2613.90009999991,
+              "total_ms": 9183.989600000132
+            }
+          },
+          "pending_after": {},
+          "database_after": {
+            "business": {
+              "orders": {
+                "ORD10001": {
+                  "order_id": "ORD10001",
+                  "user_id": "u_demo",
+                  "status": "shipped",
+                  "total_cents": 29900,
+                  "created_at": "2026-11-02T14:43:59.522826",
+                  "paid_at": "2026-11-02T14:43:59.522826",
+                  "shipped_at": "2026-11-03T14:43:59.522826",
+                  "delivered_at": null,
+                  "tracking_no": "SF1234567890",
+                  "receiver_city": "上海"
+                },
+                "ORD10002": {
+                  "order_id": "ORD10002",
+                  "user_id": "u_demo",
+                  "status": "delivered",
+                  "total_cents": 3900,
+                  "created_at": "2026-10-16T14:43:59.522826",
+                  "paid_at": "2026-10-16T14:43:59.522826",
+                  "shipped_at": "2026-10-17T14:43:59.522826",
+                  "delivered_at": "2026-10-24T14:43:59.522826",
+                  "tracking_no": "YT998877",
+                  "receiver_city": "北京"
+                },
+                "ORD10003": {
+                  "order_id": "ORD10003",
+                  "user_id": "u_demo",
+                  "status": "paid",
+                  "total_cents": 7900,
+                  "created_at": "2026-11-05T09:43:59.522826",
+                  "paid_at": "2026-11-05T09:43:59.522826",
+                  "shipped_at": null,
+                  "delivered_at": null,
+                  "tracking_no": null,
+                  "receiver_city": "杭州"
+                }
+              },
+              "items": [
+                {
+                  "id": 1,
+                  "order_id": "ORD10001",
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                },
+                {
+                  "id": 2,
+                  "order_id": "ORD10002",
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "quantity": 1,
+                  "unit_price_cents": 3900,
+                  "customized": true
+                },
+                {
+                  "id": 3,
+                  "order_id": "ORD10003",
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "products": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "category": "数码",
+                  "price_cents": 29900,
+                  "inventory": 42,
+                  "tags": "耳机,降噪",
+                  "description": "头戴式主动降噪耳机"
+                },
+                {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "category": "家居",
+                  "price_cents": 3900,
+                  "inventory": 200,
+                  "tags": "定制,杯子",
+                  "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                },
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "category": "服饰",
+                  "price_cents": 7900,
+                  "inventory": 0,
+                  "tags": "衣服,基础款",
+                  "description": "基础纯棉短袖"
+                }
+              ],
+              "refunds": [],
+              "returns": [],
+              "audit": []
+            },
+            "tables": {
+              "audit_logs": [],
+              "idempotency_keys": [],
+              "messages": [
+                {
+                  "id": 1,
+                  "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+                  "role": "user",
+                  "content": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+                  "created_at": "2026-11-05T14:43:59.522826"
+                },
+                {
+                  "id": 2,
+                  "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+                  "role": "assistant",
+                  "content": "SKU-MUG-CUSTOM（定制马克杯）单价：¥39.00；SKU-TEE（纯棉T恤）单价：¥79.00。",
+                  "created_at": "2026-11-05T14:43:59.522826"
+                }
+              ],
+              "order_items": [
+                {
+                  "id": 1,
+                  "order_id": "ORD10001",
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                },
+                {
+                  "id": 2,
+                  "order_id": "ORD10002",
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "quantity": 1,
+                  "unit_price_cents": 3900,
+                  "customized": true
+                },
+                {
+                  "id": 3,
+                  "order_id": "ORD10003",
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "orders": [
+                {
+                  "order_id": "ORD10001",
+                  "user_id": "u_demo",
+                  "status": "shipped",
+                  "total_cents": 29900,
+                  "created_at": "2026-11-02T14:43:59.522826",
+                  "paid_at": "2026-11-02T14:43:59.522826",
+                  "shipped_at": "2026-11-03T14:43:59.522826",
+                  "delivered_at": null,
+                  "tracking_no": "SF1234567890",
+                  "receiver_city": "上海"
+                },
+                {
+                  "order_id": "ORD10002",
+                  "user_id": "u_demo",
+                  "status": "delivered",
+                  "total_cents": 3900,
+                  "created_at": "2026-10-16T14:43:59.522826",
+                  "paid_at": "2026-10-16T14:43:59.522826",
+                  "shipped_at": "2026-10-17T14:43:59.522826",
+                  "delivered_at": "2026-10-24T14:43:59.522826",
+                  "tracking_no": "YT998877",
+                  "receiver_city": "北京"
+                },
+                {
+                  "order_id": "ORD10003",
+                  "user_id": "u_demo",
+                  "status": "paid",
+                  "total_cents": 7900,
+                  "created_at": "2026-11-05T09:43:59.522826",
+                  "paid_at": "2026-11-05T09:43:59.522826",
+                  "shipped_at": null,
+                  "delivered_at": null,
+                  "tracking_no": null,
+                  "receiver_city": "杭州"
+                }
+              ],
+              "products": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "category": "数码",
+                  "price_cents": 29900,
+                  "inventory": 42,
+                  "tags": "耳机,降噪",
+                  "description": "头戴式主动降噪耳机"
+                },
+                {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "category": "家居",
+                  "price_cents": 3900,
+                  "inventory": 200,
+                  "tags": "定制,杯子",
+                  "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                },
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "category": "服饰",
+                  "price_cents": 7900,
+                  "inventory": 0,
+                  "tags": "衣服,基础款",
+                  "description": "基础纯棉短袖"
+                }
+              ],
+              "refunds": [],
+              "returns": [],
+              "sessions": [
+                {
+                  "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+                  "user_id": "u_demo",
+                  "summary": "",
+                  "created_at": "2026-11-05T14:43:59.522826",
+                  "updated_at": "2026-11-05T14:43:59.522826"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "runtime_settings": {
+        "llm_timeout_seconds": 30.0,
+        "llm_max_retries": 3,
+        "llm_judge_max_tokens": 512,
+        "retrieval_top_k_simple": 3,
+        "retrieval_top_k_complex": 8,
+        "memory_mode": "M2",
+        "memory_recent_messages": 8,
+        "memory_context_max_chars": 1800,
+        "memory_summary_ttl_seconds": 86400,
+        "retrieval_cache_ttl_seconds": 60,
+        "agent_tracing_enabled": false,
+        "agent_tracing_backend": "local",
+        "agent_trace_max_spans": 256,
+        "agent_trace_queue_size": 32,
+        "agent_langsmith_endpoint": "https://api.smith.langchain.com",
+        "agent_langsmith_project": "adaptive-rag",
+        "database": "isolated_sqlite_in_memory",
+        "provider": "Provider"
+      },
+      "database_initial": {
+        "business": {
+          "orders": {
+            "ORD10001": {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T14:43:59.522826",
+              "paid_at": "2026-11-02T14:43:59.522826",
+              "shipped_at": "2026-11-03T14:43:59.522826",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            "ORD10002": {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T14:43:59.522826",
+              "paid_at": "2026-10-16T14:43:59.522826",
+              "shipped_at": "2026-10-17T14:43:59.522826",
+              "delivered_at": "2026-10-24T14:43:59.522826",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            "ORD10003": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T09:43:59.522826",
+              "paid_at": "2026-11-05T09:43:59.522826",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          },
+          "items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "audit": []
+        },
+        "tables": {
+          "audit_logs": [],
+          "idempotency_keys": [],
+          "messages": [],
+          "order_items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "orders": [
+            {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T14:43:59.522826",
+              "paid_at": "2026-11-02T14:43:59.522826",
+              "shipped_at": "2026-11-03T14:43:59.522826",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T14:43:59.522826",
+              "paid_at": "2026-10-16T14:43:59.522826",
+              "shipped_at": "2026-10-17T14:43:59.522826",
+              "delivered_at": "2026-10-24T14:43:59.522826",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T09:43:59.522826",
+              "paid_at": "2026-11-05T09:43:59.522826",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "sessions": []
+        }
+      },
+      "database_final": {
+        "business": {
+          "orders": {
+            "ORD10001": {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T14:43:59.522826",
+              "paid_at": "2026-11-02T14:43:59.522826",
+              "shipped_at": "2026-11-03T14:43:59.522826",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            "ORD10002": {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T14:43:59.522826",
+              "paid_at": "2026-10-16T14:43:59.522826",
+              "shipped_at": "2026-10-17T14:43:59.522826",
+              "delivered_at": "2026-10-24T14:43:59.522826",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            "ORD10003": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T09:43:59.522826",
+              "paid_at": "2026-11-05T09:43:59.522826",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          },
+          "items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "audit": []
+        },
+        "tables": {
+          "audit_logs": [],
+          "idempotency_keys": [],
+          "messages": [
+            {
+              "id": 1,
+              "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+              "role": "user",
+              "content": "我在定制杯和纯棉T恤之间选礼物：SKU-MUG-CUSTOM 与 SKU-TEE 的现售价分别是多少？先只报单价。",
+              "created_at": "2026-11-05T14:43:59.522826"
+            },
+            {
+              "id": 2,
+              "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+              "role": "assistant",
+              "content": "SKU-MUG-CUSTOM（定制马克杯）单价：¥39.00；SKU-TEE（纯棉T恤）单价：¥79.00。",
+              "created_at": "2026-11-05T14:43:59.522826"
+            }
+          ],
+          "order_items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "orders": [
+            {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T14:43:59.522826",
+              "paid_at": "2026-11-02T14:43:59.522826",
+              "shipped_at": "2026-11-03T14:43:59.522826",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T14:43:59.522826",
+              "paid_at": "2026-10-16T14:43:59.522826",
+              "shipped_at": "2026-10-17T14:43:59.522826",
+              "delivered_at": "2026-10-24T14:43:59.522826",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T09:43:59.522826",
+              "paid_at": "2026-11-05T09:43:59.522826",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "sessions": [
+            {
+              "session_id": "sess_1b6442e2dce9478a9c3f63eebad5e337",
+              "user_id": "u_demo",
+              "summary": "",
+              "created_at": "2026-11-05T14:43:59.522826",
+              "updated_at": "2026-11-05T14:43:59.522826"
+            }
+          ]
+        }
+      },
+      "provider_calls": [],
+      "scorer_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV03",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 9959.585999999945
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "catalog_price_pair",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "4fc1c01c-7b01-404f-b866-9b9fca7dd91d",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "sku": "SKU-MUG-CUSTOM",
+                "name": "定制马克杯",
+                "category": "家居",
+                "price_cents": 3900,
+                "inventory": 200,
+                "tags": [
+                  "定制",
+                  "杯子"
+                ],
+                "description": "支持印字的定制杯，定制商品不适用7天无理由"
+              }
+            },
+            {
+              "name": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-TEE"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "sku": "SKU-TEE",
+                "name": "纯棉T恤",
+                "category": "服饰",
+                "price_cents": 7900,
+                "inventory": 0,
+                "tags": [
+                  "衣服",
+                  "基础款"
+                ],
+                "description": "基础纯棉短袖"
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 26,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      }
+    }
+  ],
+  "reported_tokens_group": 4328,
+  "accounted_tokens_group": 4328,
+  "unknown_usage_requests_group": 0,
+  "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+  "raw_driver_metadata": {
+    "model_evaluation": "OFFLINE",
+    "real_model_evaluation": "NOT_RUN",
+    "provider": "OFFLINE_REPLAY",
+    "paid_api_calls": 0,
+    "paid_tokens": 0
+  }
+}

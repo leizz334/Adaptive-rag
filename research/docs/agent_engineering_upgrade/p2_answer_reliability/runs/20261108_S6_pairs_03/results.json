@@ -1,0 +1,1878 @@
+{
+  "probe": {
+    "connected": true,
+    "completion_valid": true,
+    "model": "deepseek-flash",
+    "inherited_from": "D:\\Code\\Adaptive-rag\\.worktrees\\p2-answer-reliability\\research\\docs\\agent_engineering_upgrade\\p2_answer_reliability\\runs\\20261105_S6_pairs_02",
+    "parent_results_sha256": "4bd97442c6faac1aade232ca9c3f32a325696457eb2f0c4cbb3fa0d1fcbc336e"
+  },
+  "groups": [
+    {
+      "case_id": "PSV14",
+      "variant": "R0",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV14:R0:0",
+      "status": "PASS",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV14",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 13166.26159999987
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "coupon_rule_with_existing_order",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "87063d92-8183-461d-9168-df5a201fb166",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_coupon",
+              "arguments": {
+                "user_id": null
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "coupons": [
+                  {
+                    "code": "NEW10",
+                    "desc": "新客满 99 减 10，不与品类券叠用"
+                  },
+                  {
+                    "code": "SHIP0",
+                    "desc": "满 59 包邮，偏远地区除外"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "order_id": "ORD10002",
+                "user_id": "u_demo",
+                "status": "delivered",
+                "items": [
+                  {
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "quantity": 1,
+                    "unit_price_cents": 3900,
+                    "customized": true
+                  }
+                ],
+                "total_cents": 3900,
+                "created_at": "2026-10-16T14:43:59.522826",
+                "paid_at": "2026-10-16T14:43:59.522826",
+                "shipped_at": "2026-10-17T14:43:59.522826",
+                "delivered_at": "2026-10-24T14:43:59.522826",
+                "tracking_no": "YT998877",
+                "receiver_city": "北京"
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 26,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "9fea56bb57b29502563b846681a8e24e4a4e4ba8f222688a62bfb7d2c2fb732d",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 8111,
+      "accounted_tokens_group": 8111,
+      "request_errors": [
+        {
+          "sequence": 0,
+          "stage": "intent",
+          "model_error": "truncated",
+          "transport_error_type": null
+        }
+      ],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "PASS",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": 1.0,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 1.0,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "new_customer_threshold",
+              "goal": "核对新客券满减门槛",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            },
+            {
+              "id": "historical_mug_amount",
+              "goal": "核对杯子订单原有金额",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "新客券门槛：NEW10             ，不与品类券叠用",
+            "SHIP0 满 59 元包邮，偏远地区除外（这是包邮门槛，不属于满减）",
+            "的           （      ），当前状态为已送达",
+            "按照你的要求，我没有判断这张券能否补用，也没有修改这笔"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSV14",
+      "variant": "R1",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV14:R1:0",
+      "status": "PASS",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV14",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 11918.973300000061
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "coupon_rule_with_existing_order",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "500b3946-39b8-48d4-9542-a48d2717dd58",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_coupon",
+              "arguments": {
+                "user_id": null
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "coupons": [
+                  {
+                    "code": "NEW10",
+                    "desc": "新客满 99 减 10，不与品类券叠用"
+                  },
+                  {
+                    "code": "SHIP0",
+                    "desc": "满 59 包邮，偏远地区除外"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "order_id": "ORD10002",
+                "user_id": "u_demo",
+                "status": "delivered",
+                "items": [
+                  {
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "quantity": 1,
+                    "unit_price_cents": 3900,
+                    "customized": true
+                  }
+                ],
+                "total_cents": 3900,
+                "created_at": "2026-10-16T14:43:59.522826",
+                "paid_at": "2026-10-16T14:43:59.522826",
+                "shipped_at": "2026-10-17T14:43:59.522826",
+                "delivered_at": "2026-10-24T14:43:59.522826",
+                "tracking_no": "YT998877",
+                "receiver_city": "北京"
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 26,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "a9b3e9b6f6d9e19bd0864f3683b7ace62f7ced6ecc79fb669198d4370303202f",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 8215,
+      "accounted_tokens_group": 8215,
+      "request_errors": [],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "PASS",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": 1.0,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 1.0,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "new_customer_threshold",
+              "goal": "核对新客券满减门槛",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            },
+            {
+              "id": "historical_mug_amount",
+              "goal": "核对杯子订单原有金额",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "按你的要求，仅列出信息，不判断能否补用，也不对做任何改动",
+            "一、新客券满减门槛（来自当前券列表查询）",
+            "- NEW10：新客         ，不与品类券叠用",
+            "门槛为满 99 元",
+            "- SHIP0：满 59 包邮，偏远地区除外",
+            "这属于包邮权益，并非满减券，门槛为满 59 元",
+            "除上述两张券外，当前查询未返回其他新客券，因此没有更多满减门槛可列",
+            "二、 金额（来自当前查询）",
+            "- 状态：delivered，即已送达",
+            "- ：定制马克杯 ×1，单价",
+            "- 合计：      ，即",
+            "- 该金额低于上述两张券的门槛（99 元、59 元）",
+            "这一点仅为事实对照，按你的要求，这里不进行能否补用的判断",
+            "三、未做事项",
+            "- 未判断该能否补用新客券",
+            "- 未对该发起任何修改或退款类操作",
+            "四、说明",
+            "本次检索无可用证据片段，故无 chunk_id 可引用",
+            "以上内容均取自实时工具结果（get_coupon、get_order）",
+            "如需进一步判断补用资格，请明确授权，我再依据对应政策核查"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSV13",
+      "variant": "R1",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV13:R1:0",
+      "status": "FAIL",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV13",
+        "status": "FAIL",
+        "metrics": {
+          "agent_task_success": 0.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 23592.234899999996
+        },
+        "reasons": [
+          "turn:0:missing_tool",
+          "turn:0:trajectory_invalid",
+          "turn:0:wrong_arguments"
+        ],
+        "evidence": {
+          "family": "catalog_rule_and_price",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "140e4a19-9c34-4549-abda-8b18ae1ba163",
+              "scores": {
+                "tool_selection_accuracy": 0.0,
+                "tool_argument_accuracy": 0,
+                "trajectory_valid": 0,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": null,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 1
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 48,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "a9b3e9b6f6d9e19bd0864f3683b7ace62f7ced6ecc79fb669198d4370303202f",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 10,
+      "http_attempts": 10,
+      "reported_tokens_group": 6215,
+      "accounted_tokens_group": 6215,
+      "request_errors": [
+        {
+          "sequence": 1,
+          "stage": "router",
+          "model_error": "truncated",
+          "transport_error_type": null
+        },
+        {
+          "sequence": 2,
+          "stage": "rewrite",
+          "model_error": "truncated",
+          "transport_error_type": null
+        },
+        {
+          "sequence": 4,
+          "stage": "rewrite",
+          "model_error": "truncated",
+          "transport_error_type": null
+        },
+        {
+          "sequence": 6,
+          "stage": "rewrite",
+          "model_error": "truncated",
+          "transport_error_type": null
+        }
+      ],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "FAIL",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": null,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 0.0,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "FAIL",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "custom_return_rule",
+              "goal": "确认商品说明中的无理由限制",
+              "required": true,
+              "matched": false,
+              "contradiction": false,
+              "evidence": false
+            },
+            {
+              "id": "custom_mug_price",
+              "goal": "核对定制杯现售价",
+              "required": true,
+              "matched": false,
+              "contradiction": false,
+              "evidence": false
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [
+            "确认商品说明中的无理由限制",
+            "核对定制杯现售价"
+          ],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "关于 ，我在现有资料里没有查到该的七天无理由说明文字，也没有查到现价，因此这两项都无法确认，不能凭推测给你结论",
+            "建议下一步：",
+            "1）在详情页的「售后/服务说明」区块直接查看该 SKU 的七天无理由标注",
+            "定制类是否适用，以页面标注和下单时勾选的服务条款为准",
+            "2）现价请以页实时显示为准",
+            "如果你需要我核对，请补充该 SKU 对应的链接或号，我再来查",
+            "3）如果页面说明缺失或表述不清，可以转人工客服核实该 SKU 的售后口径",
+            "说明：本次仅按你的要求做说明查询，未发起任何售后或退款操作"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSV13",
+      "variant": "R0",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV13:R0:0",
+      "status": "FAIL",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV13",
+        "status": "FAIL",
+        "metrics": {
+          "agent_task_success": 0.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 18411.257099999828
+        },
+        "reasons": [
+          "turn:0:missing_tool",
+          "turn:0:trajectory_invalid",
+          "turn:0:wrong_arguments"
+        ],
+        "evidence": {
+          "family": "catalog_rule_and_price",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "f049e168-0f02-4b28-a654-02badde9495c",
+              "scores": {
+                "tool_selection_accuracy": 0.0,
+                "tool_argument_accuracy": 0,
+                "trajectory_valid": 0,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": null,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 1
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 36,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "9fea56bb57b29502563b846681a8e24e4a4e4ba8f222688a62bfb7d2c2fb732d",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 6,
+      "http_attempts": 6,
+      "reported_tokens_group": 4522,
+      "accounted_tokens_group": 4522,
+      "request_errors": [
+        {
+          "sequence": 0,
+          "stage": "intent",
+          "model_error": "truncated",
+          "transport_error_type": null
+        },
+        {
+          "sequence": 1,
+          "stage": "router",
+          "model_error": "truncated",
+          "transport_error_type": null
+        },
+        {
+          "sequence": 3,
+          "stage": "grade",
+          "model_error": "truncated",
+          "transport_error_type": null
+        },
+        {
+          "sequence": 4,
+          "stage": "generate",
+          "model_error": "invalid_json_object",
+          "transport_error_type": null
+        },
+        {
+          "sequence": 5,
+          "stage": "judge",
+          "model_error": "truncated",
+          "transport_error_type": null
+        }
+      ],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "FAIL",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": null,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 0.0,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "FAIL",
+          "JUDGE_VALIDITY": "INVALID_OUTPUT",
+          "facts": [
+            {
+              "id": "custom_return_rule",
+              "goal": "确认商品说明中的无理由限制",
+              "required": true,
+              "matched": false,
+              "contradiction": false,
+              "evidence": false
+            },
+            {
+              "id": "custom_mug_price",
+              "goal": "核对定制杯现售价",
+              "required": true,
+              "matched": false,
+              "contradiction": false,
+              "evidence": false
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [
+            "确认商品说明中的无理由限制",
+            "核对定制杯现售价"
+          ],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "当前未配置生成模型，以下是《exchange_size》的资料节选，请核对原文：",
+            "> 原 SKU 无时,可换同等或更高价并补差,或选择退款",
+            "降价换款按现价退差额"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSV22",
+      "variant": "R0",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV22:R0:0",
+      "status": "FAIL",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV22",
+        "status": "FAIL",
+        "metrics": {
+          "agent_task_success": 0.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 17268.29520000001
+        },
+        "reasons": [
+          "turn:0:missing_tool",
+          "turn:0:trajectory_invalid",
+          "turn:0:wrong_arguments"
+        ],
+        "evidence": {
+          "family": "delivery_vs_refund",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "d9dfa6d5-37be-4bc9-9db1-2103b54e8e78",
+              "scores": {
+                "tool_selection_accuracy": 0.5,
+                "tool_argument_accuracy": 0.5,
+                "trajectory_valid": 0,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 1
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "order_id": "ORD10002",
+                "user_id": "u_demo",
+                "status": "delivered",
+                "items": [
+                  {
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "quantity": 1,
+                    "unit_price_cents": 3900,
+                    "customized": true
+                  }
+                ],
+                "total_cents": 3900,
+                "created_at": "2026-10-16T14:43:59.522826",
+                "paid_at": "2026-10-16T14:43:59.522826",
+                "shipped_at": "2026-10-17T14:43:59.522826",
+                "delivered_at": "2026-10-24T14:43:59.522826",
+                "tracking_no": "YT998877",
+                "receiver_city": "北京"
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 25,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "9fea56bb57b29502563b846681a8e24e4a4e4ba8f222688a62bfb7d2c2fb732d",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 5510,
+      "accounted_tokens_group": 5510,
+      "request_errors": [
+        {
+          "sequence": 0,
+          "stage": "intent",
+          "model_error": "truncated",
+          "transport_error_type": null
+        },
+        {
+          "sequence": 2,
+          "stage": "planner",
+          "model_error": "truncated",
+          "transport_error_type": null
+        },
+        {
+          "sequence": 4,
+          "stage": "judge",
+          "model_error": "truncated",
+          "transport_error_type": null
+        }
+      ],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "FAIL",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": null,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 0.5,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "FAIL",
+          "JUDGE_VALIDITY": "INVALID_OUTPUT",
+          "facts": [
+            {
+              "id": "delivered_order_state",
+              "goal": "核对杯子订单当前状态",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            },
+            {
+              "id": "delivered_order_refunds",
+              "goal": "核对已签收订单退款记录",
+              "required": true,
+              "matched": false,
+              "contradiction": false,
+              "evidence": false
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [
+            "核对已签收订单退款记录"
+          ],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "当前状态："
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSV22",
+      "variant": "R1",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV22:R1:0",
+      "status": "PASS",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV22",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 12183.020199999874
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "delivery_vs_refund",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "6c18a632-114d-4ed2-b552-3968aee6dd34",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "order_id": "ORD10002",
+                "user_id": "u_demo",
+                "status": "delivered",
+                "items": [
+                  {
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "quantity": 1,
+                    "unit_price_cents": 3900,
+                    "customized": true
+                  }
+                ],
+                "total_cents": 3900,
+                "created_at": "2026-10-16T14:43:59.522826",
+                "paid_at": "2026-10-16T14:43:59.522826",
+                "shipped_at": "2026-10-17T14:43:59.522826",
+                "delivered_at": "2026-10-24T14:43:59.522826",
+                "tracking_no": "YT998877",
+                "receiver_city": "北京"
+              }
+            },
+            {
+              "name": "get_refund_status",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "refunds": []
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 26,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "a9b3e9b6f6d9e19bd0864f3683b7ace62f7ced6ecc79fb669198d4370303202f",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 5545,
+      "accounted_tokens_group": 5545,
+      "request_errors": [],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "PASS",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": 1.0,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 1.0,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "delivered_order_state",
+              "goal": "核对杯子订单当前状态",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            },
+            {
+              "id": "delivered_order_refunds",
+              "goal": "核对已签收订单退款记录",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "已按两项分别核实 ：",
+            "1）当前状态：工具查询结果显示为          （   /   ），下单与支付时间均为 2026-10-16，发货时间 2026-10-17，送达时间 2026-10-24，承运运单号 YT998877，收货城市北京",
+            "为「定制马克杯」1 件，单价 39.00 元，合计 39.00 元",
+            "2）退款单情况：退款状态查询返回的",
+            "需要说明：状态为   ，只代表物流   ，并不等于已退款",
+            "本次查询也未发现退款记录",
+            "两项结论相互独立，均已分别核实",
+            "如需进一步处理（例如就定制申请售后或退款），请告知具体诉求，我会按流程发起确认",
+            "在确认完成前不会视为已提交",
+            "若你看到过与上述不一致的退款凭证，请提供相关单号，我再转人工核对"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSV03",
+      "variant": "R1",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV03:R1:0",
+      "status": "PASS",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV03",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 9959.585999999945
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "catalog_price_pair",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "4fc1c01c-7b01-404f-b866-9b9fca7dd91d",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "sku": "SKU-MUG-CUSTOM",
+                "name": "定制马克杯",
+                "category": "家居",
+                "price_cents": 3900,
+                "inventory": 200,
+                "tags": [
+                  "定制",
+                  "杯子"
+                ],
+                "description": "支持印字的定制杯，定制商品不适用7天无理由"
+              }
+            },
+            {
+              "name": "get_product_detail",
+              "arguments": {
+                "sku": "SKU-TEE"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "sku": "SKU-TEE",
+                "name": "纯棉T恤",
+                "category": "服饰",
+                "price_cents": 7900,
+                "inventory": 0,
+                "tags": [
+                  "衣服",
+                  "基础款"
+                ],
+                "description": "基础纯棉短袖"
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 26,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "a9b3e9b6f6d9e19bd0864f3683b7ace62f7ced6ecc79fb669198d4370303202f",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 4328,
+      "accounted_tokens_group": 4328,
+      "request_errors": [],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "PASS",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": 1.0,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 1.0,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "mug_catalog_price",
+              "goal": "核对杯子目录单价",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            },
+            {
+              "id": "tee_catalog_price",
+              "goal": "核对T恤目录单价",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "（定制马克杯）",
+            "（纯棉T恤）"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSV03",
+      "variant": "R0",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV03:R0:0",
+      "status": "FAIL",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV03",
+        "status": "FAIL",
+        "metrics": {
+          "agent_task_success": 0.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 13537.30510000014
+        },
+        "reasons": [
+          "turn:0:missing_tool",
+          "turn:0:trajectory_invalid",
+          "turn:0:wrong_arguments"
+        ],
+        "evidence": {
+          "family": "catalog_price_pair",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "e3d36c31-6343-4cfb-ac56-1a24561bf0cd",
+              "scores": {
+                "tool_selection_accuracy": 0.0,
+                "tool_argument_accuracy": 0,
+                "trajectory_valid": 0,
+                "unnecessary_tool_calls": 2,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 2
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "search_products",
+              "arguments": {
+                "query": "定制杯"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "products": []
+              }
+            },
+            {
+              "name": "search_products",
+              "arguments": {
+                "query": "纯棉T恤"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "products": [
+                  {
+                    "sku": "SKU-TEE",
+                    "name": "纯棉T恤",
+                    "category": "服饰",
+                    "price_cents": 7900,
+                    "inventory": 0,
+                    "tags": [
+                      "衣服",
+                      "基础款"
+                    ],
+                    "description": "基础纯棉短袖"
+                  }
+                ]
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 26,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "9fea56bb57b29502563b846681a8e24e4a4e4ba8f222688a62bfb7d2c2fb732d",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 5008,
+      "accounted_tokens_group": 5008,
+      "request_errors": [],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "FAIL",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": null,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 0.5,
+          "ANSWER_FAITHFULNESS": "FAIL",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "FAIL",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "mug_catalog_price",
+              "goal": "核对杯子目录单价",
+              "required": true,
+              "matched": false,
+              "contradiction": false,
+              "evidence": false
+            },
+            {
+              "id": "tee_catalog_price",
+              "goal": "核对T恤目录单价",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": false
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [
+            "核对杯子目录单价"
+          ],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "（纯棉T恤）现",
+            "未检索到，暂时无法确认",
+            "请核对 SKU 或转人工查询"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSV16",
+      "variant": "R0",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV16:R0:0",
+      "status": "FAIL",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV16",
+        "status": "FAIL",
+        "metrics": {
+          "agent_task_success": 0.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 14790.202399999998
+        },
+        "reasons": [
+          "turn:0:missing_tool",
+          "turn:0:trajectory_invalid",
+          "turn:0:wrong_arguments"
+        ],
+        "evidence": {
+          "family": "warranty_comparison",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "aef37758-055d-4b31-9dc9-728a4b28bced",
+              "scores": {
+                "tool_selection_accuracy": 0.0,
+                "tool_argument_accuracy": 0,
+                "trajectory_valid": 0,
+                "unnecessary_tool_calls": 2,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 2
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "search_products",
+              "arguments": {
+                "query": "SKU-HEADSET 和 SKU-MUG-CUSTOM 的保修期一样吗？请把两款查询到的月数分别列出。"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "products": []
+              }
+            },
+            {
+              "name": "recommend_products",
+              "arguments": {
+                "category": null,
+                "query": "SKU-HEADSET 和 SKU-MUG-CUSTOM 的保修期一样吗？请把两款查询到的月数分别列出。"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "products": []
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 26,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "9fea56bb57b29502563b846681a8e24e4a4e4ba8f222688a62bfb7d2c2fb732d",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 4885,
+      "accounted_tokens_group": 4885,
+      "request_errors": [
+        {
+          "sequence": 2,
+          "stage": "planner",
+          "model_error": "truncated",
+          "transport_error_type": null
+        }
+      ],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "FAIL",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": null,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 0.0,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "FAIL",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "headset_warranty",
+              "goal": "核对耳机保修月数",
+              "required": true,
+              "matched": false,
+              "contradiction": false,
+              "evidence": false
+            },
+            {
+              "id": "mug_warranty",
+              "goal": "核对杯子保修月数",
+              "required": true,
+              "matched": false,
+              "contradiction": false,
+              "evidence": false
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [
+            "核对耳机保修月数",
+            "核对杯子保修月数"
+          ],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "目前没有查询到  和  的资料，检索结果和推荐结果均为空，因此无法确认两款的是否相同，也不能列出各自对应的月数",
+            "请补充准确的链接或号，或转人工客服核对该两款 SKU 的保修政策",
+            "在拿到详情前，请不要依据本回复判断限"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSV16",
+      "variant": "R1",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV16:R1:0",
+      "status": "PASS",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV16",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 10901.698699999997
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "warranty_comparison",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "08f8f347-71e8-4996-97c0-bd0c10dba759",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_warranty",
+              "arguments": {
+                "sku": "SKU-HEADSET"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "sku": "SKU-HEADSET",
+                "warranty_months": 12,
+                "note": "人为损坏不在保，电子凭证见订单详情"
+              }
+            },
+            {
+              "name": "get_warranty",
+              "arguments": {
+                "sku": "SKU-MUG-CUSTOM"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "sku": "SKU-MUG-CUSTOM",
+                "warranty_months": 12,
+                "note": "人为损坏不在保，电子凭证见订单详情"
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 26,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "a9b3e9b6f6d9e19bd0864f3683b7ace62f7ced6ecc79fb669198d4370303202f",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 4236,
+      "accounted_tokens_group": 4236,
+      "request_errors": [
+        {
+          "sequence": 1,
+          "stage": "router",
+          "model_error": "truncated",
+          "transport_error_type": null
+        }
+      ],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "PASS",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": 1.0,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 1.0,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "headset_warranty",
+              "goal": "核对耳机保修月数",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            },
+            {
+              "id": "mug_warranty",
+              "goal": "核对杯子保修月数",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "两款 SKU 的相同，均为 12 个月",
+            "- ：保修",
+            "备注：人为损坏不在保修范围内，电子凭证见详情",
+            "- ：保修",
+            "备注：人为损坏不在保修范围内，电子凭证见详情",
+            "说明：上述月数来自保修查询工具返回的实时结果",
+            "本次没有可引用的检索文献片段，因此不附引用来源",
+            "具体保修认定仍需以详情的电子凭证为准"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSV04",
+      "variant": "R1",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV04:R1:0",
+      "status": "PASS",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV04",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 10810.975699999972
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "purchased_quantity_correction",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "e1ce0a7e-e413-42b4-933b-fad3767defdb",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_order_items",
+              "arguments": {
+                "order_id": "ORD10001"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "items": [
+                  {
+                    "sku": "SKU-HEADSET",
+                    "name": "降噪耳机 Pro",
+                    "quantity": 1,
+                    "unit_price_cents": 29900,
+                    "customized": false
+                  }
+                ]
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 25,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "a9b3e9b6f6d9e19bd0864f3683b7ace62f7ced6ecc79fb669198d4370303202f",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 4530,
+      "accounted_tokens_group": 4530,
+      "request_errors": [],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "PASS",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": 1.0,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 1.0,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "purchased_headset_quantity",
+              "goal": "核对耳机购买件数",
+              "required": true,
+              "matched": true,
+              "contradiction": false,
+              "evidence": true
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "SKU-HEADSET"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    },
+    {
+      "case_id": "PSV04",
+      "variant": "R0",
+      "rep": 0,
+      "split": "blind",
+      "group": "PSV04:R0:0",
+      "status": "FAIL",
+      "raw_driver_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV04",
+        "status": "FAIL",
+        "metrics": {
+          "agent_task_success": 0.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 11152.179100000012
+        },
+        "reasons": [
+          "turn:0:missing_tool",
+          "turn:0:trajectory_invalid",
+          "turn:0:wrong_arguments"
+        ],
+        "evidence": {
+          "family": "purchased_quantity_correction",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "d89f94b7-1c01-4517-a3d2-1726e4cead6e",
+              "scores": {
+                "tool_selection_accuracy": 0.0,
+                "tool_argument_accuracy": 0,
+                "trajectory_valid": 0,
+                "unnecessary_tool_calls": 1,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 1
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "escalate_to_human",
+              "arguments": {
+                "reason": "用户需核对订单 ORD10001 实际购买的商品件数，当前可用工具无商品明细查询能力，请人工核实"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "ticket_id": "t_sess_8d83e",
+                "queue": "human",
+                "reason": "用户需核对订单 ORD10001 实际购买的商品件数，当前可用工具无商品明细查询能力，请人工核实"
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 25,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      },
+      "model_evaluation": "REAL_PROVIDER",
+      "provider": "p2s.real_pairs.Provider",
+      "source_sha256": "9fea56bb57b29502563b846681a8e24e4a4e4ba8f222688a62bfb7d2c2fb732d",
+      "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+      "new_http_attempts": 5,
+      "http_attempts": 5,
+      "reported_tokens_group": 4359,
+      "accounted_tokens_group": 4359,
+      "request_errors": [],
+      "answer_scores": [
+        {
+          "schema_version": "answer-eval-v2.1",
+          "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+          "TOOL_SUCCESS": "FAIL",
+          "ENVIRONMENT_SUCCESS": "PASS",
+          "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+          "ANSWER_COMPLETENESS": null,
+          "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 0.0,
+          "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+          "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+          "OVERALL_TASK_SUCCESS": "FAIL",
+          "JUDGE_VALIDITY": "SUPPORTED",
+          "facts": [
+            {
+              "id": "purchased_headset_quantity",
+              "goal": "核对耳机购买件数",
+              "required": true,
+              "matched": false,
+              "contradiction": false,
+              "evidence": false
+            }
+          ],
+          "missing_subgoals": [],
+          "unresolved_subgoals": [
+            "核对耳机购买件数"
+          ],
+          "unknown_subgoals": [],
+          "unverified_clauses": [
+            "抱歉，目前无法核对  的实际件数：现有工具查不到明细，也没有可用的证据",
+            "已为您转人工核实，工单号 t_sess_8d83e",
+            "请等待人工确认后再判断是否记错"
+          ],
+          "forbidden_claims": [],
+          "semantic_human_calibration": "NOT_RUN"
+        }
+      ],
+      "score_scope": "same-turn calls and tool-reason prefix; final case-wide environment oracle",
+      "semantic_human_calibration": "NOT_RUN"
+    }
+  ],
+  "status": "COMPLETED",
+  "summary": {
+    "status": "COMPLETED",
+    "completed_groups": 12,
+    "requests": {
+      "http_attempts": 77,
+      "accounted_tokens": 75467,
+      "reported_tokens": 75467,
+      "estimated_usd": 0.039166799999999995,
+      "unknown_usage_requests": 0
+    },
+    "limits": {
+      "requests": 350,
+      "tokens": 300000,
+      "usd": 3.0
+    },
+    "model_evaluation": "REAL_PROVIDER_EXPERIMENT",
+    "semantic_human_calibration": "NOT_RUN"
+  }
+}

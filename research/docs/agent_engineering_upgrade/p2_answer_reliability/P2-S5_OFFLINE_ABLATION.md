@@ -120,3 +120,8 @@ Each config/validation records before/after application, Prompt, source eval, co
 ## Case-level answer rollup
 
 The original answer table counts turns. Separately, a whole scenario is FAIL if any required turn fails, PASS only if every turn passes, otherwise NOT_ASSESSED. `case_metrics.py` derives this from unchanged per-turn results; no new scoring or labels are introduced. Baseline S0/S1 Development:0PASS/17FAIL/7NOT_ASSESSED; Holdout:0PASS/21FAIL/9NOT_ASSESSED. Candidate S2/S3 Development:10PASS/2FAIL/12NOT_ASSESSED; Holdout:1PASS/13FAIL/16NOT_ASSESSED. All case IDs, goal omissions and unknown-goal counts are in evidence/s5_case_metrics.json. Thus strict22/30 does not mean22 complete semantic tasks; only one held-out scenario is fully verified under this conservative annotated contract. No broad answer generalization claim is supported by the offline fixture.
+
+
+## Later evaluator-version boundary
+
+S6 introduced a separately reviewed V2.1 evaluator after a development pilot exposed a quantity-before-SKU false negative. All S5 V2.0 outcomes above remain unchanged. Reproduce this exact S5 measurement in an independent checkout of a77b978dfcfdab35b0ec5838eddebc842aa2f869 (or restore its exact evaluator snapshot within an isolated reproduction checkout); do not run the old frozen harness against the active V2.1 scorer. evidence/s6_v20_sources retains exact V2.0 bytes. Scorer revision effects must not be reported as application/model improvements. No old Gold or saved score has been overwritten.

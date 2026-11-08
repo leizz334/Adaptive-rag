@@ -1,0 +1,2111 @@
+{
+  "schema_version": "p2r-runtime-evidence-v1",
+  "model_evaluation": "REAL_PROVIDER",
+  "real_model_evaluation": "REAL_PROVIDER",
+  "evidence_origin": "REAL_PROVIDER_COMPLETIONS",
+  "provider": "p2s.real_pairs.Provider",
+  "mode": "M2",
+  "paid_api_calls": 5,
+  "paid_tokens": 8111,
+  "raw_scorer_model_evaluation_note": "NOT_RUN is the original contract default; this run is explicitly OFFLINE",
+  "cases": 1,
+  "passed": 1,
+  "results": [
+    {
+      "schema_version": "agent-eval-v2.1",
+      "case_id": "PSV14",
+      "status": "PASS",
+      "metrics": {
+        "agent_task_success": 1.0,
+        "environment_state_correct": 1.0,
+        "latency_ms": 13166.26159999987
+      },
+      "reasons": [],
+      "evidence": {
+        "family": "coupon_rule_with_existing_order",
+        "turns": [
+          {
+            "turn": 0,
+            "error": null,
+            "root_run_id": "87063d92-8183-461d-9168-df5a201fb166",
+            "scores": {
+              "tool_selection_accuracy": 1.0,
+              "tool_argument_accuracy": 1.0,
+              "trajectory_valid": 1,
+              "unnecessary_tool_calls": 0,
+              "tool_execution_success": 1.0,
+              "failure_counts": {},
+              "idempotent_replays": 0,
+              "denied_calls": 0,
+              "missing_required_calls": 0
+            },
+            "pending": false,
+            "refused": false
+          }
+        ],
+        "tool_calls": [
+          {
+            "name": "get_coupon",
+            "arguments": {
+              "user_id": null
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "coupons": [
+                {
+                  "code": "NEW10",
+                  "desc": "新客满 99 减 10，不与品类券叠用"
+                },
+                {
+                  "code": "SHIP0",
+                  "desc": "满 59 包邮，偏远地区除外"
+                }
+              ]
+            }
+          },
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10002"
+            },
+            "status": "executed",
+            "success": true,
+            "failure_kind": null,
+            "turn": 0,
+            "output": {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "items": [
+                {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "quantity": 1,
+                  "unit_price_cents": 3900,
+                  "customized": true
+                }
+              ],
+              "total_cents": 3900,
+              "created_at": "2026-10-16T14:43:59.522826",
+              "paid_at": "2026-10-16T14:43:59.522826",
+              "shipped_at": "2026-10-17T14:43:59.522826",
+              "delivered_at": "2026-10-24T14:43:59.522826",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            }
+          }
+        ],
+        "initial_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "actual_order_states": {
+          "ORD10001": "shipped",
+          "ORD10002": "delivered",
+          "ORD10003": "paid"
+        },
+        "span_count": 26,
+        "known_limitation": null
+      },
+      "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+      "model_evaluation": "NOT_RUN"
+    }
+  ],
+  "traces": [
+    {
+      "case_id": "PSV14",
+      "evidence_origin": "SOURCEFROZEN_REEXECUTION",
+      "turns": [
+        {
+          "turn": 0,
+          "trace_id": "offline_PSV14_0",
+          "request": {
+            "message": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+            "session_id": null,
+            "user_id": "u_demo",
+            "stream": false,
+            "confirm_action_id": null,
+            "idempotency_key": null
+          },
+          "nodes": [
+            {
+              "sequence": 0,
+              "node": "apply_guardrail",
+              "input": {
+                "trace_id": "offline_PSV14_0",
+                "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+                "user_id": "u_demo",
+                "user_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "resolved_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "selected_context": {
+                  "effective_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "order_id": "ORD10002",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [
+                    "ORD10002"
+                  ],
+                  "original_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_25e066d86bfa4d838feb38887028c865"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.0,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {}
+            },
+            {
+              "sequence": 1,
+              "node": "classify_intent",
+              "input": {
+                "trace_id": "offline_PSV14_0",
+                "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+                "user_id": "u_demo",
+                "user_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "resolved_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "selected_context": {
+                  "effective_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "order_id": "ORD10002",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [
+                    "ORD10002"
+                  ],
+                  "original_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_25e066d86bfa4d838feb38887028c865"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 0.0,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "intent": {
+                  "label": "coupon",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "latency": {
+                  "intent_ms": 2315.349999999853,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 2,
+              "node": "route_complexity",
+              "input": {
+                "trace_id": "offline_PSV14_0",
+                "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+                "user_id": "u_demo",
+                "user_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "resolved_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "selected_context": {
+                  "effective_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "order_id": "ORD10002",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [
+                    "ORD10002"
+                  ],
+                  "original_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_25e066d86bfa4d838feb38887028c865"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "coupon",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 2315.349999999853,
+                  "routing_ms": 0.0,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "latency": {
+                  "intent_ms": 2315.349999999853,
+                  "routing_ms": 2043.2740999999623,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 3,
+              "node": "plan_tasks",
+              "input": {
+                "trace_id": "offline_PSV14_0",
+                "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+                "user_id": "u_demo",
+                "user_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "resolved_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "selected_context": {
+                  "effective_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "order_id": "ORD10002",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [
+                    "ORD10002"
+                  ],
+                  "original_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_25e066d86bfa4d838feb38887028c865"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "coupon",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "tool_results": [],
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 2315.349999999853,
+                  "routing_ms": 2043.2740999999623,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "查询新客券的满减门槛与可用规则",
+                      "tool_name": "get_coupon",
+                      "arguments": {
+                        "user_id": null
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "查询订单 ORD10002 的订单头信息以获取订单金额",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10002"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "pending_action": null
+              }
+            },
+            {
+              "sequence": 4,
+              "node": "execute_tools",
+              "input": {
+                "trace_id": "offline_PSV14_0",
+                "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+                "user_id": "u_demo",
+                "user_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "resolved_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "selected_context": {
+                  "effective_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "order_id": "ORD10002",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [
+                    "ORD10002"
+                  ],
+                  "original_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_25e066d86bfa4d838feb38887028c865"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "coupon",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "查询新客券的满减门槛与可用规则",
+                      "tool_name": "get_coupon",
+                      "arguments": {
+                        "user_id": null
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "查询订单 ORD10002 的订单头信息以获取订单金额",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10002"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [],
+                "pending_action": null,
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 0,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 2315.349999999853,
+                  "routing_ms": 2043.2740999999623,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 0.0,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "tool_results": [
+                  {
+                    "name": "get_coupon",
+                    "success": true,
+                    "output": {
+                      "coupons": [
+                        {
+                          "code": "NEW10",
+                          "desc": "新客满 99 减 10，不与品类券叠用"
+                        },
+                        {
+                          "code": "SHIP0",
+                          "desc": "满 59 包邮，偏远地区除外"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10002",
+                      "user_id": "u_demo",
+                      "status": "delivered",
+                      "items": [
+                        {
+                          "sku": "SKU-MUG-CUSTOM",
+                          "name": "定制马克杯",
+                          "quantity": 1,
+                          "unit_price_cents": 3900,
+                          "customized": true
+                        }
+                      ],
+                      "total_cents": 3900,
+                      "created_at": "2026-10-16T14:43:59.522826",
+                      "paid_at": "2026-10-16T14:43:59.522826",
+                      "shipped_at": "2026-10-17T14:43:59.522826",
+                      "delivered_at": "2026-10-24T14:43:59.522826",
+                      "tracking_no": "YT998877",
+                      "receiver_city": "北京"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "step_count": 2,
+                "latency": {
+                  "intent_ms": 2315.349999999853,
+                  "routing_ms": 2043.2740999999623,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.7974000001431705,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              }
+            },
+            {
+              "sequence": 5,
+              "node": "generate_answer",
+              "input": {
+                "trace_id": "offline_PSV14_0",
+                "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+                "user_id": "u_demo",
+                "user_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "resolved_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "selected_context": {
+                  "effective_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "order_id": "ORD10002",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [
+                    "ORD10002"
+                  ],
+                  "original_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_25e066d86bfa4d838feb38887028c865"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "coupon",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "查询新客券的满减门槛与可用规则",
+                      "tool_name": "get_coupon",
+                      "arguments": {
+                        "user_id": null
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "查询订单 ORD10002 的订单头信息以获取订单金额",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10002"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [
+                  {
+                    "name": "get_coupon",
+                    "success": true,
+                    "output": {
+                      "coupons": [
+                        {
+                          "code": "NEW10",
+                          "desc": "新客满 99 减 10，不与品类券叠用"
+                        },
+                        {
+                          "code": "SHIP0",
+                          "desc": "满 59 包邮，偏远地区除外"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10002",
+                      "user_id": "u_demo",
+                      "status": "delivered",
+                      "items": [
+                        {
+                          "sku": "SKU-MUG-CUSTOM",
+                          "name": "定制马克杯",
+                          "quantity": 1,
+                          "unit_price_cents": 3900,
+                          "customized": true
+                        }
+                      ],
+                      "total_cents": 3900,
+                      "created_at": "2026-10-16T14:43:59.522826",
+                      "paid_at": "2026-10-16T14:43:59.522826",
+                      "shipped_at": "2026-10-17T14:43:59.522826",
+                      "delivered_at": "2026-10-24T14:43:59.522826",
+                      "tracking_no": "YT998877",
+                      "receiver_city": "北京"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "pending_action": null,
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "citations": [],
+                "refused": false,
+                "step_count": 2,
+                "token_usage": {
+                  "prompt_tokens": 0,
+                  "completion_tokens": 0,
+                  "total_tokens": 0
+                },
+                "latency": {
+                  "intent_ms": 2315.349999999853,
+                  "routing_ms": 2043.2740999999623,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.7974000001431705,
+                  "llm_ms": 0.0,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "final_answer": "新客券门槛：NEW10 满 99 元减 10 元，不与品类券叠用；SHIP0 满 59 元包邮，偏远地区除外（这是包邮门槛，不属于满减）。ORD10002 的订单金额为 39.00 元（3900 分），当前状态为已送达。按照你的要求，我没有判断这张券能否补用，也没有修改这笔订单。",
+                "citations": [],
+                "refused": false,
+                "latency": {
+                  "intent_ms": 2315.349999999853,
+                  "routing_ms": 2043.2740999999623,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.7974000001431705,
+                  "llm_ms": 2947.6448000000346,
+                  "total_ms": 0.0
+                },
+                "token_usage": {
+                  "prompt_tokens": 623,
+                  "completion_tokens": 421,
+                  "total_tokens": 1044
+                }
+              }
+            },
+            {
+              "sequence": 6,
+              "node": "check_faithfulness",
+              "input": {
+                "trace_id": "offline_PSV14_0",
+                "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+                "user_id": "u_demo",
+                "user_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "resolved_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "selected_context": {
+                  "effective_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "order_id": "ORD10002",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [
+                    "ORD10002"
+                  ],
+                  "original_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_25e066d86bfa4d838feb38887028c865"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "coupon",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "查询新客券的满减门槛与可用规则",
+                      "tool_name": "get_coupon",
+                      "arguments": {
+                        "user_id": null
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "查询订单 ORD10002 的订单头信息以获取订单金额",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10002"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [
+                  {
+                    "name": "get_coupon",
+                    "success": true,
+                    "output": {
+                      "coupons": [
+                        {
+                          "code": "NEW10",
+                          "desc": "新客满 99 减 10，不与品类券叠用"
+                        },
+                        {
+                          "code": "SHIP0",
+                          "desc": "满 59 包邮，偏远地区除外"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10002",
+                      "user_id": "u_demo",
+                      "status": "delivered",
+                      "items": [
+                        {
+                          "sku": "SKU-MUG-CUSTOM",
+                          "name": "定制马克杯",
+                          "quantity": 1,
+                          "unit_price_cents": 3900,
+                          "customized": true
+                        }
+                      ],
+                      "total_cents": 3900,
+                      "created_at": "2026-10-16T14:43:59.522826",
+                      "paid_at": "2026-10-16T14:43:59.522826",
+                      "shipped_at": "2026-10-17T14:43:59.522826",
+                      "delivered_at": "2026-10-24T14:43:59.522826",
+                      "tracking_no": "YT998877",
+                      "receiver_city": "北京"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "pending_action": null,
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "final_answer": "新客券门槛：NEW10 满 99 元减 10 元，不与品类券叠用；SHIP0 满 59 元包邮，偏远地区除外（这是包邮门槛，不属于满减）。ORD10002 的订单金额为 39.00 元（3900 分），当前状态为已送达。按照你的要求，我没有判断这张券能否补用，也没有修改这笔订单。",
+                "citations": [],
+                "refused": false,
+                "step_count": 2,
+                "token_usage": {
+                  "prompt_tokens": 623,
+                  "completion_tokens": 421,
+                  "total_tokens": 1044
+                },
+                "latency": {
+                  "intent_ms": 2315.349999999853,
+                  "routing_ms": 2043.2740999999623,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.7974000001431705,
+                  "llm_ms": 2947.6448000000346,
+                  "total_ms": 0.0
+                }
+              },
+              "output": {
+                "extra": {
+                  "faithfulness": {
+                    "status": "SUPPORTED",
+                    "supported": true,
+                    "hallucinated_spans": []
+                  },
+                  "self_corrected": false
+                }
+              }
+            },
+            {
+              "sequence": 7,
+              "node": "compact_memory",
+              "input": {
+                "trace_id": "offline_PSV14_0",
+                "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+                "user_id": "u_demo",
+                "user_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "resolved_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "selected_context": {
+                  "effective_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "order_id": "ORD10002",
+                  "needs_clarification": false,
+                  "history": [],
+                  "source": "current_user",
+                  "summary": "",
+                  "max_chars": 1800,
+                  "order_ids": [
+                    "ORD10002"
+                  ],
+                  "original_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "owner_user_id": "u_demo",
+                  "session_id": "sess_25e066d86bfa4d838feb38887028c865"
+                },
+                "memory_managed": true,
+                "memory_preferences": {},
+                "messages": [],
+                "summary": "",
+                "intent": {
+                  "label": "coupon",
+                  "confidence": 0.72,
+                  "prompt_version": "intent_rules_v1"
+                },
+                "complexity": {
+                  "complexity": "tool_required",
+                  "strategy": "agent",
+                  "confidence": 0.8
+                },
+                "strategy": "agent",
+                "query_complexity": "tool_required",
+                "retrieved_chunks": [],
+                "plan": {
+                  "steps": [
+                    {
+                      "step_id": 1,
+                      "goal": "查询新客券的满减门槛与可用规则",
+                      "tool_name": "get_coupon",
+                      "arguments": {
+                        "user_id": null
+                      },
+                      "needs_retrieval": false
+                    },
+                    {
+                      "step_id": 2,
+                      "goal": "查询订单 ORD10002 的订单头信息以获取订单金额",
+                      "tool_name": "get_order",
+                      "arguments": {
+                        "order_id": "ORD10002"
+                      },
+                      "needs_retrieval": false
+                    }
+                  ]
+                },
+                "tool_results": [
+                  {
+                    "name": "get_coupon",
+                    "success": true,
+                    "output": {
+                      "coupons": [
+                        {
+                          "code": "NEW10",
+                          "desc": "新客满 99 减 10，不与品类券叠用"
+                        },
+                        {
+                          "code": "SHIP0",
+                          "desc": "满 59 包邮，偏远地区除外"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10002",
+                      "user_id": "u_demo",
+                      "status": "delivered",
+                      "items": [
+                        {
+                          "sku": "SKU-MUG-CUSTOM",
+                          "name": "定制马克杯",
+                          "quantity": 1,
+                          "unit_price_cents": 3900,
+                          "customized": true
+                        }
+                      ],
+                      "total_cents": 3900,
+                      "created_at": "2026-10-16T14:43:59.522826",
+                      "paid_at": "2026-10-16T14:43:59.522826",
+                      "shipped_at": "2026-10-17T14:43:59.522826",
+                      "delivered_at": "2026-10-24T14:43:59.522826",
+                      "tracking_no": "YT998877",
+                      "receiver_city": "北京"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "pending_action": null,
+                "confirmed_action": null,
+                "confirm_action_id": null,
+                "idempotency_key": null,
+                "final_answer": "新客券门槛：NEW10 满 99 元减 10 元，不与品类券叠用；SHIP0 满 59 元包邮，偏远地区除外（这是包邮门槛，不属于满减）。ORD10002 的订单金额为 39.00 元（3900 分），当前状态为已送达。按照你的要求，我没有判断这张券能否补用，也没有修改这笔订单。",
+                "citations": [],
+                "refused": false,
+                "step_count": 2,
+                "token_usage": {
+                  "prompt_tokens": 623,
+                  "completion_tokens": 421,
+                  "total_tokens": 1044
+                },
+                "latency": {
+                  "intent_ms": 2315.349999999853,
+                  "routing_ms": 2043.2740999999623,
+                  "retrieval_ms": 0.0,
+                  "rerank_ms": 0.0,
+                  "tool_ms": 4.7974000001431705,
+                  "llm_ms": 2947.6448000000346,
+                  "total_ms": 0.0
+                },
+                "extra": {
+                  "faithfulness": {
+                    "status": "SUPPORTED",
+                    "supported": true,
+                    "hallucinated_spans": []
+                  },
+                  "self_corrected": false
+                }
+              },
+              "output": {
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                    "name": null
+                  },
+                  {
+                    "role": "assistant",
+                    "content": "新客券门槛：NEW10 满 99 元减 10 元，不与品类券叠用；SHIP0 满 59 元包邮，偏远地区除外（这是包邮门槛，不属于满减）。ORD10002 的订单金额为 39.00 元（3900 分），当前状态为已送达。按照你的要求，我没有判断这张券能否补用，也没有修改这笔订单。",
+                    "name": null
+                  }
+                ],
+                "tool_results": [
+                  {
+                    "name": "get_coupon",
+                    "success": true,
+                    "output": {
+                      "coupons": [
+                        {
+                          "code": "NEW10",
+                          "desc": "新客满 99 减 10，不与品类券叠用"
+                        },
+                        {
+                          "code": "SHIP0",
+                          "desc": "满 59 包邮，偏远地区除外"
+                        }
+                      ]
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  },
+                  {
+                    "name": "get_order",
+                    "success": true,
+                    "output": {
+                      "order_id": "ORD10002",
+                      "user_id": "u_demo",
+                      "status": "delivered",
+                      "items": [
+                        {
+                          "sku": "SKU-MUG-CUSTOM",
+                          "name": "定制马克杯",
+                          "quantity": 1,
+                          "unit_price_cents": 3900,
+                          "customized": true
+                        }
+                      ],
+                      "total_cents": 3900,
+                      "created_at": "2026-10-16T14:43:59.522826",
+                      "paid_at": "2026-10-16T14:43:59.522826",
+                      "shipped_at": "2026-10-17T14:43:59.522826",
+                      "delivered_at": "2026-10-24T14:43:59.522826",
+                      "tracking_no": "YT998877",
+                      "receiver_city": "北京"
+                    },
+                    "error": null,
+                    "risk": "read",
+                    "truncated": false
+                  }
+                ],
+                "summary": ""
+              }
+            }
+          ],
+          "pending_before": {},
+          "initial_state": {
+            "trace_id": "offline_PSV14_0",
+            "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+            "user_id": "u_demo",
+            "user_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+            "resolved_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+            "selected_context": {
+              "effective_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+              "order_id": "ORD10002",
+              "needs_clarification": false,
+              "history": [],
+              "source": "current_user",
+              "summary": "",
+              "max_chars": 1800,
+              "order_ids": [
+                "ORD10002"
+              ],
+              "original_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+              "owner_user_id": "u_demo",
+              "session_id": "sess_25e066d86bfa4d838feb38887028c865"
+            },
+            "messages": [],
+            "summary": "",
+            "memory_managed": true,
+            "memory_preferences": {},
+            "retrieved_chunks": [],
+            "tool_results": [],
+            "citations": [],
+            "refused": false,
+            "step_count": 0,
+            "token_usage": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0
+            },
+            "latency": {
+              "intent_ms": 0.0,
+              "routing_ms": 0.0,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 0.0,
+              "llm_ms": 0.0,
+              "total_ms": 0.0
+            },
+            "confirm_action_id": null,
+            "confirmed_action": null,
+            "idempotency_key": null
+          },
+          "final_state": {
+            "trace_id": "offline_PSV14_0",
+            "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+            "user_id": "u_demo",
+            "user_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+            "resolved_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+            "selected_context": {
+              "effective_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+              "order_id": "ORD10002",
+              "needs_clarification": false,
+              "history": [],
+              "source": "current_user",
+              "summary": "",
+              "max_chars": 1800,
+              "order_ids": [
+                "ORD10002"
+              ],
+              "original_query": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+              "owner_user_id": "u_demo",
+              "session_id": "sess_25e066d86bfa4d838feb38887028c865"
+            },
+            "memory_managed": true,
+            "memory_preferences": {},
+            "messages": [
+              {
+                "role": "user",
+                "content": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                "name": null
+              },
+              {
+                "role": "assistant",
+                "content": "新客券门槛：NEW10 满 99 元减 10 元，不与品类券叠用；SHIP0 满 59 元包邮，偏远地区除外（这是包邮门槛，不属于满减）。ORD10002 的订单金额为 39.00 元（3900 分），当前状态为已送达。按照你的要求，我没有判断这张券能否补用，也没有修改这笔订单。",
+                "name": null
+              }
+            ],
+            "summary": "",
+            "intent": {
+              "label": "coupon",
+              "confidence": 0.72,
+              "prompt_version": "intent_rules_v1"
+            },
+            "complexity": {
+              "complexity": "tool_required",
+              "strategy": "agent",
+              "confidence": 0.8
+            },
+            "strategy": "agent",
+            "query_complexity": "tool_required",
+            "retrieved_chunks": [],
+            "plan": {
+              "steps": [
+                {
+                  "step_id": 1,
+                  "goal": "查询新客券的满减门槛与可用规则",
+                  "tool_name": "get_coupon",
+                  "arguments": {
+                    "user_id": null
+                  },
+                  "needs_retrieval": false
+                },
+                {
+                  "step_id": 2,
+                  "goal": "查询订单 ORD10002 的订单头信息以获取订单金额",
+                  "tool_name": "get_order",
+                  "arguments": {
+                    "order_id": "ORD10002"
+                  },
+                  "needs_retrieval": false
+                }
+              ]
+            },
+            "tool_results": [
+              {
+                "name": "get_coupon",
+                "success": true,
+                "output": {
+                  "coupons": [
+                    {
+                      "code": "NEW10",
+                      "desc": "新客满 99 减 10，不与品类券叠用"
+                    },
+                    {
+                      "code": "SHIP0",
+                      "desc": "满 59 包邮，偏远地区除外"
+                    }
+                  ]
+                },
+                "error": null,
+                "risk": "read",
+                "truncated": false
+              },
+              {
+                "name": "get_order",
+                "success": true,
+                "output": {
+                  "order_id": "ORD10002",
+                  "user_id": "u_demo",
+                  "status": "delivered",
+                  "items": [
+                    {
+                      "sku": "SKU-MUG-CUSTOM",
+                      "name": "定制马克杯",
+                      "quantity": 1,
+                      "unit_price_cents": 3900,
+                      "customized": true
+                    }
+                  ],
+                  "total_cents": 3900,
+                  "created_at": "2026-10-16T14:43:59.522826",
+                  "paid_at": "2026-10-16T14:43:59.522826",
+                  "shipped_at": "2026-10-17T14:43:59.522826",
+                  "delivered_at": "2026-10-24T14:43:59.522826",
+                  "tracking_no": "YT998877",
+                  "receiver_city": "北京"
+                },
+                "error": null,
+                "risk": "read",
+                "truncated": false
+              }
+            ],
+            "pending_action": null,
+            "confirmed_action": null,
+            "confirm_action_id": null,
+            "idempotency_key": null,
+            "final_answer": "新客券门槛：NEW10 满 99 元减 10 元，不与品类券叠用；SHIP0 满 59 元包邮，偏远地区除外（这是包邮门槛，不属于满减）。ORD10002 的订单金额为 39.00 元（3900 分），当前状态为已送达。按照你的要求，我没有判断这张券能否补用，也没有修改这笔订单。",
+            "citations": [],
+            "refused": false,
+            "step_count": 2,
+            "token_usage": {
+              "prompt_tokens": 623,
+              "completion_tokens": 421,
+              "total_tokens": 1044
+            },
+            "latency": {
+              "intent_ms": 2315.349999999853,
+              "routing_ms": 2043.2740999999623,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 4.7974000001431705,
+              "llm_ms": 2947.6448000000346,
+              "total_ms": 0.0
+            },
+            "extra": {
+              "faithfulness": {
+                "status": "SUPPORTED",
+                "supported": true,
+                "hallucinated_spans": []
+              },
+              "self_corrected": false
+            }
+          },
+          "response": {
+            "answer": "新客券门槛：NEW10 满 99 元减 10 元，不与品类券叠用；SHIP0 满 59 元包邮，偏远地区除外（这是包邮门槛，不属于满减）。ORD10002 的订单金额为 39.00 元（3900 分），当前状态为已送达。按照你的要求，我没有判断这张券能否补用，也没有修改这笔订单。",
+            "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+            "trace_id": "offline_PSV14_0",
+            "root_run_id": "87063d92-8183-461d-9168-df5a201fb166",
+            "intent": "coupon",
+            "complexity": "tool_required",
+            "strategy": "agent",
+            "citations": [],
+            "pending_action": null,
+            "refused": false,
+            "error_code": null,
+            "token_usage": {
+              "prompt_tokens": 623,
+              "completion_tokens": 421,
+              "total_tokens": 1044
+            },
+            "latency": {
+              "intent_ms": 2315.349999999853,
+              "routing_ms": 2043.2740999999623,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 4.7974000001431705,
+              "llm_ms": 2947.6448000000346,
+              "total_ms": 12380.068299999948
+            }
+          },
+          "pending_after": {},
+          "database_after": {
+            "business": {
+              "orders": {
+                "ORD10001": {
+                  "order_id": "ORD10001",
+                  "user_id": "u_demo",
+                  "status": "shipped",
+                  "total_cents": 29900,
+                  "created_at": "2026-11-02T14:43:59.522826",
+                  "paid_at": "2026-11-02T14:43:59.522826",
+                  "shipped_at": "2026-11-03T14:43:59.522826",
+                  "delivered_at": null,
+                  "tracking_no": "SF1234567890",
+                  "receiver_city": "上海"
+                },
+                "ORD10002": {
+                  "order_id": "ORD10002",
+                  "user_id": "u_demo",
+                  "status": "delivered",
+                  "total_cents": 3900,
+                  "created_at": "2026-10-16T14:43:59.522826",
+                  "paid_at": "2026-10-16T14:43:59.522826",
+                  "shipped_at": "2026-10-17T14:43:59.522826",
+                  "delivered_at": "2026-10-24T14:43:59.522826",
+                  "tracking_no": "YT998877",
+                  "receiver_city": "北京"
+                },
+                "ORD10003": {
+                  "order_id": "ORD10003",
+                  "user_id": "u_demo",
+                  "status": "paid",
+                  "total_cents": 7900,
+                  "created_at": "2026-11-05T09:43:59.522826",
+                  "paid_at": "2026-11-05T09:43:59.522826",
+                  "shipped_at": null,
+                  "delivered_at": null,
+                  "tracking_no": null,
+                  "receiver_city": "杭州"
+                }
+              },
+              "items": [
+                {
+                  "id": 1,
+                  "order_id": "ORD10001",
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                },
+                {
+                  "id": 2,
+                  "order_id": "ORD10002",
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "quantity": 1,
+                  "unit_price_cents": 3900,
+                  "customized": true
+                },
+                {
+                  "id": 3,
+                  "order_id": "ORD10003",
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "products": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "category": "数码",
+                  "price_cents": 29900,
+                  "inventory": 42,
+                  "tags": "耳机,降噪",
+                  "description": "头戴式主动降噪耳机"
+                },
+                {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "category": "家居",
+                  "price_cents": 3900,
+                  "inventory": 200,
+                  "tags": "定制,杯子",
+                  "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                },
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "category": "服饰",
+                  "price_cents": 7900,
+                  "inventory": 0,
+                  "tags": "衣服,基础款",
+                  "description": "基础纯棉短袖"
+                }
+              ],
+              "refunds": [],
+              "returns": [],
+              "audit": []
+            },
+            "tables": {
+              "audit_logs": [],
+              "idempotency_keys": [],
+              "messages": [
+                {
+                  "id": 1,
+                  "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+                  "role": "user",
+                  "content": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+                  "created_at": "2026-11-05T14:43:59.522826"
+                },
+                {
+                  "id": 2,
+                  "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+                  "role": "assistant",
+                  "content": "新客券门槛：NEW10 满 99 元减 10 元，不与品类券叠用；SHIP0 满 59 元包邮，偏远地区除外（这是包邮门槛，不属于满减）。ORD10002 的订单金额为 39.00 元（3900 分），当前状态为已送达。按照你的要求，我没有判断这张券能否补用，也没有修改这笔订单。",
+                  "created_at": "2026-11-05T14:43:59.522826"
+                }
+              ],
+              "order_items": [
+                {
+                  "id": 1,
+                  "order_id": "ORD10001",
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "quantity": 1,
+                  "unit_price_cents": 29900,
+                  "customized": false
+                },
+                {
+                  "id": 2,
+                  "order_id": "ORD10002",
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "quantity": 1,
+                  "unit_price_cents": 3900,
+                  "customized": true
+                },
+                {
+                  "id": 3,
+                  "order_id": "ORD10003",
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "quantity": 1,
+                  "unit_price_cents": 7900,
+                  "customized": false
+                }
+              ],
+              "orders": [
+                {
+                  "order_id": "ORD10001",
+                  "user_id": "u_demo",
+                  "status": "shipped",
+                  "total_cents": 29900,
+                  "created_at": "2026-11-02T14:43:59.522826",
+                  "paid_at": "2026-11-02T14:43:59.522826",
+                  "shipped_at": "2026-11-03T14:43:59.522826",
+                  "delivered_at": null,
+                  "tracking_no": "SF1234567890",
+                  "receiver_city": "上海"
+                },
+                {
+                  "order_id": "ORD10002",
+                  "user_id": "u_demo",
+                  "status": "delivered",
+                  "total_cents": 3900,
+                  "created_at": "2026-10-16T14:43:59.522826",
+                  "paid_at": "2026-10-16T14:43:59.522826",
+                  "shipped_at": "2026-10-17T14:43:59.522826",
+                  "delivered_at": "2026-10-24T14:43:59.522826",
+                  "tracking_no": "YT998877",
+                  "receiver_city": "北京"
+                },
+                {
+                  "order_id": "ORD10003",
+                  "user_id": "u_demo",
+                  "status": "paid",
+                  "total_cents": 7900,
+                  "created_at": "2026-11-05T09:43:59.522826",
+                  "paid_at": "2026-11-05T09:43:59.522826",
+                  "shipped_at": null,
+                  "delivered_at": null,
+                  "tracking_no": null,
+                  "receiver_city": "杭州"
+                }
+              ],
+              "products": [
+                {
+                  "sku": "SKU-HEADSET",
+                  "name": "降噪耳机 Pro",
+                  "category": "数码",
+                  "price_cents": 29900,
+                  "inventory": 42,
+                  "tags": "耳机,降噪",
+                  "description": "头戴式主动降噪耳机"
+                },
+                {
+                  "sku": "SKU-MUG-CUSTOM",
+                  "name": "定制马克杯",
+                  "category": "家居",
+                  "price_cents": 3900,
+                  "inventory": 200,
+                  "tags": "定制,杯子",
+                  "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                },
+                {
+                  "sku": "SKU-TEE",
+                  "name": "纯棉T恤",
+                  "category": "服饰",
+                  "price_cents": 7900,
+                  "inventory": 0,
+                  "tags": "衣服,基础款",
+                  "description": "基础纯棉短袖"
+                }
+              ],
+              "refunds": [],
+              "returns": [],
+              "sessions": [
+                {
+                  "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+                  "user_id": "u_demo",
+                  "summary": "",
+                  "created_at": "2026-11-05T14:43:59.522826",
+                  "updated_at": "2026-11-05T14:43:59.522826"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "runtime_settings": {
+        "llm_timeout_seconds": 30.0,
+        "llm_max_retries": 3,
+        "llm_judge_max_tokens": 512,
+        "retrieval_top_k_simple": 3,
+        "retrieval_top_k_complex": 8,
+        "memory_mode": "M2",
+        "memory_recent_messages": 8,
+        "memory_context_max_chars": 1800,
+        "memory_summary_ttl_seconds": 86400,
+        "retrieval_cache_ttl_seconds": 60,
+        "agent_tracing_enabled": false,
+        "agent_tracing_backend": "local",
+        "agent_trace_max_spans": 256,
+        "agent_trace_queue_size": 32,
+        "agent_langsmith_endpoint": "https://api.smith.langchain.com",
+        "agent_langsmith_project": "adaptive-rag",
+        "database": "isolated_sqlite_in_memory",
+        "provider": "Provider"
+      },
+      "database_initial": {
+        "business": {
+          "orders": {
+            "ORD10001": {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T14:43:59.522826",
+              "paid_at": "2026-11-02T14:43:59.522826",
+              "shipped_at": "2026-11-03T14:43:59.522826",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            "ORD10002": {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T14:43:59.522826",
+              "paid_at": "2026-10-16T14:43:59.522826",
+              "shipped_at": "2026-10-17T14:43:59.522826",
+              "delivered_at": "2026-10-24T14:43:59.522826",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            "ORD10003": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T09:43:59.522826",
+              "paid_at": "2026-11-05T09:43:59.522826",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          },
+          "items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "audit": []
+        },
+        "tables": {
+          "audit_logs": [],
+          "idempotency_keys": [],
+          "messages": [],
+          "order_items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "orders": [
+            {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T14:43:59.522826",
+              "paid_at": "2026-11-02T14:43:59.522826",
+              "shipped_at": "2026-11-03T14:43:59.522826",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T14:43:59.522826",
+              "paid_at": "2026-10-16T14:43:59.522826",
+              "shipped_at": "2026-10-17T14:43:59.522826",
+              "delivered_at": "2026-10-24T14:43:59.522826",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T09:43:59.522826",
+              "paid_at": "2026-11-05T09:43:59.522826",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "sessions": []
+        }
+      },
+      "database_final": {
+        "business": {
+          "orders": {
+            "ORD10001": {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T14:43:59.522826",
+              "paid_at": "2026-11-02T14:43:59.522826",
+              "shipped_at": "2026-11-03T14:43:59.522826",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            "ORD10002": {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T14:43:59.522826",
+              "paid_at": "2026-10-16T14:43:59.522826",
+              "shipped_at": "2026-10-17T14:43:59.522826",
+              "delivered_at": "2026-10-24T14:43:59.522826",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            "ORD10003": {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T09:43:59.522826",
+              "paid_at": "2026-11-05T09:43:59.522826",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          },
+          "items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "audit": []
+        },
+        "tables": {
+          "audit_logs": [],
+          "idempotency_keys": [],
+          "messages": [
+            {
+              "id": 1,
+              "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+              "role": "user",
+              "content": "把新客券的满减门槛列给我，再查 ORD10002 的订单金额。先别判断能不能补用，也别改这笔订单。",
+              "created_at": "2026-11-05T14:43:59.522826"
+            },
+            {
+              "id": 2,
+              "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+              "role": "assistant",
+              "content": "新客券门槛：NEW10 满 99 元减 10 元，不与品类券叠用；SHIP0 满 59 元包邮，偏远地区除外（这是包邮门槛，不属于满减）。ORD10002 的订单金额为 39.00 元（3900 分），当前状态为已送达。按照你的要求，我没有判断这张券能否补用，也没有修改这笔订单。",
+              "created_at": "2026-11-05T14:43:59.522826"
+            }
+          ],
+          "order_items": [
+            {
+              "id": 1,
+              "order_id": "ORD10001",
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "quantity": 1,
+              "unit_price_cents": 29900,
+              "customized": false
+            },
+            {
+              "id": 2,
+              "order_id": "ORD10002",
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            },
+            {
+              "id": 3,
+              "order_id": "ORD10003",
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "orders": [
+            {
+              "order_id": "ORD10001",
+              "user_id": "u_demo",
+              "status": "shipped",
+              "total_cents": 29900,
+              "created_at": "2026-11-02T14:43:59.522826",
+              "paid_at": "2026-11-02T14:43:59.522826",
+              "shipped_at": "2026-11-03T14:43:59.522826",
+              "delivered_at": null,
+              "tracking_no": "SF1234567890",
+              "receiver_city": "上海"
+            },
+            {
+              "order_id": "ORD10002",
+              "user_id": "u_demo",
+              "status": "delivered",
+              "total_cents": 3900,
+              "created_at": "2026-10-16T14:43:59.522826",
+              "paid_at": "2026-10-16T14:43:59.522826",
+              "shipped_at": "2026-10-17T14:43:59.522826",
+              "delivered_at": "2026-10-24T14:43:59.522826",
+              "tracking_no": "YT998877",
+              "receiver_city": "北京"
+            },
+            {
+              "order_id": "ORD10003",
+              "user_id": "u_demo",
+              "status": "paid",
+              "total_cents": 7900,
+              "created_at": "2026-11-05T09:43:59.522826",
+              "paid_at": "2026-11-05T09:43:59.522826",
+              "shipped_at": null,
+              "delivered_at": null,
+              "tracking_no": null,
+              "receiver_city": "杭州"
+            }
+          ],
+          "products": [
+            {
+              "sku": "SKU-HEADSET",
+              "name": "降噪耳机 Pro",
+              "category": "数码",
+              "price_cents": 29900,
+              "inventory": 42,
+              "tags": "耳机,降噪",
+              "description": "头戴式主动降噪耳机"
+            },
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "category": "家居",
+              "price_cents": 3900,
+              "inventory": 200,
+              "tags": "定制,杯子",
+              "description": "支持印字的定制杯，定制商品不适用7天无理由"
+            },
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "category": "服饰",
+              "price_cents": 7900,
+              "inventory": 0,
+              "tags": "衣服,基础款",
+              "description": "基础纯棉短袖"
+            }
+          ],
+          "refunds": [],
+          "returns": [],
+          "sessions": [
+            {
+              "session_id": "sess_25e066d86bfa4d838feb38887028c865",
+              "user_id": "u_demo",
+              "summary": "",
+              "created_at": "2026-11-05T14:43:59.522826",
+              "updated_at": "2026-11-05T14:43:59.522826"
+            }
+          ]
+        }
+      },
+      "provider_calls": [],
+      "scorer_result": {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "PSV14",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 13166.26159999987
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "coupon_rule_with_existing_order",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "87063d92-8183-461d-9168-df5a201fb166",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_coupon",
+              "arguments": {
+                "user_id": null
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "coupons": [
+                  {
+                    "code": "NEW10",
+                    "desc": "新客满 99 减 10，不与品类券叠用"
+                  },
+                  {
+                    "code": "SHIP0",
+                    "desc": "满 59 包邮，偏远地区除外"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "get_order",
+              "arguments": {
+                "order_id": "ORD10002"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "order_id": "ORD10002",
+                "user_id": "u_demo",
+                "status": "delivered",
+                "items": [
+                  {
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "quantity": 1,
+                    "unit_price_cents": 3900,
+                    "customized": true
+                  }
+                ],
+                "total_cents": 3900,
+                "created_at": "2026-10-16T14:43:59.522826",
+                "paid_at": "2026-10-16T14:43:59.522826",
+                "shipped_at": "2026-10-17T14:43:59.522826",
+                "delivered_at": "2026-10-24T14:43:59.522826",
+                "tracking_no": "YT998877",
+                "receiver_city": "北京"
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 26,
+          "known_limitation": null
+        },
+        "dataset_sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "model_evaluation": "NOT_RUN"
+      }
+    }
+  ],
+  "reported_tokens_group": 8111,
+  "accounted_tokens_group": 8111,
+  "unknown_usage_requests_group": 0,
+  "initial_seed_tables_sha256": "5ddb30e9e2caa8380a6a490ecf523ec40824c0adada6dbd9efd034e738a6a27a",
+  "raw_driver_metadata": {
+    "model_evaluation": "OFFLINE",
+    "real_model_evaluation": "NOT_RUN",
+    "provider": "OFFLINE_REPLAY",
+    "paid_api_calls": 0,
+    "paid_tokens": 0
+  }
+}
