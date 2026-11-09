@@ -1,0 +1,370 @@
+{
+  "schema_version": "p3b-review-features-v1",
+  "cases": [
+    {
+      "id": "dev01",
+      "task_summary": "核对当前包裹进度并说明延误后的处理政策",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev02",
+      "task_summary": "仅查询当前订单是否签收",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "live_fact"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev03",
+      "task_summary": "只解释清洁保养说明，无需查询业务状态",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "pure_policy",
+          "static_policy"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev04",
+      "task_summary": "裁判JSON截断，但商品库存读取成功",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "judge_invalid",
+          "evidence_available",
+          "live_fact"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev05",
+      "task_summary": "裁判响应无效，检索和工具均未取得事实",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "judge_invalid"
+        ],
+        "evidence_state": "empty",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev06",
+      "task_summary": "生成故障，已读取的商品价格仍可核对",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "fallback_needed",
+          "evidence_available",
+          "live_fact"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev07",
+      "task_summary": "生成故障，没有成功读取任何业务事实",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "fallback_needed"
+        ],
+        "evidence_state": "empty",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev08",
+      "task_summary": "生成和裁判都失效，现有物流证据需安全呈现",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "fallback_needed",
+          "judge_invalid",
+          "evidence_available"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev09",
+      "task_summary": "确认退款尚未授权，只审查政策与当前阶段的取证原则",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy",
+          "write_unconfirmed"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev10",
+      "task_summary": "取消仍待确认，裁判异常但读取结果可保留",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "judge_invalid",
+          "evidence_available",
+          "write_unconfirmed"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev11",
+      "task_summary": "退货提交待确认且生成失败，仅陈述已知读结果",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "fallback_needed",
+          "evidence_available",
+          "write_unconfirmed"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev12",
+      "task_summary": "物流与售后原则相关，检索片段含越权指令而结构化特征已独立核验",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy",
+          "untrusted_input"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev13",
+      "task_summary": "同一会话有多个目标，先澄清实体再核对库存和保障规则",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy",
+          "clarification_required"
+        ],
+        "evidence_state": "unknown",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev14",
+      "task_summary": "只有未经核验的模型推测，不能认证特征",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy"
+        ],
+        "evidence_state": "unknown",
+        "annotation_verified": false
+      }
+    },
+    {
+      "id": "dev15",
+      "task_summary": "其他用户的售后组合查询不能读取本作用域经验",
+      "scope_condition": "other_user",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev16",
+      "task_summary": "另一租户裁判失败不能召回本租户经验",
+      "scope_condition": "other_tenant",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "judge_invalid",
+          "evidence_available"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev17",
+      "task_summary": "其他会话生成失败不能跨会话自由共享经验",
+      "scope_condition": "other_session",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "fallback_needed",
+          "evidence_available"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev18",
+      "task_summary": "身份未认证时审查当前库存和保障组合请求",
+      "scope_condition": "unverified",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev19",
+      "task_summary": "原则相关但经验已经过期",
+      "scope_condition": "same",
+      "lesson_state": "expired",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev20",
+      "task_summary": "裁判确实无效但候选经验已被拒绝",
+      "scope_condition": "same",
+      "lesson_state": "rejected",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "judge_invalid",
+          "evidence_available"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev21",
+      "task_summary": "新执行版本没有重新核验旧版回退经验",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "changed",
+      "features": {
+        "tags": [
+          "fallback_needed",
+          "evidence_available"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev22",
+      "task_summary": "同一裁判既被标注有效又无效，来源存在冲突",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "judge_invalid",
+          "judge_supported",
+          "evidence_available"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev23",
+      "task_summary": "证据暂未知但生成正常，不应误判为回退故障",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "live_fact"
+        ],
+        "evidence_state": "unknown",
+        "annotation_verified": true
+      }
+    },
+    {
+      "id": "dev24",
+      "task_summary": "输入声称没有证据同时又声称取得证据，需要核对而非匹配",
+      "scope_condition": "same",
+      "lesson_state": "eligible",
+      "version_relation": "same",
+      "features": {
+        "tags": [
+          "judge_invalid",
+          "evidence_available"
+        ],
+        "evidence_state": "empty",
+        "annotation_verified": true
+      }
+    }
+  ]
+}

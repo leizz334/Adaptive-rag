@@ -1,0 +1,24 @@
+{
+  "schema_version": "b0-independent-pre-freeze-review-v1",
+  "scope": "Offline code/spec review and synthetic tests; no blind inputs, blind Gold, case manifest, .env, API, human CSV, commits or persistent phase state accessed or modified",
+  "status": "IMPORTANT_FINDING_REQUIRES_PRE_FREEZE_FIX",
+  "findings": [
+    {
+      "id": "B0-R1",
+      "severity": "important",
+      "file": "app/experience/review_applicability.py",
+      "description": "Only the positive decision copies candidate.non_applicability_conditions. Every NO_MATCH/DEFER early return produces an empty inherited_execution_restrictions tuple, so the returned advisory artifact does not consistently retain original restrictions as required.",
+      "impact": "Loss of complete safety context in negative/deferred review artifacts; not a discovered execution or injection capability.",
+      "recommendation": "Preserve original candidate restrictions on every valid candidate decision without reading evidence earlier or trusting unverified context features.",
+      "red_evidence": "b0_independent_review.xml"
+    }
+  ],
+  "validation": {
+    "command": "conda run -n adaptive-rag python -m pytest tests/unit/test_experience_b0_review.py -q --basetemp D:/Code/Adaptive-rag/.worktrees/p3-experience-validation/tmp-b0-independent-review --junitxml research/docs/agent_engineering_upgrade/p3_experience_validation/evidence/b0_independent_review.xml",
+    "exit_code": 1,
+    "passed": 1,
+    "failed": 2,
+    "state": "RED_BEFORE_IMPLEMENTER_FIX"
+  },
+  "bounded_conclusion": "The v2 architecture measures advisory principle relevance and does not itself permit execution, injection, human approval or demonstrated benefit. Scope/version/lifecycle checks precede evidence resolution; model_copy inputs are revalidated; source features and candidate references resolve through hash checking; scorer keeps Gold out of matcher inputs. No other critical or important issue established in this bounded inspection. Trusted offline assertions and file hashes are not production authorization or independent semantic attestation."
+}

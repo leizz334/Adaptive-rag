@@ -1523,5 +1523,93 @@
     "new_estimated_usd": 0,
     "delivery_validation_commit": "02ac7d0e550168a4533b891abaad6e4516f0ee47",
     "remote_verified_commit": "02ac7d0e550168a4533b891abaad6e4516f0ee47"
+  },
+  "p3_experience_validation": {
+    "phase": "P3-B",
+    "status": "in_progress_before_human_review",
+    "baseline_commit": "04ccadb661bacfe4b09616ad11226288d4af8bf3",
+    "authorized_now": [
+      "P3-B0",
+      "P3-B1"
+    ],
+    "human_review_received": false,
+    "human_review_validated": false,
+    "continue_instruction_received": false,
+    "active_enabled": false,
+    "p4_started": false,
+    "tasks": [
+      {
+        "TASK_ID": "P3-B0",
+        "status": "prepared_validated_frozen",
+        "passes": false,
+        "dependencies": [],
+        "acceptance_criteria": [
+          "Diagnose8frozen false negatives without changing old Gold",
+          "RED/GREEN minimal guarded applicability fix; new development and independently frozen blind data",
+          "C0/C1 precision/recall/FP/FN and per-candidate safety outcomes; no unsafe authorization"
+        ],
+        "evidence": [
+          "P3-B_PLAN.md",
+          "evidence/b0_baseline_pytest.xml",
+          "evidence/b0_red.xml",
+          "evidence/b0_additional_red.xml",
+          "evidence/b0_final_core.xml",
+          "evidence/b0_independent_review.json",
+          "evidence/b0_freeze.json"
+        ],
+        "validation": "Fresh548baseline;18REDthenGREEN;independent2metadataRED plusfreshnessREDfixed;24corePASS/Mypy149;source+Goldfrozen beforeblind;legacy matcherunchanged",
+        "commit_hash": null,
+        "next_action": "Evaluate immutableC0/C1 diagnostic/dev/blind;retainfailures;thenB0commit andB1verification"
+      },
+      {
+        "TASK_ID": "P3-B1",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P3-B0"
+        ],
+        "acceptance_criteria": [
+          "Exactly7saved R1real public answers with query,actual evidence,AI controversies and blank human choices",
+          "Index/packet/BOM CSV, hashes and absolute plus repository-relative paths; no human result fabricated",
+          "Checkpoint/push and pause beforeB2 until completed human review plus continuation"
+        ],
+        "evidence": [],
+        "validation": null,
+        "commit_hash": null,
+        "next_action": "P3-B_PLAN.md;stop after B1 for human review"
+      },
+      {
+        "TASK_ID": "P3-B2",
+        "status": "waiting_human_review",
+        "passes": false,
+        "dependencies": [
+          "P3-B1"
+        ],
+        "acceptance_criteria": [
+          "Import and verify actual human review received afterB1 checkpoint",
+          "Qualified experience only: isolated E0/E1/E2retrieval/injection benefit and independent negative-transfer checks; activeoff"
+        ],
+        "evidence": [],
+        "validation": null,
+        "commit_hash": null,
+        "next_action": "P3-B_PLAN.md;stop after B1 for human review"
+      },
+      {
+        "TASK_ID": "P3-B3",
+        "status": "waiting_human_review",
+        "passes": false,
+        "dependencies": [
+          "P3-B2"
+        ],
+        "acceptance_criteria": [
+          "AfterB2 run full engineering/security regressions and preserve failures",
+          "Produce P4_E2E_TEST_PLAN.md but do not execute P4; final safe delivery"
+        ],
+        "evidence": [],
+        "validation": null,
+        "commit_hash": null,
+        "next_action": "P3-B_PLAN.md;stop after B1 for human review"
+      }
+    ]
   }
 }

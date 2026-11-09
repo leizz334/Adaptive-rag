@@ -1,0 +1,13 @@
+# P3-B recovery
+
+Worktree D:/Code/Adaptive-rag/.worktrees/p3-experience-validation; branch codex/p3-experience-validation; origin https://github.com/leizz334/Adaptive-rag.git. Verified baseline04ccadb661bacfe4b09616ad11226288d4af8bf3 local/remote, prior worktree clean; root user changes preserved. Conda adaptive-rag. Initializer must not rerun.
+
+## Architecture decisions (preserve verbatim)
+
+Retain original C0 matcher, candidate catalog/records, business Agent and historical Gold. New versioned offline-review applicability separates principle relevance from execution and injection permission. Positive matches remain NO_EXECUTION/NO_INJECTION and carry mandatory scope/Owner/HITL/idempotency/freshness/untrusted-input constraints. Source-bound structured feature provenance is required; known-empty business evidence differs from unknown or untrusted annotations. No retrieval/injection/production activation is implemented in B0/B1.
+
+Human cells are blank until the user supplies real review. B2/B3 require both valid human results and an explicit continuation instruction. After B0/B1 validation+commits+normalpush+lsremote, PAUSE WAITING_HUMAN_REVIEW. Do not start B2, create P4plan early, run new paid requests, or auto-approve an experience.
+
+Current: fresh548baseline test running scratch/p3b-baseline; B0 diagnosis/planning active. Independent author b0_independent_holdout owns only blind JSON/Gold/manifest and has not read new implementation/results (public catalog inspection disclosed); parent must not read concrete blind content before source freeze. b1_review_packet owns only packet/index/CSV/generator/tests, no human annotations or globalstate. Root owns app/registry/tests/commits. New model HTTP0. Next: register phase exactly once, write B0RED tests and source-bound contract, independent review, freeze/evaluate, commit B0, then verify/commit B1 and push/pause.
+
+B0fresh548baselinePASS;NULUTF8inventoryfixed partialregistration withoutreinit. New review_applicability.py only;legacyC0/catalog/produnchanged. 18RED thenGREEN;reviewNO_MATCH/DEFER inheritedrestrictions2RED +fresh_read_needed1RED fixed;24corePASS/Mypy149. Beforeevaluationfreezeblind inputSHAf53bbd6bda1d4977b4b96eee09f4043ea5e3bee78ae147ae3e60f5032bd9348d,Gold9284ff115dd69685dbb826d3fd86f24279f3e2376726b87ac7b28c4e844e4132. ParenthasNOTreadconcreteblindinputs/labels. Newpolicyonlyprinciplereview,neverexecution/injection/humanapproval;allresponsesretainoldexecutionrestrictions. B1packetsready/blank butnotyetcommitted, parentchecksafterB0. Reviewtemp preserved inignoredscratch(no deletion). NextnewuniqueB0run,thenfulltests/B0commit,B1verifycommit,pushandPAUSEhuman. NoB2/B3/P4 orAPI.

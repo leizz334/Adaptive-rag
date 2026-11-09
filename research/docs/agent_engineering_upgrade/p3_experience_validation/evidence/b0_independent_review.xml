@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="3" time="0.664" timestamp="2026-11-09T21:18:09.231913+08:00" hostname="LAPTOP-OMRADJBO"><testcase classname="tests.unit.test_experience_b0_review" name="test_every_review_result_preserves_original_execution_restrictions[tags0-True-MATCH_FOR_REVIEW]" time="0.011" /><testcase classname="tests.unit.test_experience_b0_review" name="test_every_review_result_preserves_original_execution_restrictions[tags1-True-NO_MATCH]" time="0.009"><failure message="AssertionError: assert () == ('untrusted_i...ion_required')&#10;  &#10;  Right contains 2 more items, first extra item: 'untrusted_input'&#10;  Use -v to get more diff">tmp_path = WindowsPath('D:/Code/Adaptive-rag/.worktrees/p3-experience-validation/tmp-b0-independent-review/test_every_review_result_prese1')
+tags = ['live_fact'], verified = True, status = 'NO_MATCH'
+
+    @pytest.mark.parametrize(
+        "tags,verified,status",
+        [
+            (["live_fact", "static_policy", "untrusted_input"], True, "MATCH_FOR_REVIEW"),
+            (["live_fact"], True, "NO_MATCH"),
+            (["live_fact", "static_policy"], False, "DEFER"),
+        ],
+    )
+    def test_every_review_result_preserves_original_execution_restrictions(
+        tmp_path, tags, verified, status
+    ):
+        scope = ExperienceScope(
+            tenant_ref="1" * 64, user_ref="2" * 64, session_ref="3" * 64, verified=True
+        )
+        features = dict(tags=tags, evidence_state="present", annotation_verified=verified)
+        payload = tmp_path / "synthetic.json"
+        payload.write_text(json.dumps(features), encoding="utf-8")
+        reference = EvidenceRef(
+            artifact=payload.name, sha256=hashlib.sha256(payload.read_bytes()).hexdigest()
+        )
+        template = CATALOG["mixed_evidence"]
+        candidate = ExperienceCandidate(
+            scope=scope,
+            source_trace_id="synthetic-trace",
+            source_case_id="synthetic-case",
+            failure_type="ROUTING_ERROR",
+            evidence_refs=[reference],
+            family="mixed_evidence",
+            lesson=template["lesson"],
+            applicability_conditions=template["required"],
+            non_applicability_conditions=template["excluded"],
+            created_at=NOW,
+            updated_at=NOW,
+            expires_at=NOW + timedelta(days=1),
+            source_version="a" * 40,
+        )
+        context = ReviewContext(
+            task=ApplicabilityTask(scope=scope, tags=tags, source_version="a" * 40),
+            features=features,
+            features_ref=reference,
+        )
+        result = review_applicability(candidate, context, resolver=EvidenceResolver(tmp_path), now=NOW)
+        assert result.status == status
+        assert result.execution_permitted is False
+        assert result.injection_permitted is False
+        assert result.human_approval_granted is False
+&gt;       assert result.inherited_execution_restrictions == tuple(candidate.non_applicability_conditions)
+E       AssertionError: assert () == ('untrusted_i...ion_required')
+E         
+E         Right contains 2 more items, first extra item: 'untrusted_input'
+E         Use -v to get more diff
+
+tests\unit\test_experience_b0_review.py:64: AssertionError</failure></testcase><testcase classname="tests.unit.test_experience_b0_review" name="test_every_review_result_preserves_original_execution_restrictions[tags2-False-DEFER]" time="0.007"><failure message="AssertionError: assert () == ('untrusted_i...ion_required')&#10;  &#10;  Right contains 2 more items, first extra item: 'untrusted_input'&#10;  Use -v to get more diff">tmp_path = WindowsPath('D:/Code/Adaptive-rag/.worktrees/p3-experience-validation/tmp-b0-independent-review/test_every_review_result_prese2')
+tags = ['live_fact', 'static_policy'], verified = False, status = 'DEFER'
+
+    @pytest.mark.parametrize(
+        "tags,verified,status",
+        [
+            (["live_fact", "static_policy", "untrusted_input"], True, "MATCH_FOR_REVIEW"),
+            (["live_fact"], True, "NO_MATCH"),
+            (["live_fact", "static_policy"], False, "DEFER"),
+        ],
+    )
+    def test_every_review_result_preserves_original_execution_restrictions(
+        tmp_path, tags, verified, status
+    ):
+        scope = ExperienceScope(
+            tenant_ref="1" * 64, user_ref="2" * 64, session_ref="3" * 64, verified=True
+        )
+        features = dict(tags=tags, evidence_state="present", annotation_verified=verified)
+        payload = tmp_path / "synthetic.json"
+        payload.write_text(json.dumps(features), encoding="utf-8")
+        reference = EvidenceRef(
+            artifact=payload.name, sha256=hashlib.sha256(payload.read_bytes()).hexdigest()
+        )
+        template = CATALOG["mixed_evidence"]
+        candidate = ExperienceCandidate(
+            scope=scope,
+            source_trace_id="synthetic-trace",
+            source_case_id="synthetic-case",
+            failure_type="ROUTING_ERROR",
+            evidence_refs=[reference],
+            family="mixed_evidence",
+            lesson=template["lesson"],
+            applicability_conditions=template["required"],
+            non_applicability_conditions=template["excluded"],
+            created_at=NOW,
+            updated_at=NOW,
+            expires_at=NOW + timedelta(days=1),
+            source_version="a" * 40,
+        )
+        context = ReviewContext(
+            task=ApplicabilityTask(scope=scope, tags=tags, source_version="a" * 40),
+            features=features,
+            features_ref=reference,
+        )
+        result = review_applicability(candidate, context, resolver=EvidenceResolver(tmp_path), now=NOW)
+        assert result.status == status
+        assert result.execution_permitted is False
+        assert result.injection_permitted is False
+        assert result.human_approval_granted is False
+&gt;       assert result.inherited_execution_restrictions == tuple(candidate.non_applicability_conditions)
+E       AssertionError: assert () == ('untrusted_i...ion_required')
+E         
+E         Right contains 2 more items, first extra item: 'untrusted_input'
+E         Use -v to get more diff
+
+tests\unit\test_experience_b0_review.py:64: AssertionError</failure></testcase></testsuite></testsuites>
