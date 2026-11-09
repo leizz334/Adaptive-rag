@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.638" timestamp="2026-11-09T15:30:25.994198+08:00" hostname="LAPTOP-OMRADJBO"><testcase classname="tests.unit.test_experience_shadow" name="test_routing_failure_without_mixed_goal_evidence_has_no_safe_lesson" time="0.008"><failure message="pydantic_core._pydantic_core.ValidationError: 1 validation error for FailureSignal&#10;context_tags&#10;  Extra inputs are not permitted [type=extra_forbidden, input_value=['live_fact', 'static_policy'], input_type=list]&#10;    For further information visit https://errors.pydantic.dev/2.14/v/extra_forbidden">tests\unit\test_experience_shadow.py:89: in test_routing_failure_without_mixed_goal_evidence_has_no_safe_lesson
+    value = assessment().model_copy(update={"context_tags": []})
+            ^^^^^^^^^^^^
+tests\unit\test_experience_shadow.py:36: in assessment
+    return classify_failure(
+app\experience\taxonomy.py:10: in classify_failure
+    [s if isinstance(s, FailureSignal) else FailureSignal.model_validate(s) for s in signals],
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\experience\taxonomy.py:10: in &lt;listcomp&gt;
+    [s if isinstance(s, FailureSignal) else FailureSignal.model_validate(s) for s in signals],
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for FailureSignal
+E   context_tags
+E     Extra inputs are not permitted [type=extra_forbidden, input_value=['live_fact', 'static_policy'], input_type=list]
+E       For further information visit https://errors.pydantic.dev/2.14/v/extra_forbidden</failure></testcase></testsuite></testsuites>

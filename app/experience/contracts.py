@@ -4,11 +4,44 @@ from enum import StrEnum
 from pathlib import PurePosixPath
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, field_validator, model_validator
 
 
 class LocalContract(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
+
+
+class ExperienceScope(LocalContract):
+    """Trusted offline process assertion, never a public ChatRequest identity."""
+
+    tenant_ref: str = Field(pattern=r"^[a-f0-9]{64}$")
+    user_ref: str = Field(pattern=r"^[a-f0-9]{64}$")
+    session_ref: str = Field(pattern=r"^[a-f0-9]{64}$")
+    verified: StrictBool = False
+
+    def require_verified(self):
+        if self.verified is not True:
+            raise PermissionError("Trusted offline identity required")
+
+    @property
+    def key(self):
+        return (self.tenant_ref, self.user_ref, self.session_ref)
+
+
+ContextTag = Literal[
+    "live_fact",
+    "static_policy",
+    "judge_invalid",
+    "judge_supported",
+    "evidence_available",
+    "fallback_needed",
+    "write_unconfirmed",
+    "untrusted_input",
+    "clarification_required",
+    "pure_policy",
+    "fresh_read_needed",
+    "owner_check_required",
+]
 
 
 class FailureType(StrEnum):
@@ -82,6 +115,7 @@ class FailureSignal(LocalContract):
     position: int = Field(ge=0, le=1024)
     evidence_refs: list[EvidenceRef] = Field(max_length=16)
     summary: str = Field(min_length=1, max_length=256)
+    context_tags: list[ContextTag] = Field(default_factory=list, max_length=12)
     root_cause_hypothesis: str = Field(
         default="Mechanism is not uniquely established", max_length=256
     )
@@ -120,3 +154,4 @@ class FailureAssessment(LocalContract):
     evidence_refs: list[EvidenceRef] = Field(max_length=64)
     propagation: list[str] = Field(max_length=64)
     alternative_explanations: list[str] = Field(max_length=64)
+    context_tags: list[ContextTag] = Field(default_factory=list, max_length=12)

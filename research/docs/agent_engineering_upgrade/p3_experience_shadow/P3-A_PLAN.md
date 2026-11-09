@@ -19,7 +19,7 @@ Raw tools/documents are untrusted observations, never instructions. Only bounded
 ## Global constraints
 
 - Preserve every prior report, Gold, run and task namespace; no paid P2-S reruns.
-- EXPERiENCE_MEMORY_MODE is represented by Settings.experience_memory_mode: off by default, shadow explicit, active rejected.
+- EXPERIENCE_MEMORY_MODE is represented by ExperienceSettings.experience_memory_mode: off by default, shadow explicit, active rejected.
 - No existing Graph, Context, Memory M2, tools, Retriever, Generate, Judge or business repository behavior changes.
 - Store only generic lessons and bounded evidence references in an isolated database; no raw conversation, hidden reasoning, API key or personal order record.
 - Scope all operations to verified offline tenant/user/session assertions. No public authentication claim and no cross-session sharing.
@@ -39,7 +39,7 @@ Raw tools/documents are untrusted observations, never instructions. Only bounded
 - [ ] **A0** Verify actual remote/source, recompute baseline raw metrics and475tests. Register this phase and freeze history/user files. Commit only A0 evidence/state/plan.
 - [ ] **A1** `semantic_review/`: assemble14 actual saved final answers, atomic evidence and supplementary separate-cohort examples. Independent semantic review, second-pass disagreement checks and human packet; label deterministic versus model-assisted, HUMAN_CALIBRATION=NOT_RUN. Validate coverage/refs and commit.
 - [ ] **A2** `app/experience/contracts.py`, `taxonomy.py`, `tests/unit/test_experience_taxonomy.py`: write RED tests for verified/likely/unknown/artifact and earliest-node evidence, then minimal bounded classifier. Actual trace diagnoses remain independently sourced. Verify and commit.
-- [ ] **A3** `reflection.py`, `shadow.py`, Settings mode and `tests/unit/test_experience_shadow.py`: RED tests defaultoff/activeinvalid/completed-only/no unsafe lessons/no mutating input/bounded observer errors. Implement no-injection offline queue plus deterministic generic candidates and evidence resolver. Verify and commit.
+- [ ] **A3** `reflection.py`, `shadow.py`, independent ExperienceSettings mode and `tests/unit/test_experience_shadow.py`: RED tests defaultoff/activeinvalid/completed-only/no unsafe lessons/no mutating input/bounded observer errors. Implement no-injection offline queue plus deterministic generic candidates and evidence resolver. Verify and commit.
 - [ ] **A4** `storage.py`, `tests/integration/test_experience_storage.py`: RED tests file persistence, same-scope dedup, optimistic versions, lifecycle/review split, delete/expiry, unauthorized reads, rollback and dialect DDL. Separate metadata tables are explicit and reversible. Verify and commit.
 - [ ] **A5** `evaluation/`: freeze independently authored applicability/negative controls before evaluation, then compare E0 versus E1 under identical saved-completion replay and canonical answers/tools/business DB. E2 evaluates matching only, no injection. Verify honest metrics and commit.
 - [ ] **A6** Full475baseline plus new tests; Ruff/Mypy; old80/16/new30strict controls, Memory/Owner/Session/HITL/idempotency/trace/SSE. Audit all historical and user hashes, produce final report, commit, normalpush and lsremote, STOP.
@@ -51,3 +51,6 @@ A1 supplies semantic annotations and evidence refs, not production Gold or promp
 ## Validation and rollback
 
 Use Conda adaptive-rag, workspace scratch basetemp (system temp ACL previously fails). Preserve RED/GREEN output. Every task updates feature-list/progress and commits. Rollback is disabling mode (already defaultoff), removing the independent observer command, and dropping only the isolated experience tables after backup; business schema/production data are never migrated. Histories and failed candidates remain auditable unless explicitly deleted by scoped lifecycle operations.
+
+
+Ruling A3: historical source compatibility forbids changing existing business Settings. Use a separate offline ExperienceSettings and leave app/config/settings.py unchanged. First fullrun515PASS/1FAIL retained; no old test/Gold/source-freeze is loosened.

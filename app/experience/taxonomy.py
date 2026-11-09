@@ -49,4 +49,5 @@ def classify_failure(*, source_trace_id, source_case_id, source_version, signals
         evidence_refs=refs,
         propagation=[s.category.value for s in ordered if s in observed],
         alternative_explanations=list(dict.fromkeys(s.category.value for s in likely)),
+        context_tags=selected.context_tags if selected else [],
     )

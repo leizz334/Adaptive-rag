@@ -20,7 +20,7 @@ def resolve(value, pointer):
     return value
 
 
-def main():
+def main(output=None):
     diagnoses = json.loads((HERE / "evidence/a2_trace_diagnoses.json").read_bytes())
     sources = diagnoses["source_registry"]
     for source in sources.values():
@@ -74,6 +74,11 @@ def main():
                     if state == "VERIFIED_FAILURE"
                     else "Scoped control or evaluator observation",
                     root_cause_hypothesis="Mechanism remains a hypothesis; inspect the independently reviewed evidence and alternatives",
+                    context_tags=["live_fact", "static_policy"]
+                    if category == "ROUTING_ERROR"
+                    and {"get_product_detail", "get_price"}
+                    <= {t["name"] for t in row.get("required_tools", [])}
+                    else [],
                 )
             ]
             value = classify_failure(
@@ -97,7 +102,7 @@ def main():
         for r in assessments
     )
     save(
-        HERE / "evidence/a2_normalized_assessments.json",
+        output or HERE / "evidence/a2_normalized_assessments.json",
         dict(
             schema="p3a-trusted-signal-normalization-v1",
             source_version_semantics="Immutable evidence package version; original runtime hashes remain in referenced run configs",
