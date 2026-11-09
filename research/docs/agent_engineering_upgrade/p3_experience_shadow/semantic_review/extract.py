@@ -917,7 +917,8 @@ def main():
         "",
         *["- " + s for s in report["limitations"]],
     ]
-    (OUT / "semantic_review_cases.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    rendered = "\n".join(line.rstrip() for block in lines for line in block.split("\n"))
+    (OUT / "semantic_review_cases.md").write_text(rendered + "\n", encoding="utf-8")
     print(
         json.dumps(
             {

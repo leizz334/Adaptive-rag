@@ -1,0 +1,69 @@
+"""Fresh legacy strict contracts under unchanged M2 business implementation."""
+
+import asyncio
+import json
+import logging
+
+from eval.memory_ablation import long_window_case, run_arm, summarize
+from eval.multiturn import load_scenarios
+from research.docs.agent_engineering_upgrade.p3_experience_shadow.manage import HERE, ROOT, save
+
+
+async def main():
+    output = HERE / "runs/20261109_regression_01"
+    output.mkdir(parents=True, exist_ok=False)
+    paths = {
+        "original80": ROOT / "eval/dataset/agent_v2_extended.json",
+        "old16": HERE.parent / "p2_quality/new_unseen.json",
+        "former_development30": HERE.parent / "p2_agent_quality/datasets/development.json",
+        "former_holdout33": HERE.parent / "p2_agent_quality/datasets/blind_holdout.json",
+        "development24": HERE.parent / "p2_answer_reliability/datasets/development.json",
+        "holdout30": HERE.parent / "p2_answer_reliability/datasets/holdout.json",
+    }
+    results = {}
+    for name, path in paths.items():
+        cases, digest = load_scenarios(path)
+        raw = await run_arm(cases, digest, mode="M2", scripted=True)
+        save(output / f"{name}.json", raw)
+        results[name] = summarize(raw["results"])
+    long = await run_arm([long_window_case()], "long-window-contract", mode="M2", scripted=True)
+    save(output / "long_window.json", long)
+    results["long_window"] = summarize(long["results"])
+    prior = HERE.parent / "p2_answer_reliability/runs/s5_offline_fixedclock/S3"
+    regressions = []
+    for name in results:
+        old = json.loads((prior / name / "results.json").read_bytes())
+        current = json.loads((output / f"{name}.json").read_bytes())
+        passes = {r["case_id"] for r in current["results"] if r["status"] == "PASS"}
+        regressions.extend(
+            [
+                dict(dataset=name, case_id=r["case_id"])
+                for r in old["results"]
+                if r["status"] == "PASS" and r["case_id"] not in passes
+            ]
+        )
+    save(
+        output / "results.json",
+        dict(
+            model_evaluation="OFFLINE_SCRIPTED_NOT_REAL_SEMANTICS",
+            experience_mode="off",
+            memory="M2",
+            new_http=0,
+            new_tokens=0,
+            groups=results,
+            regressions=regressions,
+        ),
+    )
+    print(
+        json.dumps(
+            dict(
+                groups={n: f"{r['passed']}/{r['cases']}" for n, r in results.items()},
+                regressions=regressions,
+            )
+        )
+    )
+
+
+if __name__ == "__main__":
+    logging.disable(logging.CRITICAL)
+    asyncio.run(main())
