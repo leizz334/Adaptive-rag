@@ -88,7 +88,9 @@ class ExperienceCandidate(LocalContract):
         ):
             raise ValueError("UTC-aware timestamps required")
         if (
-            not self.created_at <= self.updated_at < self.expires_at
+            not self.created_at <= self.updated_at
+            or not self.created_at < self.expires_at
+            or (self.validation_status != "EXPIRED" and self.updated_at >= self.expires_at)
             or self.expires_at - self.created_at > timedelta(days=30)
         ):
             raise ValueError("Bounded ordered expiry required")
