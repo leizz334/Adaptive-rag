@@ -10,14 +10,14 @@
 
 ## B0: diagnosis, minimal repair and independent evidence
 
-- [ ] Verify local/remote P3-A04ccadb, fresh548tests, raw12TP/0FP/8FN/76TN and3NEEDS_REVIEW records; preserve all historical/user files.
-- [ ] Trace each of8misses to required/evidence/exclusion checks. Record missing evidence versus known-empty, principle relevance versus act authorization, and all alternative explanations.
-- [ ] Write RED unit tests for conditional relevance with non-execution obligations, unsafe scope/stale/expired/rejected/counterfeit or malformed source rejection and default compatibility.
-- [ ] Implement new `app/experience/review_applicability.py`; keep existing matches_offline unchanged. The new API has no tool/prompt/retrieval surface and never authorizes execution or injection.
-- [ ] Freeze24new development cases and separately authored32blind cases/Gold. Holdout author sees public principles/spec only, not candidate implementation, development labels or outcomes. Record procedural isolation limits.
-- [ ] Independently review code, fix important findings with RED/GREEN, then freeze source/scorer before first blind use.
-- [ ] Run common C0/C1 on unchanged consumed32diagnostic cases, development and new blind. Score relevance and safety obligations separately. Retain FP/FN and per-family strict all-case results. Applicability evidence does not approve experience content, storage status or production activation.
-- [ ] Run appropriate full/regression checks, update B0 state and commit. No Gold relaxation, case-ID logic or post-holdout tuning.
+- [x] Verify local/remote P3-A04ccadb, fresh548tests, raw12TP/0FP/8FN/76TN and3NEEDS_REVIEW records; preserve all historical/user files.
+- [x] Trace each of8misses to required/evidence/exclusion checks. Record missing evidence versus known-empty, principle relevance versus act authorization, and all alternative explanations.
+- [x] Write RED unit tests for conditional relevance with non-execution obligations, unsafe scope/stale/expired/rejected/counterfeit or malformed source rejection and default compatibility.
+- [x] Implement new `app/experience/review_applicability.py`; keep existing matches_offline unchanged. The new API has no tool/prompt/retrieval surface and never authorizes execution or injection.
+- [x] Freeze24new development cases and separately authored32blind cases/Gold. Holdout author sees public principles/spec only, not candidate implementation, development labels or outcomes. Record procedural isolation limits.
+- [x] Independently review code, fix important findings with RED/GREEN, then freeze source/scorer before first blind use.
+- [x] Run common C0/C1 on unchanged consumed32diagnostic cases, development and new blind. Score relevance and safety obligations separately. Retain FP/FN and per-family strict all-case results. Applicability evidence does not approve experience content, storage status or production activation.
+- [x] Run appropriate full/regression checks, update B0 state and commit. No Gold relaxation, case-ID logic or post-holdout tuning.
 
 ## B1: human review package
 
