@@ -1,0 +1,307 @@
+{
+  "canonical": {
+    "decisions": [
+      {
+        "answer": "按你的要求，仅列出信息，不判断能否补用，也不对订单做任何改动。\n\n一、新客券满减门槛（来自当前券列表查询）\n- NEW10：新客满 99 减 10，不与品类券叠用。门槛为满 99 元。\n- SHIP0：满 59 包邮，偏远地区除外。这属于包邮权益，并非满减券，门槛为满 59 元。\n除上述两张券外，当前查询未返回其他新客券，因此没有更多满减门槛可列。\n\n二、ORD10002 订单金额（来自当前订单查询）\n- 订单状态：delivered，即已送达。\n- 商品：定制马克杯 ×1，单价 3900 分。\n- 订单合计：3900 分，即 39.00 元。\n- 该订单金额低于上述两张券的门槛（99 元、59 元）；这一点仅为事实对照，按你的要求，这里不进行能否补用的判断。\n\n三、未做事项\n- 未判断该订单能否补用新客券。\n- 未对该订单发起任何修改或退款类操作。\n\n四、说明\n本次检索无可用证据片段，故无 chunk_id 可引用；以上内容均取自实时工具结果（get_coupon、get_order）。如需进一步判断补用资格，请明确授权，我再依据对应政策核查。",
+        "intent": "coupon",
+        "strategy": "agent",
+        "complexity": "tool_required",
+        "pending": null,
+        "refused": false,
+        "nodes": [
+          "apply_guardrail",
+          "classify_intent",
+          "route_complexity",
+          "plan_tasks",
+          "execute_tools",
+          "generate_answer",
+          "check_faithfulness",
+          "compact_memory"
+        ],
+        "plans": [
+          {
+            "steps": [
+              {
+                "step_id": 1,
+                "goal": "查询当前可用优惠券的结构化规则与满减门槛（含新客券）",
+                "tool_name": "get_coupon",
+                "arguments": {
+                  "user_id": null
+                },
+                "needs_retrieval": false
+              },
+              {
+                "step_id": 2,
+                "goal": "查询订单 ORD10002 的金额与状态",
+                "tool_name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                },
+                "needs_retrieval": false
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "tool_calls": [
+      {
+        "name": "get_coupon",
+        "arguments": {
+          "user_id": null
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "output": {
+          "coupons": [
+            {
+              "code": "NEW10",
+              "desc": "新客满 99 减 10，不与品类券叠用"
+            },
+            {
+              "code": "SHIP0",
+              "desc": "满 59 包邮，偏远地区除外"
+            }
+          ]
+        },
+        "turn": 0
+      },
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10002"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "output": {
+          "order_id": "ORD10002",
+          "user_id": "u_demo",
+          "status": "delivered",
+          "items": [
+            {
+              "sku": "SKU-MUG-CUSTOM",
+              "name": "定制马克杯",
+              "quantity": 1,
+              "unit_price_cents": 3900,
+              "customized": true
+            }
+          ],
+          "total_cents": 3900,
+          "created_at": "2026-10-16T14:43:59.522826",
+          "paid_at": "2026-10-16T14:43:59.522826",
+          "shipped_at": "2026-10-17T14:43:59.522826",
+          "delivered_at": "2026-10-24T14:43:59.522826",
+          "tracking_no": "YT998877",
+          "receiver_city": "北京"
+        },
+        "turn": 0
+      }
+    ],
+    "business_initial": {
+      "orders": {
+        "ORD10001": {
+          "order_id": "ORD10001",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "total_cents": 29900,
+          "created_at": "2026-11-02T14:43:59.522826",
+          "paid_at": "2026-11-02T14:43:59.522826",
+          "shipped_at": "2026-11-03T14:43:59.522826",
+          "delivered_at": null,
+          "tracking_no": "SF1234567890",
+          "receiver_city": "上海"
+        },
+        "ORD10002": {
+          "order_id": "ORD10002",
+          "user_id": "u_demo",
+          "status": "delivered",
+          "total_cents": 3900,
+          "created_at": "2026-10-16T14:43:59.522826",
+          "paid_at": "2026-10-16T14:43:59.522826",
+          "shipped_at": "2026-10-17T14:43:59.522826",
+          "delivered_at": "2026-10-24T14:43:59.522826",
+          "tracking_no": "YT998877",
+          "receiver_city": "北京"
+        },
+        "ORD10003": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "paid",
+          "total_cents": 7900,
+          "created_at": "2026-11-05T09:43:59.522826",
+          "paid_at": "2026-11-05T09:43:59.522826",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        }
+      },
+      "items": [
+        {
+          "id": 1,
+          "order_id": "ORD10001",
+          "sku": "SKU-HEADSET",
+          "name": "降噪耳机 Pro",
+          "quantity": 1,
+          "unit_price_cents": 29900,
+          "customized": false
+        },
+        {
+          "id": 2,
+          "order_id": "ORD10002",
+          "sku": "SKU-MUG-CUSTOM",
+          "name": "定制马克杯",
+          "quantity": 1,
+          "unit_price_cents": 3900,
+          "customized": true
+        },
+        {
+          "id": 3,
+          "order_id": "ORD10003",
+          "sku": "SKU-TEE",
+          "name": "纯棉T恤",
+          "quantity": 1,
+          "unit_price_cents": 7900,
+          "customized": false
+        }
+      ],
+      "products": [
+        {
+          "sku": "SKU-HEADSET",
+          "name": "降噪耳机 Pro",
+          "category": "数码",
+          "price_cents": 29900,
+          "inventory": 42,
+          "tags": "耳机,降噪",
+          "description": "头戴式主动降噪耳机"
+        },
+        {
+          "sku": "SKU-MUG-CUSTOM",
+          "name": "定制马克杯",
+          "category": "家居",
+          "price_cents": 3900,
+          "inventory": 200,
+          "tags": "定制,杯子",
+          "description": "支持印字的定制杯，定制商品不适用7天无理由"
+        },
+        {
+          "sku": "SKU-TEE",
+          "name": "纯棉T恤",
+          "category": "服饰",
+          "price_cents": 7900,
+          "inventory": 0,
+          "tags": "衣服,基础款",
+          "description": "基础纯棉短袖"
+        }
+      ],
+      "refunds": [],
+      "returns": [],
+      "audit": []
+    },
+    "business_final": {
+      "orders": {
+        "ORD10001": {
+          "order_id": "ORD10001",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "total_cents": 29900,
+          "created_at": "2026-11-02T14:43:59.522826",
+          "paid_at": "2026-11-02T14:43:59.522826",
+          "shipped_at": "2026-11-03T14:43:59.522826",
+          "delivered_at": null,
+          "tracking_no": "SF1234567890",
+          "receiver_city": "上海"
+        },
+        "ORD10002": {
+          "order_id": "ORD10002",
+          "user_id": "u_demo",
+          "status": "delivered",
+          "total_cents": 3900,
+          "created_at": "2026-10-16T14:43:59.522826",
+          "paid_at": "2026-10-16T14:43:59.522826",
+          "shipped_at": "2026-10-17T14:43:59.522826",
+          "delivered_at": "2026-10-24T14:43:59.522826",
+          "tracking_no": "YT998877",
+          "receiver_city": "北京"
+        },
+        "ORD10003": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "paid",
+          "total_cents": 7900,
+          "created_at": "2026-11-05T09:43:59.522826",
+          "paid_at": "2026-11-05T09:43:59.522826",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        }
+      },
+      "items": [
+        {
+          "id": 1,
+          "order_id": "ORD10001",
+          "sku": "SKU-HEADSET",
+          "name": "降噪耳机 Pro",
+          "quantity": 1,
+          "unit_price_cents": 29900,
+          "customized": false
+        },
+        {
+          "id": 2,
+          "order_id": "ORD10002",
+          "sku": "SKU-MUG-CUSTOM",
+          "name": "定制马克杯",
+          "quantity": 1,
+          "unit_price_cents": 3900,
+          "customized": true
+        },
+        {
+          "id": 3,
+          "order_id": "ORD10003",
+          "sku": "SKU-TEE",
+          "name": "纯棉T恤",
+          "quantity": 1,
+          "unit_price_cents": 7900,
+          "customized": false
+        }
+      ],
+      "products": [
+        {
+          "sku": "SKU-HEADSET",
+          "name": "降噪耳机 Pro",
+          "category": "数码",
+          "price_cents": 29900,
+          "inventory": 42,
+          "tags": "耳机,降噪",
+          "description": "头戴式主动降噪耳机"
+        },
+        {
+          "sku": "SKU-MUG-CUSTOM",
+          "name": "定制马克杯",
+          "category": "家居",
+          "price_cents": 3900,
+          "inventory": 200,
+          "tags": "定制,杯子",
+          "description": "支持印字的定制杯，定制商品不适用7天无理由"
+        },
+        {
+          "sku": "SKU-TEE",
+          "name": "纯棉T恤",
+          "category": "服饰",
+          "price_cents": 7900,
+          "inventory": 0,
+          "tags": "衣服,基础款",
+          "description": "基础纯棉短袖"
+        }
+      ],
+      "refunds": [],
+      "returns": [],
+      "audit": []
+    }
+  },
+  "replay_responses_consumed": 5,
+  "observer": "NO_SAFE_LESSON"
+}
