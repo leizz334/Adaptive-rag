@@ -24,7 +24,7 @@
 - [x] Reuse only seven actual R1public final answers from existing immutable captures, with original queries and actual tool/RAG observations.
 - [x] Generate Chinese index, packet and BOM CSV with blank human cells; priority PSV04/PSV13/PSV16. AI labels/controversies are separately disclosed and not copied into human verdicts.
 - [x] Verify exact text and source hashes, seven rows, blank PASS/FAIL/UNCERTAIN choices, frozen query/answer identities and absolute plus repo-relative paths.
-- [ ] Record full current validation and preservation/secret audit, commit/push and verify ls-remote. Mark WAITING_HUMAN_REVIEW and STOP.
+- [x] Record full current validation and preservation/secret audit, commit/push and verify ls-remote. Mark WAITING_HUMAN_REVIEW and STOP.
 
 ## Deferred B2/B3 gate
 

@@ -1526,7 +1526,7 @@
   },
   "p3_experience_validation": {
     "phase": "P3-B",
-    "status": "waiting_human_review_pending_delivery",
+    "status": "WAITING_HUMAN_REVIEW",
     "baseline_commit": "04ccadb661bacfe4b09616ad11226288d4af8bf3",
     "authorized_now": [
       "P3-B0",
@@ -1566,8 +1566,8 @@
       },
       {
         "TASK_ID": "P3-B1",
-        "status": "packet_verified_awaiting_delivery",
-        "passes": false,
+        "status": "completed_waiting_human_review",
+        "passes": true,
         "dependencies": [
           "P3-B0"
         ],
@@ -1582,11 +1582,12 @@
           "human_review_template.csv",
           "evidence/b1_packet_validation.json",
           "evidence/b1_packet_pytest.xml",
+          "evidence/delivery.json",
           "P3-B_CHECKPOINT_REPORT.md"
         ],
-        "validation": "7exactR1publicanswers/136refs/11sourcehashes;blankhumanfields;6packetPASS;578fullserialPASS/Ruff/Mypy149PASS;0newHTTP",
-        "commit_hash": null,
-        "next_action": "Normalpush authorized branch;verify lsremote;recordactualdelivery;PAUSE until humanCSV plus continue;B2B3_NOT_RUN",
+        "validation": "7exactR1answers/blankhumanfields/6packetPASS;578serialPASS/Ruff/Mypy149PASS;normalpush+lsremote40014a80verified;1764historical20userfilespreserved;all3Gitblobsbyteexact",
+        "commit_hash": "40014a80f46553709538914648f9210690e6e856",
+        "next_action": "PAUSE WAITING_HUMAN_REVIEW: receive actual reviewed CSV plus explicit continue; then validate B2 prerequisites;doNOTstartB2/B3/injection/P4 now",
         "human_verdicts_populated": 0
       },
       {
@@ -1621,6 +1622,8 @@
         "commit_hash": null,
         "next_action": "P3-B_PLAN.md;stop after B1 for human review"
       }
-    ]
+    ],
+    "delivery_verified_commit": "40014a80f46553709538914648f9210690e6e856",
+    "next_action": "Wait for actual human review plus explicit continuation; B2/B3 NOT_RUN"
   }
 }
