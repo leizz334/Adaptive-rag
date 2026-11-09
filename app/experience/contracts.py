@@ -1,5 +1,6 @@
 """Bounded structural evidence; no raw conversations or model reasoning."""
 
+import re
 from enum import StrEnum
 from pathlib import PurePosixPath
 from typing import Literal
@@ -96,6 +97,8 @@ class EvidenceRef(LocalContract):
             raise ValueError("JSON pointer required")
         if any(ord(c) < 32 for c in value):
             raise ValueError("Control characters forbidden")
+        if re.search(r"~(?![01])", value):
+            raise ValueError("Invalid JSON pointer escape")
         return value
 
 

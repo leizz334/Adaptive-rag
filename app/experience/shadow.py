@@ -2,7 +2,9 @@
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 
 from app.experience.contracts import EvidenceRef, ExperienceScope, FailureAssessment
@@ -29,7 +31,12 @@ class EvidenceResolver:
         value = json.loads(raw)
         for part in ref.pointer.split("/")[1:] if ref.pointer else []:
             key = part.replace("~1", "/").replace("~0", "~")
-            value = value[int(key)] if isinstance(value, list) else value[key]
+            if isinstance(value, list):
+                if not re.fullmatch(r"0|[1-9][0-9]*", key):
+                    raise ValueError("Canonical non-negative array index required")
+                value = value[int(key)]
+            else:
+                value = value[key]
         return value
 
 
@@ -40,11 +47,12 @@ class ObservationOutcome:
 
 
 class ShadowObserver:
-    def __init__(self, *, mode="off", resolver=None, sink=None, max_observations=64):
+    def __init__(self, *, mode="off", resolver=None, sink=None, max_observations=64, clock=None):
         if mode not in {"off", "shadow"} or not 1 <= max_observations <= 256:
             raise ValueError("Off/shadow mode and bounded observation limit required")
         self.mode, self.resolver, self.sink = mode, resolver, sink
         self.limit = max_observations
+        self.clock = clock or (lambda: datetime.now(UTC))
         self.seen: set[tuple] = set()
 
     async def observe(
@@ -69,7 +77,7 @@ class ShadowObserver:
             if len(self.seen) >= self.limit:
                 return ObservationOutcome("SKIPPED_LIMIT")
             self.seen.add(key)
-            candidate = reflect(assessment, scope)
+            candidate = reflect(assessment, scope, now=self.clock())
             if candidate is None:
                 return ObservationOutcome("NO_SAFE_LESSON")
             if self.resolver is None:

@@ -188,6 +188,26 @@ async def test_shadow_sink_failure_is_isolated_without_error_details(tmp_path):
     assert result == dict(answer="unchanged", business_status="committed")
 
 
+@pytest.mark.asyncio
+async def test_offline_clock_is_explicit_for_reproducible_expiry(tmp_path):
+    module, _ = api()
+    path = tmp_path / "sample.json"
+    path.write_text("{}")
+    saved = []
+
+    async def sink(value):
+        saved.append(value)
+
+    now = datetime(2026, 11, 9, tzinfo=UTC)
+    observer = module.ShadowObserver(
+        mode="shadow", resolver=module.EvidenceResolver(tmp_path), sink=sink, clock=lambda: now
+    )
+    assert (
+        await observer.observe({}, assessment(path), scope(), completed=True)
+    ).status == "PROPOSED"
+    assert saved[0].created_at == now
+
+
 def test_evidence_resolver_requires_json_hash_and_existing_pointer(tmp_path):
     module, _ = api()
     path = tmp_path / "sample.json"

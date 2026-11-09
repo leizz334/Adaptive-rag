@@ -1,0 +1,38 @@
+{
+  "scope": "Independent pre-freeze review of new experience modules and offline evaluation runner",
+  "holdout_concrete_inputs_or_labels_read": false,
+  "network_requests": 0,
+  "implementation_modified": false,
+  "validation_command": "conda run -n adaptive-rag python -m pytest tests/unit/test_experience_review.py -q --basetemp data/local/a6-review-scratch-01 --junitxml research/docs/agent_engineering_upgrade/p3_experience_shadow/evidence/a6_independent_review.xml",
+  "validation_result": "4 expected RED counterexamples, 1.35 seconds; no fixes applied by reviewer",
+  "findings": [
+    {
+      "id": "A6-R1",
+      "priority": "P1",
+      "file": "app/experience/storage.py",
+      "line": 315,
+      "title": "Delete does not atomically enforce the caller's expected version",
+      "evidence": "Synthetic AsyncSession hook commits an independent PROPOSED to NEEDS_REVIEW update immediately after delete reads version 1. delete(expected_version=1) nevertheless succeeds and deletes the version-2 record because ORM DELETE has no version predicate.",
+      "required_behavior": "Atomically condition deletion on ID, scope and expected_version; fail and roll back tombstone/event deletions if no row matches."
+    },
+    {
+      "id": "A6-R2",
+      "priority": "P2",
+      "file": "app/experience/storage.py",
+      "line": 272,
+      "title": "Verification evidence references bypass provenance privacy checks",
+      "evidence": "A valid synthetic validation report named reviewer.person@example.com.json is accepted for VERIFIED_OFFLINE and its personal identifier is serialized directly into ExperienceEventRow.evidence_ref. Candidate provenance applies privacy checks, but governance provenance does not.",
+      "required_behavior": "Revalidate and apply the same bounded provenance privacy checks to verification artifact/pointer strings before resolving or persisting them."
+    },
+    {
+      "id": "A6-R3",
+      "priority": "P2",
+      "file": "app/experience/shadow.py",
+      "line": 33,
+      "title": "Malformed evidence pointers resolve as valid evidence",
+      "evidence": "The resolver accepts /-1 on a JSON list as its last element and accepts the invalid JSON Pointer escape /~2 as an object key. Python int indexing and unchecked escape replacement disagree with the promised fail-closed evidence-reference contract.",
+      "required_behavior": "Validate JSON Pointer escapes and canonical nonnegative list index syntax before traversal, rejecting negative, signed and leading-zero array indices and unsupported tilde escapes."
+    }
+  ],
+  "limits": "Synthetic counterexamples establish the listed boundary failures only. They do not establish learning benefit, independent source truth, human calibration, live PostgreSQL behavior or production authentication. Offline identity assertions and hash-bound report metadata are accepted as the documented trusted-operator boundary."
+}

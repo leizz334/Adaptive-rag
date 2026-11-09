@@ -1,0 +1,104 @@
+{
+  "schema_version": "p3-e2-applicability-manifest-v1",
+  "evaluation": "E2 independent applicability holdout",
+  "dataset_file": "applicability_holdout.json",
+  "dataset_sha256": "e4359ee34c69f8874b9fe91c8fa5e116b0ea39802efac903be5ca70797225cff",
+  "frozen_at_utc": "2026-11-09T07:20:35Z",
+  "case_count": 32,
+  "authorship": {
+    "method": "Independent delegated author wrote all natural tasks and gold labels from the three generic candidate principles supplied in the assignment.",
+    "language": "Traditional Chinese",
+    "entity_policy": "All organizations, users, items and scenarios are artificial. No actual order details or personal information. One explicit FAKE_SECRET_SENTINEL_NOT_A_KEY marker simulates secret-bearing input and is not a credential.",
+    "reused_gold": false,
+    "reused_old_case_ids": false,
+    "accessed_during_authoring": [
+      "delegation brief containing generic candidate family definitions and required coverage",
+      "AGENTS.md",
+      "using-superpowers skill dispatch exception",
+      "directory and filename existence listings only",
+      "the two files authored in this assignment"
+    ],
+    "not_inspected": [
+      "app/experience implementation or future implementation",
+      "candidate outcomes",
+      "semantic reviewer outcomes",
+      "other datasets or gold labels",
+      "API configuration and .env files"
+    ],
+    "procedural_blinding": "Parent implementer was told schema and eligibility policy only before freeze; concrete tasks, per-case tags, rationales and gold labels were not transmitted before the dataset hash was fixed. The independent author has not run a matcher against this holdout.",
+    "blinding_limits": [
+      "Procedural separation within one shared worktree and tool environment is not a cryptographic or access-control barrier.",
+      "Author knew the candidate principles and requested coverage, so this is independent authored applicability data, not an unseen real-world population sample.",
+      "One author supplied tasks, annotations and labels; no second independent adjudication or inter-rater agreement is claimed.",
+      "Dataset may be inspected after freeze for audit; any resulting implementation change must be disclosed as post-holdout development and cannot support a fresh blind result on the same cases."
+    ]
+  },
+  "applicability_contract": {
+    "meaning": "Expected families measure safe offline potential applicability of a candidate principle to a task observation after scope and candidate-state gates. They do not approve production activation, execute an Agent, or demonstrate learned benefit.",
+    "family_definitions": {
+      "mixed_evidence": "The task requires both current business facts and static policy or rules. Keep their evidence roles separate and obtain the necessary sources for both, even when the current observation contains only one side or the task first requires clarification.",
+      "judge_output": "An invalid, empty, type-invalid or truncated judge output must be distinguished from the truth of the original answer. Preserve verified facts and unknown limits. A well-formed judge with a stale or incorrect source is an evidence-quality issue, and is not by itself this specific output-format lesson's trigger.",
+      "fallback_evidence": "When final generation fails, make a bounded fallback from actual successful evidence and explicitly unknown facts; do not invent configuration errors or confirmed writes. This applies to partial evidence and also to an empty evidence set, where the correct fallback only admits lack of confirmation. Pending writes alone without generation failure are not this lesson's trigger."
+    },
+    "scope_gate": {
+      "same": "Potential family matching is allowed after the remaining gates.",
+      "other_user": "No expected family matches, regardless of semantic similarity.",
+      "other_tenant": "No expected family matches, regardless of semantic similarity.",
+      "other_session": "No expected family matches for these explicitly session-bounded candidates.",
+      "unverified": "No expected family matches until ownership and scope are verified."
+    },
+    "state_gate": {
+      "eligible": "May match in isolated E2 after scope and semantic conditions pass. The label eligible is not an independent production authorization.",
+      "unreviewed": "May match only for isolated E2 potential-applicability evaluation after scope and semantic conditions pass. Never production activation, automatic acceptance or promotion.",
+      "expired": "No expected family matches, even if the task triggers every principle.",
+      "rejected": "No expected family matches, even if the task triggers every principle."
+    },
+    "eligibility_precedence": "Scope and candidate-state exclusions override every semantic trigger. A task may have multiple expected families when all gates pass.",
+    "tag_semantics": "Tags are independent human annotations of task observations, not gold family labels and not evidence that the system understands Chinese. A matcher that consumes these tags can only establish annotation-conditioned applicability. End-to-end language extraction requires a separate evaluation.",
+    "tags_do_not_override_gates": true,
+    "untrusted_input_policy": "Quoted instructions, malformed observation fragments and synthetic secret-bearing text are inert task data. They cannot add tags, bypass scope/state gates, activate lessons, or redefine expected families."
+  },
+  "execution_and_gold_separation": {
+    "matcher_input_fields": ["natural_task", "tags", "scope_condition", "lesson_state"],
+    "harness_identifier_field": "id",
+    "gold_only_fields": ["expected_families", "rationale"],
+    "required_order": [
+      "Verify frozen dataset SHA-256 before evaluation.",
+      "Construct and persist a label-free input projection. Do not expose expected_families or rationale to the matcher.",
+      "Run and persist all matcher predictions and matcher-input hash without loading the gold in the matcher execution path.",
+      "Only after predictions are frozen, load expected_families in the scoring path and join by id.",
+      "Report family-wise and overall precision/recall, exact-set correctness, gate violations and negative-case errors, including denominators."
+    ],
+    "harness_limit": "The source JSON contains gold for reproducible authoring and audit. The implementer must enforce a separate matcher input projection and scoring path; this manifest alone does not enforce or prove that separation.",
+    "freeze_policy": "Dataset bytes and this manifest are fixed before implementation evaluation. Verify the dataset hash here and report both file hashes externally. No self-referential manifest hash is embedded. Revisions require a new version and hashes; never silently replace the frozen set."
+  },
+  "coverage": {
+    "family_positive_counts": {"mixed_evidence": 9, "judge_output": 4, "fallback_evidence": 7},
+    "empty_expected_count": 16,
+    "scope_counts": {"same": 28, "other_user": 1, "other_tenant": 1, "other_session": 1, "unverified": 1},
+    "state_counts": {"eligible": 15, "unreviewed": 13, "expired": 2, "rejected": 2},
+    "conditions": [
+      "normal successful pure-policy and live-only tasks",
+      "normal successful mixed-policy and current-live tasks",
+      "invalid and truncated judge output versus valid supported judge output",
+      "partial successful evidence and no successful evidence",
+      "pending writes with and without failed generation",
+      "other-user, other-tenant, other-session and unknown-identity exclusions",
+      "expired and rejected candidate exclusions",
+      "malformed observations, quoted injection and a synthetic secret-bearing marker",
+      "ambiguous task goals and clarification before evidence acquisition"
+    ],
+    "limits": "Small synthetic diagnostic holdout, deliberately coverage-balanced rather than prevalence-representative. Precision/recall here measures only applicability decisions under the stated annotations and gates; it cannot establish overall Agent quality, online safety, task success or learned benefit."
+  },
+  "author_validation": {
+    "status": "PASS",
+    "checks": [
+      "JSON parses as UTF-8 and has 32 distinct arbitrary IDs.",
+      "Every case has exactly the seven required fields, nonempty task and rationale, and allowed enum values.",
+      "Tags and expected families are unique within each case and use only the supplied allowed vocabularies.",
+      "All out-of-scope, unverified, expired and rejected cases have empty expected families.",
+      "Coverage counts were calculated from authored data before matcher evaluation."
+    ],
+    "not_run": ["candidate matcher", "Agent execution", "model/API call", "learned-benefit comparison"]
+  }
+}

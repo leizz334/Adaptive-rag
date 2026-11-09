@@ -92,6 +92,10 @@ def _filter(table, scope):
 def _privacy(candidate):
     identifiers = [candidate.source_trace_id, candidate.source_case_id]
     identifiers += [v for r in candidate.evidence_refs for v in (r.artifact, r.pointer)]
+    _private_references(identifiers)
+
+
+def _private_references(identifiers):
     for text in identifiers:
         if mask_pii(text) != text or re.search(
             r"(?:sk-[A-Za-z0-9_-]+|[\w.+-]+@[\w.-]+\.[A-Za-z]+|\bORD\d+\b|\bSKU-[A-Za-z0-9_-]+)",
@@ -255,6 +259,9 @@ class ExperienceRepository:
             if status == "VERIFIED_OFFLINE":
                 if validation_evidence is None:
                     raise ValueError("Independent offline validation evidence required")
+                if validation_evidence.kind != "evaluation":
+                    raise ValueError("Evaluation evidence reference required")
+                _private_references([validation_evidence.artifact, validation_evidence.pointer])
                 report = self.resolver.resolve(validation_evidence)
                 if not isinstance(report, dict) or not all(
                     (
@@ -314,6 +321,17 @@ class ExperienceRepository:
                 return False
             if row.version != expected_version:
                 raise ValueError("Experience version conflict")
+            removed = await session.execute(
+                delete(ExperienceRow)
+                .where(
+                    _filter(ExperienceRow, scope),
+                    ExperienceRow.experience_id == experience_id,
+                    ExperienceRow.version == expected_version,
+                )
+                .execution_options(synchronize_session=False)
+            )
+            if removed.rowcount != 1:
+                raise ValueError("Experience version conflict")
             session.add(
                 ExperienceTombstoneRow(
                     experience_id=row.experience_id,
@@ -327,5 +345,4 @@ class ExperienceRepository:
             await session.execute(
                 delete(ExperienceEventRow).where(ExperienceEventRow.experience_id == experience_id)
             )
-            await session.delete(row)
             return True

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="1.345" timestamp="2026-11-09T15:56:36.296478+08:00" hostname="LAPTOP-OMRADJBO"><testcase classname="tests.unit.test_experience_review" name="test_resolver_rejects_malformed_json_pointer[data0-/-1]" time="0.009"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tmp_path = WindowsPath('D:/Code/Adaptive-rag/.worktrees/p3-experience-shadow/data/local/a6-review-scratch-01/test_resolver_rejects_malforme0')
+data = ['first', 'last'], pointer = '/-1'
+
+    @pytest.mark.parametrize("data,pointer", [(["first", "last"], "/-1"), ({"~2": "value"}, "/~2")])
+    def test_resolver_rejects_malformed_json_pointer(tmp_path, data, pointer):
+        ref = write_ref(tmp_path / "source.json", data, pointer)
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests\unit\test_experience_review.py:28: Failed</failure></testcase><testcase classname="tests.unit.test_experience_review" name="test_resolver_rejects_malformed_json_pointer[data1-/~2]" time="0.007"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tmp_path = WindowsPath('D:/Code/Adaptive-rag/.worktrees/p3-experience-shadow/data/local/a6-review-scratch-01/test_resolver_rejects_malforme1')
+data = {'~2': 'value'}, pointer = '/~2'
+
+    @pytest.mark.parametrize("data,pointer", [(["first", "last"], "/-1"), ({"~2": "value"}, "/~2")])
+    def test_resolver_rejects_malformed_json_pointer(tmp_path, data, pointer):
+        ref = write_ref(tmp_path / "source.json", data, pointer)
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests\unit\test_experience_review.py:28: Failed</failure></testcase><testcase classname="tests.unit.test_experience_review" name="test_verification_reference_privacy_matches_source_reference_privacy" time="0.151"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">review_store = (&lt;app.experience.storage.ExperienceRepository object at 0x000002013CAB8FD0&gt;, &lt;sqlalchemy.ext.asyncio.engine.AsyncEngin...26, 11, 16, 0, 0, tzinfo=datetime.timezone.utc), source_version='1111111111111111111111111111111111111111', version=1))
+tmp_path = WindowsPath('D:/Code/Adaptive-rag/.worktrees/p3-experience-shadow/data/local/a6-review-scratch-01/test_verification_reference_pr0')
+
+    async def test_verification_reference_privacy_matches_source_reference_privacy(review_store, tmp_path):
+        repo, engine, scope, saved = review_store
+        queued = await repo.transition(scope, saved.experience_id, "NEEDS_REVIEW", expected_version=1)
+        # This synthetic email is deliberately a reference name, never source data.
+        report = dict(scope="offline_applicability", family=saved.family, source_version=saved.source_version, candidate_fingerprint=saved.fingerprint, independent_labels=True, passed=True, cases=3, safety_conflicts=0)
+        ref = write_ref(tmp_path / "reviewer.person@example.com.json", report)
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests\unit\test_experience_review.py:51: Failed</failure></testcase><testcase classname="tests.unit.test_experience_review" name="test_delete_checks_version_at_actual_delete" time="0.114"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">review_store = (&lt;app.experience.storage.ExperienceRepository object at 0x000002013CB43350&gt;, &lt;sqlalchemy.ext.asyncio.engine.AsyncEngin...26, 11, 16, 0, 0, tzinfo=datetime.timezone.utc), source_version='1111111111111111111111111111111111111111', version=1))
+
+    async def test_delete_checks_version_at_actual_delete(review_store):
+        repo, engine, scope, saved = review_store
+        trigger = [True]
+    
+        class ConcurrentSession(AsyncSession):
+            async def scalar(self, *args, **kwargs):
+                result = await super().scalar(*args, **kwargs)
+                if trigger[0]:
+                    trigger[0] = False
+                    await repo.transition(scope, saved.experience_id, "NEEDS_REVIEW", expected_version=1)
+                return result
+    
+        repo.factory = async_sessionmaker(engine, class_=ConcurrentSession, expire_on_commit=False)
+&gt;       with pytest.raises(ValueError, match="version conflict"):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests\unit\test_experience_review.py:71: Failed</failure></testcase></testsuite></testsuites>
