@@ -1749,5 +1749,92 @@
     "all_authorized_tasks_complete": true,
     "delivery_verified_commit": "c8a7e3e1864f0c00bd604d8f1486e8568b133c92",
     "later_phases_started": false
+  },
+  "p4_dependency_integration": {
+    "phase": "P4-B",
+    "status": "WINDOWS_B0_B1_IN_PROGRESS",
+    "baseline_commit": "7ee14234299b640e733c7099816f3a7ed7e4dc0a",
+    "authorized_now": [
+      "P4-B0",
+      "P4-B1"
+    ],
+    "environment": "Windows",
+    "active_enabled": false,
+    "paid_model_calls_allowed": false,
+    "P4_C_started": false,
+    "tasks": [
+      {
+        "TASK_ID": "P4-B0",
+        "status": "completed",
+        "passes": true,
+        "dependencies": [],
+        "acceptance_criteria": [
+          "Server verified credential/subject/role/expiry, no client-ID trust",
+          "Required-auth real HTTPforgery/Owner/Session/SSE/admin verification; explicit test-only compatibility",
+          "RED/GREEN/security review/checkpoint"
+        ],
+        "evidence": [
+          "AUTH_SCHEME.md",
+          "evidence/b0_auth_red.xml",
+          "evidence/b0_auth_green.xml",
+          "evidence/b0_http.xml",
+          "evidence/b0_independent_review.json",
+          "evidence/b0_independent_review_green.xml",
+          "runs/20261110_B0_auth_01/auth_results.json"
+        ],
+        "validation": "19authRED→GREEN/5legacyAPIcompatPASS;33independentcounterexamplesPASS;20realrequired-authHTTPcasesPASS;serverhashregistry/subjectroleexpiryrevocation;0paid/Active;no principalinjection",
+        "commit_hash": null,
+        "next_action": "B1isolatedCompose/dependencytests/UbuntuRunbook;Windowsfullchecks thenpushPAUSE;doNOTstartB2B3"
+      },
+      {
+        "TASK_ID": "P4-B1",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P4-B0"
+        ],
+        "acceptance_criteria": [
+          "Isolated real-service config and guarded PostgreSQL/Redis/Qdrant/API tests prepared",
+          "Windowschecks PASS; real service results BLOCKED/NOT_RUN, not mock replacements",
+          "Ubuntu runbook/recovery, ordinarypush+lsremote andPAUSE"
+        ],
+        "evidence": [],
+        "validation": null,
+        "commit_hash": null,
+        "next_action": "PLAN.md; pause afterB1forUbuntu"
+      },
+      {
+        "TASK_ID": "P4-B2",
+        "status": "waiting_ubuntu",
+        "passes": false,
+        "dependencies": [
+          "P4-B1"
+        ],
+        "acceptance_criteria": [
+          "Ubuntu restore verifiedHEAD and owned isolated Docker services",
+          "Real PG/Redis/Qdrantpersistence/transactions/TTL/filter/error/recovery tests"
+        ],
+        "evidence": [],
+        "validation": null,
+        "commit_hash": null,
+        "next_action": "PLAN.md; pause afterB1forUbuntu"
+      },
+      {
+        "TASK_ID": "P4-B3",
+        "status": "waiting_ubuntu",
+        "passes": false,
+        "dependencies": [
+          "P4-B2"
+        ],
+        "acceptance_criteria": [
+          "Real dependency HTTP/SSE/auth/HITL/concurrency/failure tests and minimum fixes",
+          "Full regression/evidence/commits/push andSTOP; no laterphase"
+        ],
+        "evidence": [],
+        "validation": null,
+        "commit_hash": null,
+        "next_action": "PLAN.md; pause afterB1forUbuntu"
+      }
+    ]
   }
 }

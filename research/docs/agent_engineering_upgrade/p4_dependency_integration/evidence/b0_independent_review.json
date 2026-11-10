@@ -1,0 +1,118 @@
+{
+  "review": "P4-B0 independent authentication security and counterexample review",
+  "reviewer": "independent p4b_auth_review subagent",
+  "date": "2026-11-10",
+  "baseline_commit": "7ee14234299b640e733c7099816f3a7ed7e4dc0a",
+  "branch": "codex/p4-dependency-integration",
+  "reviewed_state": "Uncommitted B0 authentication implementation on baseline; no implementation edits by reviewer",
+  "scope": {
+    "plan": "research/docs/agent_engineering_upgrade/p4_dependency_integration/PLAN.md",
+    "reviewed_files": [
+      "AGENTS.md",
+      "app/core/auth.py",
+      "app/config/settings.py",
+      "app/main.py",
+      "app/api/dependencies.py",
+      "app/api/routes/chat.py",
+      "app/api/routes/admin.py",
+      "app/api/routes/health.py",
+      "app/schemas/chat.py",
+      "app/core/exceptions.py",
+      "app/core/security.py",
+      "tests/unit/test_trusted_auth.py",
+      "tests/e2e/test_chat_api.py"
+    ],
+    "user_state_read": "P4-B namespace in feature-list.json, persisted progress tail, current status and log",
+    "implementation_modified": false,
+    "existing_tests_modified": false,
+    "persistent_global_state_modified": false,
+    "human_review_csv_content_read": false,
+    "private_env_read": false,
+    "real_services_started": false,
+    "paid_api_calls": 0,
+    "experience_active_enabled": false,
+    "commits_created": false
+  },
+  "strengths": [
+    "Production and development default to required authentication; testing alone does not bypass it, and legacy_test is explicitly restricted to testing.",
+    "Both JSON and SSE request dependencies use the actual verifier, reject conflicting body user IDs before dispatch and replace anonymous identity with the server subject.",
+    "Admin endpoints use the authenticated server role; old x-admin-token and client role/proxy headers cannot promote required-mode users.",
+    "Strict registry envelope, duplicate JSON keys/digests, schema fields, role names, boolean revocation, UTC time bounds and size/row bounds fail closed.",
+    "Server minting uses cryptographic randomness and persists only the SHA256 digest; expiry and not_before are checked on each authentication call.",
+    "Malformed registry errors and ordinary auth failures do not expose registry text or incoming credentials."
+  ],
+  "issues": {
+    "critical": [],
+    "important": [],
+    "minor": []
+  },
+  "validation": {
+    "test_file": "tests/unit/test_p4b_auth_review.py",
+    "command": "conda run --no-capture-output -n adaptive-rag python -m pytest tests/unit/test_p4b_auth_review.py -q --basetemp .scratch/p4b-auth-review-green --junitxml=research/docs/agent_engineering_upgrade/p4_dependency_integration/evidence/b0_independent_review_green.xml",
+    "result": "PASS",
+    "passed": 33,
+    "failed": 0,
+    "errors": 0,
+    "duration_seconds": 2.04,
+    "warnings": "One existing langgraph checkpoint pending deprecation warning",
+    "method": "httpx ASGITransport against real create_app and actual Authenticator. No fake Principal/dependency override of auth; recording business service supplied through get_container only. Lifespan intentionally not entered. All test-time socket connection methods prohibited after Windows asyncio framework socketpair setup.",
+    "coverage": [
+      "Missing, proxy-only, combined and duplicate authorization headers on chat and SSE",
+      "Tab, trailing whitespace and oversized bearer token rejection on chat and SSE",
+      "Conflicting body subject blocked and omitted identity bound before chat/SSE service dispatch",
+      "Client-supplied role/subject fields and proxy identity cannot alter verified identity",
+      "Both admin endpoints reject old admin token without Bearer and reject verified user plus forged admin headers",
+      "Both admin endpoints accept a registry-provisioned admin credential",
+      "Public liveness does not dispatch business work",
+      "not_before exact equality accepted; expiry exact equality rejected; same authenticator rechecks clock",
+      "Non-UTC/naive/invalid interval, coerced revoked field, unknown role and extra fields safely rejected",
+      "Duplicate token digest, 257 rows, boolean version, nested duplicate JSON key and byte bound safely rejected",
+      "Testing environment alone remains required and an empty registry denies access",
+      "Operator mint round-trip returns a verifiable credential and stores no raw token in registry entry"
+    ],
+    "lint": {
+      "command": "conda run --no-capture-output -n adaptive-rag python -m ruff check tests/unit/test_p4b_auth_review.py",
+      "result": "PASS"
+    },
+    "initial_review_harness_failure": {
+      "evidence": "b0_independent_review_tests.xml",
+      "result": "FAIL_HARNESS",
+      "passed": 14,
+      "errors": 38,
+      "cause": "Review socket guard initially blocked Windows asyncio's internal loopback socketpair while constructing/cleaning its event loop; these were fixture errors, not authentication failures.",
+      "correction": "Construct event_loop fixture before applying the connection prohibition and restore connection functions before its teardown.",
+      "old_evidence_preserved": true,
+      "fresh_green_evidence": "b0_independent_review_green.xml"
+    }
+  },
+  "considered_and_set_aside": [
+    {
+      "behavior": "Federated human identity, OAuth and account lifecycle management",
+      "reason": "Explicit design selects small operator-provisioned API credentials; this review does not claim identity-provider verification."
+    },
+    {
+      "behavior": "Hot registry reload and immediate distributed revocation",
+      "reason": "Plan explicitly documents restart-based registry reload and per-request expiry. No hot-reload claim is accepted."
+    },
+    {
+      "behavior": "TLS termination and credential delivery/storage by deployment operators",
+      "reason": "Required deployment controls are documented; no actual deployed infrastructure is authorized for this Windows review."
+    },
+    {
+      "behavior": "Real HTTP server, persistent Owner/Session checks and HITL execution",
+      "reason": "ASGI recording-service tests prove the auth boundary only. The separately implemented required-auth Uvicorn matrix must supply actual HTTP/business evidence."
+    },
+    {
+      "behavior": "PostgreSQL/Redis/Qdrant integration and distributed pending confirmations",
+      "reason": "B2/B3 are explicitly deferred to user-restored Ubuntu. These tests do not constitute real-service or multi-worker readiness."
+    },
+    {
+      "behavior": "Existing public metrics, capabilities and documentation routes",
+      "reason": "No business/admin write or user identity trust was added there; health remains intentionally public. Deployment exposure policy is outside the authorized B0 auth change."
+    }
+  ],
+  "assessment": {
+    "ready_for_b0_checkpoint": "YES_AFTER_REQUIRED_HTTP_MATRIX_AND_COORDINATOR_CHECKS",
+    "reason": "No critical, important or minor implementation defect identified in this bounded independent review; 33 counterexamples pass with the actual verifier. This evidence alone does not satisfy the required real HTTP/business matrix or authorize Ubuntu B2/B3."
+  }
+}

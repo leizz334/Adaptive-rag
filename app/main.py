@@ -15,6 +15,7 @@ from starlette.staticfiles import StaticFiles
 
 from app.api.routes import admin, chat, health
 from app.config.settings import Settings, get_settings
+from app.core.auth import Authenticator
 from app.core.error_codes import ErrorCode
 from app.core.exceptions import AppError
 from app.core.ids import new_request_id, new_trace_id
@@ -64,6 +65,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         lifespan=lifespan,
     )
     app.state.settings = resolved
+    app.state.authenticator = Authenticator.from_settings(resolved)
     prefix = resolved.api_v1_prefix
     app.include_router(health.router, prefix=prefix)
     app.include_router(chat.router, prefix=prefix)

@@ -16,13 +16,23 @@ from research.docs.agent_engineering_upgrade.p4_api_e2e.manage import HERE, ROOT
 
 
 class HttpRun:
-    def __init__(self, name):
+    def __init__(
+        self,
+        name,
+        *,
+        run_root=HERE,
+        worker_module="research.docs.agent_engineering_upgrade.p4_api_e2e.worker",
+        matrix_file=None,
+    ):
         if not name or any(
             c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
             for c in name
         ):
             raise ValueError("Bounded run id required")
-        self.directory = HERE / "runs" / name
+        self.directory = run_root / "runs" / name
+        self.worker_module = worker_module
+        self.worker_file = ROOT.joinpath(*worker_module.split(".")).with_suffix(".py")
+        self.matrix_file = matrix_file or HERE / "test_real_http.py"
         self.directory.mkdir(parents=True, exist_ok=False)
         self.process = None
         self.client = None
@@ -60,7 +70,7 @@ class HttpRun:
             sys.executable,
             "-B",
             "-m",
-            "research.docs.agent_engineering_upgrade.p4_api_e2e.worker",
+            self.worker_module,
             "--run-dir",
             str(self.directory),
             "--port",
@@ -82,9 +92,9 @@ class HttpRun:
                 url=self.url,
                 python=sys.executable,
                 head=git("rev-parse", "HEAD"),
-                worker_sha256=sha(HERE / "worker.py"),
+                worker_sha256=sha(self.worker_file),
                 application_sha256=self.source_hashes,
-                matrix_source_sha256=sha(HERE / "test_real_http.py"),
+                matrix_source_sha256=sha(self.matrix_file),
                 paid_api=False,
                 transport="real_TCP_HTTPX_to_Uvicorn_process",
                 new_worktree_created=False,
@@ -154,7 +164,10 @@ class HttpRun:
         self.sequence += 1
         before = self.snapshot()
         supplied = {"x-p4-case": case, "x-p4-fault": fault, "x-trace-id": f"p4-{case}"}
-        supplied.update(headers or {})
+        if isinstance(headers, list):
+            supplied = list(supplied.items()) + headers
+        else:
+            supplied.update(headers or {})
         started = time.perf_counter()
         data, status, result_headers, stream_items, transport_error = None, None, {}, [], None
         try:

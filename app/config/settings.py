@@ -3,7 +3,7 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -23,6 +23,14 @@ class Settings(BaseSettings):
     app_name: str = "adaptive-rag-cs"
     log_level: str = "INFO"
     api_v1_prefix: str = "/api/v1"
+    auth_mode: Literal["required", "legacy_test"] = "required"
+    auth_credentials: SecretStr = SecretStr("")
+
+    @model_validator(mode="after")
+    def restrict_legacy_auth(self):
+        if self.auth_mode == "legacy_test" and self.app_env != "testing":
+            raise ValueError("legacy_test authentication is restricted to testing")
+        return self
 
     deepseek_api_key: SecretStr = SecretStr("")
     deepseek_base_url: str = "https://api.deepseek.com"

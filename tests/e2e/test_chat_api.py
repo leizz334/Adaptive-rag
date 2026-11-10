@@ -2,13 +2,13 @@ import json
 
 from fastapi.testclient import TestClient
 
-from app.config.settings import clear_settings_cache
+from app.config.settings import Settings, clear_settings_cache
 from app.main import create_app
 
 
 def _client() -> TestClient:
     clear_settings_cache()
-    return TestClient(create_app())
+    return TestClient(create_app(Settings(_env_file=None, app_env="testing", auth_mode="legacy_test")))
 
 
 def test_health_and_chat_greeting() -> None:

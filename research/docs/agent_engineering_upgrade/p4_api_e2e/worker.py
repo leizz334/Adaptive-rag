@@ -60,6 +60,7 @@ def isolated_settings(directory):
     return Settings(
         _env_file=None,
         app_env="testing",
+        auth_mode="legacy_test",
         memory_mode="M2",
         database_url="sqlite+aiosqlite:///" + (directory.resolve() / "app.sqlite3").as_posix(),
         deepseek_api_key="",

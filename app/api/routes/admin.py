@@ -4,8 +4,8 @@ import hmac
 
 from fastapi import APIRouter, Depends, Request
 
-from app.api.dependencies import get_container
-from app.core.exceptions import UnauthorizedError
+from app.api.dependencies import get_container, get_principal
+from app.core.exceptions import ToolPermissionError, UnauthorizedError
 from app.services.container import AppContainer
 from app.skills.loader import load_skills
 
@@ -13,6 +13,13 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 
 
 async def require_admin(request: Request, container: AppContainer = Depends(get_container)) -> None:
+    principal = get_principal(request)
+    if principal is not None:
+        if "admin" not in principal.roles:
+            raise ToolPermissionError("administrator role required")
+        return
+    if container.settings.auth_mode != "legacy_test":
+        raise UnauthorizedError("Bearer authentication required")
     token = container.settings.admin_api_token.get_secret_value()
     if not token:
         if container.settings.app_env == "production":
