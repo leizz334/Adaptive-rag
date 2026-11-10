@@ -1752,12 +1752,9 @@
   },
   "p4_dependency_integration": {
     "phase": "P4-B",
-    "status": "WINDOWS_B0_B1_IN_PROGRESS",
+    "status": "WINDOWS_COMPLETE_WAITING_UBUNTU",
     "baseline_commit": "7ee14234299b640e733c7099816f3a7ed7e4dc0a",
-    "authorized_now": [
-      "P4-B0",
-      "P4-B1"
-    ],
+    "authorized_now": [],
     "environment": "Windows",
     "active_enabled": false,
     "paid_model_calls_allowed": false,
@@ -1783,13 +1780,14 @@
           "runs/20261110_B0_auth_01/auth_results.json"
         ],
         "validation": "19authRED→GREEN/5legacyAPIcompatPASS;33independentcounterexamplesPASS;20realrequired-authHTTPcasesPASS;serverhashregistry/subjectroleexpiryrevocation;0paid/Active;no principalinjection",
-        "commit_hash": null,
-        "next_action": "B1isolatedCompose/dependencytests/UbuntuRunbook;Windowsfullchecks thenpushPAUSE;doNOTstartB2B3"
+        "commit_hash": "146311cef5e113e6a80a67bff64b90c768067bd8",
+        "next_action": "B1isolatedCompose/dependencytests/UbuntuRunbook;Windowsfullchecks thenpushPAUSE;doNOTstartB2B3",
+        "implementation_commit": "fdef173f578d7f2df66b59a279d0bd97a019d676"
       },
       {
         "TASK_ID": "P4-B1",
-        "status": "pending",
-        "passes": false,
+        "status": "completed_windows_preparation",
+        "passes": true,
         "dependencies": [
           "P4-B0"
         ],
@@ -1798,10 +1796,21 @@
           "Windowschecks PASS; real service results BLOCKED/NOT_RUN, not mock replacements",
           "Ubuntu runbook/recovery, ordinarypush+lsremote andPAUSE"
         ],
-        "evidence": [],
-        "validation": null,
+        "evidence": [
+          "validation.json",
+          "AUTH_SCHEME.md",
+          "UBUNTU_RUNBOOK.md",
+          "FAILURE_RECORD.md",
+          "evidence/windows_all_pytest_verified.xml",
+          "evidence/windows_style_final.json",
+          "evidence/windows_audit.json",
+          "evidence/b1_independent_review.json",
+          "evidence/b1_live_harness_review.json",
+          "runs/20261110_B1_legacy_01/results.json"
+        ],
+        "validation": "794PASS/0FAIL/28SKIP(27Ubuntu-deferred+1historicalauthprobe);Ruffcheck+formatPASS;Mypy150PASS;legacy214noPASS-to-FAIL;realrequired-authTCP20/20;PG/Redis/Qdrant/API27NOT_RUN",
         "commit_hash": null,
-        "next_action": "PLAN.md; pause afterB1forUbuntu"
+        "next_action": "Commit Windows B1;normalpush+lsremote;PAUSE WAITING_UBUNTU. Restore Ubuntu B2/B3 per UBUNTU_RUNBOOK.md; no paid/Active/P4-C"
       },
       {
         "TASK_ID": "P4-B2",
@@ -1835,6 +1844,12 @@
         "commit_hash": null,
         "next_action": "PLAN.md; pause afterB1forUbuntu"
       }
-    ]
+    ],
+    "windows_phase_status": "PARTIAL_PASS",
+    "resume_tasks": [
+      "P4-B2",
+      "P4-B3"
+    ],
+    "actual_model_calls": 0
   }
 }

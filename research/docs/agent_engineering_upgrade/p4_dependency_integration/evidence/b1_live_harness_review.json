@@ -1,0 +1,108 @@
+{
+  "review": "Independent B1 preparation review of deferred Ubuntu live API harness",
+  "date": "2026-11-10",
+  "reviewer": "independent p4b_auth_review subagent",
+  "reviewed_files": ["live_worker.py", "live_api.py", "test_live_api.py"],
+  "supporting_source": "Imported settings/model/tool-capture/trace/container/snapshot helpers inspected for wiring; no private configuration or human review data read",
+  "implementation_or_existing_tests_edited": false,
+  "services_started": false,
+  "actual_network_or_database_calls": 0,
+  "paid_calls": 0,
+  "commits_or_global_state_changed": false,
+  "integration_result": "NOT_RUN_WINDOWS_BLOCKED_WAITING_UBUNTU",
+  "strengths": [
+    "Live fixture is Linux plus explicit P4B_RUN_LIVE gated; worker revalidates owned services before building the actual PostgreSQL/Redis/Qdrant container.",
+    "Worker sets required auth with the production verifier and explicit public synthetic test credentials, disables external model paths, uses controlled model responses and rejects non-loopback socket connects.",
+    "Startup rejects missing PostgreSQL dialect, Redis client, Qdrant store or Redis retrieval cache and requires live backend pings; startup evidence clearly labels controlled model and Active disabled.",
+    "Chat/SSE observation wraps actual service calls, preserves stream iterator closing, records tools and emits local spans without incoming authorization headers or shutdown tokens.",
+    "Module fixture stops processes in finally even if worker startup or tests fail; stop targets only recorded Popen children, tries authenticated graceful stop, then bounded terminate/kill. Dependencies and volumes remain retained.",
+    "Client ignores ambient HTTP proxies; child environment is limited and excludes paid credentials; logs, snapshots and responses are scoped to unique run paths within the phase."
+  ],
+  "findings": [
+    {
+      "id": "LIVE-REVIEW-01",
+      "severity": "important",
+      "location": "live_api.py:147-183 LiveApi.request",
+      "problem": "The initial database snapshot occurs before failure evidence is initialized. In finally, after-snapshot and event JSON parsing happen before save. A backend outage or malformed partial event line can therefore erase the original HTTP failure and prevent the request evidence artifact.",
+      "counterexample": {
+        "method": "Construct LiveApi without __init__; replace client with an HTTP ConnectError stub, first snapshot with empty state, second snapshot with RuntimeError, save with a recording list. No filesystem/network/DB operations.",
+        "observed": "RuntimeError propagated; original_transport_error_preserved=False; request_evidence_saved=False"
+      },
+      "recommendation": "Initialize request row first; capture snapshots/events independently with explicit stage error metadata; always attempt saving partial evidence in nested finally; preserve the original transport exception when capture also fails.",
+      "resolution": "Coordinator now records before/after snapshot errors, validates parsed event objects, captures invalid JSON and Unicode decoding failures, saves partial rows, preserves the original HTTP exception, and rejects successful HTTP with incomplete evidence. Final independent probes confirm both null JSON and truncated UTF8 preserve ConnectError and save explicit capture errors.",
+      "recheck_history": "Initial recheck exposed two additional non-object/truncated-UTF8 cases; coordinator retained RED tests in b1_live_corrupt_red.xml before correcting both.",
+      "status": "FIXED_OFFLINE_VERIFIED"
+    },
+    {
+      "id": "LIVE-REVIEW-02",
+      "severity": "important",
+      "location": "test_live_api.py:213-247 concurrent confirmation probe",
+      "problem": "The concurrency test saves two HTTP response bodies and only requires status 200. It does not verify final order status, exactly one audit write, matching idempotency record, or linked request/trace evidence, and a raised HTTP call prevents the response evidence save.",
+      "counterexample": {
+        "method": "Replace order/proposal creation and HTTP clients with local doubles returning two 200 no-op bodies; replace save with recording callback. No database/network calls.",
+        "observed": "two_noop_200_responses_pass_concurrency_assertions=True"
+      },
+      "recommendation": "Capture before/after DB state, correlation IDs and each response/error, save in finally, and assert cancelled target plus exactly one matching cancellation audit and idempotency record rather than HTTP status alone.",
+      "resolution": "Coordinator added per-worker trace IDs, before/after DB state and assert_confirmation_effects requiring paid-to-cancelled transition, exactly one matching linked audit and one confirmed-action idempotency output. Concurrent responses record JSON parse errors; outer finally preserves state/capture errors and saves the record when before/after snapshots fail. Final independent no-op, nonJSON HTTP500, before-snapshot and after-snapshot fault probes all reject false passes while retaining evidence.",
+      "status": "FIXED_OFFLINE_VERIFIED"
+    },
+    {
+      "id": "LIVE-REVIEW-03",
+      "severity": "important",
+      "location": "test_live_api.py:133-141 RAG evidence and live_worker.py startup-only backend assertions",
+      "problem": "RAG citations plus completed spans can pass on BM25 after a Qdrant request fails, and Redis cache errors become ordinary misses. Startup backend types/pings do not prove Redis/Qdrant participation during later HTTP requests. The API suite currently has model faults but no real backend outage/recovery probe.",
+      "evidence": "Source: HybridRetriever catches vector search failures and fuses remaining lexical results; RedisRetrievalCache catches get/set failures. Current RAG assertion requires citations only; graph_observed permits completed error spans.",
+      "recommendation": "Use a controlled cold-cache request and assert successful vector execution plus actual Redis key/TTL observations. Prepare explicit backend-outage/recovery HTTP cases, or record API-level outage coverage as deferred rather than prepared integration acceptance.",
+      "resolution": "Coordinator clears only ret:* keys in validated dedicated sandbox Redis DB13 before the policy probe, then requires successful retrieval.vector spans and actual positive Redis key TTL evidence saved in rag_backend_participation.json. This prevents ordinary BM25-only/no-cache success from satisfying the prepared RAG acceptance. API backend-outage/recovery coverage explicitly remains DEFERRED_B3; adapter-level outage tests are separate.",
+      "status": "FIXED_SOURCE_REVIEWED_API_OUTAGES_EXPLICITLY_DEFERRED_B3"
+    }
+  ],
+  "verification": {
+    "syntax": "PASS: ast.parse of all three reviewed files using Conda adaptive-rag; no bytecode or server startup",
+    "counterexamples": "Two offline recording-double experiments demonstrated evidence loss and concurrency false pass; these are harness findings, not real backend outcomes.",
+    "first_recheck_unit_tests": "PASS: 6 tests in tests/unit/test_p4b_live_evidence.py; evidence b1_live_review_unit.xml; 1.54s; subsequent independent probes found non-object/truncated-UTF8 cases that were then fixed.",
+    "final_unit_tests": {
+      "command": "conda run --no-capture-output -n adaptive-rag python -m pytest tests/unit/test_p4b_live_evidence.py -q --basetemp .scratch/p4b-live-final-recheck --junitxml=research/docs/agent_engineering_upgrade/p4_dependency_integration/evidence/b1_live_review_final_green.xml",
+      "result": "PASS",
+      "passed": 8,
+      "failures": 0,
+      "errors": 0,
+      "duration_seconds": 1.85,
+      "warning": "One existing langgraph checkpoint pending deprecation warning"
+    },
+    "final_independent_probes": [
+      "Non-object event JSON null: original HTTP ConnectError preserved; partial request evidence saved with capture error",
+      "Truncated UTF8 event: original HTTP ConnectError preserved; partial request evidence saved with capture error",
+      "Concurrent two HTTP200 no-ops: false pass rejected; concurrency evidence saved",
+      "Concurrent nonJSON HTTP500: false pass rejected; per-worker parse errors saved",
+      "Concurrent after-snapshot failure: false pass rejected; capture error and available HTTP evidence saved",
+      "Concurrent before-snapshot failure: original failure retained; capture error and partial evidence saved"
+    ],
+    "real_http": "NOT_RUN",
+    "real_postgresql_redis_qdrant": "NOT_RUN",
+    "actual_process_cleanup": "SOURCE_REVIEWED_ONLY_NOT_RUN"
+  },
+  "considered_and_set_aside": [
+    {
+      "behavior": "Actual Ubuntu process startup, Docker bindings, migrations, backend adapters and recovery timings",
+      "reason": "Windows stage prohibits real services. Syntax/source inspection and offline doubles cannot establish those outcomes."
+    },
+    {
+      "behavior": "Distributed pending confirmation implementation",
+      "reason": "Known B3 acceptance risk must be exposed by real tests, not repaired speculatively in this preparation review. The test evidence requirements remain in scope."
+    },
+    {
+      "behavior": "Real DeepSeek quality, external identity-provider verification and Experience Active",
+      "reason": "Explicitly excluded from the authorized bounded harness and not claimed."
+    },
+    {
+      "behavior": "Confidentiality of arbitrary non-synthetic database rows",
+      "reason": "Harness is restricted to the validated operator-owned synthetic sandbox and deliberately snapshots complete fixture tables. It must not be pointed at user or production data."
+    }
+  ],
+  "open_critical": [],
+  "open_important": [],
+  "open_minor": [],
+  "deferred_coverage": "HTTP-path Redis/Qdrant outage and recovery acceptance remains explicitly DEFERRED_B3. Direct adapter outage tests are separately prepared, and neither preparation nor offline doubles is real-service validation.",
+  "assessment": "PASS_BOUNDED_PREPARATION_REVIEW: all three reported findings are resolved in the reviewed source and the applicable independent offline counterexamples. Eight offline harness tests pass. HTTP backend outage coverage remains explicitly deferred to B3, and actual Ubuntu integration/process cleanup remains NOT_RUN."
+}

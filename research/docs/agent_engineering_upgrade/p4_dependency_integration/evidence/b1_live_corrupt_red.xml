@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="8" time="33.821" timestamp="2026-11-10T19:58:38.956063+08:00" hostname="LAPTOP-OMRADJBO"><testcase classname="tests.unit.test_p4b_live_evidence" name="test_http_error_survives_snapshot_and_trace_capture_faults" time="0.204" /><testcase classname="tests.unit.test_p4b_live_evidence" name="test_successful_http_with_incomplete_evidence_is_not_pass" time="0.183" /><testcase classname="tests.unit.test_p4b_live_evidence" name="test_two_http_200_cannot_replace_confirmation_state_proof[noop]" time="0.007" /><testcase classname="tests.unit.test_p4b_live_evidence" name="test_two_http_200_cannot_replace_confirmation_state_proof[duplicate_audit]" time="0.002" /><testcase classname="tests.unit.test_p4b_live_evidence" name="test_two_http_200_cannot_replace_confirmation_state_proof[missing_idempotency]" time="0.017" /><testcase classname="tests.unit.test_p4b_live_evidence" name="test_owned_process_stop_interface_is_present" time="0.002" /><testcase classname="tests.unit.test_p4b_live_evidence" name="test_nonobject_or_truncated_utf8_event_never_masks_http_error[null]" time="0.121"><failure message="AttributeError: 'NoneType' object has no attribute 'get'">research\docs\agent_engineering_upgrade\p4_dependency_integration\live_api.py:164: in request
+    response = self.client.request(
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\unittest\mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\unittest\mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\unittest\mock.py:1183: in _execute_mock_call
+    raise effect
+E   httpx.ConnectError: synthetic offline
+
+During handling of the above exception, another exception occurred:
+tests\unit\test_p4b_live_evidence.py:92: in test_nonobject_or_truncated_utf8_event_never_masks_http_error
+    run.request("corrupt", dict(message="synthetic"))
+research\docs\agent_engineering_upgrade\p4_dependency_integration\live_api.py:195: in request
+    row["events"] = [
+research\docs\agent_engineering_upgrade\p4_dependency_integration\live_api.py:196: in &lt;listcomp&gt;
+    e for e in events if e.get("trace_id") == trace or e.get("case") == case
+                         ^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'get'</failure></testcase><testcase classname="tests.unit.test_p4b_live_evidence" name="test_nonobject_or_truncated_utf8_event_never_masks_http_error[{&quot;case&quot;:&quot;\xe4]" time="0.017"><failure message="UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe4 in position 9: unexpected end of data">research\docs\agent_engineering_upgrade\p4_dependency_integration\live_api.py:164: in request
+    response = self.client.request(
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\unittest\mock.py:1124: in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\unittest\mock.py:1128: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\unittest\mock.py:1183: in _execute_mock_call
+    raise effect
+E   httpx.ConnectError: synthetic offline
+
+During handling of the above exception, another exception occurred:
+tests\unit\test_p4b_live_evidence.py:92: in test_nonobject_or_truncated_utf8_event_never_masks_http_error
+    run.request("corrupt", dict(message="synthetic"))
+research\docs\agent_engineering_upgrade\p4_dependency_integration\live_api.py:185: in request
+    lines = path_events.read_text(encoding="utf8").splitlines()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\pathlib.py:1059: in read_text
+    return f.read()
+           ^^^^^^^^
+&lt;frozen codecs&gt;:322: in decode
+    ???
+E   UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe4 in position 9: unexpected end of data</failure></testcase></testsuite></testsuites>

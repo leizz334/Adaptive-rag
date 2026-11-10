@@ -1,0 +1,39 @@
+# Isolated copy of the existing multi-service image choices. No fixed container names.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: p4b
+      POSTGRES_PASSWORD: ${PG_PASSWORD:?private password required}
+      POSTGRES_DB: ${PROJECT:?unique project required}
+    ports: ["127.0.0.1:${PG_PORT:?}:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    labels: {p4b.owner: "${OWNER:?}"}
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U p4b -d "$${POSTGRES_DB}"']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  redis:
+    image: redis:7-alpine
+    command: [redis-server, --appendonly, "yes"]
+    ports: ["127.0.0.1:${REDIS_PORT:?}:6379"]
+    volumes: ["redisdata:/data"]
+    labels: {p4b.owner: "${OWNER:?}"}
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  qdrant:
+    image: qdrant/qdrant:v1.12.5
+    ports: ["127.0.0.1:${QDRANT_PORT:?}:6333"]
+    volumes: ["qdrantdata:/qdrant/storage"]
+    labels: {p4b.owner: "${OWNER:?}"}
+volumes:
+  pgdata:
+    labels: {p4b.owner: "${OWNER:?}"}
+  redisdata:
+    labels: {p4b.owner: "${OWNER:?}"}
+  qdrantdata:
+    labels: {p4b.owner: "${OWNER:?}"}

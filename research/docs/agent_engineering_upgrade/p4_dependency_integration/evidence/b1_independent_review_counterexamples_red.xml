@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="0.640" timestamp="2026-11-10T19:43:04.502203+08:00" hostname="LAPTOP-OMRADJBO"><testcase classname="tests.unit.test_p4b_sandbox_review" name="test_up_refuses_exact_name_volume_with_foreign_owner[new-project]" time="0.015"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">prepared = &lt;synthetic scratch configuration redacted&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000190BCDBC850&gt;
+owned_container = False
+
+    @pytest.mark.parametrize("owned_container", [False, True], ids=["new-project", "partial-project"])
+    def test_up_refuses_exact_name_volume_with_foreign_owner(prepared, monkeypatch, owned_container):
+        path, cfg = prepared
+        runs = _docker(monkeypatch, cfg, owned_container=owned_container, foreign_volume=True)
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests\unit\test_p4b_sandbox_review.py:60: Failed</failure></testcase><testcase classname="tests.unit.test_p4b_sandbox_review" name="test_up_refuses_exact_name_volume_with_foreign_owner[partial-project]" time="0.012"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">prepared = &lt;synthetic scratch configuration redacted&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000190BCDA9E90&gt;
+owned_container = True
+
+    @pytest.mark.parametrize("owned_container", [False, True], ids=["new-project", "partial-project"])
+    def test_up_refuses_exact_name_volume_with_foreign_owner(prepared, monkeypatch, owned_container):
+        path, cfg = prepared
+        runs = _docker(monkeypatch, cfg, owned_container=owned_container, foreign_volume=True)
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests\unit\test_p4b_sandbox_review.py:60: Failed</failure></testcase><testcase classname="tests.unit.test_p4b_sandbox_review" name="test_compose_process_cannot_override_validated_private_env" time="0.013"><failure message="AssertionError: Compose must not inherit unvalidated interpolation variables&#10;assert None is not None">prepared = &lt;synthetic scratch configuration redacted&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x00000190BCE1CD90&gt;
+
+    def test_compose_process_cannot_override_validated_private_env(prepared, monkeypatch):
+        path, cfg = prepared
+        for key, value in {
+            "PROJECT": "p4b_unrelated",
+            "OWNER": "ambient_foreign_owner",
+            "PG_PASSWORD": "ambient_foreign_password",
+            "PG_PORT": "5432",
+            "REDIS_PORT": "6379",
+            "QDRANT_PORT": "6333",
+        }.items():
+            monkeypatch.setenv(key, value)
+        runs = _docker(monkeypatch, cfg)
+        sandbox.command(path, "up")
+        assert len(runs) == 1
+        process_env = runs[0][1].get("env")
+&gt;       assert process_env is not None, "Compose must not inherit unvalidated interpolation variables"
+E       AssertionError: Compose must not inherit unvalidated interpolation variables
+E       assert None is not None
+
+tests\unit\test_p4b_sandbox_review.py:80: AssertionError</failure></testcase></testsuite></testsuites>

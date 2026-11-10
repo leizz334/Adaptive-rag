@@ -8,7 +8,9 @@ from app.main import create_app
 
 def _client() -> TestClient:
     clear_settings_cache()
-    return TestClient(create_app(Settings(_env_file=None, app_env="testing", auth_mode="legacy_test")))
+    return TestClient(
+        create_app(Settings(_env_file=None, app_env="testing", auth_mode="legacy_test"))
+    )
 
 
 def test_health_and_chat_greeting() -> None:

@@ -1,0 +1,116 @@
+{
+  "review": "P4-B1 independent offline sandbox and migration safety review",
+  "date": "2026-11-10",
+  "reviewer": "independent p4b_auth_review subagent",
+  "scope": [
+    "p4_dependency_integration/sandbox.py",
+    "p4_dependency_integration/compose.integration.yml",
+    "p4_dependency_integration/migrate.py",
+    "p4_dependency_integration/test_real_dependencies.py",
+    "alembic/env.py"
+  ],
+  "implementation_edited_by_reviewer": false,
+  "services_started": false,
+  "network_requests": 0,
+  "paid_calls": 0,
+  "global_state_or_commits_changed": false,
+  "initial_findings": [
+    {
+      "id": "B1-REVIEW-01",
+      "severity": "important",
+      "location": "sandbox.command volume ownership preconditions",
+      "problem": "Initial code checked only project-labeled volumes and only when no containers existed. An exact deterministic Compose volume name with absent/foreign labels could therefore be adopted, including in a partial owned project.",
+      "evidence": "Two independent mocked-Docker tests failed before fix: new project and partial owned project both reached Compose up instead of rejecting a foreign exact-name pgdata volume.",
+      "resolution": "Coordinator checks all exact-name volumes independently of container existence and requires both owner and Compose project labels.",
+      "status": "FIXED_OFFLINE_VERIFIED"
+    },
+    {
+      "id": "B1-REVIEW-02",
+      "severity": "important",
+      "location": "sandbox.command child process environment",
+      "problem": "Initial Docker subprocesses inherited ambient interpolation variables and Docker contexts despite validating compose.env. Thus validated manifest values did not guarantee the values applied by Compose.",
+      "evidence": "Independent ambient PROJECT/OWNER/PG_PASSWORD/port test failed before fix because child env was inherited.",
+      "resolution": "Coordinator supplies a limited child environment for Docker queries and mutations, and fixes Docker host to the local Unix socket.",
+      "status": "FIXED_OFFLINE_VERIFIED"
+    },
+    {
+      "id": "B1-REVIEW-03",
+      "severity": "important",
+      "location": "migrate.main --roundtrip and test_real_dependencies.config",
+      "problem": "Initial migration CLI downgraded to base on every requested roundtrip, while the test module requested roundtrip on every rerun. Existing sandbox schema/data could be dropped despite the initial-only help description.",
+      "evidence": "Source-verified unconditional upgrade/downgrade/upgrade call sequence; no destructive database experiment performed.",
+      "resolution": "Coordinator added an initial empty-schema precondition and matching successful-roundtrip marker. Unmarked nonempty DB refuses; valid resumed marker upgrades without downgrade; mismatched marker refuses.",
+      "status": "FIXED_OFFLINE_VERIFIED"
+    },
+    {
+      "id": "B1-REVIEW-04",
+      "severity": "important",
+      "location": "sandbox.command ps endpoint ownership preconditions",
+      "problem": "Initial ps accepted any one owned container without confirming all direct manifest endpoints. Partial startup plus an unrelated localhost Redis/Qdrant listener could let subsequent unauthenticated backend probes mutate an unowned service.",
+      "evidence": "Source-verified missing service completeness and actual binding checks; offline counterexamples verify rejection after fix.",
+      "resolution": "Coordinator verifies unique service roles, owner/project labels, static loopback ports, expected named data volume, and all three running endpoints with matching actual published ports before ps succeeds.",
+      "status": "FIXED_OFFLINE_VERIFIED"
+    }
+  ],
+  "open_critical": [],
+  "open_important": [],
+  "open_minor": [],
+  "validation": {
+    "test_file": "tests/unit/test_p4b_sandbox_review.py",
+    "method": "Docker subprocesses entirely replaced with offline inspect/list/run doubles. Temporary synthetic manifests only. Migration metadata probes and Alembic upgrade/downgrade calls replaced with recording doubles; no DB opened.",
+    "final_command": "conda run --no-capture-output -n adaptive-rag python -m pytest tests/unit/test_p4b_sandbox_review.py -q --basetemp .scratch/p4b-sandbox-review-final --junitxml=research/docs/agent_engineering_upgrade/p4_dependency_integration/evidence/b1_independent_review_green.xml",
+    "passed": 12,
+    "failed": 0,
+    "errors": 0,
+    "duration_seconds": 0.92,
+    "ruff_command": "conda run --no-capture-output -n adaptive-rag python -m ruff check tests/unit/test_p4b_sandbox_review.py",
+    "ruff_result": "PASS",
+    "coverage": [
+      "Reject foreign exact-name pgdata volume with no containers and with partial correctly configured owned containers",
+      "Exclude conflicting ambient Compose interpolation values from child environment",
+      "Reject partial service set before direct endpoint access",
+      "Reject wrong static ports, wrong actual ports, stopped services and unexpected volume mounts",
+      "Accept complete correctly owned and bound service set with forced local Docker host",
+      "Only empty initial DB permits roundtrip; valid resume marker suppresses downgrade; wrong marker and unmarked nonempty DB refuse",
+      "Record fresh upgrade/downgrade/upgrade versus resumed upgrade-only migration call sequence"
+    ],
+    "evidence": {
+      "initial_harness_error": "b1_independent_review_red.xml: three fixture errors from absent scratch parent; no product assertions reached",
+      "initial_counterexamples": "b1_independent_review_counterexamples_red.xml: three assertion failures before implementation fixes",
+      "safe_red_confirmation": "b1_independent_review_safe_red.xml: same three assertion failures with fixture repr suppressed",
+      "first_followup": "b1_independent_review_followup.xml: seven tests passed after coordinator fixes",
+      "final_green": "b1_independent_review_green.xml: twelve tests passed"
+    },
+    "trace_privacy": "Three prepared-fixture repr lines in initial_counterexamples XML were replaced with a redaction marker; they contained freshly generated unused scratch configuration. Assertion messages, test counts and results are preserved. Tests now use a private repr to avoid recording scratch credentials."
+  },
+  "strengths": [
+    "Manifest URLs are reconstructed and matched against unique project, loopback addresses, ports, bounded generated credentials and Compose hash.",
+    "Live access requires Linux plus explicit P4B_RUN_LIVE and a manifest within the phase private directory; Windows real-service tests skip with BLOCKED reason.",
+    "Compose uses project-scoped names, loopback bindings, per-container/per-volume owner labels and no destructive prune/down-v interface.",
+    "Migration config explicitly replaces the Alembic DSN and async Alembic engine disposes in finally.",
+    "Outage tests attempt service recovery in finally; real dependency assertions do not count in-memory fallbacks as service integration."
+  ],
+  "considered_and_set_aside": [
+    {
+      "behavior": "Actual Docker Compose startup, ownership inspect schema and stop/start behavior",
+      "reason": "Windows stage explicitly prohibits services. Offline tests validate guards with synthetic inspect responses; real compatibility requires Ubuntu B2/B3."
+    },
+    {
+      "behavior": "Real PostgreSQL roundtrip, transaction/idempotency behavior and restart durability",
+      "reason": "No real database actions authorized; migration tests verify control-flow guards only."
+    },
+    {
+      "behavior": "Redis/Qdrant persistence, dimensions, filter, outage and recovery outcomes",
+      "reason": "Prepared live tests were source-reviewed only and remain NOT_RUN/BLOCKED for Windows."
+    },
+    {
+      "behavior": "Live API worker and harness implementation",
+      "reason": "Coordinator explicitly excluded concurrently edited files from this review; this verdict covers the listed B1 files only."
+    },
+    {
+      "behavior": "Large-scale credential management, hostile local administrator or concurrent out-of-band Docker resource replacement",
+      "reason": "Small operator-owned isolated acceptance sandbox; no claim of protection against a privileged local adversary or concurrent administrator actions."
+    }
+  ],
+  "assessment": "Bounded B1 preparation safety review passes after the coordinator's fixes. All four identified issues are resolved in source and verified by offline counterexamples. This is not real-service acceptance and does not authorize B2/B3 on Windows."
+}
