@@ -137,11 +137,11 @@ async def test_postgresql_concurrent_idempotency(engine):
         nonlocal arrived
         async with factory() as session:
             repository = IdempotencyRepository(session)
-            await repository.put(key, "same_fingerprint", {"synthetic": True})
             arrived += 1
             if arrived == 2:
                 barrier.set()
             await asyncio.wait_for(barrier.wait(), 10)
+            await repository.put(key, "same_fingerprint", {"synthetic": True})
             await session.commit()
 
     results = await asyncio.gather(writer(), writer(), return_exceptions=True)
@@ -285,3 +285,26 @@ async def test_qdrant_outage_and_persistence(config, vector):
         command(path, "start", "qdrant")
     await wait_for(vector.ping)
     assert vector.search([1.0, 0.0], top_k=1)[0].chunk_id == "p4b_a"
+
+
+async def test_postgresql_idempotency_conflict_preserves_first_response(engine):
+    from app.core.exceptions import AppError
+
+    factory = async_sessionmaker(engine)
+    key = "p4b_" + uuid.uuid4().hex
+    async with factory() as session:
+        repo = IdempotencyRepository(session)
+        await repo.put(key, "first", {"value": "original"})
+        await session.commit()
+    async with factory() as session:
+        repo = IdempotencyRepository(session)
+        await repo.put(key, "first", {"value": "replacement"})
+        assert await repo.get_if_matches(key, "first") == {"value": "original"}
+        with pytest.raises(AppError) as error:
+            await repo.put(key, "different", {"value": "bad"})
+        assert error.value.http_status == 409
+        await session.rollback()
+    async with factory() as session:
+        assert await IdempotencyRepository(session).get_if_matches(key, "first") == {
+            "value": "original"
+        }
