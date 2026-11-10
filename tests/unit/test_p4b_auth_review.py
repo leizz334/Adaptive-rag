@@ -155,7 +155,9 @@ async def test_health_stays_public_and_does_not_dispatch_business_work(boundary)
 def test_not_before_and_expiry_use_closed_open_interval_each_request():
     moment = [NOW - timedelta(microseconds=1)]
     auth = Authenticator(
-        _registry(_row(not_before=NOW.isoformat(), expires_at=(NOW + timedelta(seconds=1)).isoformat())),
+        _registry(
+            _row(not_before=NOW.isoformat(), expires_at=(NOW + timedelta(seconds=1)).isoformat())
+        ),
         clock=lambda: moment[0],
     )
     with pytest.raises(UnauthorizedError):
@@ -187,13 +189,17 @@ def test_bad_registry_is_rejected_without_disclosing_inputs(changes):
     assert raw not in str(caught.value)
 
 
-@pytest.mark.parametrize("raw", [
-    _registry(_row(), _row(subject="review_admin", roles=["admin"])),
-    _registry(*[_row(token=f"synthetic_{i}_" + "x" * 43) for i in range(257)]),
-    '{"version":true,"credentials":[]}',
-    '{"version":1,"credentials":[{"subject":"first","subject":"last"}]}',
-    " " * 128_001,
-], ids=["duplicate-digest", "row-limit", "bool-version", "duplicate-nested-key", "byte-limit"])
+@pytest.mark.parametrize(
+    "raw",
+    [
+        _registry(_row(), _row(subject="review_admin", roles=["admin"])),
+        _registry(*[_row(token=f"synthetic_{i}_" + "x" * 43) for i in range(257)]),
+        '{"version":true,"credentials":[]}',
+        '{"version":1,"credentials":[{"subject":"first","subject":"last"}]}',
+        " " * 128_001,
+    ],
+    ids=["duplicate-digest", "row-limit", "bool-version", "duplicate-nested-key", "byte-limit"],
+)
 def test_registry_ambiguity_and_bounds_fail_closed(raw):
     with pytest.raises(ValueError, match="^invalid credential registry$"):
         Authenticator(raw)
