@@ -45,3 +45,7 @@ Windows B1 checkpoint `6924c5dfc37c945eb55b870c13a83b2d46929cd4` was normally pu
 ## Ubuntu continuation completed (2026-11-11)
 
 The Windows handoff above is preserved as historical evidence. Authorized Ubuntu B2/B3 now pass:13real dependency tests and20real API/recovery scenarios;final full829PASS0FAIL1historicalSKIP,Ruff/Mypy/pip PASS,legacy2140regressions. Actual idempotency race and process-local confirmation repaired. See [UBUNTU_FINAL_REPORT.md](UBUNTU_FINAL_REPORT.md) for first failures,minimum fixes,coverage limits,ownership and final delivery. No paid/Active/P4-C.
+
+## Delivery blocker (actual final verification)
+
+Local B2 `36ecfe1eaa133014b7d90af4835b4e26a6eafa53` and B3 `b5a5b6f0cbbeb476265a604a28edcb39c6486c7e` are committed. Normal push failed because this Ubuntu host has no GitHub credentials, credential helper/store, gh login, token environment or SSH identity. Read-only ls-remote still reports `11c81934e83b6a8930e82794000d6a99f27dc966`; remote equality is **NOT achieved**. B2 is complete; B3 validation passed but its full task retains passes:false because delivery is required. Final local metadata checkpoint follows. Authenticate locally through a trusted Git/SSH flow, then push and verify HEAD; never send credentials in reports or repeat completed experiments. All owned test services are stopped and volumes retained. No P4-C.
