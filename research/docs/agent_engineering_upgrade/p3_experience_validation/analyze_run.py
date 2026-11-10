@@ -16,11 +16,21 @@ def differences(a, b, path=""):
     if type(a) is not type(b):
         return [dict(path=path, before=a, after=b)]
     if isinstance(a, dict):
-        return [
-            d
-            for key in sorted(a.keys() | b.keys())
-            for d in differences(a.get(key), b.get(key), path + "/" + key)
-        ]
+        result = []
+        for key in sorted(a.keys() | b.keys()):
+            if key not in a or key not in b:
+                result.append(
+                    dict(
+                        path=path + "/" + key,
+                        before=a.get(key),
+                        after=b.get(key),
+                        before_present=key in a,
+                        after_present=key in b,
+                    )
+                )
+            else:
+                result.extend(differences(a[key], b[key], path + "/" + key))
+        return result
     if isinstance(a, list):
         if len(a) != len(b):
             return [dict(path=path + "/length", before=len(a), after=len(b))]

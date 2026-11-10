@@ -14,18 +14,18 @@
 
 ## B2
 
-- [ ] Preserve user's edited CSV byte-for-byte; validate exactly seven identities, enum and aggregate rules; snapshot under a new immutable submission path. Record blank reviewer/time/notes as unknown, user attestation separately. Do not claim completed multi-rater calibration or experience approval.
-- [ ] RED tests for importer and sandbox selection/injection gates; then implement research-only human_import.py and sandbox.py. Restore frozen B1 material from Git only in memory, never overwrite the edited CSV. Original packet tests continue to use their historical blank contract.
-- [ ] Resolve all candidate provenance, canonical text and B0 frozen independent relevance evidence. Create new isolated offline-only repository copies and model-review records; never human-approve or alter P3-A database/export. Freeze permits and implementation before independent counterexamples.
-- [ ] E0=no experience; E1=post-completion Shadow observation; E2=selective sandbox prompt injection using the same scripted responses/policy, M2, seed, Gold and scorer. Record actual prompt changes, selections, full traces/state and unknown answer semantics. Do not program the scripted provider to reward a lesson.
-- [ ] Use newly authored varied tasks plus scope/lifecycle/error counterexamples and prior saved-review results. This is engineering validation, not new human Gold or blind NLU measurement. Compare strict tasks, annotated answer facts, wrong matches, negative transitions and E0/E1 divergence. No gain is acceptable; report NOT_ESTABLISHED when not proven. New live pairs are optional only after useful safe offline evidence; otherwise NOT_RUN.
-- [ ] Validate, save evidence/state and task commit; continue B3.
+- [x] Preserve user's edited CSV byte-for-byte; validate exactly seven identities, enum and aggregate rules; snapshot under a new immutable submission path. Record blank reviewer/time/notes as unknown, user attestation separately. Do not claim completed multi-rater calibration or experience approval.
+- [x] RED tests for importer and sandbox selection/injection gates; then implement research-only human_import.py and sandbox.py. Restore frozen B1 material from Git only in memory, never overwrite the edited CSV. Original packet tests continue to use their historical blank contract.
+- [x] Resolve all candidate provenance, canonical text and B0 frozen independent relevance evidence. Create new isolated offline-only repository copies and model-review records; never human-approve or alter P3-A database/export. Freeze permits and implementation before independent counterexamples.
+- [x] E0=no experience; E1=post-completion Shadow observation; E2=selective sandbox prompt injection using the same scripted responses/policy, M2, seed, Gold and scorer. Record actual prompt changes, selections, full traces/state and unknown answer semantics. Do not program the scripted provider to reward a lesson.
+- [x] Use newly authored varied tasks plus scope/lifecycle/error counterexamples and prior saved-review results. This is engineering validation, not new human Gold or blind NLU measurement. Compare strict tasks, annotated answer facts, wrong matches, negative transitions and E0/E1 divergence. No gain is acceptable; report NOT_ESTABLISHED when not proven. New live pairs are optional only after useful safe offline evidence; otherwise NOT_RUN.
+- [x] Validate, save evidence/state and task commit; continue B3.
 
 ## B3
 
-- [ ] Full pytest with historical helper suites, Ruff check/format, Mypy; fresh legacy M2 strict groups; review import/experience, safety and isolation tests. Preserve failures and do not rewrite historical evidence.
-- [ ] Independently review changes; fix important findings with RED/GREEN before final freeze. Record reviewer scope and any dataset exposure honestly.
-- [ ] Generate P4_E2E_TEST_PLAN.md covering API E2E, real dependencies and bounded real LLM E2E, acceptance/security/budget/failure recovery. Do not execute P4.
+- [x] Full pytest with historical helper suites, Ruff check/format, Mypy; fresh legacy M2 strict groups; review import/experience, safety and isolation tests. Preserve failures and do not rewrite historical evidence.
+- [x] Independently review changes; fix important findings with RED/GREEN before final freeze. Record reviewer scope and any dataset exposure honestly.
+- [x] Generate P4_E2E_TEST_PLAN.md covering API E2E, real dependencies and bounded real LLM E2E, acceptance/security/budget/failure recovery. Do not execute P4.
 - [ ] Audit user CSV and other root user files, previous source/Gold, staged paths and credentials. Exclude the edited original CSV from commits; commit the explicit submission copy/report only. Ordinary push authorized branch, ls-remote, record recovery and STOP. Production Active stays off.
 
 **Ruling:** Missing reviewer identity/time/notes do not erase the user's explicit submission statement. They remain unknown metadata and reduce calibration to PARTIAL; import may proceed. The human answer verdicts never imply lesson approval or resolve UNCERTAIN. The user authorized continuous execution, so no extra design/step approval is inserted.

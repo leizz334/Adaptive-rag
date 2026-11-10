@@ -1,0 +1,191 @@
+{
+  "schema_version": "p3-b3-final-independent-review-v1",
+  "reviewed_commit": "3d9c7952497222c06c9cfe6061ea2b740bac6f35",
+  "scope": {
+    "sources": [
+      "run_experiment.py",
+      "analyze_run.py",
+      "P3-B2_EXPERIENCE_VALIDATION.md",
+      "tests/unit/test_experience_scoring_boundary.py",
+      "tests/unit/test_experience_observation_comparison.py",
+      "app/experience/settings.py"
+    ],
+    "evidence": [
+      "evidence/b2_freeze_v2.json",
+      "runs/20261110_B2_02/experiment_config.json",
+      "runs/20261110_B2_02/results.json",
+      "runs/20261110_B2_02/post_run_analysis.json",
+      "runs/20261110_B2_02/*_E0.json canonical structures",
+      "runs/20261110_B2_02/*_E1.json canonical structures",
+      "runs/20261110_B2_02/*_E2.json canonical structures",
+      "runs/20261110_B2_02/isolated_offline_records.json",
+      "runs/20261110_B2_02/qualification_mixed_evidence.json",
+      "evidence/b3_full_pytest.xml",
+      "evidence/b3_null_boundary_green.xml"
+    ],
+    "exclusions": [
+      "No Agent experiment rerun",
+      "No API or paid call",
+      "No .env",
+      "No edited human CSV read",
+      "No production write",
+      "No existing artifact mutation by reviewer",
+      "No dataset or Gold edit after freeze"
+    ]
+  },
+  "findings": [
+    {
+      "id": "B3IR01",
+      "severity": "IMPORTANT",
+      "source": "analyze_run.py:differences",
+      "finding": "Original dictionary recursion used get() and equated a missing key with an explicit null. This could incorrectly label a changed tool output as raw_equal and decision_equal outside the permitted generated-handle exception.",
+      "reproduction": {
+        "before": {
+          "tool_calls": [
+            {
+              "output": {
+                "owner": null
+              }
+            }
+          ]
+        },
+        "after": {
+          "tool_calls": [
+            {
+              "output": {}
+            }
+          ]
+        },
+        "original_result": {
+          "raw_equal": true,
+          "decision_equal": true
+        }
+      },
+      "actual_run_effect": "NONE_FOUND: independent presence-aware recursion audited every canonical field in all 24 saved E0/E1 and E0/E2 pairs. All original comparator paths exactly matched strict structural paths, and original raw_equal agreed with Python exact equality for every pair.",
+      "resolution": "Parent added explicit key-presence comparison and before_present/after_present flags; reviewer inspected corrected function and new regression test.",
+      "status": "FIXED",
+      "validation": {
+        "red_evidence": "evidence/b3_null_boundary_red.xml",
+        "green_evidence": "evidence/b3_null_boundary_green.xml",
+        "green_saved_xml": "3 tests, 0 failures, 0 errors",
+        "verification_scope": "Reviewer read corrected source/test and saved GREEN XML; reviewer did not repeat tests or experiments."
+      }
+    }
+  ],
+  "resolved_prior_findings": [
+    {
+      "id": "B2IR-F01/F02/F03",
+      "status": "Previously independently verified fixed",
+      "summary": "Unknown/empty evidence and pending-write injection denial; exact unique CSV headers."
+    },
+    {
+      "id": "B2IR-F04",
+      "status": "SOURCE_VERIFIED_FIXED",
+      "summary": "scoring_case permits only trajectory, expected_pending, expected_error, expected_refused and expected_failures. Any runtime request/action keys are rejected before Scenario merge; turn count is strict."
+    },
+    {
+      "id": "B2IR-F05",
+      "status": "SOURCE_VERIFIED_FIXED",
+      "summary": "Runner saves initial Gold digest and asserts answers SHA256 unchanged before completed results."
+    },
+    {
+      "id": "B2IR-F06",
+      "status": "SOURCE_AND_BYTES_VERIFIED_FIXED",
+      "summary": "Qualification compares B0 result bytes to exact Git blob from c738cc6c4f095e9548535d1c5722b1e3b74d19c2 before deriving isolated permits; current bytes independently match."
+    }
+  ],
+  "independent_saved_evidence_audit": {
+    "agent_or_model_execution": false,
+    "pairs_checked": 24,
+    "comparison_method": "Read saved canonical JSON only; recursively distinguish absent keys from None, preserve JSON types and list order, then compare every structural path against original saved-comparator differences.",
+    "raw_equality_consistent_pairs": 24,
+    "all_difference_paths_accounted_for": true,
+    "changed_pairs": [
+      {
+        "case_id": "B2IR07",
+        "pair": "E0_E1",
+        "paths": [
+          "/decisions/0/pending/action_id"
+        ]
+      },
+      {
+        "case_id": "B2IR07",
+        "pair": "E0_E2",
+        "paths": [
+          "/decisions/0/pending/action_id"
+        ]
+      },
+      {
+        "case_id": "B2IR08",
+        "pair": "E0_E1",
+        "paths": [
+          "/decisions/0/pending/action_id"
+        ]
+      },
+      {
+        "case_id": "B2IR08",
+        "pair": "E0_E2",
+        "paths": [
+          "/decisions/0/pending/action_id"
+        ]
+      }
+    ],
+    "normalization_boundary": "Only exact /decisions/<integer>/pending/action_id paths with act_[a-f0-9]{32} values on both sides. Changed answers, entities, permission fields, malformed values and key presence differences remain material.",
+    "original_raw_results_retained": true,
+    "raw_E0_E1_divergence": 2,
+    "bounded_decision_E0_E1_divergence": 0,
+    "bounded_decision_E0_E2_divergence": 0
+  },
+  "source_and_data_binding": {
+    "all_b2_freeze_v2_files_match": true,
+    "frozen_file_count": 7,
+    "runner_sha256": "d9739abb11d1fcf171e2e8c930b71299e706c93ef068385c513eeb793f3b5f71",
+    "sandbox_sha256": "ed1edee4daf01304883828b0f5eda191accbc9cd6a173c6eeda8fc314e93bf02",
+    "input_sha256": "008f38d4fdfa13f86fe79cc0c29b4e4901aca3396c04126be58ef7e13eefc3d4",
+    "gold_sha256": "8202eaace958c75b277e990122415f989e3f97714fba3a82bd9728368319ab8c",
+    "trusted_b0_commit": "c738cc6c4f095e9548535d1c5722b1e3b74d19c2",
+    "trusted_b0_result_sha256": "0be3c0195485a97666155fd0a07fb50eb76aa38198ca1565b0d9bc615f2c4e04",
+    "trusted_b0_bytes_equal": true,
+    "note": "Reviewer hashed submission artifacts for freeze consistency only; did not inspect edited human CSV contents."
+  },
+  "claims_review": {
+    "strict_success_recomputed": {
+      "E0": 10,
+      "E1": 10,
+      "E2": 10,
+      "denominator": 12
+    },
+    "E2_injected_calls_recomputed": 13,
+    "E0_E1_injected_calls_recomputed": 0,
+    "all_12_expected_family_sets_correct": true,
+    "qualification_records": 3,
+    "qualification_states": "All three isolated copies are MODEL_REVIEWED and VERIFIED_OFFLINE; their reports explicitly say structural applicability, production_approved=false and not human lesson approval.",
+    "qualification_limits": "B0 relevance plus local synthetic eligibility is not demonstrated Agent utility, production approval, human experience approval or blind NLU quality.",
+    "full_factual_correctness": "13 NOT_ASSESSED per arm, independently checked saved analysis",
+    "full_faithfulness": "13 NOT_ASSESSED per arm, independently checked saved analysis",
+    "experience_benefit": "NOT_ESTABLISHED remains appropriate",
+    "real_model_semantic_comparison": "NOT_RUN remains appropriate",
+    "human_review": "Report distinguishes PARTIAL user-submitted saved-answer judgments from independently authored new test Gold. Blank review identity/time/notes stay unknown; UNCERTAIN is preserved and no lesson approval is inferred.",
+    "production_isolation": "B2 commit changes no app files. app contains no imports of research selector/injector/runner. Existing ExperienceSettings permits off/shadow only and defaults off. Research provider is injected only into isolated M2 fixture; production Active remains unavailable.",
+    "fixture_and_attribution": "Report explicitly discloses deterministic ScriptedProvider does not interpret extra principle messages, author implementation exposure, separate scorer-only Gold, and that prompt channel operation is not benefit.",
+    "Owner_Gold_caveat": "Frozen B2IR05 wording omits valid privacy-preserving not-found responses. Its abstention FAIL is a disclosed annotation/contract limitation, not evidence of Owner disclosure. Frozen Gold was preserved.",
+    "safety_interpretation": "11/12 environment/evidence contract includes missing-observation failures; report appropriately avoids equating this with unauthorized mutation."
+  },
+  "verification_limits": {
+    "saved_full_suite_xml_reviewed": {
+      "tests": 611,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "post_comparator_full_suite": "Parent reported 612-test rerun in progress; reviewer does not claim its result.",
+    "no_experiment_repetition": true,
+    "final_review_dataset_exposure": "Reviewer authored synthetic counterexamples before freeze with implementation exposure. This final review now consumed necessary saved results after evaluation; no dataset or Gold changes followed.",
+    "no_new_paid_or_production_actions": true
+  },
+  "assessment": {
+    "unresolved_critical_findings": 0,
+    "unresolved_important_findings": 0,
+    "conclusion": "Final runner isolation, Gold runtime-field ban, trusted B0 provenance and conservative P3-B2 claims are supported within the reviewed scope. The one new comparator correctness bug is fixed; an independent full structural audit establishes it did not alter this saved run's conclusion. Overall semantic benefit and production readiness remain unestablished."
+  }
+}

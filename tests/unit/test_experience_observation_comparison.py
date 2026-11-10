@@ -37,3 +37,12 @@ def test_changed_answer_permission_or_malformed_handle_is_never_normalized():
         decisions=[dict(pending=dict(action_id="act_" + "b" * 32), answer="done", confirmed=True)]
     )
     assert api().compare_behavior(a, b)["decision_equal"] is False
+
+
+def test_missing_key_is_distinct_from_an_explicit_null_observation():
+    assert (
+        api().compare_behavior({"tool_output": {"owner": None}}, {"tool_output": {}})[
+            "decision_equal"
+        ]
+        is False
+    )
