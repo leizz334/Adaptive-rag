@@ -1,0 +1,230 @@
+{
+  "transport": "REAL_HTTP_UVICORN_CHILD",
+  "provider": "CONTROLLED_MOCK_LLM",
+  "real_llm": "NOT_RUN",
+  "scenarios": 41,
+  "passed": 35,
+  "failed": 5,
+  "blocked": 1,
+  "http_requests": 53,
+  "outcomes": [
+    {
+      "case": "health",
+      "status": "PASS",
+      "latency_ms": 12.266000005183741
+    },
+    {
+      "case": "ready",
+      "status": "PASS",
+      "latency_ms": 15.229600016027689
+    },
+    {
+      "case": "capabilities",
+      "status": "PASS",
+      "latency_ms": 12.37869999022223
+    },
+    {
+      "case": "admin_denied",
+      "status": "PASS",
+      "latency_ms": 12.773399997968227
+    },
+    {
+      "case": "admin_allowed",
+      "status": "PASS",
+      "latency_ms": 11.823400011053309
+    },
+    {
+      "case": "empty_input",
+      "status": "PASS",
+      "latency_ms": 2013.4165000054054
+    },
+    {
+      "case": "oversized_input",
+      "status": "PASS",
+      "latency_ms": 2014.0282000065781
+    },
+    {
+      "case": "invalid_type",
+      "status": "PASS",
+      "latency_ms": 2012.3973000154365
+    },
+    {
+      "case": "greeting",
+      "status": "PASS",
+      "latency_ms": 53.82930001360364
+    },
+    {
+      "case": "order_status",
+      "status": "PASS",
+      "latency_ms": 65.08150001172908
+    },
+    {
+      "case": "order_amount",
+      "status": "PASS",
+      "latency_ms": 60.25139999110252
+    },
+    {
+      "case": "order_items",
+      "status": "PASS",
+      "latency_ms": 61.444499995559454
+    },
+    {
+      "case": "shipment",
+      "status": "PASS",
+      "latency_ms": 63.537700014421716
+    },
+    {
+      "case": "refund_status",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "reason": "assert False\n +  where False = has_tool({'body': {'answer': '以下是本次工具结果可确认的信息：\\n订单 ORD10002 当前订单状态：已签收。\\n订单 ORD10002 总金额：39.00元（人民币）。\\n其余所需结论暂时无法可靠确认，请补充信息或转人工...克杯', 'order_id': 'ORD10002', ...}, {'customized': 0, 'id': 3, 'name': '纯棉T恤', 'order_id': 'ORD10003', ...}], ...}, ...}, 'get_refund_status', order_id='ORD10002')",
+      "latency_ms": 141.46789998630993
+    },
+    {
+      "case": "product_detail",
+      "status": "PASS",
+      "latency_ms": 67.9764999949839
+    },
+    {
+      "case": "inventory",
+      "status": "PASS",
+      "latency_ms": 68.1971000158228
+    },
+    {
+      "case": "warranty",
+      "status": "PASS",
+      "latency_ms": 62.12240000604652
+    },
+    {
+      "case": "rag_policy",
+      "status": "PASS",
+      "latency_ms": 60.589500004425645
+    },
+    {
+      "case": "compound_shipment_amount",
+      "status": "PASS",
+      "latency_ms": 61.674700002186
+    },
+    {
+      "case": "compound_order_policy",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "reason": "assert ('已发货' in '以下是本次工具结果可确认的信息：\\n订单 ORD10001 当前订单状态：已发货。\\n订单 ORD10001 总金额：299.00元（人民币）。\\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。' and '退货' in '以下是本次工具结果可确认的信息：\\n订单 ORD10001 当前订单状态：已发货。\\n订单 ORD10001 总金额：299.00元（人民币）。\\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。')",
+      "latency_ms": 71.03279998409562
+    },
+    {
+      "case": "memory_reference",
+      "status": "PASS",
+      "latency_ms": 140.32519998727366
+    },
+    {
+      "case": "memory_target_change",
+      "status": "PASS",
+      "latency_ms": 204.48030001716688
+    },
+    {
+      "case": "memory_summary",
+      "status": "PASS",
+      "latency_ms": 414.02389999711886
+    },
+    {
+      "case": "new_session_no_history",
+      "status": "PASS",
+      "latency_ms": 45.39080001995899
+    },
+    {
+      "case": "claimed_session_isolation",
+      "status": "PASS",
+      "latency_ms": 93.66859999136068
+    },
+    {
+      "case": "claimed_order_isolation",
+      "status": "PASS",
+      "latency_ms": 67.99489998957142
+    },
+    {
+      "case": "trusted_identity_authentication",
+      "status": "BLOCKED",
+      "reason": "BLOCKED: public user_id is a client assertion; no authenticated principal binding/anti-impersonation boundary exists",
+      "latency_ms": 76.39910001307726
+    },
+    {
+      "case": "injection_refusal",
+      "status": "PASS",
+      "latency_ms": 49.603199993725866
+    },
+    {
+      "case": "negative_action",
+      "status": "PASS",
+      "latency_ms": 71.99019999825396
+    },
+    {
+      "case": "cancel_business_refusal",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "reason": "assert {'action_id': 'act_48eec30fe02944259f120dec3f7fa57e', 'arguments': {'order_id': 'ORD10001'}, 'risk': 'destructive', 'summary': '确认后将取消订单 ORD10001。请核对订单号。', ...} is None",
+      "latency_ms": 66.66280000354163
+    },
+    {
+      "case": "generate_api_error",
+      "status": "PASS",
+      "latency_ms": 70.74920000741258
+    },
+    {
+      "case": "generate_timeout",
+      "status": "PASS",
+      "latency_ms": 70.34790000761859
+    },
+    {
+      "case": "judge_truncation",
+      "status": "PASS",
+      "latency_ms": 73.00869998289272
+    },
+    {
+      "case": "tool_failure",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "reason": "assert not True\n +  where True = any(<generator object execute.<locals>.<genexpr> at 0x0000021154A1C450>)",
+      "latency_ms": 81.31070001400076
+    },
+    {
+      "case": "http_runtime_error",
+      "status": "PASS",
+      "latency_ms": 301.4342999958899
+    },
+    {
+      "case": "sse_normal",
+      "status": "PASS",
+      "latency_ms": 111.14819999784231
+    },
+    {
+      "case": "sse_guardrail",
+      "status": "PASS",
+      "latency_ms": 58.43399997684173
+    },
+    {
+      "case": "sse_runtime_error",
+      "status": "FAIL",
+      "error_type": "AssertionError",
+      "reason": "assert (None is None and 'node' == 'done'\n  \n  - done\n  + node)",
+      "latency_ms": 56.47030001273379
+    },
+    {
+      "case": "sse_disconnect",
+      "status": "PASS",
+      "latency_ms": 94.22600001562387
+    },
+    {
+      "case": "hitl_bad_confirmation",
+      "status": "PASS",
+      "latency_ms": 39.06359997927211
+    },
+    {
+      "case": "hitl_confirmation_and_idempotency",
+      "status": "PASS",
+      "latency_ms": 200.5349999817554
+    }
+  ],
+  "paid_api_calls": 0,
+  "experience_active": false
+}
