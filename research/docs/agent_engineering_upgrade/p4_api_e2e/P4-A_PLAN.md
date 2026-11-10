@@ -31,7 +31,7 @@
 - [x] Establish RED tests for evidenced bugs; minimal GREEN fixes; preserve initial raw HTTP/trace/state and exact source hashes. No case-ID branches or test Gold in runtime prompts.
 - [x] Rerun relevant full HTTP/SSE matrix and all pytest/helpers, Ruff check/format, Mypy. Record BLOCKED/NOT_RUN separately; source compatibility/safety regressions must be explicit.
 - [x] Fresh independent code review before final verdict; add counterexamples for important findings. Recheck user CSV/root user files and unchanged P0–P3evidence; stage only phase/fix/tests/state.
-- [ ] Final report, environment/run instructions, recovery checkpoints; task commit, ordinary push authorized origin/branch, ls-remote, metadata checkpoint and STOP. Stop only this run's child PID/service; no broad process kill or cleanup of user files.
+- [x] Final report, environment/run instructions, recovery checkpoints; task commit, ordinary push authorized origin/branch, ls-remote, metadata checkpoint and STOP. Stop only this run's child PID/service; no broad process kill or cleanup of user files.
 
 **Review focus:** settings supplied to create_app versus lifespan settings; SSEerror after HTTP headers; disconnect rollback versus completed write; runtime faults classified distinctly; client identity not authentication; trace capture failure must not alter business execution; no outbound socket or root.env leak.
 

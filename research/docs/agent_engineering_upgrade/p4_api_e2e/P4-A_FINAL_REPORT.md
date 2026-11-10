@@ -95,3 +95,5 @@ RECOVERY_READY = YES
 EXPERIENCE_ACTIVE_ENABLED = NO
 P4_B_STARTED = NO
 ```
+
+Delivery validation c8a7e3e1864f0c00bd604d8f1486e8568b133c92was normally pushed to codex/p4-api-e2e and matched by ls-remote. Actual task hashes are in state/Git; the final metadata commit follows this verified validation checkpoint. **STOP / PARTIAL_PASS; authentication remains BLOCKED.**
