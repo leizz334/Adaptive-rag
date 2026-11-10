@@ -1647,5 +1647,72 @@
     "human_submission_sha256": "9ae24fe60c2d75498a4429cf79e03f5a0f3955380cd51d6064fec0fa51ad5aa7",
     "experience_benefit": "NOT_ESTABLISHED",
     "all_authorized_tasks_complete": true
+  },
+  "p4_api_e2e": {
+    "phase": "P4-A",
+    "status": "in_progress",
+    "baseline_commit": "586d0e01381d69bdc1653e5563e3ce48e9b82219",
+    "active_enabled": false,
+    "paid_calls_allowed": false,
+    "P4_B_started": false,
+    "tasks": [
+      {
+        "TASK_ID": "P4-A0",
+        "status": "completed",
+        "passes": true,
+        "dependencies": [],
+        "acceptance_criteria": [
+          "Verified existing worktree/CSV/baseline and isolated real Uvicorn/TCP startup",
+          "Concrete provider/DB/retrieval manifest and no outbound billing"
+        ],
+        "evidence": [
+          "P4-A0_ENVIRONMENT.md",
+          "evidence/preservation.json",
+          "evidence/a0_boundary_red.xml",
+          "evidence/a0_boundary_green.xml",
+          "evidence/a0_loopback_red.xml",
+          "evidence/a0_loopback_green.xml",
+          "runs/20261110_A0_02/validation.json",
+          "runs/20261110_A0_02/startup.json",
+          "runs/20261110_A0_02/owned_cleanup.json"
+        ],
+        "validation": "4boundaryunitPASS;realUvicorn/TCP4HTTPPASS;privateSQLite/seed/M2/actualprovider/localtrace;ownedPIDgracefulstop;firstloopbackinfraFAILpreserved;0paid",
+        "commit_hash": null,
+        "next_action": "A1realHTTP/SSE business matrix;claimedidentitytestseparatefromtrustedauthBLOCKED"
+      },
+      {
+        "TASK_ID": "P4-A1",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P4-A0"
+        ],
+        "acceptance_criteria": [
+          "Real HTTP/SSE matrix checks response/answer/tools/state/trace",
+          "Preserve failures and distinguish missing trusted authentication as BLOCKED"
+        ],
+        "evidence": [],
+        "validation": null,
+        "commit_hash": null,
+        "next_action": "P4-A_PLAN.md"
+      },
+      {
+        "TASK_ID": "P4-A2",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P4-A1"
+        ],
+        "acceptance_criteria": [
+          "RED/GREEN minimal evidenced fixes and real HTTP regression",
+          "Full pytest/Ruff/Mypy and safety/preservation checks",
+          "Independent review/report/ordinary push+lsremote; no later P4phase"
+        ],
+        "evidence": [],
+        "validation": null,
+        "commit_hash": null,
+        "next_action": "P4-A_PLAN.md"
+      }
+    ]
   }
 }
