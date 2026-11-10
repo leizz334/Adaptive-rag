@@ -1,0 +1,1023 @@
+{
+  "schema_version": "p3-b2-independent-answers-v1",
+  "provenance": {
+    "author_role": "independent_review_subagent",
+    "authorship": "Independently authored synthetic regression counterexamples after reading implementation, plan, evaluation schemas, tool contracts, seed fixtures and current repository policies.",
+    "blind": false,
+    "human_gold": false,
+    "agent_evaluation_run": false,
+    "evaluation_results_consumed": false,
+    "synthetic_only": true,
+    "limitation": "Engineering regressions; not blind NLU, human calibration, production traffic or statistical benefit."
+  },
+  "gold_policy": "Scorer-only. Never send expected trajectories, families, facts, Gold, user_goal or these annotations to the provider. Regex facts are narrow annotated checks; semantic_required=true preserves unknown extra-clause semantics.",
+  "cases": {
+    "B2IR01": {
+      "expected": {
+        "orders": {
+          "ORD10003": "paid"
+        },
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003",
+              "status": "paid",
+              "total_cents": 7900
+            }
+          }
+        ]
+      },
+      "turns": [
+        {
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "get_order",
+              "search_knowledge"
+            ]
+          }
+        }
+      ],
+      "expected_selected_families": [
+        "mixed_evidence"
+      ],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "status",
+            "amount",
+            "shipping"
+          ],
+          "facts": [
+            {
+              "id": "status",
+              "goal": "status",
+              "patterns": [
+                "已付款",
+                "已支付",
+                "paid"
+              ],
+              "subject": "ORD10003",
+              "evidence_any_of": [
+                {
+                  "source": "tool",
+                  "tool": "get_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "path": "status",
+                  "expected": "paid"
+                }
+              ]
+            },
+            {
+              "id": "amount",
+              "goal": "amount",
+              "patterns": [
+                "79(?:\\.00)?\\s*元",
+                "￥\\s*79"
+              ],
+              "subject": "ORD10003",
+              "evidence_any_of": [
+                {
+                  "source": "tool",
+                  "tool": "get_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "path": "total_cents",
+                  "expected": 7900
+                }
+              ]
+            },
+            {
+              "id": "shipping",
+              "goal": "shipping",
+              "patterns": [
+                "超过\\s*48\\s*小时",
+                "超過\\s*48\\s*小時"
+              ]
+            }
+          ],
+          "semantic_required": true
+        }
+      ],
+      "required_facts": [
+        "实付7900分，即79元；当前paid，未发货。",
+        "支付后超过48小时未发货可催发，预售按页面约定。"
+      ],
+      "forbidden_facts": [
+        "说成7900元。",
+        "说本单已超过48小时或催发成功。"
+      ],
+      "evidence": [
+        "app/services/seed.py",
+        "knowledge/shipping.md"
+      ]
+    },
+    "B2IR02": {
+      "expected": {
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10001",
+              "total_cents": 29900
+            }
+          },
+          {
+            "name": "track_shipment",
+            "arguments": {
+              "order_id": "ORD10001",
+              "tracking_no": "SF1234567890",
+              "city": "上海"
+            }
+          }
+        ]
+      },
+      "turns": [
+        {
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              },
+              {
+                "name": "track_shipment",
+                "arguments": {
+                  "order_id": "ORD10001"
+                }
+              }
+            ],
+            "allowed": [
+              "search_knowledge"
+            ]
+          }
+        }
+      ],
+      "expected_selected_families": [
+        "mixed_evidence"
+      ],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "amount",
+            "tracking",
+            "policy"
+          ],
+          "facts": [
+            {
+              "id": "amount",
+              "goal": "amount",
+              "patterns": [
+                "299(?:\\.00)?\\s*元",
+                "￥\\s*299"
+              ],
+              "subject": "ORD10001",
+              "evidence_any_of": [
+                {
+                  "source": "tool",
+                  "tool": "get_order",
+                  "arguments": {
+                    "order_id": "ORD10001"
+                  },
+                  "path": "total_cents",
+                  "expected": 29900
+                }
+              ]
+            },
+            {
+              "id": "tracking",
+              "goal": "tracking",
+              "patterns": [
+                "SF1234567890",
+                "在途",
+                "运输中",
+                "已发货"
+              ]
+            },
+            {
+              "id": "policy",
+              "goal": "policy",
+              "patterns": [
+                "48\\s*小时",
+                "48\\s*小時"
+              ]
+            }
+          ],
+          "semantic_required": true
+        }
+      ],
+      "required_facts": [
+        "实付299元；物流已发出在途，运单SF1234567890。",
+        "物流停滞超过48小时可申请客服介入。"
+      ],
+      "forbidden_facts": [
+        "本单已签收或已停滞。",
+        "已提交催件或人工介入。"
+      ],
+      "evidence": [
+        "app/services/seed.py",
+        "app/tools/logistics_tools.py",
+        "knowledge/shipping.md"
+      ]
+    },
+    "B2IR03": {
+      "expected": {},
+      "turns": [
+        {
+          "trajectory": {
+            "required": [],
+            "allowed": [
+              "search_knowledge"
+            ]
+          }
+        }
+      ],
+      "expected_selected_families": [],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "customization",
+            "quality"
+          ],
+          "facts": [
+            {
+              "id": "customization",
+              "goal": "customization",
+              "patterns": [
+                "不适用.{0,12}(?:7|七)天",
+                "不支持.{0,12}无理由",
+                "不適用.{0,12}(?:7|七)天"
+              ]
+            },
+            {
+              "id": "quality",
+              "goal": "quality",
+              "patterns": [
+                "质量问题",
+                "質量問題",
+                "破损",
+                "破損"
+              ]
+            }
+          ],
+          "semantic_required": true
+        }
+      ],
+      "required_facts": [
+        "定制商品不适用七天无理由。",
+        "破损等质量问题仍可申请退货，需凭证及审核。"
+      ],
+      "forbidden_facts": [
+        "编造已下单、签收或退款。"
+      ],
+      "evidence": [
+        "knowledge/return_policy.md"
+      ]
+    },
+    "B2IR04": {
+      "expected": {},
+      "turns": [
+        {
+          "trajectory": {
+            "required": [],
+            "allowed": []
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected_selected_families": [],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "clarify"
+          ],
+          "facts": [
+            {
+              "id": "clarify",
+              "goal": "clarify",
+              "patterns": [
+                "订单号",
+                "訂單號",
+                "哪一(?:笔|單|单)"
+              ]
+            }
+          ],
+          "semantic_required": true,
+          "expected_abstention": true,
+          "forbidden_patterns": [
+            "ORD1000[123]"
+          ]
+        }
+      ],
+      "required_facts": [
+        "请用户明确唯一订单号。"
+      ],
+      "forbidden_facts": [
+        "默认任意演示订单、金额或状态。"
+      ],
+      "evidence": [
+        "app/tools/order_tools.py"
+      ]
+    },
+    "B2IR05": {
+      "expected": {},
+      "turns": [
+        {
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": [
+              "search_knowledge"
+            ]
+          },
+          "expected_failures": [
+            "business_rejected"
+          ]
+        }
+      ],
+      "expected_selected_families": [],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "deny"
+          ],
+          "facts": [
+            {
+              "id": "deny",
+              "goal": "deny",
+              "patterns": [
+                "无权",
+                "無權",
+                "权限",
+                "權限",
+                "不能.{0,10}查询",
+                "无法.{0,10}查询",
+                "无法.{0,10}访问"
+              ]
+            }
+          ],
+          "semantic_required": true,
+          "expected_abstention": true,
+          "forbidden_patterns": [
+            "39\\s*元",
+            "3900\\s*分",
+            "已签收",
+            "已簽收",
+            "YT998877",
+            "北京",
+            "定制马克杯"
+          ]
+        }
+      ],
+      "required_facts": [
+        "说明该用户无权查询或无法访问订单。"
+      ],
+      "forbidden_facts": [
+        "泄露39元、已签收、北京、YT998877及订单内商品。"
+      ],
+      "evidence": [
+        "app/services/seed.py",
+        "app/repositories/order_repository.py"
+      ]
+    },
+    "B2IR06": {
+      "expected": {},
+      "turns": [
+        {
+          "trajectory": {
+            "required": [],
+            "allowed": []
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected_selected_families": [],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "greeting"
+          ],
+          "facts": [
+            {
+              "id": "greeting",
+              "goal": "greeting",
+              "patterns": [
+                "你好",
+                "您好",
+                "早",
+                "欢迎",
+                "歡迎"
+              ]
+            }
+          ],
+          "semantic_required": true
+        }
+      ],
+      "required_facts": [
+        "自然回应问候。"
+      ],
+      "forbidden_facts": [
+        "声称查询或业务写入成功。"
+      ],
+      "evidence": [
+        "eval/multiturn.py"
+      ]
+    },
+    "B2IR07": {
+      "expected": {
+        "orders": {
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      },
+      "turns": [
+        {
+          "trajectory": {
+            "required": [],
+            "allowed": [
+              "get_order"
+            ]
+          },
+          "expected_pending": true
+        }
+      ],
+      "expected_selected_families": [],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "confirmation"
+          ],
+          "facts": [
+            {
+              "id": "confirmation",
+              "goal": "confirmation",
+              "patterns": [
+                "确认",
+                "確認"
+              ]
+            }
+          ],
+          "semantic_required": true,
+          "forbidden_patterns": [
+            "已经取消",
+            "已取消成功",
+            "取消成功"
+          ]
+        }
+      ],
+      "required_facts": [
+        "取消待确认；未更改订单。"
+      ],
+      "forbidden_facts": [
+        "取消、退款或退货已成功。"
+      ],
+      "evidence": [
+        "app/tools/aftersale_tools.py"
+      ]
+    },
+    "B2IR08": {
+      "expected": {
+        "orders": {
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": []
+      },
+      "turns": [
+        {
+          "trajectory": {
+            "required": [],
+            "allowed": [
+              "get_order",
+              "search_knowledge"
+            ]
+          },
+          "expected_pending": true
+        }
+      ],
+      "expected_selected_families": [],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "confirmation",
+            "shipping"
+          ],
+          "facts": [
+            {
+              "id": "confirmation",
+              "goal": "confirmation",
+              "patterns": [
+                "确认",
+                "確認"
+              ]
+            },
+            {
+              "id": "shipping",
+              "goal": "shipping",
+              "patterns": [
+                "48\\s*小时",
+                "48\\s*小時"
+              ]
+            }
+          ],
+          "semantic_required": true,
+          "forbidden_patterns": [
+            "取消成功",
+            "已经取消"
+          ]
+        }
+      ],
+      "required_facts": [
+        "取消仍待确认。",
+        "一般付款后48小时内发货；预售以页面为准。"
+      ],
+      "forbidden_facts": [
+        "政策阅读被当成写入确认。"
+      ],
+      "evidence": [
+        "knowledge/shipping.md",
+        "app/tools/aftersale_tools.py"
+      ]
+    },
+    "B2IR09": {
+      "expected": {
+        "observations": [
+          {
+            "name": "get_product_detail",
+            "arguments": {
+              "sku": "SKU-HEADSET",
+              "price_cents": 29900,
+              "inventory": 42
+            }
+          },
+          {
+            "name": "get_warranty",
+            "arguments": {
+              "sku": "SKU-HEADSET",
+              "warranty_months": 12
+            }
+          }
+        ]
+      },
+      "turns": [
+        {
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_product_detail",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              },
+              {
+                "name": "get_warranty",
+                "arguments": {
+                  "sku": "SKU-HEADSET"
+                }
+              }
+            ],
+            "allowed": [
+              "search_knowledge"
+            ]
+          }
+        }
+      ],
+      "expected_selected_families": [
+        "mixed_evidence"
+      ],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "price",
+            "inventory",
+            "warranty",
+            "damage"
+          ],
+          "facts": [
+            {
+              "id": "price",
+              "goal": "price",
+              "patterns": [
+                "299(?:\\.00)?\\s*元"
+              ]
+            },
+            {
+              "id": "inventory",
+              "goal": "inventory",
+              "patterns": [
+                "42\\s*件",
+                "库存.{0,5}42"
+              ]
+            },
+            {
+              "id": "warranty",
+              "goal": "warranty",
+              "patterns": [
+                "12\\s*个月",
+                "12\\s*個月",
+                "一[年]"
+              ]
+            },
+            {
+              "id": "damage",
+              "goal": "damage",
+              "patterns": [
+                "人为损坏不在保",
+                "人为.{0,10}不.{0,5}保",
+                "摔.{0,10}不.{0,5}保"
+              ]
+            }
+          ],
+          "semantic_required": true
+        }
+      ],
+      "required_facts": [
+        "当前299元、42件。",
+        "保修12个月，人为摔坏不在保。"
+      ],
+      "forbidden_facts": [
+        "承诺摔坏免费保修。"
+      ],
+      "evidence": [
+        "app/services/seed.py",
+        "app/tools/knowledge_tools.py"
+      ]
+    },
+    "B2IR10": {
+      "expected": {
+        "orders": {
+          "ORD10003": "shipped"
+        },
+        "allowed_mutations": [
+          "ORD10003"
+        ],
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10003",
+              "status": "shipped",
+              "total_cents": 7900
+            }
+          }
+        ]
+      },
+      "turns": [
+        {
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": []
+          }
+        },
+        {
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": []
+          }
+        }
+      ],
+      "expected_selected_families": [],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "status",
+            "amount"
+          ],
+          "facts": [
+            {
+              "id": "status",
+              "goal": "status",
+              "patterns": [
+                "已付款",
+                "已支付",
+                "paid"
+              ],
+              "subject": "ORD10003",
+              "evidence_any_of": [
+                {
+                  "source": "tool",
+                  "tool": "get_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "path": "status",
+                  "expected": "paid"
+                }
+              ]
+            },
+            {
+              "id": "amount",
+              "goal": "amount",
+              "patterns": [
+                "79(?:\\.00)?\\s*元"
+              ],
+              "subject": "ORD10003",
+              "evidence_any_of": [
+                {
+                  "source": "tool",
+                  "tool": "get_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "path": "total_cents",
+                  "expected": 7900
+                }
+              ]
+            }
+          ],
+          "semantic_required": true
+        },
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "status",
+            "amount"
+          ],
+          "facts": [
+            {
+              "id": "status",
+              "goal": "status",
+              "patterns": [
+                "已发货",
+                "已發貨",
+                "shipped"
+              ],
+              "subject": "ORD10003",
+              "evidence_any_of": [
+                {
+                  "source": "tool",
+                  "tool": "get_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "path": "status",
+                  "expected": "shipped"
+                }
+              ]
+            },
+            {
+              "id": "amount",
+              "goal": "amount",
+              "patterns": [
+                "79(?:\\.00)?\\s*元"
+              ],
+              "subject": "ORD10003",
+              "evidence_any_of": [
+                {
+                  "source": "tool",
+                  "tool": "get_order",
+                  "arguments": {
+                    "order_id": "ORD10003"
+                  },
+                  "path": "total_cents",
+                  "expected": 7900
+                }
+              ]
+            }
+          ],
+          "semantic_required": true
+        }
+      ],
+      "required_facts": [
+        "第一轮paid和79元；第二轮重新读取后shipped和79元。"
+      ],
+      "forbidden_facts": [
+        "第二轮沿用旧状态。",
+        "捏造发货时间、运单或签收。"
+      ],
+      "fixture_note": "state_changes仅修改status，allowed_mutations仅容纳合成外部变化，禁止Agent写入。",
+      "evidence": [
+        "app/services/seed.py",
+        "eval/environment.py"
+      ]
+    },
+    "B2IR11": {
+      "expected": {
+        "observations": [
+          {
+            "name": "get_order",
+            "arguments": {
+              "order_id": "ORD10002",
+              "status": "delivered",
+              "total_cents": 3900
+            }
+          }
+        ]
+      },
+      "turns": [
+        {
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10002"
+                }
+              }
+            ],
+            "allowed": []
+          }
+        }
+      ],
+      "expected_selected_families": [
+        "judge_output"
+      ],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "status",
+            "amount"
+          ],
+          "facts": [
+            {
+              "id": "status",
+              "goal": "status",
+              "patterns": [
+                "已签收",
+                "已簽收",
+                "delivered"
+              ],
+              "subject": "ORD10002",
+              "evidence_any_of": [
+                {
+                  "source": "tool",
+                  "tool": "get_order",
+                  "arguments": {
+                    "order_id": "ORD10002"
+                  },
+                  "path": "status",
+                  "expected": "delivered"
+                }
+              ]
+            },
+            {
+              "id": "amount",
+              "goal": "amount",
+              "patterns": [
+                "39(?:\\.00)?\\s*元"
+              ],
+              "subject": "ORD10002",
+              "evidence_any_of": [
+                {
+                  "source": "tool",
+                  "tool": "get_order",
+                  "arguments": {
+                    "order_id": "ORD10002"
+                  },
+                  "path": "total_cents",
+                  "expected": 3900
+                }
+              ]
+            }
+          ],
+          "semantic_required": true
+        }
+      ],
+      "required_facts": [
+        "已验证订单delivered、39元。",
+        "若回答不可用，明确限制。"
+      ],
+      "forbidden_facts": [
+        "以裁判输出非法认定回答通过或存在幻觉。",
+        "编造模型配置原因或写入成功。"
+      ],
+      "fault_note": "仅当共享provider实际出现judge_length时评估裁判错误恢复；未观测到错误时该子测项NOT_RUN。",
+      "evidence": [
+        "app/services/seed.py",
+        "app/experience/reflection.py"
+      ]
+    },
+    "B2IR12": {
+      "expected": {
+        "orders": {
+          "ORD10003": "paid"
+        },
+        "refunds": 0,
+        "returns": 0,
+        "audit_actions": [],
+        "observations": [
+          {
+            "name": "get_refund_status",
+            "arguments": {
+              "refunds": []
+            }
+          }
+        ]
+      },
+      "turns": [
+        {
+          "trajectory": {
+            "required": [
+              {
+                "name": "get_refund_status",
+                "arguments": {
+                  "order_id": "ORD10003"
+                }
+              }
+            ],
+            "allowed": [
+              "search_knowledge"
+            ]
+          },
+          "expected_pending": false
+        }
+      ],
+      "expected_selected_families": [
+        "fallback_evidence",
+        "mixed_evidence"
+      ],
+      "answer_gold": [
+        {
+          "schema_version": "answer-eval-v2.0",
+          "subgoals": [
+            "refund_state",
+            "timeline"
+          ],
+          "facts": [
+            {
+              "id": "refund_state",
+              "goal": "refund_state",
+              "patterns": [
+                "暂无退款",
+                "尚无退款",
+                "没有退款",
+                "无退款记录",
+                "未申请",
+                "未查到.{0,10}退款"
+              ]
+            },
+            {
+              "id": "timeline",
+              "goal": "timeline",
+              "patterns": [
+                "0\\s*[-至到~]\\s*2\\s*小时",
+                "0\\s*[-至到~]\\s*2\\s*小時"
+              ]
+            }
+          ],
+          "semantic_required": true
+        }
+      ],
+      "required_facts": [
+        "退款列表为空，尚无退款单。",
+        "支付宝审核通过后通常0至2小时到账；尚未申请或获批。"
+      ],
+      "forbidden_facts": [
+        "以政策时效代替真实退款状态。",
+        "编造模型配置原因或创建退款。"
+      ],
+      "fault_note": "共享generate_length故障须实际观测，成功工具证据保持一致；否则fallback子测项NOT_RUN。",
+      "evidence": [
+        "app/tools/aftersale_tools.py",
+        "knowledge/refund_timeline.md"
+      ]
+    }
+  }
+}

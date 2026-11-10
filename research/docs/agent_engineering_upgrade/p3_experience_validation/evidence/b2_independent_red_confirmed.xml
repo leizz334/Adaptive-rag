@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="0.673" timestamp="2026-11-10T12:27:44.614557+08:00" hostname="LAPTOP-OMRADJBO"><testcase classname="tests.unit.test_experience_b2_review" name="test_independent_unknown_or_pending_context_never_injects[unknown_evidence]" time="0.018"><failure message="AssertionError: assert [{'family': '...据不足时明确说明限制。'}] == []&#10;  &#10;  Left contains one more item: {'family': 'mixed_evidence', 'lesson': '请求同时包含实时业务事实和静态政策时，分别核对两类所需证据；静态检索不能替代实时业务读取。保留权限、Owner、人工确认与幂等检查，证据不足时明确说明限制。'}&#10;  Use -v to get more diff">unsafe = 'unknown_evidence'
+tmp_path = WindowsPath('D:/Code/Adaptive-rag/.worktrees/p3-experience-validation/.pytest_cache/b2-independent-review-red-02/test_independent_unknown_or_pe0')
+
+    @pytest.mark.parametrize("unsafe", ["unknown_evidence", "empty_evidence", "pending_write"])
+    async def test_independent_unknown_or_pending_context_never_injects(unsafe, tmp_path):
+        now = datetime(2026, 11, 10, tzinfo=UTC)
+        source = "a" * 40
+        template = CATALOG["mixed_evidence"]
+        scope = ExperienceScope(
+            tenant_ref="1" * 64, user_ref="2" * 64, session_ref="3" * 64, verified=True
+        )
+        provenance = write_ref(tmp_path, "source.json", {"synthetic": True})
+        item = ExperienceCandidate(
+            scope=scope,
+            source_trace_id="independent.synthetic",
+            source_case_id="independent.synthetic",
+            failure_type="ROUTING_ERROR",
+            evidence_refs=[provenance],
+            family="mixed_evidence",
+            lesson=template["lesson"],
+            applicability_conditions=template["required"],
+            non_applicability_conditions=template["excluded"],
+            validation_status="VERIFIED_OFFLINE",
+            review_status="MODEL_REVIEWED",
+            created_at=now,
+            updated_at=now,
+            expires_at=now + timedelta(days=1),
+            source_version=source,
+        )
+        features = dict(
+            tags=["live_fact", "static_policy"],
+            evidence_state={"unknown_evidence": "unknown", "empty_evidence": "empty"}.get(
+                unsafe, "present"
+            ),
+            annotation_verified=True,
+        )
+        if unsafe == "pending_write":
+            features["tags"].append("write_unconfirmed")
+        features_ref = write_ref(tmp_path, "features.json", features)
+        permit = write_ref(
+            tmp_path,
+            "permit.json",
+            dict(
+                scope="offline_injection_preflight",
+                candidate_fingerprint=item.fingerprint,
+                source_version=source,
+                passed=True,
+                production_approved=False,
+            ),
+        )
+    
+        class Repository:
+            async def list(self, identity):
+                assert identity == scope
+                return [item]
+    
+        # Support the parent's independently planned explicit current-version gate.
+        kwargs = {"source_version": source} if "source_version" in inspect.signature(sandbox.select_lessons).parameters else {}
+        result = await sandbox.select_lessons(
+            Repository(), scope, features, features_ref, {item.fingerprint: permit},
+            resolver=EvidenceResolver(tmp_path), now=now, isolated=True, **kwargs,
+        )
+&gt;       assert result["lessons"] == []
+E       AssertionError: assert [{'family': '...据不足时明确说明限制。'}] == []
+E         
+E         Left contains one more item: {'family': 'mixed_evidence', 'lesson': '请求同时包含实时业务事实和静态政策时，分别核对两类所需证据；静态检索不能替代实时业务读取。保留权限、Owner、人工确认与幂等检查，证据不足时明确说明限制。'}
+E         Use -v to get more diff
+
+tests\unit\test_experience_b2_review.py:88: AssertionError</failure></testcase><testcase classname="tests.unit.test_experience_b2_review" name="test_independent_unknown_or_pending_context_never_injects[empty_evidence]" time="0.014"><failure message="AssertionError: assert [{'family': '...据不足时明确说明限制。'}] == []&#10;  &#10;  Left contains one more item: {'family': 'mixed_evidence', 'lesson': '请求同时包含实时业务事实和静态政策时，分别核对两类所需证据；静态检索不能替代实时业务读取。保留权限、Owner、人工确认与幂等检查，证据不足时明确说明限制。'}&#10;  Use -v to get more diff">unsafe = 'empty_evidence'
+tmp_path = WindowsPath('D:/Code/Adaptive-rag/.worktrees/p3-experience-validation/.pytest_cache/b2-independent-review-red-02/test_independent_unknown_or_pe1')
+
+    @pytest.mark.parametrize("unsafe", ["unknown_evidence", "empty_evidence", "pending_write"])
+    async def test_independent_unknown_or_pending_context_never_injects(unsafe, tmp_path):
+        now = datetime(2026, 11, 10, tzinfo=UTC)
+        source = "a" * 40
+        template = CATALOG["mixed_evidence"]
+        scope = ExperienceScope(
+            tenant_ref="1" * 64, user_ref="2" * 64, session_ref="3" * 64, verified=True
+        )
+        provenance = write_ref(tmp_path, "source.json", {"synthetic": True})
+        item = ExperienceCandidate(
+            scope=scope,
+            source_trace_id="independent.synthetic",
+            source_case_id="independent.synthetic",
+            failure_type="ROUTING_ERROR",
+            evidence_refs=[provenance],
+            family="mixed_evidence",
+            lesson=template["lesson"],
+            applicability_conditions=template["required"],
+            non_applicability_conditions=template["excluded"],
+            validation_status="VERIFIED_OFFLINE",
+            review_status="MODEL_REVIEWED",
+            created_at=now,
+            updated_at=now,
+            expires_at=now + timedelta(days=1),
+            source_version=source,
+        )
+        features = dict(
+            tags=["live_fact", "static_policy"],
+            evidence_state={"unknown_evidence": "unknown", "empty_evidence": "empty"}.get(
+                unsafe, "present"
+            ),
+            annotation_verified=True,
+        )
+        if unsafe == "pending_write":
+            features["tags"].append("write_unconfirmed")
+        features_ref = write_ref(tmp_path, "features.json", features)
+        permit = write_ref(
+            tmp_path,
+            "permit.json",
+            dict(
+                scope="offline_injection_preflight",
+                candidate_fingerprint=item.fingerprint,
+                source_version=source,
+                passed=True,
+                production_approved=False,
+            ),
+        )
+    
+        class Repository:
+            async def list(self, identity):
+                assert identity == scope
+                return [item]
+    
+        # Support the parent's independently planned explicit current-version gate.
+        kwargs = {"source_version": source} if "source_version" in inspect.signature(sandbox.select_lessons).parameters else {}
+        result = await sandbox.select_lessons(
+            Repository(), scope, features, features_ref, {item.fingerprint: permit},
+            resolver=EvidenceResolver(tmp_path), now=now, isolated=True, **kwargs,
+        )
+&gt;       assert result["lessons"] == []
+E       AssertionError: assert [{'family': '...据不足时明确说明限制。'}] == []
+E         
+E         Left contains one more item: {'family': 'mixed_evidence', 'lesson': '请求同时包含实时业务事实和静态政策时，分别核对两类所需证据；静态检索不能替代实时业务读取。保留权限、Owner、人工确认与幂等检查，证据不足时明确说明限制。'}
+E         Use -v to get more diff
+
+tests\unit\test_experience_b2_review.py:88: AssertionError</failure></testcase><testcase classname="tests.unit.test_experience_b2_review" name="test_independent_unknown_or_pending_context_never_injects[pending_write]" time="0.014"><failure message="AssertionError: assert [{'family': '...据不足时明确说明限制。'}] == []&#10;  &#10;  Left contains one more item: {'family': 'mixed_evidence', 'lesson': '请求同时包含实时业务事实和静态政策时，分别核对两类所需证据；静态检索不能替代实时业务读取。保留权限、Owner、人工确认与幂等检查，证据不足时明确说明限制。'}&#10;  Use -v to get more diff">unsafe = 'pending_write'
+tmp_path = WindowsPath('D:/Code/Adaptive-rag/.worktrees/p3-experience-validation/.pytest_cache/b2-independent-review-red-02/test_independent_unknown_or_pe2')
+
+    @pytest.mark.parametrize("unsafe", ["unknown_evidence", "empty_evidence", "pending_write"])
+    async def test_independent_unknown_or_pending_context_never_injects(unsafe, tmp_path):
+        now = datetime(2026, 11, 10, tzinfo=UTC)
+        source = "a" * 40
+        template = CATALOG["mixed_evidence"]
+        scope = ExperienceScope(
+            tenant_ref="1" * 64, user_ref="2" * 64, session_ref="3" * 64, verified=True
+        )
+        provenance = write_ref(tmp_path, "source.json", {"synthetic": True})
+        item = ExperienceCandidate(
+            scope=scope,
+            source_trace_id="independent.synthetic",
+            source_case_id="independent.synthetic",
+            failure_type="ROUTING_ERROR",
+            evidence_refs=[provenance],
+            family="mixed_evidence",
+            lesson=template["lesson"],
+            applicability_conditions=template["required"],
+            non_applicability_conditions=template["excluded"],
+            validation_status="VERIFIED_OFFLINE",
+            review_status="MODEL_REVIEWED",
+            created_at=now,
+            updated_at=now,
+            expires_at=now + timedelta(days=1),
+            source_version=source,
+        )
+        features = dict(
+            tags=["live_fact", "static_policy"],
+            evidence_state={"unknown_evidence": "unknown", "empty_evidence": "empty"}.get(
+                unsafe, "present"
+            ),
+            annotation_verified=True,
+        )
+        if unsafe == "pending_write":
+            features["tags"].append("write_unconfirmed")
+        features_ref = write_ref(tmp_path, "features.json", features)
+        permit = write_ref(
+            tmp_path,
+            "permit.json",
+            dict(
+                scope="offline_injection_preflight",
+                candidate_fingerprint=item.fingerprint,
+                source_version=source,
+                passed=True,
+                production_approved=False,
+            ),
+        )
+    
+        class Repository:
+            async def list(self, identity):
+                assert identity == scope
+                return [item]
+    
+        # Support the parent's independently planned explicit current-version gate.
+        kwargs = {"source_version": source} if "source_version" in inspect.signature(sandbox.select_lessons).parameters else {}
+        result = await sandbox.select_lessons(
+            Repository(), scope, features, features_ref, {item.fingerprint: permit},
+            resolver=EvidenceResolver(tmp_path), now=now, isolated=True, **kwargs,
+        )
+&gt;       assert result["lessons"] == []
+E       AssertionError: assert [{'family': '...据不足时明确说明限制。'}] == []
+E         
+E         Left contains one more item: {'family': 'mixed_evidence', 'lesson': '请求同时包含实时业务事实和静态政策时，分别核对两类所需证据；静态检索不能替代实时业务读取。保留权限、Owner、人工确认与幂等检查，证据不足时明确说明限制。'}
+E         Use -v to get more diff
+
+tests\unit\test_experience_b2_review.py:88: AssertionError</failure></testcase><testcase classname="tests.unit.test_experience_b2_review" name="test_independent_duplicate_csv_header_is_rejected" time="0.008"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tmp_path = WindowsPath('D:/Code/Adaptive-rag/.worktrees/p3-experience-validation/.pytest_cache/b2-independent-review-red-02/test_independent_duplicate_csv0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000024E90330150&gt;
+
+    def test_independent_duplicate_csv_header_is_rejected(tmp_path, monkeypatch):
+        cases = [dict(case_id=f"CASE{i}", query=f"query{i}", public_final_answer=f"answer{i}") for i in range(7)]
+        monkeypatch.setattr(human_import.p, "load_verified_cases", lambda: (cases, {}, []))
+        columns = list(human_import.p.COLUMNS) + ["safety"]
+        stream = io.StringIO(newline="")
+        writer = csv.writer(stream)
+        writer.writerow(columns)
+        for case in cases:
+            row = dict(
+                case_id=case["case_id"],
+                answer_sha256=human_import.p.sha_text(case["public_final_answer"]),
+                query_sha256=human_import.p.sha_text(case["query"]),
+                factual_correctness="PASS", completeness="PASS", faithfulness="PASS",
+                safety="FAIL", overall_verdict="PASS", reviewer_name="", reviewed_at="", notes="",
+            )
+            # DictReader silently discards the first safety=FAIL under duplicate headers.
+            writer.writerow([row[key] for key in human_import.p.COLUMNS] + ["PASS"])
+        source = tmp_path / "review.csv"
+        source.write_text(stream.getvalue(), encoding="utf-8")
+        output = tmp_path / "import"
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests\unit\test_experience_b2_review.py:111: Failed</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,161 @@
+{
+  "schema_version": "p3-b2-independent-review-v1",
+  "reviewer": {
+    "role": "independent_code_reviewer_and_counterexample_author",
+    "implementation_aware": true,
+    "blind": false,
+    "model": "inherited_parent",
+    "scope": "Research-only human import, lesson selection/injection, experiment runner and independent metadata. No Agent evaluation executed by reviewer; no task outcomes or production/private data consumed."
+  },
+  "reviewed_sources": [
+    "AGENTS.md",
+    "research/docs/agent_engineering_upgrade/p3_experience_validation/P3-B2_B3_PLAN.md",
+    "research/docs/agent_engineering_upgrade/p3_experience_validation/human_import.py",
+    "research/docs/agent_engineering_upgrade/p3_experience_validation/sandbox.py",
+    "research/docs/agent_engineering_upgrade/p3_experience_validation/run_experiment.py",
+    "tests/unit/test_experience_human_import.py",
+    "tests/unit/test_experience_sandbox.py",
+    "app/experience/contracts.py",
+    "app/experience/applicability.py",
+    "app/experience/review_applicability.py",
+    "app/experience/reflection.py",
+    "app/experience/shadow.py",
+    "eval/multiturn.py",
+    "eval/environment.py",
+    "eval/contracts.py",
+    "eval/answer_scoring.py",
+    "app/services/seed.py",
+    "app/tools/* tool contracts",
+    "knowledge/shipping.md",
+    "knowledge/return_policy.md",
+    "knowledge/refund_timeline.md",
+    "knowledge/warranty.md"
+  ],
+  "findings": [
+    {
+      "id": "B2IR-F01",
+      "severity": "IMPORTANT",
+      "file": "sandbox.py",
+      "finding": "Original selector admitted mixed_evidence under annotation-verified unknown or empty current evidence when other provenance/permit checks passed. B0 relevance guards did not imply injection denial.",
+      "counterexample": "test_independent_unknown_or_pending_context_never_injects[unknown_evidence,empty_evidence]",
+      "status": "FIXED_AND_INDEPENDENTLY_VERIFIED",
+      "resolution": "Selector now denies every evidence_state other than present before lesson selection; production matcher and B0 review remain unchanged."
+    },
+    {
+      "id": "B2IR-F02",
+      "severity": "IMPORTANT",
+      "file": "sandbox.py",
+      "finding": "mixed_evidence original exclusions omit write_unconfirmed, allowing selection during a pending write despite the new research plan's stricter denial rule.",
+      "counterexample": "test_independent_unknown_or_pending_context_never_injects[pending_write]",
+      "status": "FIXED_AND_INDEPENDENTLY_VERIFIED",
+      "resolution": "Selector globally denies write_unconfirmed before matching; retains original restrictive matcher."
+    },
+    {
+      "id": "B2IR-F03",
+      "severity": "IMPORTANT",
+      "file": "human_import.py",
+      "finding": "csv.DictReader silently collapsed duplicate safety headers. Raw safety=FAIL followed by a duplicate trailing safety=PASS became an accepted all-PASS report, violating faithful import.",
+      "counterexample": "test_independent_duplicate_csv_header_is_rejected",
+      "status": "FIXED_AND_INDEPENDENTLY_VERIFIED",
+      "resolution": "Importer validates exact ordered unique fieldnames before row dictionaries discard duplicate columns."
+    },
+    {
+      "id": "B2IR-F04",
+      "severity": "IMPORTANT",
+      "file": "run_experiment.py",
+      "finding": "Unrestricted turn.model_dump() | gold_turn could permit evaluator Gold keys to overwrite message, actor, confirmation or fixture events. Supplied independent Gold contains only evaluator fields.",
+      "status": "IMPLEMENTATION_OWNER_ACKNOWLEDGED_FIX_IN_PROGRESS_AT_REVIEW_HANDOFF",
+      "recommendation": "Allowlist evaluator-only fields when merging Gold; reject any runtime-input keys. Verify with direct counterexample before final freeze."
+    },
+    {
+      "id": "B2IR-F05",
+      "severity": "MINOR",
+      "file": "run_experiment.py",
+      "finding": "Runner records answer Gold hash but reviewed version did not assert it again at completion, unlike source and input hashes.",
+      "status": "IMPLEMENTATION_OWNER_ACKNOWLEDGED_FIX_IN_PROGRESS_AT_REVIEW_HANDOFF",
+      "recommendation": "Keep initial answer hash and assert it remains identical at final completion."
+    },
+    {
+      "id": "B2IR-F06",
+      "severity": "MINOR",
+      "file": "run_experiment.py",
+      "finding": "Qualification accurately claims frozen independently authored B0 structural relevance, not task benefit, but reviewed version checks source/candidate hashes without binding B0 results bytes to a prior trusted digest.",
+      "status": "RECOMMENDATION_SENT_TO_OWNER",
+      "recommendation": "Bind qualification evidence to a persisted trusted historical B0 result hash or committed exact blob before deriving local permits."
+    },
+    {
+      "id": "B2IR-D01",
+      "severity": "ANNOTATION_LIMITATION",
+      "file": "datasets/b2_independent_answers.json",
+      "finding": "B2IR05 requires denial wording patterns for permission/unavailability but omits legitimate privacy-preserving 'order not found/未找到/不存在' wording. Repository intentionally hides foreign ownership as not-found.",
+      "status": "FROZEN_GOLD_PRESERVED",
+      "handling": "Disclose possible false negative as scorer-contract limitation. Do not revise frozen annotation after evaluation. No reviewer task outcomes were seen."
+    }
+  ],
+  "validation": {
+    "independent_red": {
+      "evidence": "evidence/b2_independent_red_confirmed.xml",
+      "result": "4 intended assertion failures before owner fixes"
+    },
+    "infrastructure_failures_preserved": [
+      {
+        "evidence": "evidence/b2_independent_red.xml",
+        "result": "4 setup errors from inaccessible shared Windows pytest temporary directory; no intended assertion executed"
+      },
+      {
+        "evidence": "evidence/b2_independent_red_local.xml",
+        "result": "4 setup errors from missing local temporary parent; no intended assertion executed"
+      }
+    ],
+    "independent_green": {
+      "command": "D:/MiniAnaconda3/envs/adaptive-rag/python.exe -m pytest tests/unit/test_experience_b2_review.py -q --basetemp=.pytest_cache/b2-independent-review-green-01 --junitxml=research/docs/agent_engineering_upgrade/p3_experience_validation/evidence/b2_independent_green.xml",
+      "evidence": "evidence/b2_independent_green.xml",
+      "result": "4 PASS"
+    },
+    "ruff": {
+      "file": "tests/unit/test_experience_b2_review.py",
+      "result": "format applied; check PASS"
+    },
+    "dataset_metadata": {
+      "result": "PASS",
+      "scenarios": 12,
+      "annotated_turns": 13,
+      "answer_gold_objects": 13,
+      "annotation_id_parity": true,
+      "scenario_and_merged_scenario_schema": true,
+      "features_schema": true,
+      "answer_gold_schema": true,
+      "all_semantic_required": true,
+      "required_tool_argument_contracts_validated": 10,
+      "allowed_tool_names_validated": true,
+      "tools_executed": 0,
+      "agent_executed": false,
+      "notes": "One discarded metadata-check attempt imported a nonexistent build_registry symbol; corrected without dataset edits. Another direct tool-factory import encountered a pre-existing import-order cycle; retry via established eval.multiturn import order validated contracts."
+    }
+  },
+  "artifacts": {
+    "test": "tests/unit/test_experience_b2_review.py",
+    "tasks": "datasets/b2_independent_tasks.json",
+    "answers": "datasets/b2_independent_answers.json",
+    "input_sha256": "008f38d4fdfa13f86fe79cc0c29b4e4901aca3396c04126be58ef7e13eefc3d4",
+    "answers_sha256": "8202eaace958c75b277e990122415f989e3f97714fba3a82bd9728368319ab8c"
+  },
+  "provenance": {
+    "scenario_author_saw": "New implementation/specification and necessary existing evaluation/tool/fixture/policy contracts, including known deterministic scripted-provider behavior.",
+    "scenario_author_did_not_see": "No newly evaluated Agent results; no edited human CSV; no .env; no paid/live API calls.",
+    "scenarios": "Synthetic natural Chinese independent regression counterexamples; NOT blind NLU measurement, human Gold or semantic benefit proof.",
+    "runtime_hints": "Input-side structural annotation fixtures and stage fault controls; not expected family/answer labels. They are isolated assumptions, not production feature extraction.",
+    "gold": "Separate scorer-only families, trajectories and narrow AnswerGold atoms; all semantic_required=true retains unknown open semantic coverage.",
+    "faults": "judge_length and generate_length shared provider-stage perturbations, never case-ID success branches. Fault-specific recovery claims require actual observed failure evidence.",
+    "qualification": "Isolated MODEL_REVIEWED/VERIFIED_OFFLINE structural applicability eligibility is not human experience approval, production approval or demonstrated Agent benefit.",
+    "reviewer_actions": {
+      "production_writes": 0,
+      "paid_calls": 0,
+      "agent_evaluations": 0,
+      "commits": 0,
+      "global_state_edits": 0,
+      "original_candidates_edits": 0
+    }
+  },
+  "assessment": "The four independently reproduced unsafe-context/import counterexamples now pass after owner fixes. Dataset schema and tool contracts are validated. Final runner Gold-boundary hardening and final freeze/evaluation are owned by root; review does not assert their completion or any Agent benefit."
+}

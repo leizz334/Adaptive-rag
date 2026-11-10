@@ -1,0 +1,2341 @@
+{
+  "capture": {
+    "schema_version": "p2r-runtime-evidence-v1",
+    "model_evaluation": "OFFLINE",
+    "real_model_evaluation": "NOT_RUN",
+    "evidence_origin": "SOURCEFROZEN_REEXECUTION",
+    "provider": "OFFLINE_REPLAY",
+    "mode": "M2",
+    "paid_api_calls": 0,
+    "paid_tokens": 0,
+    "raw_scorer_model_evaluation_note": "NOT_RUN is the original contract default; this run is explicitly OFFLINE",
+    "cases": 1,
+    "passed": 1,
+    "results": [
+      {
+        "schema_version": "agent-eval-v2.1",
+        "case_id": "B2IR01",
+        "status": "PASS",
+        "metrics": {
+          "agent_task_success": 1.0,
+          "environment_state_correct": 1.0,
+          "latency_ms": 308.53530002059415
+        },
+        "reasons": [],
+        "evidence": {
+          "family": "mixed_amount_shipping",
+          "turns": [
+            {
+              "turn": 0,
+              "error": null,
+              "root_run_id": "8af86730-6e3a-4a4e-ba86-7189d279dc7b",
+              "scores": {
+                "tool_selection_accuracy": 1.0,
+                "tool_argument_accuracy": 1.0,
+                "trajectory_valid": 1,
+                "unnecessary_tool_calls": 0,
+                "tool_execution_success": 1.0,
+                "failure_counts": {},
+                "idempotent_replays": 0,
+                "denied_calls": 0,
+                "missing_required_calls": 0
+              },
+              "pending": false,
+              "refused": false
+            }
+          ],
+          "tool_calls": [
+            {
+              "name": "get_order",
+              "arguments": {
+                "order_id": "ORD10003"
+              },
+              "status": "executed",
+              "success": true,
+              "failure_kind": null,
+              "turn": 0,
+              "output": {
+                "order_id": "ORD10003",
+                "user_id": "u_demo",
+                "status": "paid",
+                "items": [
+                  {
+                    "sku": "SKU-TEE",
+                    "name": "纯棉T恤",
+                    "quantity": 1,
+                    "unit_price_cents": 7900,
+                    "customized": false
+                  }
+                ],
+                "total_cents": 7900,
+                "created_at": "2026-11-04T19:00:00",
+                "paid_at": "2026-11-04T19:00:00",
+                "shipped_at": null,
+                "delivered_at": null,
+                "tracking_no": null,
+                "receiver_city": "杭州"
+              }
+            }
+          ],
+          "initial_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "actual_order_states": {
+            "ORD10001": "shipped",
+            "ORD10002": "delivered",
+            "ORD10003": "paid"
+          },
+          "span_count": 15,
+          "known_limitation": null
+        },
+        "dataset_sha256": "008f38d4fdfa13f86fe79cc0c29b4e4901aca3396c04126be58ef7e13eefc3d4",
+        "model_evaluation": "NOT_RUN"
+      }
+    ],
+    "traces": [
+      {
+        "case_id": "B2IR01",
+        "evidence_origin": "SOURCEFROZEN_REEXECUTION",
+        "turns": [
+          {
+            "turn": 0,
+            "trace_id": "offline_B2IR01_0",
+            "request": {
+              "message": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+              "session_id": null,
+              "user_id": "u_demo",
+              "stream": false,
+              "confirm_action_id": null,
+              "idempotency_key": null
+            },
+            "nodes": [
+              {
+                "sequence": 0,
+                "node": "apply_guardrail",
+                "input": {
+                  "trace_id": "offline_B2IR01_0",
+                  "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                  "user_id": "u_demo",
+                  "user_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "resolved_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "selected_context": {
+                    "effective_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "order_id": "ORD10003",
+                    "needs_clarification": false,
+                    "history": [],
+                    "source": "current_user",
+                    "summary": "",
+                    "max_chars": 1800,
+                    "order_ids": [
+                      "ORD10003"
+                    ],
+                    "original_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "owner_user_id": "u_demo",
+                    "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2"
+                  },
+                  "memory_managed": true,
+                  "memory_preferences": {},
+                  "messages": [],
+                  "summary": "",
+                  "retrieved_chunks": [],
+                  "tool_results": [],
+                  "confirmed_action": null,
+                  "confirm_action_id": null,
+                  "idempotency_key": null,
+                  "citations": [],
+                  "refused": false,
+                  "step_count": 0,
+                  "token_usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0
+                  },
+                  "latency": {
+                    "intent_ms": 0.0,
+                    "routing_ms": 0.0,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 0.0,
+                    "llm_ms": 0.0,
+                    "total_ms": 0.0
+                  }
+                },
+                "output": {}
+              },
+              {
+                "sequence": 1,
+                "node": "classify_intent",
+                "input": {
+                  "trace_id": "offline_B2IR01_0",
+                  "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                  "user_id": "u_demo",
+                  "user_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "resolved_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "selected_context": {
+                    "effective_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "order_id": "ORD10003",
+                    "needs_clarification": false,
+                    "history": [],
+                    "source": "current_user",
+                    "summary": "",
+                    "max_chars": 1800,
+                    "order_ids": [
+                      "ORD10003"
+                    ],
+                    "original_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "owner_user_id": "u_demo",
+                    "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2"
+                  },
+                  "memory_managed": true,
+                  "memory_preferences": {},
+                  "messages": [],
+                  "summary": "",
+                  "retrieved_chunks": [],
+                  "tool_results": [],
+                  "confirmed_action": null,
+                  "confirm_action_id": null,
+                  "idempotency_key": null,
+                  "citations": [],
+                  "refused": false,
+                  "step_count": 0,
+                  "token_usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0
+                  },
+                  "latency": {
+                    "intent_ms": 0.0,
+                    "routing_ms": 0.0,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 0.0,
+                    "llm_ms": 0.0,
+                    "total_ms": 0.0
+                  }
+                },
+                "output": {
+                  "intent": {
+                    "label": "order_inquiry",
+                    "confidence": 0.93,
+                    "prompt_version": "intent_rules_v1"
+                  },
+                  "latency": {
+                    "intent_ms": 0.23740000324323773,
+                    "routing_ms": 0.0,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 0.0,
+                    "llm_ms": 0.0,
+                    "total_ms": 0.0
+                  }
+                }
+              },
+              {
+                "sequence": 2,
+                "node": "route_complexity",
+                "input": {
+                  "trace_id": "offline_B2IR01_0",
+                  "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                  "user_id": "u_demo",
+                  "user_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "resolved_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "selected_context": {
+                    "effective_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "order_id": "ORD10003",
+                    "needs_clarification": false,
+                    "history": [],
+                    "source": "current_user",
+                    "summary": "",
+                    "max_chars": 1800,
+                    "order_ids": [
+                      "ORD10003"
+                    ],
+                    "original_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "owner_user_id": "u_demo",
+                    "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2"
+                  },
+                  "memory_managed": true,
+                  "memory_preferences": {},
+                  "messages": [],
+                  "summary": "",
+                  "intent": {
+                    "label": "order_inquiry",
+                    "confidence": 0.93,
+                    "prompt_version": "intent_rules_v1"
+                  },
+                  "retrieved_chunks": [],
+                  "tool_results": [],
+                  "confirmed_action": null,
+                  "confirm_action_id": null,
+                  "idempotency_key": null,
+                  "citations": [],
+                  "refused": false,
+                  "step_count": 0,
+                  "token_usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0
+                  },
+                  "latency": {
+                    "intent_ms": 0.23740000324323773,
+                    "routing_ms": 0.0,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 0.0,
+                    "llm_ms": 0.0,
+                    "total_ms": 0.0
+                  }
+                },
+                "output": {
+                  "complexity": {
+                    "complexity": "tool_required",
+                    "strategy": "agent",
+                    "confidence": 0.8
+                  },
+                  "strategy": "agent",
+                  "query_complexity": "tool_required",
+                  "latency": {
+                    "intent_ms": 0.23740000324323773,
+                    "routing_ms": 0.1446999958716333,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 0.0,
+                    "llm_ms": 0.0,
+                    "total_ms": 0.0
+                  }
+                }
+              },
+              {
+                "sequence": 3,
+                "node": "plan_tasks",
+                "input": {
+                  "trace_id": "offline_B2IR01_0",
+                  "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                  "user_id": "u_demo",
+                  "user_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "resolved_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "selected_context": {
+                    "effective_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "order_id": "ORD10003",
+                    "needs_clarification": false,
+                    "history": [],
+                    "source": "current_user",
+                    "summary": "",
+                    "max_chars": 1800,
+                    "order_ids": [
+                      "ORD10003"
+                    ],
+                    "original_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "owner_user_id": "u_demo",
+                    "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2"
+                  },
+                  "memory_managed": true,
+                  "memory_preferences": {},
+                  "messages": [],
+                  "summary": "",
+                  "intent": {
+                    "label": "order_inquiry",
+                    "confidence": 0.93,
+                    "prompt_version": "intent_rules_v1"
+                  },
+                  "complexity": {
+                    "complexity": "tool_required",
+                    "strategy": "agent",
+                    "confidence": 0.8
+                  },
+                  "strategy": "agent",
+                  "query_complexity": "tool_required",
+                  "retrieved_chunks": [],
+                  "tool_results": [],
+                  "confirmed_action": null,
+                  "confirm_action_id": null,
+                  "idempotency_key": null,
+                  "citations": [],
+                  "refused": false,
+                  "step_count": 0,
+                  "token_usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0
+                  },
+                  "latency": {
+                    "intent_ms": 0.23740000324323773,
+                    "routing_ms": 0.1446999958716333,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 0.0,
+                    "llm_ms": 0.0,
+                    "total_ms": 0.0
+                  }
+                },
+                "output": {
+                  "plan": {
+                    "steps": [
+                      {
+                        "step_id": 1,
+                        "goal": "order_tracking",
+                        "tool_name": "get_order",
+                        "arguments": {
+                          "order_id": "ORD10003"
+                        },
+                        "needs_retrieval": false
+                      }
+                    ]
+                  },
+                  "pending_action": null
+                }
+              },
+              {
+                "sequence": 4,
+                "node": "execute_tools",
+                "input": {
+                  "trace_id": "offline_B2IR01_0",
+                  "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                  "user_id": "u_demo",
+                  "user_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "resolved_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "selected_context": {
+                    "effective_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "order_id": "ORD10003",
+                    "needs_clarification": false,
+                    "history": [],
+                    "source": "current_user",
+                    "summary": "",
+                    "max_chars": 1800,
+                    "order_ids": [
+                      "ORD10003"
+                    ],
+                    "original_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "owner_user_id": "u_demo",
+                    "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2"
+                  },
+                  "memory_managed": true,
+                  "memory_preferences": {},
+                  "messages": [],
+                  "summary": "",
+                  "intent": {
+                    "label": "order_inquiry",
+                    "confidence": 0.93,
+                    "prompt_version": "intent_rules_v1"
+                  },
+                  "complexity": {
+                    "complexity": "tool_required",
+                    "strategy": "agent",
+                    "confidence": 0.8
+                  },
+                  "strategy": "agent",
+                  "query_complexity": "tool_required",
+                  "retrieved_chunks": [],
+                  "plan": {
+                    "steps": [
+                      {
+                        "step_id": 1,
+                        "goal": "order_tracking",
+                        "tool_name": "get_order",
+                        "arguments": {
+                          "order_id": "ORD10003"
+                        },
+                        "needs_retrieval": false
+                      }
+                    ]
+                  },
+                  "tool_results": [],
+                  "pending_action": null,
+                  "confirmed_action": null,
+                  "confirm_action_id": null,
+                  "idempotency_key": null,
+                  "citations": [],
+                  "refused": false,
+                  "step_count": 0,
+                  "token_usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0
+                  },
+                  "latency": {
+                    "intent_ms": 0.23740000324323773,
+                    "routing_ms": 0.1446999958716333,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 0.0,
+                    "llm_ms": 0.0,
+                    "total_ms": 0.0
+                  }
+                },
+                "output": {
+                  "tool_results": [
+                    {
+                      "name": "get_order",
+                      "success": true,
+                      "output": {
+                        "order_id": "ORD10003",
+                        "user_id": "u_demo",
+                        "status": "paid",
+                        "items": [
+                          {
+                            "sku": "SKU-TEE",
+                            "name": "纯棉T恤",
+                            "quantity": 1,
+                            "unit_price_cents": 7900,
+                            "customized": false
+                          }
+                        ],
+                        "total_cents": 7900,
+                        "created_at": "2026-11-04T19:00:00",
+                        "paid_at": "2026-11-04T19:00:00",
+                        "shipped_at": null,
+                        "delivered_at": null,
+                        "tracking_no": null,
+                        "receiver_city": "杭州"
+                      },
+                      "error": null,
+                      "risk": "read",
+                      "truncated": false
+                    }
+                  ],
+                  "step_count": 1,
+                  "latency": {
+                    "intent_ms": 0.23740000324323773,
+                    "routing_ms": 0.1446999958716333,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 3.2854000164661556,
+                    "llm_ms": 0.0,
+                    "total_ms": 0.0
+                  }
+                }
+              },
+              {
+                "sequence": 5,
+                "node": "generate_answer",
+                "input": {
+                  "trace_id": "offline_B2IR01_0",
+                  "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                  "user_id": "u_demo",
+                  "user_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "resolved_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "selected_context": {
+                    "effective_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "order_id": "ORD10003",
+                    "needs_clarification": false,
+                    "history": [],
+                    "source": "current_user",
+                    "summary": "",
+                    "max_chars": 1800,
+                    "order_ids": [
+                      "ORD10003"
+                    ],
+                    "original_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "owner_user_id": "u_demo",
+                    "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2"
+                  },
+                  "memory_managed": true,
+                  "memory_preferences": {},
+                  "messages": [],
+                  "summary": "",
+                  "intent": {
+                    "label": "order_inquiry",
+                    "confidence": 0.93,
+                    "prompt_version": "intent_rules_v1"
+                  },
+                  "complexity": {
+                    "complexity": "tool_required",
+                    "strategy": "agent",
+                    "confidence": 0.8
+                  },
+                  "strategy": "agent",
+                  "query_complexity": "tool_required",
+                  "retrieved_chunks": [],
+                  "plan": {
+                    "steps": [
+                      {
+                        "step_id": 1,
+                        "goal": "order_tracking",
+                        "tool_name": "get_order",
+                        "arguments": {
+                          "order_id": "ORD10003"
+                        },
+                        "needs_retrieval": false
+                      }
+                    ]
+                  },
+                  "tool_results": [
+                    {
+                      "name": "get_order",
+                      "success": true,
+                      "output": {
+                        "order_id": "ORD10003",
+                        "user_id": "u_demo",
+                        "status": "paid",
+                        "items": [
+                          {
+                            "sku": "SKU-TEE",
+                            "name": "纯棉T恤",
+                            "quantity": 1,
+                            "unit_price_cents": 7900,
+                            "customized": false
+                          }
+                        ],
+                        "total_cents": 7900,
+                        "created_at": "2026-11-04T19:00:00",
+                        "paid_at": "2026-11-04T19:00:00",
+                        "shipped_at": null,
+                        "delivered_at": null,
+                        "tracking_no": null,
+                        "receiver_city": "杭州"
+                      },
+                      "error": null,
+                      "risk": "read",
+                      "truncated": false
+                    }
+                  ],
+                  "pending_action": null,
+                  "confirmed_action": null,
+                  "confirm_action_id": null,
+                  "idempotency_key": null,
+                  "citations": [],
+                  "refused": false,
+                  "step_count": 1,
+                  "token_usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0
+                  },
+                  "latency": {
+                    "intent_ms": 0.23740000324323773,
+                    "routing_ms": 0.1446999958716333,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 3.2854000164661556,
+                    "llm_ms": 0.0,
+                    "total_ms": 0.0
+                  }
+                },
+                "output": {
+                  "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+                  "citations": [],
+                  "refused": false,
+                  "latency": {
+                    "intent_ms": 0.23740000324323773,
+                    "routing_ms": 0.1446999958716333,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 3.2854000164661556,
+                    "llm_ms": 0.30270000570453703,
+                    "total_ms": 0.0
+                  },
+                  "token_usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0
+                  },
+                  "extra": {
+                    "generation_error": null,
+                    "goal_coverage": [
+                      {
+                        "goal": "订单状态",
+                        "tool": "get_order",
+                        "observed": true,
+                        "conveyed": true
+                      },
+                      {
+                        "goal": "订单金额",
+                        "tool": "get_order",
+                        "observed": true,
+                        "conveyed": true
+                      }
+                    ],
+                    "generated_refusal": false
+                  }
+                }
+              },
+              {
+                "sequence": 6,
+                "node": "check_faithfulness",
+                "input": {
+                  "trace_id": "offline_B2IR01_0",
+                  "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                  "user_id": "u_demo",
+                  "user_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "resolved_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "selected_context": {
+                    "effective_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "order_id": "ORD10003",
+                    "needs_clarification": false,
+                    "history": [],
+                    "source": "current_user",
+                    "summary": "",
+                    "max_chars": 1800,
+                    "order_ids": [
+                      "ORD10003"
+                    ],
+                    "original_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "owner_user_id": "u_demo",
+                    "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2"
+                  },
+                  "memory_managed": true,
+                  "memory_preferences": {},
+                  "messages": [],
+                  "summary": "",
+                  "intent": {
+                    "label": "order_inquiry",
+                    "confidence": 0.93,
+                    "prompt_version": "intent_rules_v1"
+                  },
+                  "complexity": {
+                    "complexity": "tool_required",
+                    "strategy": "agent",
+                    "confidence": 0.8
+                  },
+                  "strategy": "agent",
+                  "query_complexity": "tool_required",
+                  "retrieved_chunks": [],
+                  "plan": {
+                    "steps": [
+                      {
+                        "step_id": 1,
+                        "goal": "order_tracking",
+                        "tool_name": "get_order",
+                        "arguments": {
+                          "order_id": "ORD10003"
+                        },
+                        "needs_retrieval": false
+                      }
+                    ]
+                  },
+                  "tool_results": [
+                    {
+                      "name": "get_order",
+                      "success": true,
+                      "output": {
+                        "order_id": "ORD10003",
+                        "user_id": "u_demo",
+                        "status": "paid",
+                        "items": [
+                          {
+                            "sku": "SKU-TEE",
+                            "name": "纯棉T恤",
+                            "quantity": 1,
+                            "unit_price_cents": 7900,
+                            "customized": false
+                          }
+                        ],
+                        "total_cents": 7900,
+                        "created_at": "2026-11-04T19:00:00",
+                        "paid_at": "2026-11-04T19:00:00",
+                        "shipped_at": null,
+                        "delivered_at": null,
+                        "tracking_no": null,
+                        "receiver_city": "杭州"
+                      },
+                      "error": null,
+                      "risk": "read",
+                      "truncated": false
+                    }
+                  ],
+                  "pending_action": null,
+                  "confirmed_action": null,
+                  "confirm_action_id": null,
+                  "idempotency_key": null,
+                  "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+                  "citations": [],
+                  "refused": false,
+                  "step_count": 1,
+                  "token_usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0
+                  },
+                  "latency": {
+                    "intent_ms": 0.23740000324323773,
+                    "routing_ms": 0.1446999958716333,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 3.2854000164661556,
+                    "llm_ms": 0.30270000570453703,
+                    "total_ms": 0.0
+                  },
+                  "extra": {
+                    "generation_error": null,
+                    "goal_coverage": [
+                      {
+                        "goal": "订单状态",
+                        "tool": "get_order",
+                        "observed": true,
+                        "conveyed": true
+                      },
+                      {
+                        "goal": "订单金额",
+                        "tool": "get_order",
+                        "observed": true,
+                        "conveyed": true
+                      }
+                    ],
+                    "generated_refusal": false
+                  }
+                },
+                "output": {
+                  "extra": {
+                    "faithfulness": {
+                      "status": "SUPPORTED",
+                      "supported": true,
+                      "hallucinated_spans": [],
+                      "error_kind": null
+                    },
+                    "generation_error": null,
+                    "goal_coverage": [
+                      {
+                        "goal": "订单状态",
+                        "tool": "get_order",
+                        "observed": true,
+                        "conveyed": true
+                      },
+                      {
+                        "goal": "订单金额",
+                        "tool": "get_order",
+                        "observed": true,
+                        "conveyed": true
+                      }
+                    ],
+                    "self_corrected": false,
+                    "generated_refusal": false
+                  }
+                }
+              },
+              {
+                "sequence": 7,
+                "node": "compact_memory",
+                "input": {
+                  "trace_id": "offline_B2IR01_0",
+                  "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                  "user_id": "u_demo",
+                  "user_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "resolved_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "selected_context": {
+                    "effective_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "order_id": "ORD10003",
+                    "needs_clarification": false,
+                    "history": [],
+                    "source": "current_user",
+                    "summary": "",
+                    "max_chars": 1800,
+                    "order_ids": [
+                      "ORD10003"
+                    ],
+                    "original_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "owner_user_id": "u_demo",
+                    "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2"
+                  },
+                  "memory_managed": true,
+                  "memory_preferences": {},
+                  "messages": [],
+                  "summary": "",
+                  "intent": {
+                    "label": "order_inquiry",
+                    "confidence": 0.93,
+                    "prompt_version": "intent_rules_v1"
+                  },
+                  "complexity": {
+                    "complexity": "tool_required",
+                    "strategy": "agent",
+                    "confidence": 0.8
+                  },
+                  "strategy": "agent",
+                  "query_complexity": "tool_required",
+                  "retrieved_chunks": [],
+                  "plan": {
+                    "steps": [
+                      {
+                        "step_id": 1,
+                        "goal": "order_tracking",
+                        "tool_name": "get_order",
+                        "arguments": {
+                          "order_id": "ORD10003"
+                        },
+                        "needs_retrieval": false
+                      }
+                    ]
+                  },
+                  "tool_results": [
+                    {
+                      "name": "get_order",
+                      "success": true,
+                      "output": {
+                        "order_id": "ORD10003",
+                        "user_id": "u_demo",
+                        "status": "paid",
+                        "items": [
+                          {
+                            "sku": "SKU-TEE",
+                            "name": "纯棉T恤",
+                            "quantity": 1,
+                            "unit_price_cents": 7900,
+                            "customized": false
+                          }
+                        ],
+                        "total_cents": 7900,
+                        "created_at": "2026-11-04T19:00:00",
+                        "paid_at": "2026-11-04T19:00:00",
+                        "shipped_at": null,
+                        "delivered_at": null,
+                        "tracking_no": null,
+                        "receiver_city": "杭州"
+                      },
+                      "error": null,
+                      "risk": "read",
+                      "truncated": false
+                    }
+                  ],
+                  "pending_action": null,
+                  "confirmed_action": null,
+                  "confirm_action_id": null,
+                  "idempotency_key": null,
+                  "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+                  "citations": [],
+                  "refused": false,
+                  "step_count": 1,
+                  "token_usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0
+                  },
+                  "latency": {
+                    "intent_ms": 0.23740000324323773,
+                    "routing_ms": 0.1446999958716333,
+                    "retrieval_ms": 0.0,
+                    "rerank_ms": 0.0,
+                    "tool_ms": 3.2854000164661556,
+                    "llm_ms": 0.30270000570453703,
+                    "total_ms": 0.0
+                  },
+                  "extra": {
+                    "faithfulness": {
+                      "status": "SUPPORTED",
+                      "supported": true,
+                      "hallucinated_spans": [],
+                      "error_kind": null
+                    },
+                    "generation_error": null,
+                    "goal_coverage": [
+                      {
+                        "goal": "订单状态",
+                        "tool": "get_order",
+                        "observed": true,
+                        "conveyed": true
+                      },
+                      {
+                        "goal": "订单金额",
+                        "tool": "get_order",
+                        "observed": true,
+                        "conveyed": true
+                      }
+                    ],
+                    "self_corrected": false,
+                    "generated_refusal": false
+                  }
+                },
+                "output": {
+                  "messages": [
+                    {
+                      "role": "user",
+                      "content": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                      "name": null
+                    },
+                    {
+                      "role": "assistant",
+                      "content": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+                      "name": null
+                    }
+                  ],
+                  "tool_results": [
+                    {
+                      "name": "get_order",
+                      "success": true,
+                      "output": {
+                        "order_id": "ORD10003",
+                        "user_id": "u_demo",
+                        "status": "paid",
+                        "items": [
+                          {
+                            "sku": "SKU-TEE",
+                            "name": "纯棉T恤",
+                            "quantity": 1,
+                            "unit_price_cents": 7900,
+                            "customized": false
+                          }
+                        ],
+                        "total_cents": 7900,
+                        "created_at": "2026-11-04T19:00:00",
+                        "paid_at": "2026-11-04T19:00:00",
+                        "shipped_at": null,
+                        "delivered_at": null,
+                        "tracking_no": null,
+                        "receiver_city": "杭州"
+                      },
+                      "error": null,
+                      "risk": "read",
+                      "truncated": false
+                    }
+                  ],
+                  "summary": ""
+                }
+              }
+            ],
+            "pending_before": {},
+            "initial_state": {
+              "trace_id": "offline_B2IR01_0",
+              "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+              "user_id": "u_demo",
+              "user_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+              "resolved_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+              "selected_context": {
+                "effective_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                "order_id": "ORD10003",
+                "needs_clarification": false,
+                "history": [],
+                "source": "current_user",
+                "summary": "",
+                "max_chars": 1800,
+                "order_ids": [
+                  "ORD10003"
+                ],
+                "original_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                "owner_user_id": "u_demo",
+                "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2"
+              },
+              "messages": [],
+              "summary": "",
+              "memory_managed": true,
+              "memory_preferences": {},
+              "retrieved_chunks": [],
+              "tool_results": [],
+              "citations": [],
+              "refused": false,
+              "step_count": 0,
+              "token_usage": {
+                "prompt_tokens": 0,
+                "completion_tokens": 0,
+                "total_tokens": 0
+              },
+              "latency": {
+                "intent_ms": 0.0,
+                "routing_ms": 0.0,
+                "retrieval_ms": 0.0,
+                "rerank_ms": 0.0,
+                "tool_ms": 0.0,
+                "llm_ms": 0.0,
+                "total_ms": 0.0
+              },
+              "confirm_action_id": null,
+              "confirmed_action": null,
+              "idempotency_key": null
+            },
+            "final_state": {
+              "trace_id": "offline_B2IR01_0",
+              "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+              "user_id": "u_demo",
+              "user_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+              "resolved_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+              "selected_context": {
+                "effective_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                "order_id": "ORD10003",
+                "needs_clarification": false,
+                "history": [],
+                "source": "current_user",
+                "summary": "",
+                "max_chars": 1800,
+                "order_ids": [
+                  "ORD10003"
+                ],
+                "original_query": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                "owner_user_id": "u_demo",
+                "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2"
+              },
+              "memory_managed": true,
+              "memory_preferences": {},
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                  "name": null
+                },
+                {
+                  "role": "assistant",
+                  "content": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+                  "name": null
+                }
+              ],
+              "summary": "",
+              "intent": {
+                "label": "order_inquiry",
+                "confidence": 0.93,
+                "prompt_version": "intent_rules_v1"
+              },
+              "complexity": {
+                "complexity": "tool_required",
+                "strategy": "agent",
+                "confidence": 0.8
+              },
+              "strategy": "agent",
+              "query_complexity": "tool_required",
+              "retrieved_chunks": [],
+              "plan": {
+                "steps": [
+                  {
+                    "step_id": 1,
+                    "goal": "order_tracking",
+                    "tool_name": "get_order",
+                    "arguments": {
+                      "order_id": "ORD10003"
+                    },
+                    "needs_retrieval": false
+                  }
+                ]
+              },
+              "tool_results": [
+                {
+                  "name": "get_order",
+                  "success": true,
+                  "output": {
+                    "order_id": "ORD10003",
+                    "user_id": "u_demo",
+                    "status": "paid",
+                    "items": [
+                      {
+                        "sku": "SKU-TEE",
+                        "name": "纯棉T恤",
+                        "quantity": 1,
+                        "unit_price_cents": 7900,
+                        "customized": false
+                      }
+                    ],
+                    "total_cents": 7900,
+                    "created_at": "2026-11-04T19:00:00",
+                    "paid_at": "2026-11-04T19:00:00",
+                    "shipped_at": null,
+                    "delivered_at": null,
+                    "tracking_no": null,
+                    "receiver_city": "杭州"
+                  },
+                  "error": null,
+                  "risk": "read",
+                  "truncated": false
+                }
+              ],
+              "pending_action": null,
+              "confirmed_action": null,
+              "confirm_action_id": null,
+              "idempotency_key": null,
+              "final_answer": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+              "citations": [],
+              "refused": false,
+              "step_count": 1,
+              "token_usage": {
+                "prompt_tokens": 0,
+                "completion_tokens": 0,
+                "total_tokens": 0
+              },
+              "latency": {
+                "intent_ms": 0.23740000324323773,
+                "routing_ms": 0.1446999958716333,
+                "retrieval_ms": 0.0,
+                "rerank_ms": 0.0,
+                "tool_ms": 3.2854000164661556,
+                "llm_ms": 0.30270000570453703,
+                "total_ms": 0.0
+              },
+              "extra": {
+                "faithfulness": {
+                  "status": "SUPPORTED",
+                  "supported": true,
+                  "hallucinated_spans": [],
+                  "error_kind": null
+                },
+                "generation_error": null,
+                "goal_coverage": [
+                  {
+                    "goal": "订单状态",
+                    "tool": "get_order",
+                    "observed": true,
+                    "conveyed": true
+                  },
+                  {
+                    "goal": "订单金额",
+                    "tool": "get_order",
+                    "observed": true,
+                    "conveyed": true
+                  }
+                ],
+                "self_corrected": false,
+                "generated_refusal": false
+              }
+            },
+            "response": {
+              "answer": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+              "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+              "trace_id": "offline_B2IR01_0",
+              "root_run_id": "8af86730-6e3a-4a4e-ba86-7189d279dc7b",
+              "intent": "order_inquiry",
+              "complexity": "tool_required",
+              "strategy": "agent",
+              "citations": [],
+              "pending_action": null,
+              "refused": false,
+              "error_code": null,
+              "token_usage": {
+                "prompt_tokens": 0,
+                "completion_tokens": 0,
+                "total_tokens": 0
+              },
+              "latency": {
+                "intent_ms": 0.23740000324323773,
+                "routing_ms": 0.1446999958716333,
+                "retrieval_ms": 0.0,
+                "rerank_ms": 0.0,
+                "tool_ms": 3.2854000164661556,
+                "llm_ms": 0.30270000570453703,
+                "total_ms": 30.83800000604242
+              }
+            },
+            "pending_after": {},
+            "database_after": {
+              "business": {
+                "orders": {
+                  "ORD10001": {
+                    "order_id": "ORD10001",
+                    "user_id": "u_demo",
+                    "status": "shipped",
+                    "total_cents": 29900,
+                    "created_at": "2026-11-02T00:00:00",
+                    "paid_at": "2026-11-02T00:00:00",
+                    "shipped_at": "2026-11-03T00:00:00",
+                    "delivered_at": null,
+                    "tracking_no": "SF1234567890",
+                    "receiver_city": "上海"
+                  },
+                  "ORD10002": {
+                    "order_id": "ORD10002",
+                    "user_id": "u_demo",
+                    "status": "delivered",
+                    "total_cents": 3900,
+                    "created_at": "2026-10-16T00:00:00",
+                    "paid_at": "2026-10-16T00:00:00",
+                    "shipped_at": "2026-10-17T00:00:00",
+                    "delivered_at": "2026-10-24T00:00:00",
+                    "tracking_no": "YT998877",
+                    "receiver_city": "北京"
+                  },
+                  "ORD10003": {
+                    "order_id": "ORD10003",
+                    "user_id": "u_demo",
+                    "status": "paid",
+                    "total_cents": 7900,
+                    "created_at": "2026-11-04T19:00:00",
+                    "paid_at": "2026-11-04T19:00:00",
+                    "shipped_at": null,
+                    "delivered_at": null,
+                    "tracking_no": null,
+                    "receiver_city": "杭州"
+                  }
+                },
+                "items": [
+                  {
+                    "id": 1,
+                    "order_id": "ORD10001",
+                    "sku": "SKU-HEADSET",
+                    "name": "降噪耳机 Pro",
+                    "quantity": 1,
+                    "unit_price_cents": 29900,
+                    "customized": false
+                  },
+                  {
+                    "id": 2,
+                    "order_id": "ORD10002",
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "quantity": 1,
+                    "unit_price_cents": 3900,
+                    "customized": true
+                  },
+                  {
+                    "id": 3,
+                    "order_id": "ORD10003",
+                    "sku": "SKU-TEE",
+                    "name": "纯棉T恤",
+                    "quantity": 1,
+                    "unit_price_cents": 7900,
+                    "customized": false
+                  }
+                ],
+                "products": [
+                  {
+                    "sku": "SKU-HEADSET",
+                    "name": "降噪耳机 Pro",
+                    "category": "数码",
+                    "price_cents": 29900,
+                    "inventory": 42,
+                    "tags": "耳机,降噪",
+                    "description": "头戴式主动降噪耳机"
+                  },
+                  {
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "category": "家居",
+                    "price_cents": 3900,
+                    "inventory": 200,
+                    "tags": "定制,杯子",
+                    "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                  },
+                  {
+                    "sku": "SKU-TEE",
+                    "name": "纯棉T恤",
+                    "category": "服饰",
+                    "price_cents": 7900,
+                    "inventory": 0,
+                    "tags": "衣服,基础款",
+                    "description": "基础纯棉短袖"
+                  }
+                ],
+                "refunds": [],
+                "returns": [],
+                "audit": []
+              },
+              "tables": {
+                "audit_logs": [],
+                "idempotency_keys": [],
+                "messages": [
+                  {
+                    "id": 1,
+                    "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                    "role": "user",
+                    "content": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                    "created_at": "2026-11-05T00:00:00"
+                  },
+                  {
+                    "id": 2,
+                    "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                    "role": "assistant",
+                    "content": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+                    "created_at": "2026-11-05T00:00:00"
+                  }
+                ],
+                "order_items": [
+                  {
+                    "id": 1,
+                    "order_id": "ORD10001",
+                    "sku": "SKU-HEADSET",
+                    "name": "降噪耳机 Pro",
+                    "quantity": 1,
+                    "unit_price_cents": 29900,
+                    "customized": false
+                  },
+                  {
+                    "id": 2,
+                    "order_id": "ORD10002",
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "quantity": 1,
+                    "unit_price_cents": 3900,
+                    "customized": true
+                  },
+                  {
+                    "id": 3,
+                    "order_id": "ORD10003",
+                    "sku": "SKU-TEE",
+                    "name": "纯棉T恤",
+                    "quantity": 1,
+                    "unit_price_cents": 7900,
+                    "customized": false
+                  }
+                ],
+                "orders": [
+                  {
+                    "order_id": "ORD10001",
+                    "user_id": "u_demo",
+                    "status": "shipped",
+                    "total_cents": 29900,
+                    "created_at": "2026-11-02T00:00:00",
+                    "paid_at": "2026-11-02T00:00:00",
+                    "shipped_at": "2026-11-03T00:00:00",
+                    "delivered_at": null,
+                    "tracking_no": "SF1234567890",
+                    "receiver_city": "上海"
+                  },
+                  {
+                    "order_id": "ORD10002",
+                    "user_id": "u_demo",
+                    "status": "delivered",
+                    "total_cents": 3900,
+                    "created_at": "2026-10-16T00:00:00",
+                    "paid_at": "2026-10-16T00:00:00",
+                    "shipped_at": "2026-10-17T00:00:00",
+                    "delivered_at": "2026-10-24T00:00:00",
+                    "tracking_no": "YT998877",
+                    "receiver_city": "北京"
+                  },
+                  {
+                    "order_id": "ORD10003",
+                    "user_id": "u_demo",
+                    "status": "paid",
+                    "total_cents": 7900,
+                    "created_at": "2026-11-04T19:00:00",
+                    "paid_at": "2026-11-04T19:00:00",
+                    "shipped_at": null,
+                    "delivered_at": null,
+                    "tracking_no": null,
+                    "receiver_city": "杭州"
+                  }
+                ],
+                "products": [
+                  {
+                    "sku": "SKU-HEADSET",
+                    "name": "降噪耳机 Pro",
+                    "category": "数码",
+                    "price_cents": 29900,
+                    "inventory": 42,
+                    "tags": "耳机,降噪",
+                    "description": "头戴式主动降噪耳机"
+                  },
+                  {
+                    "sku": "SKU-MUG-CUSTOM",
+                    "name": "定制马克杯",
+                    "category": "家居",
+                    "price_cents": 3900,
+                    "inventory": 200,
+                    "tags": "定制,杯子",
+                    "description": "支持印字的定制杯，定制商品不适用7天无理由"
+                  },
+                  {
+                    "sku": "SKU-TEE",
+                    "name": "纯棉T恤",
+                    "category": "服饰",
+                    "price_cents": 7900,
+                    "inventory": 0,
+                    "tags": "衣服,基础款",
+                    "description": "基础纯棉短袖"
+                  }
+                ],
+                "refunds": [],
+                "returns": [],
+                "sessions": [
+                  {
+                    "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                    "user_id": "u_demo",
+                    "summary": "",
+                    "created_at": "2026-11-05T00:00:00",
+                    "updated_at": "2026-11-05T00:00:00"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "runtime_settings": {
+          "llm_timeout_seconds": 30.0,
+          "llm_max_retries": 3,
+          "llm_judge_max_tokens": 512,
+          "retrieval_top_k_simple": 3,
+          "retrieval_top_k_complex": 8,
+          "memory_mode": "M2",
+          "memory_recent_messages": 8,
+          "memory_context_max_chars": 1800,
+          "memory_summary_ttl_seconds": 86400,
+          "retrieval_cache_ttl_seconds": 60,
+          "agent_tracing_enabled": false,
+          "agent_tracing_backend": "local",
+          "agent_trace_max_spans": 256,
+          "agent_trace_queue_size": 32,
+          "agent_langsmith_endpoint": "https://api.smith.langchain.com",
+          "agent_langsmith_project": "adaptive-rag",
+          "database": "isolated_sqlite_in_memory",
+          "provider": "ExperimentalProvider"
+        },
+        "database_initial": {
+          "business": {
+            "orders": {
+              "ORD10001": {
+                "order_id": "ORD10001",
+                "user_id": "u_demo",
+                "status": "shipped",
+                "total_cents": 29900,
+                "created_at": "2026-11-02T00:00:00",
+                "paid_at": "2026-11-02T00:00:00",
+                "shipped_at": "2026-11-03T00:00:00",
+                "delivered_at": null,
+                "tracking_no": "SF1234567890",
+                "receiver_city": "上海"
+              },
+              "ORD10002": {
+                "order_id": "ORD10002",
+                "user_id": "u_demo",
+                "status": "delivered",
+                "total_cents": 3900,
+                "created_at": "2026-10-16T00:00:00",
+                "paid_at": "2026-10-16T00:00:00",
+                "shipped_at": "2026-10-17T00:00:00",
+                "delivered_at": "2026-10-24T00:00:00",
+                "tracking_no": "YT998877",
+                "receiver_city": "北京"
+              },
+              "ORD10003": {
+                "order_id": "ORD10003",
+                "user_id": "u_demo",
+                "status": "paid",
+                "total_cents": 7900,
+                "created_at": "2026-11-04T19:00:00",
+                "paid_at": "2026-11-04T19:00:00",
+                "shipped_at": null,
+                "delivered_at": null,
+                "tracking_no": null,
+                "receiver_city": "杭州"
+              }
+            },
+            "items": [
+              {
+                "id": 1,
+                "order_id": "ORD10001",
+                "sku": "SKU-HEADSET",
+                "name": "降噪耳机 Pro",
+                "quantity": 1,
+                "unit_price_cents": 29900,
+                "customized": false
+              },
+              {
+                "id": 2,
+                "order_id": "ORD10002",
+                "sku": "SKU-MUG-CUSTOM",
+                "name": "定制马克杯",
+                "quantity": 1,
+                "unit_price_cents": 3900,
+                "customized": true
+              },
+              {
+                "id": 3,
+                "order_id": "ORD10003",
+                "sku": "SKU-TEE",
+                "name": "纯棉T恤",
+                "quantity": 1,
+                "unit_price_cents": 7900,
+                "customized": false
+              }
+            ],
+            "products": [
+              {
+                "sku": "SKU-HEADSET",
+                "name": "降噪耳机 Pro",
+                "category": "数码",
+                "price_cents": 29900,
+                "inventory": 42,
+                "tags": "耳机,降噪",
+                "description": "头戴式主动降噪耳机"
+              },
+              {
+                "sku": "SKU-MUG-CUSTOM",
+                "name": "定制马克杯",
+                "category": "家居",
+                "price_cents": 3900,
+                "inventory": 200,
+                "tags": "定制,杯子",
+                "description": "支持印字的定制杯，定制商品不适用7天无理由"
+              },
+              {
+                "sku": "SKU-TEE",
+                "name": "纯棉T恤",
+                "category": "服饰",
+                "price_cents": 7900,
+                "inventory": 0,
+                "tags": "衣服,基础款",
+                "description": "基础纯棉短袖"
+              }
+            ],
+            "refunds": [],
+            "returns": [],
+            "audit": []
+          },
+          "tables": {
+            "audit_logs": [],
+            "idempotency_keys": [],
+            "messages": [],
+            "order_items": [
+              {
+                "id": 1,
+                "order_id": "ORD10001",
+                "sku": "SKU-HEADSET",
+                "name": "降噪耳机 Pro",
+                "quantity": 1,
+                "unit_price_cents": 29900,
+                "customized": false
+              },
+              {
+                "id": 2,
+                "order_id": "ORD10002",
+                "sku": "SKU-MUG-CUSTOM",
+                "name": "定制马克杯",
+                "quantity": 1,
+                "unit_price_cents": 3900,
+                "customized": true
+              },
+              {
+                "id": 3,
+                "order_id": "ORD10003",
+                "sku": "SKU-TEE",
+                "name": "纯棉T恤",
+                "quantity": 1,
+                "unit_price_cents": 7900,
+                "customized": false
+              }
+            ],
+            "orders": [
+              {
+                "order_id": "ORD10001",
+                "user_id": "u_demo",
+                "status": "shipped",
+                "total_cents": 29900,
+                "created_at": "2026-11-02T00:00:00",
+                "paid_at": "2026-11-02T00:00:00",
+                "shipped_at": "2026-11-03T00:00:00",
+                "delivered_at": null,
+                "tracking_no": "SF1234567890",
+                "receiver_city": "上海"
+              },
+              {
+                "order_id": "ORD10002",
+                "user_id": "u_demo",
+                "status": "delivered",
+                "total_cents": 3900,
+                "created_at": "2026-10-16T00:00:00",
+                "paid_at": "2026-10-16T00:00:00",
+                "shipped_at": "2026-10-17T00:00:00",
+                "delivered_at": "2026-10-24T00:00:00",
+                "tracking_no": "YT998877",
+                "receiver_city": "北京"
+              },
+              {
+                "order_id": "ORD10003",
+                "user_id": "u_demo",
+                "status": "paid",
+                "total_cents": 7900,
+                "created_at": "2026-11-04T19:00:00",
+                "paid_at": "2026-11-04T19:00:00",
+                "shipped_at": null,
+                "delivered_at": null,
+                "tracking_no": null,
+                "receiver_city": "杭州"
+              }
+            ],
+            "products": [
+              {
+                "sku": "SKU-HEADSET",
+                "name": "降噪耳机 Pro",
+                "category": "数码",
+                "price_cents": 29900,
+                "inventory": 42,
+                "tags": "耳机,降噪",
+                "description": "头戴式主动降噪耳机"
+              },
+              {
+                "sku": "SKU-MUG-CUSTOM",
+                "name": "定制马克杯",
+                "category": "家居",
+                "price_cents": 3900,
+                "inventory": 200,
+                "tags": "定制,杯子",
+                "description": "支持印字的定制杯，定制商品不适用7天无理由"
+              },
+              {
+                "sku": "SKU-TEE",
+                "name": "纯棉T恤",
+                "category": "服饰",
+                "price_cents": 7900,
+                "inventory": 0,
+                "tags": "衣服,基础款",
+                "description": "基础纯棉短袖"
+              }
+            ],
+            "refunds": [],
+            "returns": [],
+            "sessions": []
+          }
+        },
+        "database_final": {
+          "business": {
+            "orders": {
+              "ORD10001": {
+                "order_id": "ORD10001",
+                "user_id": "u_demo",
+                "status": "shipped",
+                "total_cents": 29900,
+                "created_at": "2026-11-02T00:00:00",
+                "paid_at": "2026-11-02T00:00:00",
+                "shipped_at": "2026-11-03T00:00:00",
+                "delivered_at": null,
+                "tracking_no": "SF1234567890",
+                "receiver_city": "上海"
+              },
+              "ORD10002": {
+                "order_id": "ORD10002",
+                "user_id": "u_demo",
+                "status": "delivered",
+                "total_cents": 3900,
+                "created_at": "2026-10-16T00:00:00",
+                "paid_at": "2026-10-16T00:00:00",
+                "shipped_at": "2026-10-17T00:00:00",
+                "delivered_at": "2026-10-24T00:00:00",
+                "tracking_no": "YT998877",
+                "receiver_city": "北京"
+              },
+              "ORD10003": {
+                "order_id": "ORD10003",
+                "user_id": "u_demo",
+                "status": "paid",
+                "total_cents": 7900,
+                "created_at": "2026-11-04T19:00:00",
+                "paid_at": "2026-11-04T19:00:00",
+                "shipped_at": null,
+                "delivered_at": null,
+                "tracking_no": null,
+                "receiver_city": "杭州"
+              }
+            },
+            "items": [
+              {
+                "id": 1,
+                "order_id": "ORD10001",
+                "sku": "SKU-HEADSET",
+                "name": "降噪耳机 Pro",
+                "quantity": 1,
+                "unit_price_cents": 29900,
+                "customized": false
+              },
+              {
+                "id": 2,
+                "order_id": "ORD10002",
+                "sku": "SKU-MUG-CUSTOM",
+                "name": "定制马克杯",
+                "quantity": 1,
+                "unit_price_cents": 3900,
+                "customized": true
+              },
+              {
+                "id": 3,
+                "order_id": "ORD10003",
+                "sku": "SKU-TEE",
+                "name": "纯棉T恤",
+                "quantity": 1,
+                "unit_price_cents": 7900,
+                "customized": false
+              }
+            ],
+            "products": [
+              {
+                "sku": "SKU-HEADSET",
+                "name": "降噪耳机 Pro",
+                "category": "数码",
+                "price_cents": 29900,
+                "inventory": 42,
+                "tags": "耳机,降噪",
+                "description": "头戴式主动降噪耳机"
+              },
+              {
+                "sku": "SKU-MUG-CUSTOM",
+                "name": "定制马克杯",
+                "category": "家居",
+                "price_cents": 3900,
+                "inventory": 200,
+                "tags": "定制,杯子",
+                "description": "支持印字的定制杯，定制商品不适用7天无理由"
+              },
+              {
+                "sku": "SKU-TEE",
+                "name": "纯棉T恤",
+                "category": "服饰",
+                "price_cents": 7900,
+                "inventory": 0,
+                "tags": "衣服,基础款",
+                "description": "基础纯棉短袖"
+              }
+            ],
+            "refunds": [],
+            "returns": [],
+            "audit": []
+          },
+          "tables": {
+            "audit_logs": [],
+            "idempotency_keys": [],
+            "messages": [
+              {
+                "id": 1,
+                "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                "role": "user",
+                "content": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？",
+                "created_at": "2026-11-05T00:00:00"
+              },
+              {
+                "id": 2,
+                "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                "role": "assistant",
+                "content": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+                "created_at": "2026-11-05T00:00:00"
+              }
+            ],
+            "order_items": [
+              {
+                "id": 1,
+                "order_id": "ORD10001",
+                "sku": "SKU-HEADSET",
+                "name": "降噪耳机 Pro",
+                "quantity": 1,
+                "unit_price_cents": 29900,
+                "customized": false
+              },
+              {
+                "id": 2,
+                "order_id": "ORD10002",
+                "sku": "SKU-MUG-CUSTOM",
+                "name": "定制马克杯",
+                "quantity": 1,
+                "unit_price_cents": 3900,
+                "customized": true
+              },
+              {
+                "id": 3,
+                "order_id": "ORD10003",
+                "sku": "SKU-TEE",
+                "name": "纯棉T恤",
+                "quantity": 1,
+                "unit_price_cents": 7900,
+                "customized": false
+              }
+            ],
+            "orders": [
+              {
+                "order_id": "ORD10001",
+                "user_id": "u_demo",
+                "status": "shipped",
+                "total_cents": 29900,
+                "created_at": "2026-11-02T00:00:00",
+                "paid_at": "2026-11-02T00:00:00",
+                "shipped_at": "2026-11-03T00:00:00",
+                "delivered_at": null,
+                "tracking_no": "SF1234567890",
+                "receiver_city": "上海"
+              },
+              {
+                "order_id": "ORD10002",
+                "user_id": "u_demo",
+                "status": "delivered",
+                "total_cents": 3900,
+                "created_at": "2026-10-16T00:00:00",
+                "paid_at": "2026-10-16T00:00:00",
+                "shipped_at": "2026-10-17T00:00:00",
+                "delivered_at": "2026-10-24T00:00:00",
+                "tracking_no": "YT998877",
+                "receiver_city": "北京"
+              },
+              {
+                "order_id": "ORD10003",
+                "user_id": "u_demo",
+                "status": "paid",
+                "total_cents": 7900,
+                "created_at": "2026-11-04T19:00:00",
+                "paid_at": "2026-11-04T19:00:00",
+                "shipped_at": null,
+                "delivered_at": null,
+                "tracking_no": null,
+                "receiver_city": "杭州"
+              }
+            ],
+            "products": [
+              {
+                "sku": "SKU-HEADSET",
+                "name": "降噪耳机 Pro",
+                "category": "数码",
+                "price_cents": 29900,
+                "inventory": 42,
+                "tags": "耳机,降噪",
+                "description": "头戴式主动降噪耳机"
+              },
+              {
+                "sku": "SKU-MUG-CUSTOM",
+                "name": "定制马克杯",
+                "category": "家居",
+                "price_cents": 3900,
+                "inventory": 200,
+                "tags": "定制,杯子",
+                "description": "支持印字的定制杯，定制商品不适用7天无理由"
+              },
+              {
+                "sku": "SKU-TEE",
+                "name": "纯棉T恤",
+                "category": "服饰",
+                "price_cents": 7900,
+                "inventory": 0,
+                "tags": "衣服,基础款",
+                "description": "基础纯棉短袖"
+              }
+            ],
+            "refunds": [],
+            "returns": [],
+            "sessions": [
+              {
+                "session_id": "sess_3d53dbc4b4ea43968df60ad4c48755b2",
+                "user_id": "u_demo",
+                "summary": "",
+                "created_at": "2026-11-05T00:00:00",
+                "updated_at": "2026-11-05T00:00:00"
+              }
+            ]
+          }
+        },
+        "provider_calls": [],
+        "scorer_result": {
+          "schema_version": "agent-eval-v2.1",
+          "case_id": "B2IR01",
+          "status": "PASS",
+          "metrics": {
+            "agent_task_success": 1.0,
+            "environment_state_correct": 1.0,
+            "latency_ms": 308.53530002059415
+          },
+          "reasons": [],
+          "evidence": {
+            "family": "mixed_amount_shipping",
+            "turns": [
+              {
+                "turn": 0,
+                "error": null,
+                "root_run_id": "8af86730-6e3a-4a4e-ba86-7189d279dc7b",
+                "scores": {
+                  "tool_selection_accuracy": 1.0,
+                  "tool_argument_accuracy": 1.0,
+                  "trajectory_valid": 1,
+                  "unnecessary_tool_calls": 0,
+                  "tool_execution_success": 1.0,
+                  "failure_counts": {},
+                  "idempotent_replays": 0,
+                  "denied_calls": 0,
+                  "missing_required_calls": 0
+                },
+                "pending": false,
+                "refused": false
+              }
+            ],
+            "tool_calls": [
+              {
+                "name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "status": "executed",
+                "success": true,
+                "failure_kind": null,
+                "turn": 0,
+                "output": {
+                  "order_id": "ORD10003",
+                  "user_id": "u_demo",
+                  "status": "paid",
+                  "items": [
+                    {
+                      "sku": "SKU-TEE",
+                      "name": "纯棉T恤",
+                      "quantity": 1,
+                      "unit_price_cents": 7900,
+                      "customized": false
+                    }
+                  ],
+                  "total_cents": 7900,
+                  "created_at": "2026-11-04T19:00:00",
+                  "paid_at": "2026-11-04T19:00:00",
+                  "shipped_at": null,
+                  "delivered_at": null,
+                  "tracking_no": null,
+                  "receiver_city": "杭州"
+                }
+              }
+            ],
+            "initial_order_states": {
+              "ORD10001": "shipped",
+              "ORD10002": "delivered",
+              "ORD10003": "paid"
+            },
+            "actual_order_states": {
+              "ORD10001": "shipped",
+              "ORD10002": "delivered",
+              "ORD10003": "paid"
+            },
+            "span_count": 15,
+            "known_limitation": null
+          },
+          "dataset_sha256": "008f38d4fdfa13f86fe79cc0c29b4e4901aca3396c04126be58ef7e13eefc3d4",
+          "model_evaluation": "NOT_RUN"
+        }
+      }
+    ]
+  },
+  "canonical": {
+    "decisions": [
+      {
+        "answer": "以下是本次工具结果可确认的信息：\n订单 ORD10003 当前订单状态：已支付。\n订单 ORD10003 总金额：79.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+        "intent": "order_inquiry",
+        "strategy": "agent",
+        "complexity": "tool_required",
+        "pending": null,
+        "refused": false,
+        "nodes": [
+          "apply_guardrail",
+          "classify_intent",
+          "route_complexity",
+          "plan_tasks",
+          "execute_tools",
+          "generate_answer",
+          "check_faithfulness",
+          "compact_memory"
+        ],
+        "plans": [
+          {
+            "steps": [
+              {
+                "step_id": 1,
+                "goal": "order_tracking",
+                "tool_name": "get_order",
+                "arguments": {
+                  "order_id": "ORD10003"
+                },
+                "needs_retrieval": false
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "tool_calls": [
+      {
+        "name": "get_order",
+        "arguments": {
+          "order_id": "ORD10003"
+        },
+        "status": "executed",
+        "success": true,
+        "failure_kind": null,
+        "output": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "paid",
+          "items": [
+            {
+              "sku": "SKU-TEE",
+              "name": "纯棉T恤",
+              "quantity": 1,
+              "unit_price_cents": 7900,
+              "customized": false
+            }
+          ],
+          "total_cents": 7900,
+          "created_at": "2026-11-04T19:00:00",
+          "paid_at": "2026-11-04T19:00:00",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        },
+        "turn": 0
+      }
+    ],
+    "business_initial": {
+      "orders": {
+        "ORD10001": {
+          "order_id": "ORD10001",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "total_cents": 29900,
+          "created_at": "2026-11-02T00:00:00",
+          "paid_at": "2026-11-02T00:00:00",
+          "shipped_at": "2026-11-03T00:00:00",
+          "delivered_at": null,
+          "tracking_no": "SF1234567890",
+          "receiver_city": "上海"
+        },
+        "ORD10002": {
+          "order_id": "ORD10002",
+          "user_id": "u_demo",
+          "status": "delivered",
+          "total_cents": 3900,
+          "created_at": "2026-10-16T00:00:00",
+          "paid_at": "2026-10-16T00:00:00",
+          "shipped_at": "2026-10-17T00:00:00",
+          "delivered_at": "2026-10-24T00:00:00",
+          "tracking_no": "YT998877",
+          "receiver_city": "北京"
+        },
+        "ORD10003": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "paid",
+          "total_cents": 7900,
+          "created_at": "2026-11-04T19:00:00",
+          "paid_at": "2026-11-04T19:00:00",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        }
+      },
+      "items": [
+        {
+          "id": 1,
+          "order_id": "ORD10001",
+          "sku": "SKU-HEADSET",
+          "name": "降噪耳机 Pro",
+          "quantity": 1,
+          "unit_price_cents": 29900,
+          "customized": false
+        },
+        {
+          "id": 2,
+          "order_id": "ORD10002",
+          "sku": "SKU-MUG-CUSTOM",
+          "name": "定制马克杯",
+          "quantity": 1,
+          "unit_price_cents": 3900,
+          "customized": true
+        },
+        {
+          "id": 3,
+          "order_id": "ORD10003",
+          "sku": "SKU-TEE",
+          "name": "纯棉T恤",
+          "quantity": 1,
+          "unit_price_cents": 7900,
+          "customized": false
+        }
+      ],
+      "products": [
+        {
+          "sku": "SKU-HEADSET",
+          "name": "降噪耳机 Pro",
+          "category": "数码",
+          "price_cents": 29900,
+          "inventory": 42,
+          "tags": "耳机,降噪",
+          "description": "头戴式主动降噪耳机"
+        },
+        {
+          "sku": "SKU-MUG-CUSTOM",
+          "name": "定制马克杯",
+          "category": "家居",
+          "price_cents": 3900,
+          "inventory": 200,
+          "tags": "定制,杯子",
+          "description": "支持印字的定制杯，定制商品不适用7天无理由"
+        },
+        {
+          "sku": "SKU-TEE",
+          "name": "纯棉T恤",
+          "category": "服饰",
+          "price_cents": 7900,
+          "inventory": 0,
+          "tags": "衣服,基础款",
+          "description": "基础纯棉短袖"
+        }
+      ],
+      "refunds": [],
+      "returns": [],
+      "audit": []
+    },
+    "business_final": {
+      "orders": {
+        "ORD10001": {
+          "order_id": "ORD10001",
+          "user_id": "u_demo",
+          "status": "shipped",
+          "total_cents": 29900,
+          "created_at": "2026-11-02T00:00:00",
+          "paid_at": "2026-11-02T00:00:00",
+          "shipped_at": "2026-11-03T00:00:00",
+          "delivered_at": null,
+          "tracking_no": "SF1234567890",
+          "receiver_city": "上海"
+        },
+        "ORD10002": {
+          "order_id": "ORD10002",
+          "user_id": "u_demo",
+          "status": "delivered",
+          "total_cents": 3900,
+          "created_at": "2026-10-16T00:00:00",
+          "paid_at": "2026-10-16T00:00:00",
+          "shipped_at": "2026-10-17T00:00:00",
+          "delivered_at": "2026-10-24T00:00:00",
+          "tracking_no": "YT998877",
+          "receiver_city": "北京"
+        },
+        "ORD10003": {
+          "order_id": "ORD10003",
+          "user_id": "u_demo",
+          "status": "paid",
+          "total_cents": 7900,
+          "created_at": "2026-11-04T19:00:00",
+          "paid_at": "2026-11-04T19:00:00",
+          "shipped_at": null,
+          "delivered_at": null,
+          "tracking_no": null,
+          "receiver_city": "杭州"
+        }
+      },
+      "items": [
+        {
+          "id": 1,
+          "order_id": "ORD10001",
+          "sku": "SKU-HEADSET",
+          "name": "降噪耳机 Pro",
+          "quantity": 1,
+          "unit_price_cents": 29900,
+          "customized": false
+        },
+        {
+          "id": 2,
+          "order_id": "ORD10002",
+          "sku": "SKU-MUG-CUSTOM",
+          "name": "定制马克杯",
+          "quantity": 1,
+          "unit_price_cents": 3900,
+          "customized": true
+        },
+        {
+          "id": 3,
+          "order_id": "ORD10003",
+          "sku": "SKU-TEE",
+          "name": "纯棉T恤",
+          "quantity": 1,
+          "unit_price_cents": 7900,
+          "customized": false
+        }
+      ],
+      "products": [
+        {
+          "sku": "SKU-HEADSET",
+          "name": "降噪耳机 Pro",
+          "category": "数码",
+          "price_cents": 29900,
+          "inventory": 42,
+          "tags": "耳机,降噪",
+          "description": "头戴式主动降噪耳机"
+        },
+        {
+          "sku": "SKU-MUG-CUSTOM",
+          "name": "定制马克杯",
+          "category": "家居",
+          "price_cents": 3900,
+          "inventory": 200,
+          "tags": "定制,杯子",
+          "description": "支持印字的定制杯，定制商品不适用7天无理由"
+        },
+        {
+          "sku": "SKU-TEE",
+          "name": "纯棉T恤",
+          "category": "服饰",
+          "price_cents": 7900,
+          "inventory": 0,
+          "tags": "衣服,基础款",
+          "description": "基础纯棉短袖"
+        }
+      ],
+      "refunds": [],
+      "returns": [],
+      "audit": []
+    }
+  },
+  "provider_calls": [
+    {
+      "original_sha256": "048e2d6f30f190d3ca7bfdaadc7d4bd339da7f4e666ee12256fd1566277b2126",
+      "supplied_sha256": "048e2d6f30f190d3ca7bfdaadc7d4bd339da7f4e666ee12256fd1566277b2126",
+      "injected": false,
+      "input_utf8_bytes": 2672
+    },
+    {
+      "original_sha256": "acd5ac1d402e67befa780f324126596083b910b2054c04aca7b055143f8d2bbe",
+      "supplied_sha256": "820ca7b95f79bf5793d8138ff824ccc3c041ec81471a3ae4eea99d82a51dd114",
+      "injected": true,
+      "input_utf8_bytes": 1167
+    },
+    {
+      "original_sha256": "4ca222d2d989062677b06b60826ab9e7117e27cb64d5cf50d799c070434b43fa",
+      "supplied_sha256": "1a842d4b1034becc75d2b393249b6cb07ab1b0f0ce6305b00ffa70aaa6b685e5",
+      "injected": true,
+      "input_utf8_bytes": 6921
+    },
+    {
+      "original_sha256": "691b18766973a3b16a3308aa14f5b13343ade60037fd009887e711fb867ad79b",
+      "supplied_sha256": "01e5d66bbc3339d071b81bc6d5d96497faaaffe91aab969839608174b8ba3850",
+      "injected": true,
+      "input_utf8_bytes": 2656
+    },
+    {
+      "original_sha256": "3db0c353845fa5bea419a775e46166d2278f740995fa6deeea429dea3a37dfb7",
+      "supplied_sha256": "3db0c353845fa5bea419a775e46166d2278f740995fa6deeea429dea3a37dfb7",
+      "injected": false,
+      "input_utf8_bytes": 1706
+    }
+  ],
+  "selected_families": [
+    "mixed_evidence"
+  ],
+  "selection_error": null,
+  "observer": null,
+  "answer_scores": [
+    {
+      "schema_version": "answer-eval-v2.1",
+      "scope": "DETERMINISTIC_ANNOTATED_FACTS_AND_CLAUSE_COVERAGE",
+      "TOOL_SUCCESS": "PASS",
+      "ENVIRONMENT_SUCCESS": "PASS",
+      "ANSWER_FACTUAL_CORRECTNESS": "NOT_ASSESSED",
+      "ANSWER_COMPLETENESS": null,
+      "VERIFIED_GOAL_COVERAGE_LOWER_BOUND": 0.6666666666666666,
+      "ANSWER_FAITHFULNESS": "NOT_ASSESSED",
+      "ABSTENTION_CORRECTNESS": "NOT_ASSESSED",
+      "OVERALL_TASK_SUCCESS": "NOT_ASSESSED",
+      "JUDGE_VALIDITY": "SUPPORTED",
+      "facts": [
+        {
+          "id": "status",
+          "goal": "status",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        },
+        {
+          "id": "amount",
+          "goal": "amount",
+          "required": true,
+          "matched": true,
+          "contradiction": false,
+          "evidence": true
+        },
+        {
+          "id": "shipping",
+          "goal": "shipping",
+          "required": true,
+          "matched": false,
+          "contradiction": false,
+          "evidence": null
+        }
+      ],
+      "missing_subgoals": [],
+      "unresolved_subgoals": [
+        "shipping"
+      ],
+      "unknown_subgoals": [],
+      "unverified_clauses": [
+        "以下是本次工具结果可确认的信息：",
+        "订单  当前订单状态：",
+        "订单  总金额：      （人民币）",
+        "其余所需结论暂时无法可靠确认，请补充信息或转人工",
+        "上述事实不代表其他操作已完成"
+      ],
+      "forbidden_claims": [],
+      "semantic_human_calibration": "NOT_RUN"
+    }
+  ]
+}

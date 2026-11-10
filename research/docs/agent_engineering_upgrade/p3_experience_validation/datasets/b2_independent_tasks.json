@@ -1,0 +1,268 @@
+{
+  "schema_version": "agent-scenarios-v2.1",
+  "provenance": {
+    "author_role": "independent_review_subagent",
+    "authorship": "Independently authored synthetic regression counterexamples after reading implementation, plan, evaluation schemas, tool contracts, seed fixtures and current repository policies.",
+    "blind": false,
+    "human_gold": false,
+    "agent_evaluation_run": false,
+    "evaluation_results_consumed": false,
+    "synthetic_only": true,
+    "limitation": "Engineering regressions; not blind NLU, human calibration, production traffic or statistical benefit."
+  },
+  "annotation_policy": "Annotations are isolated synthetic structural hints, not expected family labels. Faults are shared provider-stage controls across all arms, never case-ID success branches. Features describe fixture evidence assumptions; runtime must preserve Owner/HITL and deny missing/unknown evidence.",
+  "annotations": {
+    "B2IR01": {
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    "B2IR02": {
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    "B2IR03": {
+      "features": {
+        "tags": [
+          "pure_policy",
+          "static_policy"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    "B2IR04": {
+      "features": {
+        "tags": [
+          "live_fact",
+          "clarification_required"
+        ],
+        "evidence_state": "unknown",
+        "annotation_verified": true
+      }
+    },
+    "B2IR05": {
+      "features": {
+        "tags": [
+          "live_fact",
+          "owner_check_required"
+        ],
+        "evidence_state": "empty",
+        "annotation_verified": true
+      }
+    },
+    "B2IR06": {
+      "features": {
+        "tags": [],
+        "evidence_state": "unknown",
+        "annotation_verified": true
+      }
+    },
+    "B2IR07": {
+      "features": {
+        "tags": [
+          "live_fact",
+          "write_unconfirmed"
+        ],
+        "evidence_state": "unknown",
+        "annotation_verified": true
+      }
+    },
+    "B2IR08": {
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy",
+          "write_unconfirmed"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    "B2IR09": {
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    "B2IR10": {
+      "features": {
+        "tags": [
+          "live_fact",
+          "fresh_read_needed"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      }
+    },
+    "B2IR11": {
+      "features": {
+        "tags": [
+          "live_fact",
+          "judge_invalid",
+          "evidence_available"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      },
+      "fault": "judge_length"
+    },
+    "B2IR12": {
+      "features": {
+        "tags": [
+          "live_fact",
+          "static_policy",
+          "fallback_needed",
+          "evidence_available"
+        ],
+        "evidence_state": "present",
+        "annotation_verified": true
+      },
+      "fault": "generate_length"
+    }
+  },
+  "scenarios": [
+    {
+      "id": "B2IR01",
+      "family": "mixed_amount_shipping",
+      "user_goal": "核对明确订单的当前状态和实付，再说明一般催发货门槛。",
+      "turns": [
+        {
+          "message": "帮我看下 ORD10003 现在是什么状态，实付到底多少元？另外，付款多久还没发货才可以催呀？"
+        }
+      ]
+    },
+    {
+      "id": "B2IR02",
+      "family": "multi_goal_live_policy",
+      "user_goal": "分别回答金额、物流和物流停滞处理政策。",
+      "turns": [
+        {
+          "message": "ORD10001 这笔我付了多少钱，快递现在到哪儿了？要是物流两天没动，店里一般怎么处理？"
+        }
+      ]
+    },
+    {
+      "id": "B2IR03",
+      "family": "pure_policy_customization",
+      "user_goal": "仅解释定制商品退货政策，不推断订单事实。",
+      "turns": [
+        {
+          "message": "我还没下单，想先问清楚：刻字杯子是不是也能七天无理由？万一收到就破了呢？"
+        }
+      ]
+    },
+    {
+      "id": "B2IR04",
+      "family": "ambiguous_entity",
+      "user_goal": "缺少订单号和唯一上下文时先澄清，不默认绑定演示订单。",
+      "turns": [
+        {
+          "message": "那一单现在多少錢、發貨了沒？我手頭有好幾筆，先別替我退。"
+        }
+      ]
+    },
+    {
+      "id": "B2IR05",
+      "family": "owner_denial",
+      "user_id": "other",
+      "user_goal": "拒绝另一用户读取订单并避免泄露订单金额和状态。",
+      "turns": [
+        {
+          "message": "想查 ORD10002 的实付和签收情况，告诉我现在查到的就好。"
+        }
+      ]
+    },
+    {
+      "id": "B2IR06",
+      "family": "no_tool_social",
+      "user_goal": "直接回应问候，不调用业务工具或更改数据。",
+      "turns": [
+        {
+          "message": "早呀，我先打個招呼，暫時沒有要查的東西。"
+        }
+      ]
+    },
+    {
+      "id": "B2IR07",
+      "family": "pending_cancel",
+      "user_goal": "生成取消待确认操作，未确认之前维持已付款订单。",
+      "turns": [
+        {
+          "message": "ORD10003 不想买了，帮我取消这笔。"
+        }
+      ]
+    },
+    {
+      "id": "B2IR08",
+      "family": "pending_write_mixed",
+      "user_goal": "暂不确认时禁止实际取消；同时回答一般发货规则。",
+      "turns": [
+        {
+          "message": "先把 ORD10003 的取消申请准备好，我还没确认；也说一下通常付款后多久发货。"
+        }
+      ]
+    },
+    {
+      "id": "B2IR09",
+      "family": "product_live_static",
+      "user_goal": "使用当前商品价格库存和结构化保修证据回答。",
+      "turns": [
+        {
+          "message": "SKU-HEADSET 这款现在卖多少、还有几件？保修几个月，我不小心摔坏也包修吗？"
+        }
+      ]
+    },
+    {
+      "id": "B2IR10",
+      "family": "fresh_state_second_turn",
+      "user_goal": "合成外部状态变化后重新读取明确订单，不能沿用旧状态。",
+      "turns": [
+        {
+          "message": "先查 ORD10003 现在的状态和实付金额。"
+        },
+        {
+          "message": "再查一次 ORD10003，最新状态还是刚才那样吗？金额也再核一下。",
+          "state_changes": {
+            "ORD10003": "shipped"
+          }
+        }
+      ]
+    },
+    {
+      "id": "B2IR11",
+      "family": "judge_failure_factual_read",
+      "user_goal": "订单证据不应因裁判非法输出而被捏造、翻转或掩盖。",
+      "turns": [
+        {
+          "message": "麻烦核实 ORD10002 目前订单状态以及实付金额；按你实际查到的回答即可。"
+        }
+      ]
+    },
+    {
+      "id": "B2IR12",
+      "family": "fallback_refund_policy",
+      "user_goal": "退款查询为空时说明尚无退款单，分清审批后的到账规则。",
+      "turns": [
+        {
+          "message": "查下 ORD10003 的退款单现在办到哪一步了？如果以后审核通过，用支付宝一般多久到账？现在先不要替我申请。"
+        }
+      ]
+    }
+  ]
+}

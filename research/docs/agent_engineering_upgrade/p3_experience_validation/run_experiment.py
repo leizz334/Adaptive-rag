@@ -1,0 +1,354 @@
+"""Immutable, network-blocked E0/E1/E2 research experiment. Never a live runner."""
+
+import argparse
+import asyncio
+import hashlib
+import json
+import logging
+import subprocess
+from datetime import UTC, datetime
+from pathlib import Path
+
+from sqlalchemy.ext.asyncio import create_async_engine
+
+from app.core.exceptions import LLMTruncationError
+from app.experience.contracts import EvidenceRef
+from app.experience.reflection import ExperienceCandidate
+from app.experience.shadow import EvidenceResolver, ShadowObserver
+from app.experience.storage import ExperienceRepository, initialize_schema
+from app.experience.taxonomy import classify_failure
+from app.prompts.answer import ANSWER_SYSTEM
+from app.prompts.faithfulness import FAITHFULNESS_SYSTEM
+from app.repositories.db import create_session_factory
+from eval.memory_ablation import ScriptedProvider
+from eval.multiturn import Scenario, load_scenarios
+from research.docs.agent_engineering_upgrade.p2_answer_reliability.real_pairs import (
+    capture_case,
+    score_captured,
+)
+from research.docs.agent_engineering_upgrade.p3_experience_shadow.evaluate import canonical
+from research.docs.agent_engineering_upgrade.p3_experience_validation.evaluate_matching import (
+    CANDIDATES,
+)
+from research.docs.agent_engineering_upgrade.p3_experience_validation.manage import (
+    HERE,
+    ROOT,
+    save,
+    sha,
+)
+from research.docs.agent_engineering_upgrade.p3_experience_validation.sandbox import (
+    inject_messages,
+    select_lessons,
+)
+
+NOW = datetime(2026, 11, 10, tzinfo=UTC)
+SEED_CLOCK = "2026-11-05T00:00:00+00:00"
+
+
+def read(path):
+    return json.loads(path.read_bytes())
+
+
+def reference(path, pointer=""):
+    return EvidenceRef(
+        artifact=path.relative_to(ROOT).as_posix(),
+        sha256=sha(path),
+        pointer=pointer,
+        kind="evaluation",
+    )
+
+
+def scoring_case(case, spec):
+    allowed = {
+        "trajectory",
+        "expected_pending",
+        "expected_error",
+        "expected_refused",
+        "expected_failures",
+    }
+    if any(set(row) - allowed for row in spec["turns"]):
+        raise ValueError("Gold cannot override runtime request/action fields")
+    return Scenario.model_validate(
+        case.model_dump()
+        | dict(
+            expected=spec.get("expected", {}),
+            turns=[
+                turn.model_dump() | row for turn, row in zip(case.turns, spec["turns"], strict=True)
+            ],
+        )
+    )
+
+
+class ExperimentalProvider:
+    def __init__(self, arm, lessons, *, fault=None):
+        self.arm, self.lessons, self.fault = arm, lessons, fault
+        self.base = ScriptedProvider()
+        self.calls = []
+
+    async def generate(self, messages, **kwargs):
+        changed = inject_messages(messages, self.lessons, arm=self.arm, isolated=True)
+
+        def digest(value):
+            return hashlib.sha256(
+                json.dumps(value, ensure_ascii=False, sort_keys=True).encode()
+            ).hexdigest()
+
+        self.calls.append(
+            dict(
+                original_sha256=digest(messages),
+                supplied_sha256=digest(changed),
+                injected=changed != messages,
+                input_utf8_bytes=len(json.dumps(changed, ensure_ascii=False).encode()),
+            )
+        )
+        if len(self.calls) > 24:
+            raise RuntimeError("Bounded synthetic scene call limit")
+        if self.fault == "judge_length" and messages[0]["content"] == FAITHFULNESS_SYSTEM:
+            raise LLMTruncationError()
+        if self.fault == "generate_length" and messages[0]["content"] == ANSWER_SYSTEM:
+            raise LLMTruncationError()
+        # Unchanged provider policy. It is not taught a special success branch.
+        return await self.base.generate(changed, **kwargs)
+
+
+async def qualify(output, repository, resolver):
+    b0 = read(HERE / "runs/20261109_B0_01/results.json")
+    trusted = subprocess.check_output(
+        [
+            "git",
+            "show",
+            "c738cc6c4f095e9548535d1c5722b1e3b74d19c2:research/docs/agent_engineering_upgrade/p3_experience_validation/runs/20261109_B0_01/results.json",
+        ],
+        cwd=ROOT,
+    )
+    if (HERE / "runs/20261109_B0_01/results.json").read_bytes() != trusted:
+        raise ValueError("Trusted committed B0 relevance evidence changed")
+    frozen = read(HERE / "evidence/b0_freeze.json")
+    assert sha(CANDIDATES) == frozen["candidate_export_sha256"]
+    assert all(sha(ROOT / p) == h for p, h in frozen["sources"].items())
+    originals = [ExperienceCandidate.model_validate(row) for row in read(CANDIDATES)]
+    permits, records = {}, []
+    for original in originals:
+        # Same private analysis identity; no cross-user/session remapping.
+        data = original.model_dump() | dict(
+            validation_status="PROPOSED", review_status="UNREVIEWED", version=1
+        )
+        candidate = ExperienceCandidate.model_validate(data)
+        for ref in candidate.evidence_refs:
+            resolver.resolve(ref)
+        metrics = b0["cohorts"]["blind_holdout"]["families"][candidate.family]["C1"]
+        passed = metrics["strict_validation_pass"] and metrics["safety_conflicts"] == 0
+        report = dict(
+            applicability=dict(
+                scope="offline_applicability",
+                family=candidate.family,
+                source_version=candidate.source_version,
+                candidate_fingerprint=candidate.fingerprint,
+                independent_labels=True,
+                passed=passed,
+                cases=32,
+                safety_conflicts=0,
+            ),
+            preflight=dict(
+                scope="offline_injection_preflight",
+                candidate_fingerprint=candidate.fingerprint,
+                source_version=candidate.source_version,
+                passed=passed,
+                production_approved=False,
+            ),
+            method="MODEL_REVIEWED canonical catalog/provenance and frozen independently authored structural relevance; not human lesson approval",
+            relevance_result_ref=reference(HERE / "runs/20261109_B0_01/results.json").model_dump(
+                mode="json"
+            ),
+        )
+        path = output / f"qualification_{candidate.family}.json"
+        save(path, report)
+        if not passed:
+            continue
+        stored = await repository.propose(candidate.scope, candidate)
+        stored = await repository.transition(
+            candidate.scope, stored.experience_id, "NEEDS_REVIEW", expected_version=stored.version
+        )
+        stored = await repository.review(
+            candidate.scope, stored.experience_id, "MODEL_REVIEWED", expected_version=stored.version
+        )
+        stored = await repository.transition(
+            candidate.scope,
+            stored.experience_id,
+            "VERIFIED_OFFLINE",
+            expected_version=stored.version,
+            validation_evidence=reference(path, "/applicability"),
+        )
+        permits[stored.fingerprint] = reference(path, "/preflight")
+        records.append(stored)
+    save(output / "isolated_offline_records.json", [r.model_dump(mode="json") for r in records])
+    return originals[0].scope, originals[0].source_version, permits, records
+
+
+async def run(output, dataset, answers):
+    output.mkdir(parents=True, exist_ok=False)
+    cases, digest = load_scenarios(dataset)
+    inputs = read(dataset)
+    gold = read(answers)["cases"]
+    gold_hash = sha(answers)
+    assert set(gold) == {c.id for c in cases}
+    annotations = inputs.get("annotations", {})
+    # Gold enters only the evaluation Scenario/oracles; run_scenarios never sends
+    # trajectory/expected fields to service, provider or tool execution.
+    cases = [scoring_case(c, gold[c.id]) for c in cases]
+    source_files = [HERE / name for name in ("sandbox.py", "human_import.py", "run_experiment.py")]
+    source_hashes = {p.relative_to(ROOT).as_posix(): sha(p) for p in source_files}
+    save(
+        output / "experiment_config.json",
+        dict(
+            arms=["E0", "E1", "E2"],
+            mode="M2",
+            provider="UNCHANGED_SCRIPTED_NOT_REAL_LLM",
+            source_hashes=source_hashes,
+            dataset_sha256=digest,
+            gold_sha256=sha(answers),
+            dataset=dataset.relative_to(ROOT).as_posix(),
+            seed_clock=SEED_CLOCK,
+            new_http=0,
+            new_tokens=0,
+            model_semantic_evidence="NOT_RUN",
+            concurrency=1,
+            per_scene_call_limit=24,
+            production_active=False,
+            procedural_independence="Independent counterexample author saw specification/implementation; NOT blind",
+        ),
+    )
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    try:
+        await initialize_schema(engine, isolated=True)
+        resolver = EvidenceResolver(ROOT)
+        repo = ExperienceRepository(
+            create_session_factory(engine), resolver=resolver, clock=lambda: NOW
+        )
+        identity, source_version, permits, records = await qualify(output, repo, resolver)
+        observer = ShadowObserver(
+            mode="shadow", resolver=resolver, max_observations=64, clock=lambda: NOW
+        )
+        rows = []
+        for i, case in enumerate(cases):
+            annotation = annotations.get(case.id, {})
+            features = annotation.get(
+                "features", dict(tags=[], evidence_state="unknown", annotation_verified=False)
+            )
+            feature_path = output / f"{case.id}_features.json"
+            save(feature_path, features)
+            selection = await select_lessons(
+                repo,
+                identity,
+                features,
+                reference(feature_path),
+                permits,
+                resolver=resolver,
+                now=NOW,
+                isolated=True,
+                source_version=source_version,
+            )
+            arms = {}
+            # Interleave arms per task; fixed state reset by actual fixture.
+            order = ["E0", "E1", "E2"] if i % 2 == 0 else ["E2", "E1", "E0"]
+            for arm in order:
+                provider = ExperimentalProvider(
+                    arm, selection["lessons"], fault=annotation.get("fault")
+                )
+                captured = await capture_case(
+                    case, digest, provider, allow_real_network=False, seed_clock=SEED_CLOCK
+                )
+                behavior = canonical(captured)
+                outcome = None
+                if arm == "E1":
+                    # A task score alone does not establish a root cause. The real
+                    # observer sees UNKNOWN and must not fabricate a lesson.
+                    before = json.dumps(behavior, sort_keys=True, ensure_ascii=False)
+                    assessment = classify_failure(
+                        source_trace_id=f"B2-{case.id}",
+                        source_case_id=case.id,
+                        source_version=source_version,
+                        signals=[],
+                    )
+                    observed = await observer.observe(
+                        behavior, assessment, identity, completed=True
+                    )
+                    outcome = dict(status=observed.status)
+                    assert json.dumps(behavior, sort_keys=True, ensure_ascii=False) == before
+                value = dict(
+                    capture=captured,
+                    canonical=behavior,
+                    provider_calls=provider.calls,
+                    selected_families=[r["family"] for r in selection["lessons"]],
+                    selection_error=selection["error"],
+                    observer=outcome,
+                    answer_scores=score_captured(
+                        captured, gold[case.id]["answer_gold"], adapter="v21"
+                    )
+                    if gold[case.id].get("answer_gold")
+                    else "NOT_ASSESSED",
+                )
+                save(output / f"{case.id}_{arm}.json", value)
+                arms[arm] = value
+
+            def success(arm, _arms=arms):
+                return _arms[arm]["capture"]["results"][0]["status"] == "PASS"
+
+            expected = gold[case.id].get("expected_selected_families")
+            selected = arms["E2"]["selected_families"]
+            rows.append(
+                dict(
+                    case_id=case.id,
+                    strict={a: success(a) for a in arms},
+                    shadow_identical=arms["E0"]["canonical"] == arms["E1"]["canonical"],
+                    E2_behavior_identical=arms["E0"]["canonical"] == arms["E2"]["canonical"],
+                    selected_families=selected,
+                    expected_selected_families=expected,
+                    selection_match=None
+                    if expected is None
+                    else sorted(expected) == sorted(selected),
+                    injected_calls=sum(c["injected"] for c in arms["E2"]["provider_calls"]),
+                    E0_E1_injected_calls=sum(
+                        c["injected"] for a in ("E0", "E1") for c in arms[a]["provider_calls"]
+                    ),
+                    answer_semantics="NOT_ASSESSED",
+                    negative_transition=success("E0") and not success("E2"),
+                    positive_transition=not success("E0") and success("E2"),
+                )
+            )
+            save(output / "partial_results.json", dict(status="RUNNING", rows=rows))
+        assert all(sha(ROOT / p) == h for p, h in source_hashes.items())
+        assert sha(dataset) == digest
+        assert sha(answers) == gold_hash
+        result = dict(
+            status="COMPLETED",
+            rows=rows,
+            cases=len(rows),
+            strict_success={a: sum(r["strict"][a] for r in rows) for a in ("E0", "E1", "E2")},
+            shadow_divergence=sum(not r["shadow_identical"] for r in rows),
+            negative_transitions=sum(r["negative_transition"] for r in rows),
+            positive_transitions=sum(r["positive_transition"] for r in rows),
+            injected_model_calls=sum(r["injected_calls"] for r in rows),
+            qualified_isolated_records=len(records),
+            human_approved_experiences=0,
+            production_active=False,
+            experience_benefit="NOT_ESTABLISHED",
+            real_model_result="NOT_RUN",
+            answer_semantics="NOT_ASSESSED",
+            new_http=0,
+            new_tokens=0,
+        )
+        save(output / "results.json", result)
+        print(json.dumps({k: v for k, v in result.items() if k != "rows"}))
+    finally:
+        await engine.dispose()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--dataset", type=Path, required=True)
+    parser.add_argument("--answers", type=Path, required=True)
+    args = parser.parse_args()
+    logging.disable(logging.CRITICAL)
+    asyncio.run(run(args.output.resolve(), args.dataset.resolve(), args.answers.resolve()))
