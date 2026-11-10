@@ -26,6 +26,6 @@
 - [x] Full pytest with historical helper suites, Ruff check/format, Mypy; fresh legacy M2 strict groups; review import/experience, safety and isolation tests. Preserve failures and do not rewrite historical evidence.
 - [x] Independently review changes; fix important findings with RED/GREEN before final freeze. Record reviewer scope and any dataset exposure honestly.
 - [x] Generate P4_E2E_TEST_PLAN.md covering API E2E, real dependencies and bounded real LLM E2E, acceptance/security/budget/failure recovery. Do not execute P4.
-- [ ] Audit user CSV and other root user files, previous source/Gold, staged paths and credentials. Exclude the edited original CSV from commits; commit the explicit submission copy/report only. Ordinary push authorized branch, ls-remote, record recovery and STOP. Production Active stays off.
+- [x] Audit user CSV and other root user files, previous source/Gold, staged paths and credentials. Exclude the edited original CSV from commits; commit the explicit submission copy/report only. Ordinary push authorized branch, ls-remote, record recovery and STOP. Production Active stays off.
 
 **Ruling:** Missing reviewer identity/time/notes do not erase the user's explicit submission statement. They remain unknown metadata and reduce calibration to PARTIAL; import may proceed. The human answer verdicts never imply lesson approval or resolve UNCERTAIN. The user authorized continuous execution, so no extra design/step approval is inserted.
