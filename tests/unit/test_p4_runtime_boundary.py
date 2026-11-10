@@ -15,6 +15,16 @@ def test_only_loopback_socket_connections_are_allowed_for_windows_asyncio():
     assert not api().loopback_address(("192.168.1.2", 5432))
 
 
+def test_trace_file_failure_cannot_replace_business_result(monkeypatch, tmp_path):
+    from pathlib import Path
+
+    def broken(*args, **kwargs):
+        raise OSError("SYNTHETIC_PRIVATE_DISK_FAILURE")
+
+    monkeypatch.setattr(Path, "open", broken)
+    assert api().event(tmp_path, "synthetic") is False
+
+
 def test_private_settings_ignore_ambient_paid_and_external_dependencies(monkeypatch, tmp_path):
     monkeypatch.setenv("DEEPSEEK_API_KEY", "DO_NOT_USE_AMBIENT_PAID_KEY")
     monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://production.invalid/db")

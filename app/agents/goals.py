@@ -82,7 +82,10 @@ def read_goals(query: str) -> tuple[ReadGoal, ...]:
     ):
         found.append(ReadGoal("商品数量", "get_order_items", "items"))
     if (
-        any(c in text for c in ("退款单", "退款记录", "退款申请", "退款进度", "退了多少"))
+        any(
+            c in text
+            for c in ("退款单", "退款记录", "退款申请", "退款进度", "退款状态", "退了多少")
+        )
         and "申请退款" not in text
     ):
         found.append(ReadGoal("退款记录", "get_refund_status", "refunds"))

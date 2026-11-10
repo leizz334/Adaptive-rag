@@ -28,6 +28,9 @@ class HttpRun:
         self.client = None
         self.token = secrets.token_hex(24)
         self.sequence = 0
+        self.source_hashes = {
+            p.relative_to(ROOT).as_posix(): sha(p) for p in (ROOT / "app").rglob("*.py")
+        }
 
     def start(self):
         with socket.socket() as sock:
@@ -80,6 +83,8 @@ class HttpRun:
                 python=sys.executable,
                 head=git("rev-parse", "HEAD"),
                 worker_sha256=sha(HERE / "worker.py"),
+                application_sha256=self.source_hashes,
+                matrix_source_sha256=sha(HERE / "test_real_http.py"),
                 paid_api=False,
                 transport="real_TCP_HTTPX_to_Uvicorn_process",
                 new_worktree_created=False,
@@ -224,6 +229,9 @@ class HttpRun:
                         exit_code=self.process.poll(),
                         graceful_request=stopped_gracefully,
                         stopped_only_owned_process=True,
+                        application_sources_unchanged=all(
+                            sha(ROOT / p) == h for p, h in self.source_hashes.items()
+                        ),
                     ),
                 )
         finally:

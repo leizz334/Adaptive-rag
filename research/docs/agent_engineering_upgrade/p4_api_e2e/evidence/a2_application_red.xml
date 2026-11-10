@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="5" time="2.381" timestamp="2026-11-10T15:04:53.560183+08:00" hostname="LAPTOP-OMRADJBO"><testcase classname="tests.unit.test_p4_evidenced_defects" name="test_refund_status_request_requires_refund_observation[\u6838\u5bf9 ORD90876 \u7684\u9000\u6b3e\u72b6\u6001]" time="0.002"><failure message="AssertionError: assert 'get_refund_status' in ['get_order']&#10; +  where ['get_order'] = read_tools('核对 ORD90876 的退款状态')">tests\unit\test_p4_evidenced_defects.py:12: in test_refund_status_request_requires_refund_observation
+    assert "get_refund_status" in read_tools(query)
+E   AssertionError: assert 'get_refund_status' in ['get_order']
+E    +  where ['get_order'] = read_tools('核对 ORD90876 的退款状态')</failure></testcase><testcase classname="tests.unit.test_p4_evidenced_defects" name="test_refund_status_request_requires_refund_observation[\u67e5\u770b\u8ba2\u5355 ORD73519 \u552e\u540e\u9000\u6b3e\u72b6\u6001]" time="0.001"><failure message="AssertionError: assert 'get_refund_status' in ['get_order']&#10; +  where ['get_order'] = read_tools('查看订单 ORD73519 售后退款状态')">tests\unit\test_p4_evidenced_defects.py:12: in test_refund_status_request_requires_refund_observation
+    assert "get_refund_status" in read_tools(query)
+E   AssertionError: assert 'get_refund_status' in ['get_order']
+E    +  where ['get_order'] = read_tools('查看订单 ORD73519 售后退款状态')</failure></testcase><testcase classname="tests.unit.test_p4_evidenced_defects" name="test_explicit_app_settings_reach_lifespan_without_global_resolution" time="0.348"><failure message="AssertionError: Explicit app must not load global/.env settings">tests\unit\test_p4_evidenced_defects.py:29: in test_explicit_app_settings_reach_lifespan_without_global_resolution
+    async with app.router.lifespan_context(app):
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\site-packages\fastapi\routing.py:133: in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\site-packages\fastapi\routing.py:133: in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\site-packages\fastapi\routing.py:133: in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+D:\MiniAnaconda3\envs\adaptive-rag\Lib\contextlib.py:210: in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+app\main.py:32: in lifespan
+    settings = get_settings()
+               ^^^^^^^^^^^^^^
+tests\unit\test_p4_evidenced_defects.py:27: in forbidden
+    def forbidden(): raise AssertionError("Explicit app must not load global/.env settings")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: Explicit app must not load global/.env settings</failure></testcase><testcase classname="tests.unit.test_p4_evidenced_defects" name="test_stream_late_error_has_safe_error_done_and_closes_iterator[runtime]" time="0.003"><failure message="RuntimeError: SYNTHETIC_PRIVATE_ERROR_DETAIL">tests\unit\test_p4_evidenced_defects.py:49: in test_stream_late_error_has_safe_error_done_and_closes_iterator
+    items=[json.loads(event.data) async for event in response.body_iterator]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\test_p4_evidenced_defects.py:49: in &lt;listcomp&gt;
+    items=[json.loads(event.data) async for event in response.body_iterator]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\api\routes\chat.py:50: in events
+    async for item in stream:
+tests\unit\test_p4_evidenced_defects.py:46: in stream
+    raise RuntimeError("SYNTHETIC_PRIVATE_ERROR_DETAIL")
+E   RuntimeError: SYNTHETIC_PRIVATE_ERROR_DETAIL</failure></testcase><testcase classname="tests.unit.test_p4_evidenced_defects" name="test_stream_late_error_has_safe_error_done_and_closes_iterator[timeout]" time="0.003"><failure message="app.core.exceptions.LLMProviderError: controlled timeout">tests\unit\test_p4_evidenced_defects.py:49: in test_stream_late_error_has_safe_error_done_and_closes_iterator
+    items=[json.loads(event.data) async for event in response.body_iterator]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\unit\test_p4_evidenced_defects.py:49: in &lt;listcomp&gt;
+    items=[json.loads(event.data) async for event in response.body_iterator]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\api\routes\chat.py:50: in events
+    async for item in stream:
+tests\unit\test_p4_evidenced_defects.py:45: in stream
+    if kind=="timeout": raise LLMProviderError("controlled timeout",timeout=True)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   app.core.exceptions.LLMProviderError: controlled timeout</failure></testcase></testsuite></testsuites>

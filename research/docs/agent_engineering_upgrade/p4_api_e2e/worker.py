@@ -26,6 +26,7 @@ from research.docs.agent_engineering_upgrade.p4_api_e2e.manage import HERE, ROOT
 
 FAULT = ContextVar("p4_fault", default="none")
 CASE = ContextVar("p4_case", default="unlabelled")
+CAPTURE_ERRORS = {}
 
 
 def loopback_address(address):
@@ -33,16 +34,26 @@ def loopback_address(address):
 
 
 def event(directory, kind, **fields):
-    directory.mkdir(parents=True, exist_ok=True)
-    with (directory / "events.jsonl").open("a", encoding="utf8") as stream:
-        stream.write(
-            json.dumps(
-                dict(kind=kind, case=CASE.get(), time=datetime.now(UTC).isoformat(), **fields),
-                ensure_ascii=False,
-                default=str,
+    try:
+        if FAULT.get() == "trace_error":
+            raise OSError("synthetic evidence sink failure")
+        directory.mkdir(parents=True, exist_ok=True)
+        with (directory / "events.jsonl").open("a", encoding="utf8") as stream:
+            stream.write(
+                json.dumps(
+                    dict(kind=kind, case=CASE.get(), time=datetime.now(UTC).isoformat(), **fields),
+                    ensure_ascii=False,
+                    default=str,
+                )
+                + "\n"
             )
-            + "\n"
+        return True
+    except Exception:
+        key = (
+            CASE.get() if CASE.get() in CAPTURE_ERRORS or len(CAPTURE_ERRORS) < 256 else "overflow"
         )
+        CAPTURE_ERRORS[key] = CAPTURE_ERRORS.get(key, 0) + 1
+        return False
 
 
 def isolated_settings(directory):
@@ -108,9 +119,21 @@ class ControlledLLM:
                     from app.agents.answer_evidence import safe_answer
                     from app.schemas.agent import ToolResult
 
-                    answer = safe_answer(
-                        [ToolResult.model_validate(x) for x in json.loads(tools_text)]
-                    )
+                    results = [ToolResult.model_validate(x) for x in json.loads(tools_text)]
+                    answer = safe_answer(results)
+                    chunks = [
+                        chunk
+                        for result in results
+                        if result.success
+                        and not result.truncated
+                        and result.name == "search_knowledge"
+                        for chunk in result.output.get("chunks", [])
+                        if isinstance(chunk, dict) and isinstance(chunk.get("content"), str)
+                    ]
+                    if chunks:
+                        answer += "\n政策检索原文（仅政策证据，不是当前订单事实）：\n" + "\n".join(
+                            c["content"] for c in chunks[:4]
+                        )
                 elif evidence != "(无检索结果)":
                     answer = evidence
                 else:
@@ -256,7 +279,7 @@ def create_worker(directory, stop_token, server_holder):
 
     ChatService.chat, ChatService.stream, Tool.run = observed_chat, observed_stream, controlled_tool
     main_module.build_container = build
-    app = main_module.create_app()
+    app = main_module.create_app(settings)
 
     @app.middleware("http")
     async def test_context(request: Request, call_next):
@@ -273,6 +296,7 @@ def create_worker(directory, stop_token, server_holder):
                 path=request.url.path,
                 status=response.status_code,
             )
+            response.headers["x-p4-capture-status"] = "ERROR" if CAPTURE_ERRORS.get(case) else "OK"
             return response
         finally:
             CASE.reset(a)
@@ -328,7 +352,10 @@ def main():
     try:
         server.run()
     finally:
-        save(directory / "shutdown.json", dict(pid=os.getpid(), owned_worker_finished=True))
+        save(
+            directory / "shutdown.json",
+            dict(pid=os.getpid(), owned_worker_finished=True, capture_errors=CAPTURE_ERRORS),
+        )
 
 
 if __name__ == "__main__":

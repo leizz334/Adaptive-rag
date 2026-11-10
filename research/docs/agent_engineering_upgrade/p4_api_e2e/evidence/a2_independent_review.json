@@ -1,0 +1,120 @@
+{
+  "review": "P4-A independent source, first-run evidence, and safety counterexample review",
+  "reviewer": "p4_independent_review subagent",
+  "baseline_head": "d12575c",
+  "scope": {
+    "new_files_only": true,
+    "implementation_edits": false,
+    "global_phase_state_edits": false,
+    "commits": false,
+    "full_http_matrix_rerun": false,
+    "services_started_or_stopped": false,
+    "paid_or_live_api": false,
+    "dotenv_or_human_csv_contents_read": false,
+    "limitation": "Review evaluates the original recorded failures and proposed correction conditions, not later GREEN implementation or final delivery."
+  },
+  "original_run": {
+    "directory": "runs/20261110_A1_01",
+    "scenarios": 41,
+    "passed": 35,
+    "failed": 5,
+    "blocked": 1,
+    "http_requests": 53,
+    "record_sha256": {
+      "matrix_results.json": "72d925f01e5352897934b59e6068b96326b220b11d4d3df999d4e835ae389dcf",
+      "request_014_refund_status.json": "ac0298c4d680d61d80d66dddabd0e84f99bdc5a6660430a85c920d9ae5928ec4",
+      "request_020_compound_order_policy.json": "2d2c21549f18da9315f59f2c9d47b5bd6737e10283b2eca9587254f4bc43e6fd",
+      "request_040_cancel_business_refusal.json": "ce8dd63e279e7f30a07ded5c4bc98782198bcd23e171cf9ce2ee5266a1383ebc",
+      "request_044_tool_failure.json": "9fbfebf1ee614a6213c553aabd084fa9f8abebd3c810c24a9f8b9ff3d8ae1a55",
+      "request_048_sse_runtime_error.json": "866f8d412997aaf0e64e1abed8bffe7a7bd99137486f1adf2851e991671fa4f0",
+      "startup.json": "36631f7bd344c03e5e4cddf15c589b9ca685c9b8aba4be5727109e84f248abfb",
+      "owned_cleanup.json": "e4cac3bc2c48b3ff9b9f9fb739248076d50e328834045047c05ebdaae7db9fc4"
+    },
+    "preservation_requirement": "Keep these original records and the first-run FAIL/BLOCKED counts unchanged; later corrected runs require separate directories."
+  },
+  "failure_verdicts": [
+    {
+      "case": "refund_status",
+      "classification": "PRODUCT_READ_CAPABILITY_BUG",
+      "evidence": "Request 014 asks for refund status. The sole captured successful tool is get_order, and the answer supplies delivered status and 39.00 instead of refund records. app/agents/goals.py:read_goals recognizes refund records/application/progress but misses refund status; generic status matches get_order.",
+      "verdict": "Keep original assertion; fix bounded read capability handling with generic positive, negative, and mixed-query regression cases. Never special-case ORD10002 or the matrix case label."
+    },
+    {
+      "case": "compound_order_policy",
+      "classification": "CONTROLLED_PROVIDER_FIXTURE_BUG",
+      "evidence": "Request 020 captures successful get_order and search_knowledge, including a return_policy chunk with return exclusions. ControlledLLM.generate prioritizes safe_answer(tool_results) whenever tools exist; safe_answer intentionally renders allowlisted structured business fields and omits policy document text. No model failure occurred.",
+      "verdict": "Repair only controlled fixture evidence rendering. Preserve order-plus-policy assertions and actual retrieved content; allow no Gold, case-ID lookup, fabricated clause, failed/truncated tool evidence, or policy-derived individual order fact. This validates deterministic delivery only; scripted SUPPORTED remains no semantic judge."
+    },
+    {
+      "case": "cancel_business_refusal",
+      "classification": "INITIAL_EXPECTATION_EXCEEDS_CURRENT_CONFIRMATION_CONTRACT",
+      "evidence": "Request 040 produces a pending cancel proposal and no tool calls. planner_node creates proposals before executor_node returns early for unconfirmed actions. OrderRepository.cancel_order rejects every status outside created/paid before mutation or audit.",
+      "verdict": "A proposal is not proof of execution or business-rule bypass. Accept a two-step contract only when confirmation of the shipped synthetic order is denied, no successful cancel occurs, and orders/items/products/refunds/returns/audit/idempotency remain unchanged in both steps. Do not pass merely by allowing the proposal. The existing proposal text promises cancellation before eligibility is known; retain as a user-facing limitation unless fixed in scope."
+    },
+    {
+      "case": "tool_failure",
+      "classification": "INITIAL_EXPECTATION_FORBIDS_IMPLEMENTED_READ_RECOVERY",
+      "evidence": "Request 044 captures get_order failure_kind=synthetic_execution_error followed by successful search_knowledge and a conservative cannot-reliably-confirm answer. executor.READ_FALLBACKS explicitly maps get_order to search_knowledge. The injected fault targets only get_order, not all tools.",
+      "verdict": "Replace all-tools-must-fail with targeted failure and safe fallback assertions: get_order actually fails, any successful fallback is allowed read-only knowledge, no unsupported current order status/amount is claimed, and business tables are unchanged. Keep separate all-read-tools-fail coverage if making a claim about exhausted recovery."
+    },
+    {
+      "case": "sse_runtime_error",
+      "classification": "PRODUCT_SSE_ERROR_CONTRACT_BUG",
+      "evidence": "Request 048 receives HTTP 200 and only started/node events, transport_error=null, with captured RuntimeError and an errored chat.turn span. ChatService.stream rethrows holder.error after headers; the route does not map it into SSE error/done.",
+      "verdict": "Keep error+done expectation. Fix at streaming exception boundary after transaction rollback/iterator close; preserve AppError codes, use generic INTERNAL_ERROR without raw exception text, propagate cancellation/GeneratorExit, and never synthesize a success answer."
+    }
+  ],
+  "additional_findings": [
+    {
+      "severity": "IMPORTANT",
+      "id": "explicit_settings_lifespan",
+      "status": "SOURCE_VERIFIED_DEFECT",
+      "evidence": "app/main.py:create_app uses explicit settings for routes but lifespan calls get_settings again. Clearing cache does not install the supplied object. Two apps with different supplied settings can therefore initialize the same ambient database/provider.",
+      "required": "Use the exact resolved settings object per application for lifespan/container; verify separate instances and no ambient get_settings call when explicit settings are supplied."
+    },
+    {
+      "severity": "IMPORTANT",
+      "id": "worker_dotenv_consumption",
+      "status": "SOURCE_VERIFIED_ISOLATION_GAP",
+      "evidence": "worker.isolated_settings uses _env_file=None, then configure_environment clears cache and worker calls create_app() without that object. Settings.model_config.env_file='.env'; ordinary Settings() may parse dotenv even when all known fields have environment overrides.",
+      "required": "After explicit-settings lifecycle repair, call create_app(settings) in worker. Test by forbidding dotenv-source reads, without opening any real .env. Distinguish no effective secret override from no file consumption."
+    },
+    {
+      "severity": "IMPORTANT",
+      "id": "research_capture_failure",
+      "status": "SOURCE_VERIFIED_GAP_NOT_FAULT_EXECUTED",
+      "evidence": "worker.event performs mkdir/open/write without protection. Calls in observed_chat/service_response and finally tools can turn a successful committed response into an error or replace the original exception. TraceRecorder.turn protects sink exceptions, but research wrappers and model_started do not.",
+      "required": "Make research capture fail open for business execution while retaining an explicit in-memory capture failure counter/error state and failing the evidence acceptance check. Exercise failed capture separately; do not silently claim complete traces."
+    },
+    {
+      "severity": "LIMITATION",
+      "id": "socket_guard_scope",
+      "status": "SOURCE_VERIFIED",
+      "evidence": "Worker patches socket.connect/connect_ex and accepts any exact 127.0.0.1 or ::1 tuple; required for Windows asyncio self-pipe but also permits loopback network services. It does not cover every socket operation, e.g. UDP sendto. Explicit private SQLite, offline provider, disabled external backends and stripped child environment are the primary layered controls.",
+      "required": "Describe as non-loopback connect denial with explicit dependency isolation, not universal outbound prohibition. Do not count absence of denial events alone as proof of all possible network isolation."
+    }
+  ],
+  "isolation_and_observability": {
+    "child_ownership": "SOURCE_VERIFIED plus saved run evidence: Popen child handle only, secret-token loopback stop, handle-specific terminate fallback; saved PID 27692 matches startup/cleanup, graceful=true and exit_code=0. No broad process enumeration or kill.",
+    "private_database": "SOURCE_VERIFIED plus saved startup: fresh run directory, refusal if DB already exists, actual engine URL matches run-private SQLite, explicit seeded synthetic data, client snapshots mode=ro. Review did not write DB.",
+    "settings_scope": "Pending important explicit-settings/dotenv corrections above; full isolation must not be declared complete before their regression evidence.",
+    "tracing": "Local TraceRecorder spans and captured tools are real execution metadata. Scripted model counters/timings are fixture data. Fault capture is currently vulnerable as above. Initial sse runtime failure is visible in root/node spans even though graph.stream reports ok after internally catching its exception; do not infer turn success from graph.stream alone.",
+    "identity": "BLOCKED remains correct: request.user_id is client supplied. Claimed-user session/order filtering does not prove authenticated ownership or anti-impersonation. No auth retrofit authorized.",
+    "disconnect": "Initial read-turn disconnect proves cancellation/stream close and rollback for that tested path. It does not prove rollback of an already completed committed write; final claims must stay bounded to timing and tested operations.",
+    "semantic_quality": "Controlled provider plus scripted SUPPORTED checks evidence transport and deterministic graph behavior, not DeepSeek accuracy, model faithfulness, ranking quality, or paid-provider readiness."
+  },
+  "counterexample_validation": {
+    "new_test_file": "tests/unit/test_p4_independent_review.py",
+    "pytest_command": "conda run --no-capture-output -n adaptive-rag python -B -m pytest tests/unit/test_p4_independent_review.py --basetemp research/docs/agent_engineering_upgrade/p4_api_e2e/evidence/review_scratch -q -p no:cacheprovider",
+    "result": "PASS",
+    "tests": 7,
+    "warnings": "One existing LangGraph pending deprecation warning",
+    "counterexamples": [
+      "Five ineligible cancellation statuses cannot reach status mutation, audit, flush or commit in real repository method.",
+      "Successful and failed knowledge fallback results cannot establish current order status/amount even with order-shaped fields; failed get_order output cannot establish facts."
+    ],
+    "ruff_check": "PASS: tests/unit/test_p4_independent_review.py",
+    "ruff_format_check": "PASS: tests/unit/test_p4_independent_review.py"
+  },
+  "overall_verdict": "Proposed failure classifications are evidence-grounded and acceptable under the stronger contracts recorded above. Preserve first failures and auth BLOCKED; fix product defects and isolation/capture gaps, then run fresh regressions. This review is not final GREEN approval."
+}

@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Build the container on startup and release it on shutdown."""
-    settings = get_settings()
+    settings = app.state.settings
     configure_logging(settings)
     container = await build_container(settings)
     app.state.container = container
@@ -63,6 +63,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         version="0.1.0",
         lifespan=lifespan,
     )
+    app.state.settings = resolved
     prefix = resolved.api_v1_prefix
     app.include_router(health.router, prefix=prefix)
     app.include_router(chat.router, prefix=prefix)

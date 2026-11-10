@@ -1,0 +1,144 @@
+{
+  "review": "Independent final P4-A implementation and repaired evidence review",
+  "reviewer": "p4_independent_review subagent",
+  "base_head": "56cca47596db5c9679a99abde4be8cb4ca98a509",
+  "verdict": "ACCEPT_BOUNDED_IMPLEMENTATION_AND_OBSERVED_REPAIRED_RUN",
+  "important_implementation_findings": [],
+  "scope_limits": {
+    "reviewer_full_http_rerun": false,
+    "reviewer_started_or_stopped_services": false,
+    "reviewer_opened_dotenv_or_human_csv_contents": false,
+    "reviewer_business_database_writes": false,
+    "reviewer_production_edits_or_commits": false,
+    "reviewer_global_phase_state_edits": false,
+    "full_regression_and_delivery": "Root agent owns final combined pytest/helper/HTTP regression, historical 214-case comparison, lint/type checks, preservation audit and push verification; this review does not preclaim their outcomes."
+  },
+  "classification": {
+    "production_bugs": [
+      {
+        "id": "explicit_settings_lifecycle",
+        "fix": "app/main.py binds resolved settings to app.state.settings and lifespan passes that object to build_container.",
+        "evidence": "Application RED XML has 5 failures before fixes and GREEN has 5 passes. Independent in-memory nested lifespans retain two different exact settings objects while main.get_settings is forbidden. Worker now calls create_app(settings), preserving _env_file=None rather than invoking ambient dotenv-backed Settings().",
+        "status": "VERIFIED"
+      },
+      {
+        "id": "refund_status_read_capability",
+        "fix": "app/agents/goals.py recognizes the generic refund-status phrase; no case label or particular order ID appears in the fix.",
+        "evidence": "Two different synthetic order identifiers are covered by targeted unit tests. Repaired request 014 records a successful get_refund_status(order_id=ORD10002), empty refund observations, and an answer explicitly saying no refund application was found without asserting completion.",
+        "status": "VERIFIED"
+      },
+      {
+        "id": "sse_late_exception_contract",
+        "fix": "The route maps Exception into typed SSE error then done after iterator cleanup; ordinary unexpected exceptions use generic INTERNAL_ERROR, while BaseException cancellation propagates.",
+        "evidence": "Repaired request 050 contains started/node/error(INTERNAL_ERROR)/done, no answer, transport_error=null, and unchanged database. Targeted tests verify typed timeout and private-detail suppression. An independent in-memory cancellation probe verifies CancelledError propagation, source close, and no synthetic error/done.",
+        "status": "VERIFIED"
+      }
+    ],
+    "harness_bugs": [
+      {
+        "id": "a0_windows_asyncio_loopback",
+        "fix": "Allow exact loopback connect tuples required by Windows asyncio socketpair while denying non-loopback connect/connect_ex.",
+        "evidence": "Retained a0_loopback_red.xml has 1 failure among 4 tests; a0_loopback_green.xml has 4 passes; A0 startup and later real HTTP child startup succeed.",
+        "status": "VERIFIED_WITH_BOUNDED_GUARD_SCOPE"
+      },
+      {
+        "id": "controlled_policy_evidence_discarded",
+        "fix": "ControlledLLM adds only content from successful nontruncated search_knowledge tool chunks to its structured business-fact answer, labeled as policy text.",
+        "evidence": "Repaired request 020 records successful order and knowledge tools and conveys the same retrieved policy text. The original order-plus-policy assertion remains. This changes research fixture delivery, not product prompts, historical Gold or policy retrieval.",
+        "status": "VERIFIED"
+      },
+      {
+        "id": "research_capture_changes_business_result",
+        "fix": "event() catches ordinary capture exceptions, records bounded per-case error counters and returns false. The worker exposes capture failure explicitly and saves counters at shutdown.",
+        "evidence": "a2_capture_red.xml retains its initial failing test. Repaired request 046 returns the correct persisted order answer despite no captured events; x-p4-capture-status=ERROR. Shutdown records exactly 14 capture errors for trace_failure_isolation. Targeted disk-write failure test passes.",
+        "status": "VERIFIED_FOR_TESTED_NONSTREAMING_CAPTURE_FAILURE"
+      }
+    ],
+    "test_contract_corrections": [
+      {
+        "id": "cancel_eligibility_after_confirmation",
+        "rationale": "Current planner proposes HITL before executing business checks; a proposal is not a successful cancellation.",
+        "repaired_evidence": "Requests 040 and 041 actually propose then confirm the same shipped synthetic order. The confirmation captures cancel_order success=false/failure_kind=business_rejected, pending_action=null, and unchanged shipped state. Independent comparison verifies every business table, including audit/idempotency, unchanged in both steps.",
+        "status": "ACCEPTED_NO_SAFETY_RELAXATION"
+      },
+      {
+        "id": "targeted_tool_fault_allows_safe_read_recovery",
+        "rationale": "The fault targets get_order alone, and executor has an explicit search_knowledge recovery path; requiring every tool to fail contradicts the implemented contract.",
+        "repaired_evidence": "Request 045 captures get_order failure, successful search_knowledge only, no current shipped/299.00 claim, conservative uncertainty, and unchanged business tables. Independent counterexamples verify that successful knowledge output and failed order output cannot establish current order facts.",
+        "status": "ACCEPTED_NO_SAFETY_RELAXATION"
+      }
+    ],
+    "counts": {
+      "production_bugs": 3,
+      "harness_bugs": 3,
+      "test_contract_corrections": 2,
+      "trusted_authentication": "BLOCKED"
+    },
+    "counting_note": "The earlier dotenv-source concern is closed by the explicit-settings production fix plus worker propagation; it is not counted as a fourth independent harness bug."
+  },
+  "observed_http_run": {
+    "directory": "runs/20261110_A2_01",
+    "matrix_sha256": "cf826a41750d4327aed6110fb4ad05adc2a2544360c7ff85095dd9853a1fbd9f",
+    "scenarios": 42,
+    "passed": 41,
+    "failed": 0,
+    "blocked": 1,
+    "http_requests": 55,
+    "authentication_blocker": "Client-supplied user_id remains unauthenticated. Claimed-user filtering and a separate admin token do not prove authenticated ownership or anti-impersonation.",
+    "owned_process": "Process/startup/cleanup match PID 29988, graceful_request=true, exit_code=0. Review did not interact with services.",
+    "capture_fault": "Explicitly incomplete traces for trace_failure_isolation are expected fault evidence, not complete-trace PASS.",
+    "business_readonly_independently_compared": {
+      "tables": ["orders", "order_items", "products", "refunds", "returns", "audit_logs", "idempotency_keys"],
+      "records": [
+        "request_014_refund_status.json",
+        "request_020_compound_order_policy.json",
+        "request_040_cancel_business_refusal_proposal.json",
+        "request_041_cancel_business_refusal.json",
+        "request_045_tool_failure.json",
+        "request_046_trace_failure_isolation.json",
+        "request_050_sse_runtime_error.json"
+      ],
+      "result": "PASS_ALL_49_TABLE_COMPARISONS"
+    }
+  },
+  "preservation": {
+    "initial_run": "runs/20261110_A1_01",
+    "first_verdict": "35 PASS / 5 FAIL / 1 BLOCKED remains unchanged",
+    "verification": "All eight original-run SHA256 values recorded in a2_independent_review.json independently rechecked after fixes; exact match."
+  },
+  "source_sha256_at_review": {
+    "app/main.py": "cded6dbe79e10432cdc7584482f218ba11e7ae5f392efdfee378b5ce4587359f",
+    "app/api/routes/chat.py": "cbcab2ffca8c6bee8b9b58cce4b2502b9a81ce176e4d7513443046d0c7005acd",
+    "app/agents/goals.py": "0de0a73dce77bba72d95abecad41def8a8304733308acda730b4e7ce4a817ec3",
+    "research/docs/agent_engineering_upgrade/p4_api_e2e/worker.py": "622e99ff535f6643ca7f2ababc0b3b0b1b2aa8f9e0fa501f575f410d5194c448",
+    "research/docs/agent_engineering_upgrade/p4_api_e2e/test_real_http.py": "4548bbb541bf4b6cca0a1dde7caa8e99080d4602ff775d80f30633ea4dfd5671"
+  },
+  "independent_validation": {
+    "pytest_command": "conda run --no-capture-output -n adaptive-rag python -B -m pytest tests/unit/test_p4_evidenced_defects.py tests/unit/test_p4_runtime_boundary.py tests/unit/test_p4_independent_review.py --basetemp research/docs/agent_engineering_upgrade/p4_api_e2e/evidence/final_review_scratch -q -p no:cacheprovider",
+    "pytest_result": "17 PASSED; one existing LangGraph pending-deprecation warning",
+    "additional_in_memory_probes": [
+      "PASS: cancellation propagated, source closed, no synthetic error/done",
+      "PASS: two explicit settings instances retain separate lifespan configuration without global resolution"
+    ],
+    "probe_execution": "PowerShell here-string piped to conda run --no-capture-output -n adaptive-rag python -B -; container replaced with an in-memory stub only for settings probe; no actual database or service started."
+  },
+  "nonblocking_regression_hardening_requested": [
+    {
+      "item": "Assert a failed cancel_order attempt with business_rejected and pending_action=null after confirming the shipped proposal, in addition to no successful write and unchanged business tables.",
+      "reason": "Current raw evidence proves refusal; the current automated assertions could also pass a future implementation that silently ignores a confirmation."
+    },
+    {
+      "item": "For the targeted get_order fault, allowlist successful fallback tools to search_knowledge and reject the generic shipped-status token, rather than rejecting only one exact formatted sentence.",
+      "reason": "Current raw evidence satisfies safety; stronger assertions guard alternate wording and unrelated fallback execution."
+    }
+  ],
+  "retained_limits": [
+    "Controlled provider and scripted SUPPORTED are not a semantic judge or real DeepSeek verification; real provider calls remain NOT_RUN.",
+    "Compound policy output includes retrieved exclusions and other passages; this proves evidence delivery, not complete relevance or a complete seven-day return decision for this order.",
+    "Cancellation proposal text still promises cancellation before eligibility is known; actual confirmed business refusal is safe but the user-facing wording remains a limitation.",
+    "Socket guard permits loopback and covers connect/connect_ex, not all possible network primitives. Explicit settings and sanitized child environment remain essential controls.",
+    "Capture error response headers are determined before a streaming response finishes; shutdown per-case counters remain needed to identify a later streaming capture error. No complete late-stream capture-failure claim is made.",
+    "Disconnect rollback evidence covers the tested interrupted read turn; it does not imply rollback of an already committed write.",
+    "Authenticated anti-impersonation is BLOCKED, not PASS; no auth subsystem retrofit is included."
+  ]
+}

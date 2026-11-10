@@ -8,6 +8,8 @@ from sse_starlette import JSONServerSentEvent
 from sse_starlette.sse import EventSourceResponse
 
 from app.api.dependencies import get_container
+from app.core.error_codes import ErrorCode
+from app.core.exceptions import AppError
 from app.schemas.chat import ChatRequest, ChatResponse
 from app.services.container import AppContainer
 
@@ -44,10 +46,25 @@ async def chat_stream(
     """Answer one turn as an SSE stream of node, token and answer events."""
 
     async def events():
-        async with aclosing(
-            container.chat_service.stream(payload, trace_id=request.state.trace_id)
-        ) as stream:
-            async for item in stream:
-                yield JSONServerSentEvent(item)
+        try:
+            async with aclosing(
+                container.chat_service.stream(payload, trace_id=request.state.trace_id)
+            ) as stream:
+                async for item in stream:
+                    yield JSONServerSentEvent(item)
+        except Exception as exc:
+            # Headers are already committed. Report an SSE failure, never a
+            # successful answer; cancellation (BaseException) still propagates.
+            yield JSONServerSentEvent(
+                {
+                    "event": "error",
+                    "error_code": exc.error_code.value
+                    if isinstance(exc, AppError)
+                    else ErrorCode.INTERNAL_ERROR.value,
+                    "message": exc.message if isinstance(exc, AppError) else "internal error",
+                    "trace_id": request.state.trace_id,
+                }
+            )
+            yield JSONServerSentEvent({"event": "done", "trace_id": request.state.trace_id})
 
     return ClosingEventSourceResponse(events())
