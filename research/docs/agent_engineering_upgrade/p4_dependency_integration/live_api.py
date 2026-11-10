@@ -48,8 +48,8 @@ class LiveApi:
 
     def start(self, count=2):
         self.client = httpx.Client(timeout=20, trust_env=False)
-        for index in range(count):
-            directory = self.directory / f"worker_{index}"
+        for _ in range(count):
+            directory = self.directory / f"worker_{len(list(self.directory.glob('worker_*')))}"
             directory.mkdir()
             port, token = free_port(), secrets.token_hex(24)
             env = {

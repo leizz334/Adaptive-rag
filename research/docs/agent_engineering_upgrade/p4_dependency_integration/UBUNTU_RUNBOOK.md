@@ -98,3 +98,15 @@ git ls-remote --heads origin refs/heads/codex/p4-dependency-integration
 ```
 
 Do not automatically delete volumes; a user-approved cleanup must first verify exact project/owner/resources and confirm the test evidence is portable. Final stage stops after B3 and delivery. **No Experience Active; no paid DeepSeek; no P4-C/D/E.**
+
+## Ubuntu execution notes (2026-11-11)
+
+The actual Linux run used a Python3.12.9 virtual environment at `.venv` and project `.[dev]` dependencies, not the Windows environment. System Python3.10 is insufficient. Docker client29.1.3/Engine29.8.0 and user-local Compose5.6.0 were verified. Capture resolved IDs in `evidence/ubuntu_20261111_environment.json`; Redis/Qdrant imported from SHA256-verified official Registry blobs have image IDs but no local RepoDigests, which is explicitly recorded.
+
+The host Docker daemon had no HTTP/HTTPS proxy and direct official pulls timed out; the existing mirror stalled. The environment workaround downloaded the exact official Registry manifests/config/layers through the process proxy, verified every blob digest, then imported only the specified test images. No daemon configuration, existing image tag for unrelated services, user container or volume was changed.
+
+For loopback acceptance, remove proxy variables **in the test child environment only**. The inherited `ALL_PROXY=socks://...` caused Qdrant's HTTPX transport to reject the proxy scheme before connecting. Do not modify production vector behavior to disguise it, and retain normal network settings for Git delivery. Run each test subprocess with the same P4B manifest and flags above, using e.g. `env -u ALL_PROXY -u all_proxy -u HTTP_PROXY -u http_proxy -u HTTPS_PROXY -u https_proxy .venv/bin/python -m pytest ...`.
+
+B3 now requires additive migration0003. With owned services running and no API workers, execute the existing `migrate` module without `--roundtrip`; the recorded migration marker and user data remain. Runtime proposals are committed in PostgreSQL and validated/locked in the confirmation transaction. PostgreSQL is the backend for multi-process exactly-once acceptance; SQLite does not provide equivalent row locking.
+
+Do not repeat verified B0/B1 or historical paid experiments. Full regression necessarily includes existing auth/API tests with new run IDs; it does not reopen their tasks. Frozen historical source integrity checks reconstruct only the checked file from recorded Git commit + patch in a temporary directory and validate both hashes; no historical worktree, source, result or Gold is replaced.

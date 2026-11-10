@@ -1830,12 +1830,12 @@
           "evidence/ubuntu_20261111_environment.json"
         ],
         "validation": "17PASS:13 real dependencies+4 transaction regression;first7PASS1FAIL4ERROR retained;no paid/Active",
-        "commit_hash": null,
+        "commit_hash": "36ecfe1eaa133014b7d90af4835b4e26a6eafa53",
         "next_action": "Checkpoint B2 then execute authorized B3 real HTTP/SSE/concurrency/outage tests"
       },
       {
         "TASK_ID": "P4-B3",
-        "status": "waiting_ubuntu",
+        "status": "verified_awaiting_delivery",
         "passes": false,
         "dependencies": [
           "P4-B2"
@@ -1844,10 +1844,15 @@
           "Real dependency HTTP/SSE/auth/HITL/concurrency/failure tests and minimum fixes",
           "Full regression/evidence/commits/push andSTOP; no laterphase"
         ],
-        "evidence": [],
-        "validation": null,
+        "evidence": [
+          "evidence/ubuntu_B3_FIRST_20261111.xml",
+          "evidence/ubuntu_B3_FULL_VERIFIED_20261111.xml",
+          "evidence/ubuntu_B3_independent_review_20261111.json",
+          "UBUNTU_FINAL_REPORT.md"
+        ],
+        "validation": "829PASS0FAIL1historicalSKIP;realB2 13/13;realB3 20/20;legacy2140regressions;Ruff330/Mypy150/pipPASS",
         "commit_hash": null,
-        "next_action": "PLAN.md; pause afterB1forUbuntu"
+        "next_action": "Final ownership/secret audit;B3checkpoint;normalpush+lsremote;STOP no P4C"
       }
     ],
     "windows_phase_status": "PARTIAL_PASS",
@@ -1860,5 +1865,10 @@
     "windows_github_push_status": "PUSHED_AND_LS_REMOTE_VERIFIED",
     "next_action": "PAUSE_WAITING_UBUNTU;restore B2/B3perUBUNTU_RUNBOOK;no paid/Active/P4C",
     "recovery_ready": true
+  },
+  "P4_B_ubuntu_delivery": {
+    "status": "verified_awaiting_delivery",
+    "b2_commit": "36ecfe1eaa133014b7d90af4835b4e26a6eafa53",
+    "next_action": "B3checkpoint/push/remoteHEAD;STOP"
   }
 }

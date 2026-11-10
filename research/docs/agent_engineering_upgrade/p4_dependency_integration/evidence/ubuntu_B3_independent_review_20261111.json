@@ -1,0 +1,26 @@
+{
+  "reviewer": "p4b_final_review read-only independent agent",
+  "base": "11c81934e83b6a8930e82794000d6a99f27dc966",
+  "scope": "B2 commit36ecfe1 plus B3 uncommitted runtime/model/migration/live harness at 20PASS checkpoint",
+  "critical": [],
+  "important": [],
+  "minor": [
+    {
+      "issue": "No failure injected after confirmed business write and before commit",
+      "status": "DEFERRED_COVERAGE_LIMITATION",
+      "reason": "transaction structure reviewed; proposal rollback and backend failure/recovery verified;no demonstrated defect"
+    }
+  ],
+  "findings": "PG lock spans graph/idempotency/commit;owner/session/expiry checks before execution;0003 additive schema matches ORM;test corrections preserve boundaries",
+  "declined_to_judge": [
+    "Full suite/final commit/push/remote verification: executor responsibility",
+    "SQLite concurrent exactly-once:PG row-lock guarantee only",
+    "Production LLM semantics/real credential provisioning:controlled synthetic fixtures"
+  ],
+  "executor_rulings": [
+    "Final full suite and delivery verified separately before completion",
+    "Distributed exactly-once acceptance scoped to PostgreSQL;SQLite compatibility remains single-process only",
+    "No production LLM/provisioning claim;paid0 and synthetic required-auth fixture"
+  ],
+  "later_changes": "Two old test portability fixes after this review;author verified frozen-source patch+file hashes, all original boundary assertions and offline-positive/cross-version-negative checks retained. No additional production changes."
+}

@@ -8,9 +8,11 @@ import time
 from collections.abc import AsyncIterator
 from contextlib import suppress
 from dataclasses import dataclass, replace
+from datetime import UTC, timedelta
 from typing import cast
 
 from langsmith import tracing_context
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.agents.graph import build_graph
@@ -19,6 +21,7 @@ from app.config.settings import Settings
 from app.core.exceptions import AppError, GuardrailError, InvalidRequestError, RateLimitError
 from app.core.ids import new_id
 from app.core.request_scope import request_session
+from app.core.time import utcnow
 from app.infra.rate_limit import RateLimiter
 from app.memory.context import ContextBuilder, SelectedContext
 from app.memory.long_term import PreferenceMemory, current_memory_identity
@@ -26,6 +29,7 @@ from app.memory.summary_state import prepare_summary
 from app.observability.metrics import REQUEST_LATENCY, REQUESTS, ROUTING, STAGE_LATENCY, TOKEN_USAGE
 from app.observability.tracing import TraceRecorder, trace_turn, traced
 from app.providers.base import LLMProvider
+from app.repositories.models import PendingConfirmationRow
 from app.repositories.session_repository import SessionRepository
 from app.retrieval.hybrid import HybridRetriever
 from app.retrieval.reranker import DocumentReranker
@@ -181,7 +185,7 @@ class ChatService:
         session_id: str,
         trace_id: str,
     ) -> AgentState:
-        confirmed_action = self._resolve_confirmation(request, session_id)
+        confirmed_action = await self._load_confirmation(db, request, session_id)
         sessions = SessionRepository(db)
         session_row = await sessions.get_or_create(session_id, request.user_id)
         history = await sessions.recent_messages(
@@ -234,7 +238,43 @@ class ChatService:
             "idempotency_key": request.idempotency_key,
         }
 
+    async def _persist_pending(
+        self, db: AsyncSession, request: ChatRequest, response: ChatResponse
+    ) -> None:
+        action = response.pending_action
+        if action is not None:
+            db.add(
+                PendingConfirmationRow(
+                    action_id=action.action_id,
+                    session_id=response.session_id,
+                    user_id=request.user_id,
+                    action_json=action.model_dump_json(),
+                    expires_at=utcnow() + timedelta(minutes=15),
+                )
+            )
+
     @traced("confirmation.resolve")
+    async def _load_confirmation(
+        self, db: AsyncSession, request: ChatRequest, session_id: str
+    ) -> ActionProposal | None:
+        if not request.confirm_action_id:
+            return None
+        # The lock spans business execution and idempotency commit. A second
+        # worker then observes the first committed response rather than writing twice.
+        pending = await db.scalar(
+            select(PendingConfirmationRow)
+            .where(PendingConfirmationRow.action_id == request.confirm_action_id)
+            .with_for_update()
+        )
+        if (
+            pending is None
+            or pending.expires_at.replace(tzinfo=UTC) <= utcnow()
+            or pending.session_id != session_id
+            or pending.user_id != request.user_id
+        ):
+            raise InvalidRequestError("待确认操作不存在或已过期，请重新发起。")
+        return ActionProposal.model_validate_json(pending.action_json)
+
     def _resolve_confirmation(self, request: ChatRequest, session_id: str) -> ActionProposal | None:
         if not request.confirm_action_id:
             return None
@@ -297,6 +337,7 @@ class ChatService:
         *,
         summary: str = "",
     ) -> None:
+        await self._persist_pending(db, request, response)
         sessions = SessionRepository(db)
         await sessions.append_message(response.session_id, "user", request.message)
         await sessions.append_message(response.session_id, "assistant", response.answer)

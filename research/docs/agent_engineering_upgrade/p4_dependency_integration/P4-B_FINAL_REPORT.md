@@ -41,3 +41,7 @@ Follow UBUNTU_RUNBOOK.md after verifying the pushed branch/commit. Generate new 
 Windows B0 commits fdef173/146311c; B1/delivery exact hashes are recorded in state/Git/evidence/delivery.json and the final response. Ordinary push only to the authorized repository and codex/p4-dependency-integration. On network failure keep commits and use `git push origin HEAD:codex/p4-dependency-integration`; never redo tests merely to push. **PAUSE WAITING_UBUNTU; no P4-C/D/E.**
 
 Windows B1 checkpoint `6924c5dfc37c945eb55b870c13a83b2d46929cd4` was normally pushed and verified by exact `git ls-remote` equality. Final delivery metadata follows this checkpoint; the final response records its actual remote-verified HEAD. The user's edited CSV is the only remaining dirty file, byte-preserved and excluded from commits. Both final owned TCP workers exited gracefully with code0. **WAITING_UBUNTU.**
+
+## Ubuntu continuation completed (2026-11-11)
+
+The Windows handoff above is preserved as historical evidence. Authorized Ubuntu B2/B3 now pass:13real dependency tests and20real API/recovery scenarios;final full829PASS0FAIL1historicalSKIP,Ruff/Mypy/pip PASS,legacy2140regressions. Actual idempotency race and process-local confirmation repaired. See [UBUNTU_FINAL_REPORT.md](UBUNTU_FINAL_REPORT.md) for first failures,minimum fixes,coverage limits,ownership and final delivery. No paid/Active/P4-C.

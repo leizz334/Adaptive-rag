@@ -97,8 +97,11 @@ def test_authenticated_owner_and_session_isolation(api):
         dict(message="继续", session_id=first["body"]["session_id"]),
         identity="other",
         worker=1,
-        expected=403,
+        expected=400,
     )
+    assert denied["body"]["error_code"] == "INVALID_REQUEST"
+    assert denied["body"]["message"] == "session not found"
+    readonly(denied)
     assert not calls(denied)
     spoof = api.request(
         "spoof", dict(message="查询 ORD10001", user_id="u_demo"), identity="other", expected=403
@@ -131,7 +134,7 @@ def test_shared_postgresql_memory_across_api_processes(api):
         ("rag", "七天无理由退货政策是什么", None),
         ("compound", "查询 ORD10001 的物流和总金额", "track_shipment"),
         ("refund", "查询 ORD10002 的退款状态", "get_refund_status"),
-        ("product", "查询 SKU-HEADSET 的库存", "get_product_detail"),
+        ("product", "查询 SKU-HEADSET 的库存", "check_inventory"),
     ],
 )
 def test_rag_and_business_workflows(api, case, message, tool):
@@ -154,6 +157,8 @@ def test_rag_and_business_workflows(api, case, message, tool):
     readonly(row)
     if tool:
         assert has_tool(row, tool)
+        if case == "product":
+            assert "42" in row["body"]["answer"]
     else:
         assert row["body"]["citations"]
         spans = graph_observed(row)
@@ -319,3 +324,199 @@ def test_confirmation_concurrency_across_processes(api):
         action["action_id"],
         {r["trace_id"] for r in rows},
     )
+
+
+def test_pending_confirmation_survives_all_worker_restarts(api):
+    identifier = new_paid_order(api)
+    proposal = chat(api, "restart_proposal", "取消 " + identifier)
+    action = proposal["body"]["pending_action"]
+    before = asyncio.run(snapshot(api.cfg))
+    api.stop()
+    save(
+        api.directory / "owned_cleanup_before_restart.json",
+        json.loads((api.directory / "owned_cleanup.json").read_text()),
+    )
+    api.processes = []
+    api.start(2)
+    confirmed = api.request(
+        "restart_confirm",
+        dict(
+            message="确认取消",
+            session_id=proposal["body"]["session_id"],
+            confirm_action_id=action["action_id"],
+        ),
+        worker=1,
+        expected=200,
+    )
+    assert_confirmation_effects(
+        before,
+        confirmed["database_after"],
+        identifier,
+        action["action_id"],
+        {confirmed["trace_id"]},
+    )
+    readonly(
+        api.request(
+            "restart_replay",
+            dict(
+                message="确认取消",
+                session_id=proposal["body"]["session_id"],
+                confirm_action_id=action["action_id"],
+            ),
+            expected=200,
+        )
+    )
+
+
+def test_expired_or_foreign_durable_confirmation_fails_closed(api):
+    from datetime import timedelta
+
+    from app.repositories.models import PendingConfirmationRow
+
+    identifier = new_paid_order(api)
+    proposal = chat(api, "expiry_proposal", "取消 " + identifier)
+    action = proposal["body"]["pending_action"]
+    payload = dict(
+        message="确认取消",
+        session_id=proposal["body"]["session_id"],
+        confirm_action_id=action["action_id"],
+    )
+    denied = api.request("foreign_confirmation", payload, identity="other", worker=1, expected=400)
+    assert not calls(denied)
+    readonly(denied)
+
+    async def expire():
+        engine = create_async_engine(api.cfg["database_url"])
+        try:
+            async with async_sessionmaker(engine)() as db:
+                row = await db.get(PendingConfirmationRow, action["action_id"])
+                row.expires_at = datetime.now(UTC) - timedelta(seconds=1)
+                await db.commit()
+        finally:
+            await engine.dispose()
+
+    asyncio.run(expire())
+    denied = api.request("expired_confirmation", payload, worker=1, expected=400)
+    assert not calls(denied)
+    readonly(denied)
+
+
+@pytest.mark.parametrize(
+    "service,dependency", [("postgres", "database"), ("redis", "redis"), ("qdrant", "vector_store")]
+)
+def test_actual_api_dependency_outage_and_recovery(api, service, dependency):
+    import time
+
+    import httpx
+
+    from research.docs.agent_engineering_upgrade.p4_dependency_integration.sandbox import command
+    from research.docs.agent_engineering_upgrade.p4_dependency_integration.worker import TOKENS
+
+    async def clear_policy_cache():
+        from redis.asyncio import Redis
+
+        client = Redis.from_url(api.cfg["redis_url"])
+        try:
+            keys = [key async for key in client.scan_iter(match="ret:*")]
+            if keys:
+                await client.delete(*keys)
+        finally:
+            await client.aclose()
+
+    if service == "qdrant":
+        asyncio.run(clear_policy_cache())
+    identifier = new_paid_order(api)
+    proposal = chat(api, service + "_outage_proposal", "取消 " + identifier)
+    payload = dict(
+        message="确认取消",
+        session_id=proposal["body"]["session_id"],
+        confirm_action_id=proposal["body"]["pending_action"]["action_id"],
+    )
+    record = dict(
+        service=service, before=asyncio.run(snapshot(api.cfg)), http=[], after=None, recovered=None
+    )
+    url = api.processes[0]["url"]
+
+    def request(path, body=None):
+        with httpx.Client(timeout=20, trust_env=False) as client:
+            r = client.request(
+                "GET" if body is None else "POST",
+                url + path,
+                json=body,
+                headers={
+                    "authorization": "Bearer " + TOKENS["user"],
+                    "x-p4-case": service + "_outage",
+                },
+            )
+            row = dict(path=path, status=r.status_code, text=r.text)
+            record["http"].append(row)
+            return r
+
+    try:
+        command(api.manifest, "stop", service)
+        ready = request("/api/v1/ready").json()
+        assert next(d for d in ready["dependencies"] if d["name"] == dependency)["ready"] is False
+        assert ready["ready"] is (service != "postgres")
+        assert request("/api/v1/health").status_code == 200
+        if service == "postgres":
+            failed = request("/api/v1/chat", payload)
+            assert failed.status_code == 500 and failed.json()["error_code"] == "INTERNAL_ERROR"
+            streamed = request("/api/v1/chat/stream", payload)
+            events = [
+                json.loads(line[5:])
+                for line in streamed.text.splitlines()
+                if line.startswith("data:")
+            ]
+            assert any(e["event"] == "error" for e in events)
+            assert not any(e["event"] == "answer" for e in events)
+        else:
+            # Redis is documented fail-open; vector outage degrades to lexical evidence.
+            row = api.request(
+                service + "_outage_read", dict(message="七天无理由退货政策是什么"), expected=200
+            )
+            readonly(row)
+            assert row["body"]["answer"] and row["body"]["citations"]
+            if service == "qdrant":
+                spans = graph_observed(row)
+                assert any(
+                    s["name"] == "retrieval.vector" and s["status"] == "error" and s["error_type"]
+                    for s in spans
+                )
+    finally:
+        command(api.manifest, "start", service)
+        for _ in range(100):
+            try:
+                with httpx.Client(timeout=3, trust_env=False) as client:
+                    response = client.get(url + "/api/v1/ready").json()
+                if next(d for d in response["dependencies"] if d["name"] == dependency)["ready"]:
+                    record["recovered"] = response
+                    break
+            except Exception:
+                pass
+            time.sleep(0.1)
+        record["after"] = asyncio.run(snapshot(api.cfg))
+        save(
+            api.directory / (service + "_outage_recovery.json"),
+            json.loads(json.dumps(record, default=str)),
+        )
+    assert record["recovered"] is not None
+    readonly(dict(database_before=record["before"], database_after=record["after"]))
+    confirmed = api.request(service + "_recovered_confirmation", payload, worker=1, expected=200)
+    assert has_tool(confirmed, "cancel_order", order_id=identifier)
+    assert_confirmation_effects(
+        record["before"],
+        confirmed["database_after"],
+        identifier,
+        payload["confirm_action_id"],
+        {confirmed["trace_id"]},
+    )
+
+    if service == "qdrant":
+        asyncio.run(clear_policy_cache())
+        recovered = chat(api, "qdrant_recovered_cold_rag", "七天无理由退货政策是什么")
+        readonly(recovered)
+        assert recovered["body"]["citations"]
+        assert any(
+            s["name"] == "retrieval.vector" and s["status"] == "ok"
+            for s in graph_observed(recovered)
+        )

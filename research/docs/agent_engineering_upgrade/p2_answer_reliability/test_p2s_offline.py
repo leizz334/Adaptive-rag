@@ -1,7 +1,10 @@
 """Evidence integrity checks, not assertions that the Agent always succeeds."""
 
 import ast
+import hashlib
 import json
+import subprocess
+import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -10,6 +13,31 @@ RUNS = HERE / "runs/s5_offline_fixedclock"
 
 def read(path):
     return json.loads(path.read_bytes())
+
+
+def frozen_generate_source(manifest, arm):
+    """Reconstruct only a frozen file from Git+recorded patch; no worktree or run."""
+    root = HERE.parents[3]
+    name = "app/agents/nodes/generate.py"
+    record = manifest[arm]
+    raw = subprocess.check_output(["git", "show", f"{record['head']}:{name}"], cwd=root)
+    patch_dir = "s5_sources_correctedS1" if arm == "S1" else "s5_sources"
+    patch = HERE / "evidence" / patch_dir / f"{arm}.patch"
+    assert hashlib.sha256(patch.read_bytes()).hexdigest() == record["patch_sha256"]
+    with tempfile.TemporaryDirectory(prefix="p4b_frozen_source_") as directory:
+        target = Path(directory) / name
+        target.parent.mkdir(parents=True)
+        target.write_bytes(raw)
+        if patch.read_bytes():
+            subprocess.run(
+                ["git", "apply", "--include=" + name, str(patch)],
+                cwd=directory,
+                check=True,
+                capture_output=True,
+            )
+        raw = target.read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == record["app_hashes"][name]
+    return raw.decode("utf-8")
 
 
 def test_actual_source_controls_preserve_required_boundaries():
@@ -33,15 +61,11 @@ def test_actual_source_controls_preserve_required_boundaries():
         "app/prompts/answer.py",
     ):
         assert manifest["S1"]["app_hashes"][name] == manifest["S0"]["app_hashes"][name]
-    s1 = Path(manifest["S1"]["source_root"])
-    text = (s1 / "app/agents/nodes/generate.py").read_text(encoding="utf-8")
+    text = frozen_generate_source(manifest, "S1")
     imports = [n.module for n in ast.walk(ast.parse(text)) if isinstance(n, ast.ImportFrom)]
     assert "app.agents.goals" not in imports
     assert '"generated_refusal": payload.refused' in text
-    s0, s2 = (Path(manifest[a]["source_root"]) for a in ("S0", "S2"))
-    base, goals = (
-        (s / "app/agents/nodes/generate.py").read_text(encoding="utf-8") for s in (s0, s2)
-    )
+    base, goals = (frozen_generate_source(manifest, arm) for arm in ("S0", "S2"))
     assert (
         base[base.index("def _extractive_fallback") :]
         == goals[goals.index("def _extractive_fallback") :]

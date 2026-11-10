@@ -22,3 +22,7 @@ All failures below are engineering/test infrastructure observations. None is a D
 Initial formatting and reviewer scratch-parent errors are retained as diagnostic evidence. A credential-bearing scratch repr in an early reviewer RED artifact was explicitly redacted; the safe RED rerun and fixture repr protection preserve the substantive failure without exporting generated credentials. Later exact export scan must pass. No failed run/evidence file is silently overwritten.
 
 Known real-dependency risks remain unverified: repository read-then-insert idempotency races, process-local pending confirmation, Redis rate-limit concurrency semantics/fail-open, actual PostgreSQL migrations/restart and Qdrant service behavior. They are acceptance probes for B2/B3, not waived tests or Windows PASS claims.
+
+## Ubuntu B2/B3 first failures and resolution
+
+New ubuntu_* JUnit artifacts retain:B2first7PASS1FAIL4ERROR(PG race+ambient Qdrant proxy);B3first12PASS3FAIL(process-local confirmation+2harnesscontracterrors);durable2RED→4GREEN;expandedrecovery19PASS1harnessFAIL→20PASS;full827PASS2portabilityFAIL1SKIP→829PASS1historicalSKIP. Portability first15PASS1FAIL(emptyS0patch),next15PASS1FAIL(unsupportedGit--allow-empty),final16PASS. Never infer RED from filenames:ubuntu_B2_RED actually12PASS;ubuntu_B3_portability_GREEN/FINAL contain failures,VERIFIED is16PASS. Full report explains root causes and exact evidence. All initial failures preserved;no Gold or outcome rewritten.

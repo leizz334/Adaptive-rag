@@ -171,7 +171,11 @@ async def test_verified_same_scope_selection_is_positive_but_other_code_version_
         passed=True,
         production_approved=False,
     )
-    # Real candidate refs stay local to the repository; feature/permit refs use the same resolver root.
+    # Copy immutable candidate evidence under the same isolated resolver root.
+    for evidence in item.evidence_refs:
+        target = tmp_path / evidence.artifact
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((ROOT / evidence.artifact).read_bytes())
     f = tmp_path / "features.json"
     f.write_text(json.dumps(features), encoding="utf8")
     q = tmp_path / "permit.json"
@@ -179,13 +183,13 @@ async def test_verified_same_scope_selection_is_positive_but_other_code_version_
 
     def ref(p):
         return EvidenceRef(
-            artifact=p.relative_to(ROOT).as_posix(),
+            artifact=p.relative_to(tmp_path).as_posix(),
             sha256=hashlib.sha256(p.read_bytes()).hexdigest(),
             kind="evaluation",
         )
 
     kwargs = dict(
-        resolver=EvidenceResolver(ROOT), now=datetime(2026, 11, 10, tzinfo=UTC), isolated=True
+        resolver=EvidenceResolver(tmp_path), now=datetime(2026, 11, 10, tzinfo=UTC), isolated=True
     )
     good = await api().select_lessons(
         Repo(),
