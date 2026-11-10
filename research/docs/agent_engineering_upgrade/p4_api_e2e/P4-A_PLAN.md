@@ -12,25 +12,25 @@
 
 ## A0 environment and startup
 
-- [ ] Read actual AGENTS/registry/progress/history; verify baseline remote and preserve all old tracked/user files; branch in place without stash/reset/new worktree.
-- [ ] Append P4-A0/A1/A2tasks. Record actual Conda Python/FastAPI/Uvicorn, routes, settings, SQLite schema/seed and real runtime provider/retrieval backends.
-- [ ] Build child startup/owned-PID cleanup + real HTTP probes. Explicit test env, no.env consumption or inherited provider keys/remote DSNs. Readiness must not bill. Fail on unexpected database/provider/backend.
-- [ ] Run startup validation, save evidence/state and commit A0. Capture separately any actual config/lifespan defect for A2.
+- [x] Read actual AGENTS/registry/progress/history; verify baseline remote and preserve all old tracked/user files; branch in place without stash/reset/new worktree.
+- [x] Append P4-A0/A1/A2tasks. Record actual Conda Python/FastAPI/Uvicorn, routes, settings, SQLite schema/seed and real runtime provider/retrieval backends.
+- [x] Build child startup/owned-PID cleanup + real HTTP probes. Explicit test env, no.env consumption or inherited provider keys/remote DSNs. Readiness must not bill. Fail on unexpected database/provider/backend.
+- [x] Run startup validation, save evidence/state and commit A0. Capture separately any actual config/lifespan defect for A2.
 
 ## A1 real HTTP matrix
 
-- [ ] Health/ready/capabilities/admin/input error paths; headers and error contract.
-- [ ] Single/multi-turn M2 reference binding, same-session changed target, cross-session no-history and claimed-user isolation. Trusted authentication/anti-impersonation is BLOCKED if absent, never infer it from request.user_id.
-- [ ] Actual RAG passage/citation and graph retrieval; order/items/product/shipment/refund and policy/compound evidence; response facts/tools/database/local trace per scenario.
-- [ ] HITLproposal/invalid confirmation/correct confirmation/duplicate idempotency/state/audit consistency. Only synthetic writes in private DB.
-- [ ] SSEevent order/tokens/final/parity; actual client disconnect and task/transaction cleanup; model truncation/API/timeout/runtime faults and tool execution failures. No fake TestClient E2E claim.
-- [ ] Preserve all failures with first node/root evidence; validate cases/harness, commit A1 evidence without relaxing expected behavior or historical Gold.
+- [x] Health/ready/capabilities/admin/input error paths; headers and error contract.
+- [x] Single/multi-turn M2 reference binding, same-session changed target, cross-session no-history and claimed-user isolation. Trusted authentication/anti-impersonation is BLOCKED if absent, never infer it from request.user_id.
+- [x] Actual RAG passage/citation and graph retrieval; order/items/product/shipment/refund and policy/compound evidence; response facts/tools/database/local trace per scenario.
+- [x] HITLproposal/invalid confirmation/correct confirmation/duplicate idempotency/state/audit consistency. Only synthetic writes in private DB.
+- [x] SSEevent order/tokens/final/parity; actual client disconnect and task/transaction cleanup; model truncation/API/timeout/runtime faults and tool execution failures. No fake TestClient E2E claim.
+- [x] Preserve all failures with first node/root evidence; validate cases/harness, commit A1 evidence without relaxing expected behavior or historical Gold.
 
 ## A2 defects, regression and delivery
 
-- [ ] Establish RED tests for evidenced bugs; minimal GREEN fixes; preserve initial raw HTTP/trace/state and exact source hashes. No case-ID branches or test Gold in runtime prompts.
-- [ ] Rerun relevant full HTTP/SSE matrix and all pytest/helpers, Ruff check/format, Mypy. Record BLOCKED/NOT_RUN separately; source compatibility/safety regressions must be explicit.
-- [ ] Fresh independent code review before final verdict; add counterexamples for important findings. Recheck user CSV/root user files and unchanged P0–P3evidence; stage only phase/fix/tests/state.
+- [x] Establish RED tests for evidenced bugs; minimal GREEN fixes; preserve initial raw HTTP/trace/state and exact source hashes. No case-ID branches or test Gold in runtime prompts.
+- [x] Rerun relevant full HTTP/SSE matrix and all pytest/helpers, Ruff check/format, Mypy. Record BLOCKED/NOT_RUN separately; source compatibility/safety regressions must be explicit.
+- [x] Fresh independent code review before final verdict; add counterexamples for important findings. Recheck user CSV/root user files and unchanged P0–P3evidence; stage only phase/fix/tests/state.
 - [ ] Final report, environment/run instructions, recovery checkpoints; task commit, ordinary push authorized origin/branch, ls-remote, metadata checkpoint and STOP. Stop only this run's child PID/service; no broad process kill or cleanup of user files.
 
 **Review focus:** settings supplied to create_app versus lifespan settings; SSEerror after HTTP headers; disconnect rollback versus completed write; runtime faults classified distinctly; client identity not authentication; trace capture failure must not alter business execution; no outbound socket or root.env leak.
