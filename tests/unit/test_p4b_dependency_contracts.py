@@ -58,11 +58,9 @@ async def test_redis_cache_mock_serialization_ttl_and_order_bypass():
 
 
 async def test_redis_mock_outage_is_documented_fail_open_then_recovers():
-    from unittest.mock import Mock
-
     redis = AsyncMock()
     redis.get.side_effect = ConnectionError("synthetic disconnected")
-    redis.pipeline = Mock(side_effect=ConnectionError("synthetic disconnected"))
+    redis.eval.side_effect = ConnectionError("synthetic disconnected")
     assert await RedisRetrievalCache(redis, ttl_seconds=3).get("合成政策", 1) is None
     assert await RedisRateLimiter(redis, limit=1).allow("synthetic")
     redis.get.side_effect = None

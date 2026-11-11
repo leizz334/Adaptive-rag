@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="0.069" timestamp="2026-11-11T21:41:20.067729+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_p4f_rate_policy" name="test_sensitive_quota_errors_are_explicit_denial[ConnectionError]" time="0.002"><failure message="TypeError: RedisRateLimiter.__init__() got an unexpected keyword argument 'fail_closed'">failure = &lt;class 'ConnectionError'&gt;
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('failure',[ConnectionError,TimeoutError])
+    async def test_sensitive_quota_errors_are_explicit_denial(failure):
+        redis=AsyncMock()
+        redis.eval.side_effect=failure('synthetic outage')
+&gt;       limiter=RedisRateLimiter(redis,limit=2,fail_closed=True,timeout_seconds=.02)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: RedisRateLimiter.__init__() got an unexpected keyword argument 'fail_closed'
+
+tests/unit/test_p4f_rate_policy.py:16: TypeError</failure></testcase><testcase classname="tests.unit.test_p4f_rate_policy" name="test_sensitive_quota_errors_are_explicit_denial[TimeoutError]" time="0.001"><failure message="TypeError: RedisRateLimiter.__init__() got an unexpected keyword argument 'fail_closed'">failure = &lt;class 'TimeoutError'&gt;
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('failure',[ConnectionError,TimeoutError])
+    async def test_sensitive_quota_errors_are_explicit_denial(failure):
+        redis=AsyncMock()
+        redis.eval.side_effect=failure('synthetic outage')
+&gt;       limiter=RedisRateLimiter(redis,limit=2,fail_closed=True,timeout_seconds=.02)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: RedisRateLimiter.__init__() got an unexpected keyword argument 'fail_closed'
+
+tests/unit/test_p4f_rate_policy.py:16: TypeError</failure></testcase><testcase classname="tests.unit.test_p4f_rate_policy" name="test_sensitive_quota_wait_is_bounded" time="0.001"><failure message="TypeError: RedisRateLimiter.__init__() got an unexpected keyword argument 'fail_closed'">@pytest.mark.asyncio
+    async def test_sensitive_quota_wait_is_bounded():
+        async def blocked(*args):
+            await asyncio.sleep(2)
+        redis=AsyncMock()
+        redis.eval.side_effect=blocked
+&gt;       limiter=RedisRateLimiter(redis,limit=2,fail_closed=True,timeout_seconds=.01)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: RedisRateLimiter.__init__() got an unexpected keyword argument 'fail_closed'
+
+tests/unit/test_p4f_rate_policy.py:28: TypeError</failure></testcase></testsuite></testsuites>

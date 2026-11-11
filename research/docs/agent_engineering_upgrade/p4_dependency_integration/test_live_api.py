@@ -469,8 +469,15 @@ def test_actual_api_dependency_outage_and_recovery(api, service, dependency):
             ]
             assert any(e["event"] == "error" for e in events)
             assert not any(e["event"] == "answer" for e in events)
+        elif service == "redis":
+            row = api.request(
+                service + "_outage_read", dict(message="七天无理由退货政策是什么"), expected=503
+            )
+            assert row["body"]["error_code"] == "RATE_LIMIT_UNAVAILABLE"
+            assert not calls(row)
+            readonly(row)
         else:
-            # Redis is documented fail-open; vector outage degrades to lexical evidence.
+            # Public-corpus vector outage may degrade to public lexical evidence.
             row = api.request(
                 service + "_outage_read", dict(message="七天无理由退货政策是什么"), expected=200
             )

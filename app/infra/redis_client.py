@@ -13,10 +13,12 @@ async def connect_redis(settings: Settings):
     """Return an async Redis client or None.
 
     Redis is used for rate limiting, short-TTL retrieval cache, and optional
-    distributed idempotency. Chat must still work when Redis is down.
+    distributed idempotency. Sensitive API admission fails closed on outages.
+    Keep the configured client on failed startup ping so it can reconnect later.
     """
     if not settings.redis_configured:
         return None
+    client = None
     try:
         from redis.asyncio import Redis
 
@@ -29,5 +31,5 @@ async def connect_redis(settings: Settings):
         await client.ping()
         return client
     except Exception:
-        logger.warning("redis_unavailable_degraded")
-        return None
+        logger.warning("redis_unavailable_sensitive_admission_closed")
+        return client

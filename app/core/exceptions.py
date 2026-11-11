@@ -36,6 +36,16 @@ class RateLimitError(AppError):
         )
 
 
+class RateLimitUnavailableError(AppError):
+    def __init__(self) -> None:
+        super().__init__(
+            "distributed rate admission unavailable",
+            error_code=ErrorCode.RATE_LIMIT_UNAVAILABLE,
+            retryable=True,
+            http_status=503,
+        )
+
+
 class RetrievalError(AppError):
     def __init__(self, message: str, *, timeout: bool = False) -> None:
         super().__init__(

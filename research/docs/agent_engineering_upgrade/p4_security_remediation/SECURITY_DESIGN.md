@@ -9,7 +9,7 @@
 3. 私有BM25仅从当前subject SQL文档构建。独立Qdrant私有collection写入tenant_subject/revision，查询同时过滤subject与当前有效chunk IDs；结果重建自SQL权威chunk，不信任payload文本。Hybrid/RRF、rerank、Graph最终引用只使用已授权chunks。public与private不混合。
 4. Redis缓存key包括schema/subject hash/generation/查询/top_k/模式；缓存值经SQL权威chunk验证/重建，异常缓存丢弃。更新/删除/reindex使generation递增，旧缓存与旧vector不可见。Qdrant先写后SQLcommit可产生orphan但不会授权；SQL为逻辑删除权威，物理清理只作用当前subject+document+旧revision，避免取消后的后台删除误删新版本。孤儿向量不含原文且不被SQL授权；物理垃圾回收/备份擦除不是本阶段承诺。
 5. 私有文档HTTP CRUD/reindex/search仅认证subject授权，schema禁止额外tenant/user字段；跨subject doc ID返回相同404。内容/文档数量有界，无任意文件路径/外部URL读取。查询API返回授权chunk及其引用；chat工具、Self-RAG与重排复用同一private retriever及请求DB身份。
-6. Redis限流改为server TIME+Lua原子窗口/唯一请求member。生产chat（含SSE/确认）及私有KB操作一律fail-closed，超时/断连503，配额耗尽429。健康/ready/capabilities/metrics不依赖业务quota；只读admin catalog仍需认证。测试用离线无Redis仅允许明确testing环境本地限流，不能称全局配额。配置Redis但故障不得回退本地。
+6. Redis限流改为server TIME+Lua原子窗口/唯一请求member。生产chat（含SSE/确认）及私有KB操作一律fail-closed，超时/断连503，配额耗尽429。健康/ready/capabilities/metrics不依赖业务quota；只读admin catalog仍需认证。远程Embedding启动入库也必须先获得Redis准入。测试用离线无Redis且无DeepSeek/Embedding凭据时仅允许明确testing环境本地限流，不能称全局配额。配置Redis但故障不得回退本地。
 7. 不新增付费请求/依赖模型/Experience Active，不修改.env/历史Gold/raw。旧公共read-only Redis utility的显式fail-open测试保留；运行时敏感入口强制closed。旧B3 API Redis故障期望要强化为拒绝，保留旧来源与RED，不改原始结果。
 
 ## F1 ACL任务

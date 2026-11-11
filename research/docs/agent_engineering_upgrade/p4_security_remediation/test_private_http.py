@@ -231,3 +231,15 @@ def test_old_revision_cleanup_cannot_delete_new_revision(api):
     finally:
         if store._client is not None:
             store._client.close()
+
+
+def test_fresh_process_reloads_same_authorized_sql_corpus(api):
+    fresh = Runtime(count=1)
+    fresh.subjects = dict(api.subjects)
+    try:
+        fresh.start()
+        result = query(fresh)
+        assert "TENANT_A_ONLY" in json.dumps(result)
+        assert "TENANT_B_ONLY" not in json.dumps(result)
+    finally:
+        fresh.stop()

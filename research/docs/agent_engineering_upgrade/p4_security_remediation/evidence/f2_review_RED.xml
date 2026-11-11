@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.892" timestamp="2026-11-11T21:46:50.561822+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_p4f_rate_policy" name="test_remote_embedding_credentials_cannot_use_local_quota" time="0.782"><failure message="Failed: DID NOT RAISE &lt;class 'Exception'&gt;">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x79651f094380&gt;
+
+    @pytest.mark.asyncio
+    async def test_remote_embedding_credentials_cannot_use_local_quota(monkeypatch):
+        from pydantic import SecretStr
+    
+        from app.config.settings import Settings
+        from app.main import create_app  # noqa: F401
+        from app.services import container as module
+    
+        settings = Settings(
+            _env_file=None,
+            app_env="testing",
+            redis_url="",
+            deepseek_api_key=SecretStr(""),
+            embedding_api_key=SecretStr("synthetic_embedding_key"),
+            embedding_base_url="https://invalid.example",
+        )
+        monkeypatch.setattr(
+            module, "build_infrastructure", AsyncMock(return_value=(object(), object(), None))
+        )
+        monkeypatch.setattr(module, "build_retrieval", AsyncMock(return_value=(object(), None, None)))
+        runtime = await module.build_container(settings)
+&gt;       with pytest.raises(Exception) as exc:
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE &lt;class 'Exception'&gt;
+
+tests/unit/test_p4f_rate_policy.py:56: Failed</failure></testcase><testcase classname="tests.unit.test_p4f_rate_policy" name="test_remote_embedding_bootstrap_requires_redis_admission" time="0.003"><failure message="AssertionError: assert None == 503&#10; +  where None = getattr(AssertionError('must not initialize paid embedding before admission'), 'http_status', None)&#10; +    where AssertionError('must not initialize paid embedding before admission') = &lt;ExceptionInfo AssertionError('must not initialize paid embedding before admission') tblen=3&gt;.value">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7964f0576a50&gt;
+
+    @pytest.mark.asyncio
+    async def test_remote_embedding_bootstrap_requires_redis_admission(monkeypatch):
+        from pydantic import SecretStr
+    
+        from app.config.settings import Settings
+        from app.main import create_app  # noqa: F401
+        from app.services import container as module
+    
+        settings = Settings(
+            _env_file=None,
+            app_env="testing",
+            embedding_api_key=SecretStr("synthetic_embedding_key"),
+            embedding_base_url="https://invalid.example",
+        )
+    
+        def forbidden(_):
+            raise AssertionError("must not initialize paid embedding before admission")
+    
+        monkeypatch.setattr(module, "build_embedding_provider", forbidden)
+        with pytest.raises(Exception) as exc:
+            await module.build_retrieval(settings, None)
+&gt;       assert getattr(exc.value, "http_status", None) == 503
+E       AssertionError: assert None == 503
+E        +  where None = getattr(AssertionError('must not initialize paid embedding before admission'), 'http_status', None)
+E        +    where AssertionError('must not initialize paid embedding before admission') = &lt;ExceptionInfo AssertionError('must not initialize paid embedding before admission') tblen=3&gt;.value
+
+tests/unit/test_p4f_rate_policy.py:82: AssertionError</failure></testcase></testsuite></testsuites>

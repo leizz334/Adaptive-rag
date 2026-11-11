@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="6.282" timestamp="2026-11-11T21:41:50.918106+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="research.docs.agent_engineering_upgrade.p4_security_remediation.test_rate_http" name="test_redis_outage_denies_sensitive_operations_before_writes" time="5.578"><failure message="AssertionError: (200, {'document_id': 'redis_outage', 'revision': '275bf48f6b60451fb1f1542040758ec3', 'chunks': 1})">def test_redis_outage_denies_sensitive_operations_before_writes():
+        api = Runtime()
+        try:
+            api.start()
+            before = asyncio.run(snapshot(api.cfg))
+            command(api.manifest, "stop", "redis")
+            try:
+&gt;               api.request(
+                    "POST",
+                    "/knowledge/documents/redis_outage",
+                    {"title": "synthetic", "content": "must not commit"},
+                    expected=503,
+                )
+
+research/docs/agent_engineering_upgrade/p4_security_remediation/test_rate_http.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;research.docs.agent_engineering_upgrade.p4_security_remediation.runtime.Runtime object at 0x75b477e41c40&gt;
+method = 'POST', path = '/knowledge/documents/redis_outage'
+body = {'content': 'must not commit', 'title': 'synthetic'}
+
+    def request(
+        self, method, path, body=None, *, subject="user", worker=0, expected=None, headers=None
+    ):
+        self.sequence += 1
+        supplied = {"authorization": "Bearer " + TOKENS[subject]} if subject else {}
+        supplied.update(headers or {})
+        response = self.client.request(
+            method, self.processes[worker]["url"] + "/api/v1" + path, json=body, headers=supplied
+        )
+        try:
+            data = response.json()
+        except ValueError:
+            data = response.text
+        save(
+            self.directory / f"request_{self.sequence:04}.json",
+            {
+                "method": method,
+                "path": path,
+                "input": body,
+                "subject_fixture": subject,
+                "worker": worker,
+                "status": response.status_code,
+                "body": data,
+            },
+        )
+        if expected is not None:
+&gt;           assert response.status_code == expected, (response.status_code, data)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: (200, {'document_id': 'redis_outage', 'revision': '275bf48f6b60451fb1f1542040758ec3', 'chunks': 1})
+
+research/docs/agent_engineering_upgrade/p4_security_remediation/runtime.py:134: AssertionError</failure></testcase></testsuite></testsuites>
