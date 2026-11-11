@@ -3,6 +3,8 @@
 import argparse
 import asyncio
 import json
+import os
+from pathlib import Path
 
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
@@ -217,7 +219,7 @@ def main():
             from .common import sha
 
             if review.get("reviewed") is not True or review.get("freeze_sha256") != sha(
-                HERE / "freeze_d2.json"
+                Path(os.environ["P4D_FREEZE_FILE"])
             ):
                 raise SafetyStop("missing/mismatched development review gate")
         api = Api(args.stage if args.stage == "baseline" else args.split, cfg)

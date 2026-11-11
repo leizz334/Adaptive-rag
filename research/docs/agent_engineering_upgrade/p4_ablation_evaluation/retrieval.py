@@ -31,6 +31,22 @@ def chunks():
     ]
 
 
+def model_settings():
+    return Settings(
+        _env_file=None,
+        app_env="testing",
+        local_embedding_enabled=True,
+        cross_encoder_enabled=True,
+        local_embedding_force=True,
+        cross_encoder_force=True,
+        local_embedding_model=str(HERE / ".private/models/embedding"),
+        cross_encoder_model=str(HERE / ".private/models/reranker"),
+        local_embedding_device="cpu",
+        cross_encoder_device="cpu",
+        embedding_dim=512,
+    )
+
+
 def load_models():
     integrity_started = time.perf_counter()
     manifest = json.loads((HERE / "evidence/model_download.json").read_text())
@@ -47,17 +63,7 @@ def load_models():
     except RuntimeError:
         pass
     os.environ.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", TOKENIZERS_PARALLELISM="false")
-    s = Settings(
-        _env_file=None,
-        app_env="testing",
-        local_embedding_force=True,
-        cross_encoder_force=True,
-        local_embedding_model=str(HERE / ".private/models/embedding"),
-        cross_encoder_model=str(HERE / ".private/models/reranker"),
-        local_embedding_device="cpu",
-        cross_encoder_device="cpu",
-        embedding_dim=512,
-    )
+    s = model_settings()
     start = time.perf_counter()
     embed = BgeM3EmbeddingProvider(s)
     assert embed.available, "real embedding unavailable;NO HASH fallback"

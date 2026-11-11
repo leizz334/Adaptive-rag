@@ -19,7 +19,11 @@ def sha(path):
 
 def verify_freeze():
     path = Path(os.environ["P4D_FREEZE_FILE"]).resolve()
-    if path.parent != HERE or path.name not in ["freeze_d0.json", "freeze_d2.json"]:
+    if path.parent != HERE or path.name not in [
+        "freeze_d0.json",
+        "freeze_d2.json",
+        "freeze_d2_v2.json",
+    ]:
         raise SafetyStop("unowned freeze")
     d = json.loads(path.read_bytes())
     if any(sha(ROOT / p) != h for p, h in d["hashes"].items()):

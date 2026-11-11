@@ -166,3 +166,15 @@ def test_canonical_source_policy_supported_but_incomplete_paraphrase_abstains(qi
     assert score(case, row)["objective_success"] is True
     row["body"]["answer"] = "14天" if qid == "D_Q01" else "240天"
     assert score(case, row)["objective_success"] is None
+
+
+def test_real_model_settings_override_isolated_environment_disabling_flags(monkeypatch):
+    from research.docs.agent_engineering_upgrade.p4_ablation_evaluation.retrieval import (
+        model_settings,
+    )
+
+    monkeypatch.setenv("LOCAL_EMBEDDING_ENABLED", "false")
+    monkeypatch.setenv("CROSS_ENCODER_ENABLED", "false")
+    settings = model_settings()
+    assert settings.local_embedding_enabled and settings.local_embedding_force
+    assert settings.cross_encoder_enabled and settings.cross_encoder_force

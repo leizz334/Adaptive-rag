@@ -21,15 +21,17 @@ from .meter import SafetyStop, write
 class Api:
     def __init__(self, label, cfg):
         self.label, self.cfg = label, cfg
-        self.directory = RUN / ("worker_" + label)
+        instance = len(list(RUN.glob("worker_" + label + "*"))) + 1
+        self.tag = label + f"_{instance:02d}"
+        self.directory = RUN / ("worker_" + self.tag)
         if self.directory.exists():
             raise SafetyStop(
                 "stage worker already exists; inspect durable state, no automatic paid replay"
             )
         self.port, self.token = free_port(), secrets.token_hex(24)
         self.url = f"http://127.0.0.1:{self.port}"
-        self.out = (RUN / (label + "_stdout.log")).open("wb")
-        self.err = (RUN / (label + "_stderr.log")).open("wb")
+        self.out = (RUN / (self.tag + "_stdout.log")).open("wb")
+        self.err = (RUN / (self.tag + "_stderr.log")).open("wb")
         env = os.environ.copy()
         for name in list(env):
             if name.lower().endswith("_proxy"):
@@ -50,6 +52,8 @@ class Api:
                 str(self.port),
                 "--stage",
                 label,
+                "--instance",
+                str(instance),
             ],
             cwd=ROOT,
             env=env,
@@ -86,7 +90,7 @@ class Api:
                     self.process.kill()
                     self.process.wait(timeout=5)
         write(
-            RUN / (self.label + "_owned_cleanup.json"),
+            RUN / (self.tag + "_owned_cleanup.json"),
             dict(pid=self.process.pid, exit_code=self.process.returncode),
         )
         self.client.close()

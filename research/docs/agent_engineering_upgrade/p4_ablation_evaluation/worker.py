@@ -45,8 +45,11 @@ def main():
     parser.add_argument(
         "--stage", choices=["baseline", "development", "independent_test"], required=True
     )
+    parser.add_argument("--instance", type=int, default=0)
     args = parser.parse_args()
-    directory = RUN / ("worker_" + args.stage)
+    if not 0 <= args.instance <= 99:
+        raise ValueError("invalid worker instance")
+    directory = RUN / ("worker_" + args.stage + (f"_{args.instance:02d}" if args.instance else ""))
     directory.mkdir(exist_ok=False)
     verify_freeze()
     manifest, cfg = live_config()
