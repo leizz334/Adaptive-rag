@@ -1,0 +1,960 @@
+{
+  "case": "D_MEM_DEV_M2",
+  "before": {
+    "audit_logs": [
+      {
+        "id": 1,
+        "trace_id": "p4c_6c10d63e6551435d98b72f9cd69d7a97",
+        "action": "cancel_order",
+        "payload": "ORD94071",
+        "created_at": "2026-11-11 05:34:45.709974+00:00"
+      }
+    ],
+    "idempotency_keys": [
+      {
+        "key": "act_5e3d1ffcf86e42919775096b1b7831fb",
+        "fingerprint": "ab365957abf7ae56faf67db67fde97919e03a6f2d6b2d00822e1f5c24631b96f",
+        "response_json": "{\"order_id\": \"ORD94071\", \"status\": \"cancelled\"}",
+        "created_at": "2026-11-11 05:34:45.713540+00:00"
+      }
+    ],
+    "messages": [
+      {
+        "id": 7,
+        "session_id": "sess_554126711af5420da432aac716b1d55a",
+        "role": "user",
+        "content": "不要取消订单 ORD94072，只查询订单状态。",
+        "created_at": "2026-11-11 05:35:01.428023+00:00"
+      },
+      {
+        "id": 11,
+        "session_id": "sess_p4d_D_MEM_DEV_M0",
+        "role": "user",
+        "content": "它现在的总金额是多少？",
+        "created_at": "2026-11-11 05:48:57.644562+00:00"
+      },
+      {
+        "id": 15,
+        "session_id": "sess_p4d_D_MEM_DEV_M1",
+        "role": "user",
+        "content": "它现在的总金额是多少？",
+        "created_at": "2026-11-11 05:49:05.231943+00:00"
+      },
+      {
+        "id": 4,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "assistant",
+        "content": "已为您发起取消订单 ORD94071 的确认，系统返回状态为 cancelled。请注意：该结果来自工具返回，属于取消操作的确认结果；如后续涉及退款金额或到账时效，当前没有可引用的证据，建议您补充订单号或转人工核实。",
+        "created_at": "2026-11-11 05:34:48.498915+00:00"
+      },
+      {
+        "id": 8,
+        "session_id": "sess_554126711af5420da432aac716b1d55a",
+        "role": "assistant",
+        "content": "已按您的要求不取消订单，仅查询订单 ORD94072 的状态。实时查询结果：订单状态为 paid（已支付）；下单时间为 2026-11-11T05:34:34.052132Z；订单金额为 31940 分（即 319.40 元）；商品明细为空；paid_at、shipped_at、delivered_at 均为空，暂无运单号，收货城市为空。因此，目前只能确认订单已支付，无法确认是否已发货、物流进度或预计送达时间。若需进一步核实发货或物流情况，请提供更多订单信息或转人工客服查询。",
+        "created_at": "2026-11-11 05:35:01.429540+00:00"
+      },
+      {
+        "id": 6,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "assistant",
+        "content": "已收到您的取消请求。系统已对订单 ORD94071 发起取消操作，工具返回状态为 cancelled。请注意：取消属于不可逆操作，以上为系统执行结果回执，建议您稍后在订单详情页再次核对最终状态；如状态未更新，请提供订单号转人工核实。",
+        "created_at": "2026-11-11 05:34:53.519147+00:00"
+      },
+      {
+        "id": 10,
+        "session_id": "sess_p4d_D_MEM_DEV_M0",
+        "role": "assistant",
+        "content": "旧查询金额111.00元，仅为历史记录。",
+        "created_at": "2026-11-11 05:48:52.448759+00:00"
+      },
+      {
+        "id": 14,
+        "session_id": "sess_p4d_D_MEM_DEV_M1",
+        "role": "assistant",
+        "content": "旧查询金额111.00元，仅为历史记录。",
+        "created_at": "2026-11-11 05:48:57.744219+00:00"
+      },
+      {
+        "id": 18,
+        "session_id": "sess_p4d_D_MEM_DEV_M2",
+        "role": "assistant",
+        "content": "旧查询金额111.00元，仅为历史记录。",
+        "created_at": "2026-11-11 05:49:05.331014+00:00"
+      },
+      {
+        "id": 3,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "user",
+        "content": "确认取消",
+        "created_at": "2026-11-11 05:34:48.496670+00:00"
+      },
+      {
+        "id": 5,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "user",
+        "content": "确认取消",
+        "created_at": "2026-11-11 05:34:53.517430+00:00"
+      },
+      {
+        "id": 2,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "assistant",
+        "content": "确认后将取消订单 ORD94071。请核对订单号。",
+        "created_at": "2026-11-11 05:34:43.773352+00:00"
+      },
+      {
+        "id": 16,
+        "session_id": "sess_p4d_D_MEM_DEV_M1",
+        "role": "assistant",
+        "content": "订单 ORD93041 当前总金额为 237.80 元（total_cents: 23780）。该金额来自实时订单查询结果，订单状态为已支付（paid）。",
+        "created_at": "2026-11-11 05:49:05.233666+00:00"
+      },
+      {
+        "id": 1,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "user",
+        "content": "请取消订单 ORD94071。",
+        "created_at": "2026-11-11 05:34:43.769584+00:00"
+      },
+      {
+        "id": 12,
+        "session_id": "sess_p4d_D_MEM_DEV_M0",
+        "role": "assistant",
+        "content": "请提供要处理的订单号，确认后我才能继续。",
+        "created_at": "2026-11-11 05:48:57.647122+00:00"
+      },
+      {
+        "id": 9,
+        "session_id": "sess_p4d_D_MEM_DEV_M0",
+        "role": "user",
+        "content": "请记住我们刚查询的是 ORD93041。",
+        "created_at": "2026-11-11 05:48:52.448755+00:00"
+      },
+      {
+        "id": 13,
+        "session_id": "sess_p4d_D_MEM_DEV_M1",
+        "role": "user",
+        "content": "请记住我们刚查询的是 ORD93041。",
+        "created_at": "2026-11-11 05:48:57.744218+00:00"
+      },
+      {
+        "id": 17,
+        "session_id": "sess_p4d_D_MEM_DEV_M2",
+        "role": "user",
+        "content": "请记住我们刚查询的是 ORD93041。",
+        "created_at": "2026-11-11 05:49:05.331013+00:00"
+      }
+    ],
+    "orders": [
+      {
+        "order_id": "ORD94071",
+        "user_id": "u_demo",
+        "status": "cancelled",
+        "total_cents": 31840,
+        "created_at": "2026-11-11 05:34:34.050404+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD94072",
+        "user_id": "u_demo",
+        "status": "paid",
+        "total_cents": 31940,
+        "created_at": "2026-11-11 05:34:34.052132+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD93041",
+        "user_id": "u_demo",
+        "status": "paid",
+        "total_cents": 23780,
+        "created_at": "2026-11-11 05:34:34.052942+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD93042",
+        "user_id": "u_demo",
+        "status": "paid",
+        "total_cents": 58620,
+        "created_at": "2026-11-11 05:34:34.054147+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      }
+    ],
+    "pending_confirmations": [
+      {
+        "action_id": "act_5e3d1ffcf86e42919775096b1b7831fb",
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "user_id": "u_demo",
+        "action_json": "{\"action_id\":\"act_5e3d1ffcf86e42919775096b1b7831fb\",\"tool_name\":\"cancel_order\",\"arguments\":{\"order_id\":\"ORD94071\"},\"risk\":\"destructive\",\"summary\":\"确认后将取消订单 ORD94071。请核对订单号。\"}",
+        "expires_at": "2026-11-11 05:49:43.768245+00:00"
+      }
+    ],
+    "products": [],
+    "refunds": [],
+    "returns": [],
+    "sessions": [
+      {
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 05:34:36.705048+00:00",
+        "updated_at": "2026-11-11 05:34:53.519010+00:00"
+      },
+      {
+        "session_id": "sess_554126711af5420da432aac716b1d55a",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 05:34:53.619301+00:00",
+        "updated_at": "2026-11-11 05:35:01.429370+00:00"
+      },
+      {
+        "session_id": "sess_p4d_D_MEM_DEV_M0",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 05:48:52.445860+00:00",
+        "updated_at": "2026-11-11 05:48:57.646955+00:00"
+      },
+      {
+        "session_id": "sess_p4d_D_MEM_DEV_M1",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 05:48:57.743092+00:00",
+        "updated_at": "2026-11-11 05:49:05.233455+00:00"
+      },
+      {
+        "session_id": "sess_p4d_D_MEM_DEV_M2",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 05:49:05.329763+00:00",
+        "updated_at": "2026-11-11 05:49:05.329767+00:00"
+      }
+    ],
+    "order_items": []
+  },
+  "payload": {
+    "message": "它现在的总金额是多少？",
+    "session_id": "sess_p4d_D_MEM_DEV_M2"
+  },
+  "trace_id": "p4c_05ff3a52cfef46fcab711bdd0f7e996c",
+  "tools": [
+    {
+      "name": "get_order",
+      "arguments": {
+        "order_id": "ORD93041"
+      },
+      "success": true,
+      "status": "executed",
+      "failure_kind": null,
+      "output": {
+        "order_id": "ORD93041",
+        "user_id": "u_demo",
+        "status": "paid",
+        "items": [],
+        "total_cents": 23780,
+        "created_at": "2026-11-11T05:34:34.052942Z",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      }
+    }
+  ],
+  "events": [
+    {
+      "kind": "tools",
+      "case": "D_MEM_DEV_M2",
+      "time": "2026-11-11T05:49:11.507375+00:00",
+      "trace_id": "p4c_05ff3a52cfef46fcab711bdd0f7e996c",
+      "calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD93041"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD93041",
+            "user_id": "u_demo",
+            "status": "paid",
+            "items": [],
+            "total_cents": 23780,
+            "created_at": "2026-11-11T05:34:34.052942Z",
+            "paid_at": null,
+            "shipped_at": null,
+            "delivered_at": null,
+            "tracking_no": null,
+            "receiver_city": null
+          }
+        }
+      ]
+    }
+  ],
+  "status": 200,
+  "text": "{\"answer\":\"订单 ORD93041 的实时查询结果显示：总金额为 23780 分，即 237.80 元；当前状态为 paid（已支付）。该订单的商品明细为空，因此无法核对金额构成；如需明细或发票信息，请补充说明或转人工核实。\",\"session_id\":\"sess_p4d_D_MEM_DEV_M2\",\"trace_id\":\"p4c_05ff3a52cfef46fcab711bdd0f7e996c\",\"root_run_id\":\"5677fc58-73e5-49f2-9baa-abc646c11470\",\"intent\":\"order_inquiry\",\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"citations\":[],\"pending_action\":null,\"refused\":false,\"error_code\":null,\"token_usage\":{\"prompt_tokens\":511,\"completion_tokens\":78,\"total_tokens\":589},\"latency\":{\"intent_ms\":1021.6137400002481,\"routing_ms\":993.3276140000089,\"retrieval_ms\":0.0,\"rerank_ms\":0.0,\"tool_ms\":3.1841149993852014,\"llm_ms\":1533.8225119994604,\"total_ms\":6125.686659000166}}",
+  "body": {
+    "answer": "订单 ORD93041 的实时查询结果显示：总金额为 23780 分，即 237.80 元；当前状态为 paid（已支付）。该订单的商品明细为空，因此无法核对金额构成；如需明细或发票信息，请补充说明或转人工核实。",
+    "session_id": "sess_p4d_D_MEM_DEV_M2",
+    "trace_id": "p4c_05ff3a52cfef46fcab711bdd0f7e996c",
+    "root_run_id": "5677fc58-73e5-49f2-9baa-abc646c11470",
+    "intent": "order_inquiry",
+    "complexity": "tool_required",
+    "strategy": "agent",
+    "citations": [],
+    "pending_action": null,
+    "refused": false,
+    "error_code": null,
+    "token_usage": {
+      "prompt_tokens": 511,
+      "completion_tokens": 78,
+      "total_tokens": 589
+    },
+    "latency": {
+      "intent_ms": 1021.6137400002481,
+      "routing_ms": 993.3276140000089,
+      "retrieval_ms": 0.0,
+      "rerank_ms": 0.0,
+      "tool_ms": 3.1841149993852014,
+      "llm_ms": 1533.8225119994604,
+      "total_ms": 6125.686659000166
+    }
+  },
+  "protocol_valid": true,
+  "latency_ms": 6130.4711519997,
+  "after": {
+    "audit_logs": [
+      {
+        "id": 1,
+        "trace_id": "p4c_6c10d63e6551435d98b72f9cd69d7a97",
+        "action": "cancel_order",
+        "payload": "ORD94071",
+        "created_at": "2026-11-11 05:34:45.709974+00:00"
+      }
+    ],
+    "idempotency_keys": [
+      {
+        "key": "act_5e3d1ffcf86e42919775096b1b7831fb",
+        "fingerprint": "ab365957abf7ae56faf67db67fde97919e03a6f2d6b2d00822e1f5c24631b96f",
+        "response_json": "{\"order_id\": \"ORD94071\", \"status\": \"cancelled\"}",
+        "created_at": "2026-11-11 05:34:45.713540+00:00"
+      }
+    ],
+    "messages": [
+      {
+        "id": 7,
+        "session_id": "sess_554126711af5420da432aac716b1d55a",
+        "role": "user",
+        "content": "不要取消订单 ORD94072，只查询订单状态。",
+        "created_at": "2026-11-11 05:35:01.428023+00:00"
+      },
+      {
+        "id": 11,
+        "session_id": "sess_p4d_D_MEM_DEV_M0",
+        "role": "user",
+        "content": "它现在的总金额是多少？",
+        "created_at": "2026-11-11 05:48:57.644562+00:00"
+      },
+      {
+        "id": 15,
+        "session_id": "sess_p4d_D_MEM_DEV_M1",
+        "role": "user",
+        "content": "它现在的总金额是多少？",
+        "created_at": "2026-11-11 05:49:05.231943+00:00"
+      },
+      {
+        "id": 19,
+        "session_id": "sess_p4d_D_MEM_DEV_M2",
+        "role": "user",
+        "content": "它现在的总金额是多少？",
+        "created_at": "2026-11-11 05:49:11.501866+00:00"
+      },
+      {
+        "id": 4,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "assistant",
+        "content": "已为您发起取消订单 ORD94071 的确认，系统返回状态为 cancelled。请注意：该结果来自工具返回，属于取消操作的确认结果；如后续涉及退款金额或到账时效，当前没有可引用的证据，建议您补充订单号或转人工核实。",
+        "created_at": "2026-11-11 05:34:48.498915+00:00"
+      },
+      {
+        "id": 8,
+        "session_id": "sess_554126711af5420da432aac716b1d55a",
+        "role": "assistant",
+        "content": "已按您的要求不取消订单，仅查询订单 ORD94072 的状态。实时查询结果：订单状态为 paid（已支付）；下单时间为 2026-11-11T05:34:34.052132Z；订单金额为 31940 分（即 319.40 元）；商品明细为空；paid_at、shipped_at、delivered_at 均为空，暂无运单号，收货城市为空。因此，目前只能确认订单已支付，无法确认是否已发货、物流进度或预计送达时间。若需进一步核实发货或物流情况，请提供更多订单信息或转人工客服查询。",
+        "created_at": "2026-11-11 05:35:01.429540+00:00"
+      },
+      {
+        "id": 6,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "assistant",
+        "content": "已收到您的取消请求。系统已对订单 ORD94071 发起取消操作，工具返回状态为 cancelled。请注意：取消属于不可逆操作，以上为系统执行结果回执，建议您稍后在订单详情页再次核对最终状态；如状态未更新，请提供订单号转人工核实。",
+        "created_at": "2026-11-11 05:34:53.519147+00:00"
+      },
+      {
+        "id": 10,
+        "session_id": "sess_p4d_D_MEM_DEV_M0",
+        "role": "assistant",
+        "content": "旧查询金额111.00元，仅为历史记录。",
+        "created_at": "2026-11-11 05:48:52.448759+00:00"
+      },
+      {
+        "id": 14,
+        "session_id": "sess_p4d_D_MEM_DEV_M1",
+        "role": "assistant",
+        "content": "旧查询金额111.00元，仅为历史记录。",
+        "created_at": "2026-11-11 05:48:57.744219+00:00"
+      },
+      {
+        "id": 18,
+        "session_id": "sess_p4d_D_MEM_DEV_M2",
+        "role": "assistant",
+        "content": "旧查询金额111.00元，仅为历史记录。",
+        "created_at": "2026-11-11 05:49:05.331014+00:00"
+      },
+      {
+        "id": 3,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "user",
+        "content": "确认取消",
+        "created_at": "2026-11-11 05:34:48.496670+00:00"
+      },
+      {
+        "id": 5,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "user",
+        "content": "确认取消",
+        "created_at": "2026-11-11 05:34:53.517430+00:00"
+      },
+      {
+        "id": 2,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "assistant",
+        "content": "确认后将取消订单 ORD94071。请核对订单号。",
+        "created_at": "2026-11-11 05:34:43.773352+00:00"
+      },
+      {
+        "id": 16,
+        "session_id": "sess_p4d_D_MEM_DEV_M1",
+        "role": "assistant",
+        "content": "订单 ORD93041 当前总金额为 237.80 元（total_cents: 23780）。该金额来自实时订单查询结果，订单状态为已支付（paid）。",
+        "created_at": "2026-11-11 05:49:05.233666+00:00"
+      },
+      {
+        "id": 20,
+        "session_id": "sess_p4d_D_MEM_DEV_M2",
+        "role": "assistant",
+        "content": "订单 ORD93041 的实时查询结果显示：总金额为 23780 分，即 237.80 元；当前状态为 paid（已支付）。该订单的商品明细为空，因此无法核对金额构成；如需明细或发票信息，请补充说明或转人工核实。",
+        "created_at": "2026-11-11 05:49:11.503342+00:00"
+      },
+      {
+        "id": 1,
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "role": "user",
+        "content": "请取消订单 ORD94071。",
+        "created_at": "2026-11-11 05:34:43.769584+00:00"
+      },
+      {
+        "id": 12,
+        "session_id": "sess_p4d_D_MEM_DEV_M0",
+        "role": "assistant",
+        "content": "请提供要处理的订单号，确认后我才能继续。",
+        "created_at": "2026-11-11 05:48:57.647122+00:00"
+      },
+      {
+        "id": 9,
+        "session_id": "sess_p4d_D_MEM_DEV_M0",
+        "role": "user",
+        "content": "请记住我们刚查询的是 ORD93041。",
+        "created_at": "2026-11-11 05:48:52.448755+00:00"
+      },
+      {
+        "id": 13,
+        "session_id": "sess_p4d_D_MEM_DEV_M1",
+        "role": "user",
+        "content": "请记住我们刚查询的是 ORD93041。",
+        "created_at": "2026-11-11 05:48:57.744218+00:00"
+      },
+      {
+        "id": 17,
+        "session_id": "sess_p4d_D_MEM_DEV_M2",
+        "role": "user",
+        "content": "请记住我们刚查询的是 ORD93041。",
+        "created_at": "2026-11-11 05:49:05.331013+00:00"
+      }
+    ],
+    "orders": [
+      {
+        "order_id": "ORD94071",
+        "user_id": "u_demo",
+        "status": "cancelled",
+        "total_cents": 31840,
+        "created_at": "2026-11-11 05:34:34.050404+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD94072",
+        "user_id": "u_demo",
+        "status": "paid",
+        "total_cents": 31940,
+        "created_at": "2026-11-11 05:34:34.052132+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD93041",
+        "user_id": "u_demo",
+        "status": "paid",
+        "total_cents": 23780,
+        "created_at": "2026-11-11 05:34:34.052942+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD93042",
+        "user_id": "u_demo",
+        "status": "paid",
+        "total_cents": 58620,
+        "created_at": "2026-11-11 05:34:34.054147+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      }
+    ],
+    "pending_confirmations": [
+      {
+        "action_id": "act_5e3d1ffcf86e42919775096b1b7831fb",
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "user_id": "u_demo",
+        "action_json": "{\"action_id\":\"act_5e3d1ffcf86e42919775096b1b7831fb\",\"tool_name\":\"cancel_order\",\"arguments\":{\"order_id\":\"ORD94071\"},\"risk\":\"destructive\",\"summary\":\"确认后将取消订单 ORD94071。请核对订单号。\"}",
+        "expires_at": "2026-11-11 05:49:43.768245+00:00"
+      }
+    ],
+    "products": [],
+    "refunds": [],
+    "returns": [],
+    "sessions": [
+      {
+        "session_id": "sess_78a34b9619e640cda58506eae8da93b4",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 05:34:36.705048+00:00",
+        "updated_at": "2026-11-11 05:34:53.519010+00:00"
+      },
+      {
+        "session_id": "sess_554126711af5420da432aac716b1d55a",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 05:34:53.619301+00:00",
+        "updated_at": "2026-11-11 05:35:01.429370+00:00"
+      },
+      {
+        "session_id": "sess_p4d_D_MEM_DEV_M0",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 05:48:52.445860+00:00",
+        "updated_at": "2026-11-11 05:48:57.646955+00:00"
+      },
+      {
+        "session_id": "sess_p4d_D_MEM_DEV_M1",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 05:48:57.743092+00:00",
+        "updated_at": "2026-11-11 05:49:05.233455+00:00"
+      },
+      {
+        "session_id": "sess_p4d_D_MEM_DEV_M2",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 05:49:05.329763+00:00",
+        "updated_at": "2026-11-11 05:49:11.503207+00:00"
+      }
+    ],
+    "order_items": []
+  },
+  "spans": [
+    {
+      "name": "chat.turn",
+      "kind": "chain",
+      "id": "5677fc58-73e5-49f2-9baa-abc646c11470",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": null,
+      "start_time": "2026-11-11 05:49:05.379347+00:00",
+      "end_time": "2026-11-11 05:49:11.505666+00:00",
+      "latency_ms": 6126.315469000474,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "app_trace_ref": "4ddaf2a47ff2fb3c3c517161",
+        "session_ref": "a2100764b552a6922e85a96a",
+        "user_ref": "002b9e3dc5a5d043444f43d1",
+        "request_ref": "7203d34c3c285d6c2e9e67f8"
+      }
+    },
+    {
+      "name": "session.load",
+      "kind": "chain",
+      "id": "2ebff1c7-5ab3-49c2-b9ef-c1c9048b66f5",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "5677fc58-73e5-49f2-9baa-abc646c11470",
+      "start_time": "2026-11-11 05:49:05.379965+00:00",
+      "end_time": "2026-11-11 05:49:05.384479+00:00",
+      "latency_ms": 4.513900000347348,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "confirmation.resolve",
+      "kind": "chain",
+      "id": "c94f5584-05d8-4e94-86dc-78505b2d1552",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "2ebff1c7-5ab3-49c2-b9ef-c1c9048b66f5",
+      "start_time": "2026-11-11 05:49:05.379977+00:00",
+      "end_time": "2026-11-11 05:49:05.379981+00:00",
+      "latency_ms": 0.003256000127294101,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "graph.invoke",
+      "kind": "chain",
+      "id": "304019ad-e6ea-487f-b85a-14cb19781f01",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "5677fc58-73e5-49f2-9baa-abc646c11470",
+      "start_time": "2026-11-11 05:49:05.384512+00:00",
+      "end_time": "2026-11-11 05:49:11.501247+00:00",
+      "latency_ms": 6116.734879999967,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.guardrail",
+      "kind": "chain",
+      "id": "ea2f21cb-28e5-4ff6-ae20-e3c3e0510df0",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "304019ad-e6ea-487f-b85a-14cb19781f01",
+      "start_time": "2026-11-11 05:49:05.385958+00:00",
+      "end_time": "2026-11-11 05:49:05.385966+00:00",
+      "latency_ms": 0.005200000487093348,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.intent",
+      "kind": "chain",
+      "id": "1bead3d4-4d1f-4407-b678-cc578311c7d4",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "304019ad-e6ea-487f-b85a-14cb19781f01",
+      "start_time": "2026-11-11 05:49:05.387329+00:00",
+      "end_time": "2026-11-11 05:49:06.408960+00:00",
+      "latency_ms": 1021.6269539996574,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "id": "5943620a-ea2a-4299-9e9a-905e936e5627",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "1bead3d4-4d1f-4407-b678-cc578311c7d4",
+      "start_time": "2026-11-11 05:49:05.387406+00:00",
+      "end_time": "2026-11-11 05:49:06.408871+00:00",
+      "latency_ms": 1021.4613970001665,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 701,
+        "completion_tokens": 59,
+        "total_tokens": 760
+      }
+    },
+    {
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "id": "a445d553-0b3d-4205-949b-a886d9dbffe3",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "5943620a-ea2a-4299-9e9a-905e936e5627",
+      "start_time": "2026-11-11 05:49:05.387496+00:00",
+      "end_time": "2026-11-11 05:49:06.408849+00:00",
+      "latency_ms": 1021.3556399994559,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.router",
+      "kind": "chain",
+      "id": "26985499-6c0c-415f-92bb-d095456f98c1",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "304019ad-e6ea-487f-b85a-14cb19781f01",
+      "start_time": "2026-11-11 05:49:06.409916+00:00",
+      "end_time": "2026-11-11 05:49:07.403262+00:00",
+      "latency_ms": 993.3447650000744,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "id": "4113cddd-fc2b-4d39-9156-9767406156cb",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "26985499-6c0c-415f-92bb-d095456f98c1",
+      "start_time": "2026-11-11 05:49:06.409957+00:00",
+      "end_time": "2026-11-11 05:49:07.403163+00:00",
+      "latency_ms": 993.2055069994021,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 199,
+        "completion_tokens": 55,
+        "total_tokens": 254
+      }
+    },
+    {
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "id": "ffb43033-2555-4e86-95c0-0415d379581b",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "4113cddd-fc2b-4d39-9156-9767406156cb",
+      "start_time": "2026-11-11 05:49:06.410003+00:00",
+      "end_time": "2026-11-11 05:49:07.403120+00:00",
+      "latency_ms": 993.1224219999422,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.planner",
+      "kind": "chain",
+      "id": "7cb559d8-a0c0-4e11-bb1a-103b14615bf0",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "304019ad-e6ea-487f-b85a-14cb19781f01",
+      "start_time": "2026-11-11 05:49:07.404581+00:00",
+      "end_time": "2026-11-11 05:49:08.991750+00:00",
+      "latency_ms": 1587.1675170001254,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "id": "4f9a6c63-2636-4fc7-b791-7cd30b841ea5",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "7cb559d8-a0c0-4e11-bb1a-103b14615bf0",
+      "start_time": "2026-11-11 05:49:07.405651+00:00",
+      "end_time": "2026-11-11 05:49:08.991552+00:00",
+      "latency_ms": 1585.89870600008,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 1598,
+        "completion_tokens": 87,
+        "total_tokens": 1685
+      }
+    },
+    {
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "id": "cf951783-c872-424d-b054-2c22f8b21f87",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "4f9a6c63-2636-4fc7-b791-7cd30b841ea5",
+      "start_time": "2026-11-11 05:49:07.405710+00:00",
+      "end_time": "2026-11-11 05:49:08.991524+00:00",
+      "latency_ms": 1585.8199500007686,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.executor",
+      "kind": "chain",
+      "id": "d3aaebfe-71e7-414d-856b-aff707fa74aa",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "304019ad-e6ea-487f-b85a-14cb19781f01",
+      "start_time": "2026-11-11 05:49:08.993093+00:00",
+      "end_time": "2026-11-11 05:49:08.996298+00:00",
+      "latency_ms": 3.199875000063912,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "tool.execute",
+      "kind": "tool",
+      "id": "00c67f7d-a775-4c8e-a05a-0893a6a19743",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "d3aaebfe-71e7-414d-856b-aff707fa74aa",
+      "start_time": "2026-11-11 05:49:08.993247+00:00",
+      "end_time": "2026-11-11 05:49:08.996212+00:00",
+      "latency_ms": 2.965087999655225,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.generate",
+      "kind": "chain",
+      "id": "f1a73ca2-8965-4faf-b714-db9539caffbb",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "304019ad-e6ea-487f-b85a-14cb19781f01",
+      "start_time": "2026-11-11 05:49:08.997306+00:00",
+      "end_time": "2026-11-11 05:49:10.531195+00:00",
+      "latency_ms": 1533.8863909992142,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "id": "143ceb2c-df0b-4c26-8730-c2f39df5ab88",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "f1a73ca2-8965-4faf-b714-db9539caffbb",
+      "start_time": "2026-11-11 05:49:08.997534+00:00",
+      "end_time": "2026-11-11 05:49:10.531043+00:00",
+      "latency_ms": 1533.507266000015,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 511,
+        "completion_tokens": 78,
+        "total_tokens": 589
+      }
+    },
+    {
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "id": "881cef18-64b0-42a7-998f-0abcaa7d8090",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "143ceb2c-df0b-4c26-8730-c2f39df5ab88",
+      "start_time": "2026-11-11 05:49:08.997608+00:00",
+      "end_time": "2026-11-11 05:49:10.531028+00:00",
+      "latency_ms": 1533.4203649999836,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.faithfulness",
+      "kind": "chain",
+      "id": "9735dd48-8eb7-47db-86d0-427e35fcf8cb",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "304019ad-e6ea-487f-b85a-14cb19781f01",
+      "start_time": "2026-11-11 05:49:10.532087+00:00",
+      "end_time": "2026-11-11 05:49:11.499054+00:00",
+      "latency_ms": 966.9646330003161,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "id": "34e45c59-a7c1-40fb-a1e3-cb4a975ed934",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "9735dd48-8eb7-47db-86d0-427e35fcf8cb",
+      "start_time": "2026-11-11 05:49:10.532184+00:00",
+      "end_time": "2026-11-11 05:49:11.498981+00:00",
+      "latency_ms": 966.795648999323,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 393,
+        "completion_tokens": 7,
+        "total_tokens": 400
+      }
+    },
+    {
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "id": "f9a5b243-a1fa-4105-9c6a-6ea805d770b2",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "34e45c59-a7c1-40fb-a1e3-cb4a975ed934",
+      "start_time": "2026-11-11 05:49:10.532255+00:00",
+      "end_time": "2026-11-11 05:49:11.498959+00:00",
+      "latency_ms": 966.7077849999259,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.memory",
+      "kind": "chain",
+      "id": "f0127db8-6167-490b-aee0-0194f0dd12d5",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "304019ad-e6ea-487f-b85a-14cb19781f01",
+      "start_time": "2026-11-11 05:49:11.500293+00:00",
+      "end_time": "2026-11-11 05:49:11.500322+00:00",
+      "latency_ms": 0.023083000087353867,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "session.persist",
+      "kind": "chain",
+      "id": "b8e38de8-87e1-4109-be39-5c41b14d3ce1",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "5677fc58-73e5-49f2-9baa-abc646c11470",
+      "start_time": "2026-11-11 05:49:11.501303+00:00",
+      "end_time": "2026-11-11 05:49:11.503210+00:00",
+      "latency_ms": 1.9037129995922442,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "transaction.commit",
+      "kind": "chain",
+      "id": "fd19c063-8b4f-4404-9f03-6f63f663c082",
+      "root_id": "e0860c44-a8ec-479f-ab3c-12542cf4ce74",
+      "parent_id": "5677fc58-73e5-49f2-9baa-abc646c11470",
+      "start_time": "2026-11-11 05:49:11.503227+00:00",
+      "end_time": "2026-11-11 05:49:11.505522+00:00",
+      "latency_ms": 2.2937590001674835,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    }
+  ]
+}
