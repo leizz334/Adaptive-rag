@@ -42,9 +42,10 @@ def private_api_config(manifest):
                 }
             ),
         }
-        with path.open("x") as stream:
+        # Restrict permissions at creation, before any plaintext token is written.
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, "w") as stream:
             json.dump(data, stream)
-        path.chmod(0o600)
     return json.loads(path.read_text())
 
 

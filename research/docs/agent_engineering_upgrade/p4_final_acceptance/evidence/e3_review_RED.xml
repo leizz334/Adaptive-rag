@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="7" time="0.125" timestamp="2026-11-11T19:44:27.840797+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_p4e_log_privacy" name="test_configured_json_logging_redacts_credentials[formatted_bearer]" time="0.003" /><testcase classname="tests.unit.test_p4e_log_privacy" name="test_configured_json_logging_redacts_credentials[nested_extra]" time="0.002" /><testcase classname="tests.unit.test_p4e_log_privacy" name="test_configured_json_logging_redacts_credentials[exception_dsn]" time="0.002" /><testcase classname="tests.unit.test_p4e_log_privacy" name="test_configured_json_logging_redacts_credentials[quoted_assignment]" time="0.002"><failure message="assert ('{&quot;asctime&quot;: &quot;2026-11-11 19:44:27,914&quot;, &quot;levelname&quot;: &quot;WARNING&quot;, &quot;name&quot;: &quot;p4e.privacy&quot;, &quot;message&quot;: &quot;password=\'p4e_synthetic_secret_9A7z\'&quot;, &quot;trace_id&quot;: &quot;-&quot;, &quot;request_id&quot;: &quot;-&quot;}\n' and 'p4e_synthetic_secret_9A7z' not in '{&quot;asctime&quot;:..._id&quot;: &quot;-&quot;}\n'&#10;  &#10;  'p4e_synthetic_secret_9A7z' is contained here:&#10;    password='p4e_synthetic_secret_9A7z'&quot;, &quot;trace_id&quot;: &quot;-&quot;, &quot;request_id&quot;: &quot;-&quot;}&#10;  ?           +++++++++++++++++++++++++)">kind = 'quoted_assignment'
+
+    @pytest.mark.parametrize("kind", ["formatted_bearer", "nested_extra", "exception_dsn", "quoted_assignment", "json_string", "mapping_message"])
+    def test_configured_json_logging_redacts_credentials(kind):
+        secret = "p4e_synthetic_secret_9A7z"
+        root = logging.getLogger()
+        old_handlers, old_level = root.handlers[:], root.level
+        stream = io.StringIO()
+        try:
+            configure_logging(Settings(_env_file=None, app_env="testing"))
+            root.handlers[0].setStream(stream)
+            logger = logging.getLogger("p4e.privacy")
+            if kind == "formatted_bearer":
+                logger.warning("upstream Authorization: Bearer %s", secret)
+            elif kind == "nested_extra":
+                logger.warning("failed", extra={"payload": {"items": [{"api_key": secret}]}})
+            elif kind == "quoted_assignment":
+                logger.warning("password='%s'", secret)
+            elif kind == "json_string":
+                logger.warning('{"password": "%s"}', secret)
+            elif kind == "mapping_message":
+                logger.warning({"password": secret})
+            else:
+                try:
+                    raise ValueError(f"postgresql+asyncpg://synthetic:{secret}@localhost/test")
+                except ValueError:
+                    logger.exception("database failure")
+            output = stream.getvalue()
+&gt;           assert output and secret not in output
+E           assert ('{"asctime": "2026-11-11 19:44:27,914", "levelname": "WARNING", "name": "p4e.privacy", "message": "password=\'p4e_synthetic_secret_9A7z\'", "trace_id": "-", "request_id": "-"}\n' and 'p4e_synthetic_secret_9A7z' not in '{"asctime":..._id": "-"}\n'
+E             
+E             'p4e_synthetic_secret_9A7z' is contained here:
+E               password='p4e_synthetic_secret_9A7z'", "trace_id": "-", "request_id": "-"}
+E             ?           +++++++++++++++++++++++++)
+
+tests/unit/test_p4e_log_privacy.py:38: AssertionError</failure></testcase><testcase classname="tests.unit.test_p4e_log_privacy" name="test_configured_json_logging_redacts_credentials[json_string]" time="0.002"><failure message="assert ('{&quot;asctime&quot;: &quot;2026-11-11 19:44:27,953&quot;, &quot;levelname&quot;: &quot;WARNING&quot;, &quot;name&quot;: &quot;p4e.privacy&quot;, &quot;message&quot;: &quot;{\\&quot;password\\&quot;: \\&quot;p4e_synthetic_secret_9A7z\\&quot;}&quot;, &quot;trace_id&quot;: &quot;-&quot;, &quot;request_id&quot;: &quot;-&quot;}\n' and 'p4e_synthetic_secret_9A7z' not in '{&quot;asctime&quot;:..._id&quot;: &quot;-&quot;}\n'&#10;  &#10;  'p4e_synthetic_secret_9A7z' is contained here:&#10;    word\&quot;: \&quot;p4e_synthetic_secret_9A7z\&quot;}&quot;, &quot;trace_id&quot;: &quot;-&quot;, &quot;request_id&quot;: &quot;-&quot;}&#10;  ?           +++++++++++++++++++++++++)">kind = 'json_string'
+
+    @pytest.mark.parametrize("kind", ["formatted_bearer", "nested_extra", "exception_dsn", "quoted_assignment", "json_string", "mapping_message"])
+    def test_configured_json_logging_redacts_credentials(kind):
+        secret = "p4e_synthetic_secret_9A7z"
+        root = logging.getLogger()
+        old_handlers, old_level = root.handlers[:], root.level
+        stream = io.StringIO()
+        try:
+            configure_logging(Settings(_env_file=None, app_env="testing"))
+            root.handlers[0].setStream(stream)
+            logger = logging.getLogger("p4e.privacy")
+            if kind == "formatted_bearer":
+                logger.warning("upstream Authorization: Bearer %s", secret)
+            elif kind == "nested_extra":
+                logger.warning("failed", extra={"payload": {"items": [{"api_key": secret}]}})
+            elif kind == "quoted_assignment":
+                logger.warning("password='%s'", secret)
+            elif kind == "json_string":
+                logger.warning('{"password": "%s"}', secret)
+            elif kind == "mapping_message":
+                logger.warning({"password": secret})
+            else:
+                try:
+                    raise ValueError(f"postgresql+asyncpg://synthetic:{secret}@localhost/test")
+                except ValueError:
+                    logger.exception("database failure")
+            output = stream.getvalue()
+&gt;           assert output and secret not in output
+E           assert ('{"asctime": "2026-11-11 19:44:27,953", "levelname": "WARNING", "name": "p4e.privacy", "message": "{\\"password\\": \\"p4e_synthetic_secret_9A7z\\"}", "trace_id": "-", "request_id": "-"}\n' and 'p4e_synthetic_secret_9A7z' not in '{"asctime":..._id": "-"}\n'
+E             
+E             'p4e_synthetic_secret_9A7z' is contained here:
+E               word\": \"p4e_synthetic_secret_9A7z\"}", "trace_id": "-", "request_id": "-"}
+E             ?           +++++++++++++++++++++++++)
+
+tests/unit/test_p4e_log_privacy.py:38: AssertionError</failure></testcase><testcase classname="tests.unit.test_p4e_log_privacy" name="test_configured_json_logging_redacts_credentials[mapping_message]" time="0.002"><failure message="assert ('{&quot;asctime&quot;: &quot;2026-11-11 19:44:27,957&quot;, &quot;levelname&quot;: &quot;WARNING&quot;, &quot;name&quot;: &quot;p4e.privacy&quot;, &quot;message&quot;: &quot;{\'password\': \'p4e_synthetic_secret_9A7z\'}&quot;, &quot;trace_id&quot;: &quot;-&quot;, &quot;request_id&quot;: &quot;-&quot;}\n' and 'p4e_synthetic_secret_9A7z' not in '{&quot;asctime&quot;:..._id&quot;: &quot;-&quot;}\n'&#10;  &#10;  'p4e_synthetic_secret_9A7z' is contained here:&#10;    ssword': 'p4e_synthetic_secret_9A7z'}&quot;, &quot;trace_id&quot;: &quot;-&quot;, &quot;request_id&quot;: &quot;-&quot;}&#10;  ?           +++++++++++++++++++++++++)">kind = 'mapping_message'
+
+    @pytest.mark.parametrize("kind", ["formatted_bearer", "nested_extra", "exception_dsn", "quoted_assignment", "json_string", "mapping_message"])
+    def test_configured_json_logging_redacts_credentials(kind):
+        secret = "p4e_synthetic_secret_9A7z"
+        root = logging.getLogger()
+        old_handlers, old_level = root.handlers[:], root.level
+        stream = io.StringIO()
+        try:
+            configure_logging(Settings(_env_file=None, app_env="testing"))
+            root.handlers[0].setStream(stream)
+            logger = logging.getLogger("p4e.privacy")
+            if kind == "formatted_bearer":
+                logger.warning("upstream Authorization: Bearer %s", secret)
+            elif kind == "nested_extra":
+                logger.warning("failed", extra={"payload": {"items": [{"api_key": secret}]}})
+            elif kind == "quoted_assignment":
+                logger.warning("password='%s'", secret)
+            elif kind == "json_string":
+                logger.warning('{"password": "%s"}', secret)
+            elif kind == "mapping_message":
+                logger.warning({"password": secret})
+            else:
+                try:
+                    raise ValueError(f"postgresql+asyncpg://synthetic:{secret}@localhost/test")
+                except ValueError:
+                    logger.exception("database failure")
+            output = stream.getvalue()
+&gt;           assert output and secret not in output
+E           assert ('{"asctime": "2026-11-11 19:44:27,957", "levelname": "WARNING", "name": "p4e.privacy", "message": "{\'password\': \'p4e_synthetic_secret_9A7z\'}", "trace_id": "-", "request_id": "-"}\n' and 'p4e_synthetic_secret_9A7z' not in '{"asctime":..._id": "-"}\n'
+E             
+E             'p4e_synthetic_secret_9A7z' is contained here:
+E               ssword': 'p4e_synthetic_secret_9A7z'}", "trace_id": "-", "request_id": "-"}
+E             ?           +++++++++++++++++++++++++)
+
+tests/unit/test_p4e_log_privacy.py:38: AssertionError</failure></testcase><testcase classname="research.docs.agent_engineering_upgrade.p4_final_acceptance.test_deploy_credentials" name="test_token_file_is_private_before_first_byte_is_written" time="0.002"><failure message="AssertionError: assert 420 == 384&#10; +  where 420 = &lt;built-in function S_IMODE&gt;(33188)&#10; +    where &lt;built-in function S_IMODE&gt; = stat.S_IMODE&#10; +    and   33188 = os.stat_result(st_mode=33188, st_ino=1837213, st_dev=66310, st_nlink=1, st_uid=1000, st_gid=1000, st_size=0, st_atime=1794397467, st_mtime=1794397467, st_ctime=1794397467).st_mode&#10; +      where os.stat_result(st_mode=33188, st_ino=1837213, st_dev=66310, st_nlink=1, st_uid=1000, st_gid=1000, st_size=0, st_atime=1794397467, st_mtime=1794397467, st_ctime=1794397467) = &lt;built-in function fstat&gt;(11)&#10; +        where &lt;built-in function fstat&gt; = os.fstat&#10; +        and   11 = &lt;built-in method fileno of _io.TextIOWrapper object at 0x78f3b3cbbe60&gt;()&#10; +          where &lt;built-in method fileno of _io.TextIOWrapper object at 0x78f3b3cbbe60&gt; = &lt;_io.TextIOWrapper name='/tmp/pytest-of-likl/pytest-1/test_token_file_is_private_bef0/p4e_api.private.json' mode='x' encoding='UTF-8'&gt;.fileno">tmp_path = PosixPath('/tmp/pytest-of-likl/pytest-1/test_token_file_is_private_bef0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x78f3b3ea7d10&gt;
+
+    def test_token_file_is_private_before_first_byte_is_written(tmp_path, monkeypatch):
+        real_dump = deploy.json.dump
+    
+        def verify_at_write(value, stream):
+            assert stat.S_IMODE(os.fstat(stream.fileno()).st_mode) == 0o600
+            return real_dump(value, stream)
+    
+        monkeypatch.setattr(deploy.json, "dump", verify_at_write)
+        old_umask = os.umask(0o022)
+        try:
+&gt;           value = deploy.private_api_config(tmp_path / "manifest.json")
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+research/docs/agent_engineering_upgrade/p4_final_acceptance/test_deploy_credentials.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+research/docs/agent_engineering_upgrade/p4_final_acceptance/deploy.py:46: in private_api_config
+    json.dump(data, stream)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = {'credentials': '{"version": 1, "credentials": [{"token_sha256": "9d647dd4641484022de77c9da1d69976dd875f4211b8e9220c57...:44:27.961764+00:00", "revoked": false}]}', 'port': 59593, 'token': 'FnILZZOTP9OYPlBFRcrbAd-iiOdOEkTWpPDft38SC5kgdvLo'}
+stream = &lt;_io.TextIOWrapper name='/tmp/pytest-of-likl/pytest-1/test_token_file_is_private_bef0/p4e_api.private.json' mode='x' encoding='UTF-8'&gt;
+
+    def verify_at_write(value, stream):
+&gt;       assert stat.S_IMODE(os.fstat(stream.fileno()).st_mode) == 0o600
+E       AssertionError: assert 420 == 384
+E        +  where 420 = &lt;built-in function S_IMODE&gt;(33188)
+E        +    where &lt;built-in function S_IMODE&gt; = stat.S_IMODE
+E        +    and   33188 = os.stat_result(st_mode=33188, st_ino=1837213, st_dev=66310, st_nlink=1, st_uid=1000, st_gid=1000, st_size=0, st_atime=1794397467, st_mtime=1794397467, st_ctime=1794397467).st_mode
+E        +      where os.stat_result(st_mode=33188, st_ino=1837213, st_dev=66310, st_nlink=1, st_uid=1000, st_gid=1000, st_size=0, st_atime=1794397467, st_mtime=1794397467, st_ctime=1794397467) = &lt;built-in function fstat&gt;(11)
+E        +        where &lt;built-in function fstat&gt; = os.fstat
+E        +        and   11 = &lt;built-in method fileno of _io.TextIOWrapper object at 0x78f3b3cbbe60&gt;()
+E        +          where &lt;built-in method fileno of _io.TextIOWrapper object at 0x78f3b3cbbe60&gt; = &lt;_io.TextIOWrapper name='/tmp/pytest-of-likl/pytest-1/test_token_file_is_private_bef0/p4e_api.private.json' mode='x' encoding='UTF-8'&gt;.fileno
+
+research/docs/agent_engineering_upgrade/p4_final_acceptance/test_deploy_credentials.py:13: AssertionError</failure></testcase></testsuite></testsuites>

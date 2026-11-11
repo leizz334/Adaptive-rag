@@ -9,7 +9,17 @@ from app.config.settings import Settings
 from app.observability.logging import configure_logging
 
 
-@pytest.mark.parametrize("kind", ["formatted_bearer", "nested_extra", "exception_dsn"])
+@pytest.mark.parametrize(
+    "kind",
+    [
+        "formatted_bearer",
+        "nested_extra",
+        "exception_dsn",
+        "quoted_assignment",
+        "json_string",
+        "mapping_message",
+    ],
+)
 def test_configured_json_logging_redacts_credentials(kind):
     secret = "p4e_synthetic_secret_9A7z"
     root = logging.getLogger()
@@ -23,6 +33,12 @@ def test_configured_json_logging_redacts_credentials(kind):
             logger.warning("upstream Authorization: Bearer %s", secret)
         elif kind == "nested_extra":
             logger.warning("failed", extra={"payload": {"items": [{"api_key": secret}]}})
+        elif kind == "quoted_assignment":
+            logger.warning("password='%s'", secret)
+        elif kind == "json_string":
+            logger.warning('{"password": "%s"}', secret)
+        elif kind == "mapping_message":
+            logger.warning({"password": secret})
         else:
             try:
                 raise ValueError(f"postgresql+asyncpg://synthetic:{secret}@localhost/test")

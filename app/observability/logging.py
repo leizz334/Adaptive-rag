@@ -21,6 +21,8 @@ class ContextFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
         record.trace_id = trace_id_var.get()
         record.request_id = request_id_var.get()
+        if isinstance(record.msg, dict):
+            record.msg = redact_mapping(record.msg)
         record.msg = redact_log_text(record.getMessage())
         record.args = ()
         return True

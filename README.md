@@ -6,13 +6,20 @@
 <p align="center">FastAPI × LangGraph × 混合检索 · API、流式对话与 ChatGPT 风格 Web 工作台</p>
 
 <p align="center">
-  <a href="https://github.com/JEen-wang/Adaptive-rag/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/JEen-wang/Adaptive-rag/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/leizz334/Adaptive-rag/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/leizz334/Adaptive-rag/actions/workflows/ci.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-22c55e"></a>
   <img alt="Python 3.11+" src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white">
   <img alt="FastAPI" src="https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi&logoColor=white">
   <img alt="React and TypeScript" src="https://img.shields.io/badge/Web-React%20%2B%20TypeScript-149eca?logo=react&logoColor=white">
 
 ---
+
+## Ubuntu 最终工程验收（P4-E）
+
+[最终交付摘要](research/docs/agent_engineering_upgrade/p4_final_acceptance/PROJECT_FINAL_SUMMARY.md) · [Ubuntu部署与复现](research/docs/agent_engineering_upgrade/p4_final_acceptance/DEPLOYMENT_GUIDE.md) · [工程验收报告](research/docs/agent_engineering_upgrade/p4_final_acceptance/P4-E_FINAL_REPORT.md) · [人工语义审核包](research/docs/agent_engineering_upgrade/p4_final_acceptance/SEMANTIC_REVIEW_PACKET.md)
+
+当前交付面向隔离合成数据与共享公共知识库。**私有多租户知识库的应用层隔离未实现，不得按该用途部署；Redis故障时限流fail-open，生产付费流量需要外围配额保护。** 真实DeepSeek质量仍PARTIAL，完整回答语义NOT_ASSESSED，Experience Active关闭。受控性能数据不等于真实模型吞吐或生产SLO。部署流程及生产未验证项以上述指南/最终报告为准。
+
 ## 📷 项目快照
 <p align="center">
   <img src="docs/assets/frontend-snapshot.webp" alt="Adaptive RAG Web 工作台：多条件退货提问，回答附带三条政策来源引用" width="900">

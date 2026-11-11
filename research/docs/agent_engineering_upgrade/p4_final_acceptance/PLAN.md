@@ -24,11 +24,11 @@ Spec: 本阶段用户P4-E0—E3需求；AGENTS.md。
 
 ## E2 部署与性能
 - [x] 复用Compose建立可复现启动命令，使用真实应用Factory/required auth/实际依赖验证健康与恢复；仅测试辅助worker可用受控LLM。
-- [ ] 固定合成只读任务，HTTP与SSE各并发1/4、每格12请求，独立记录墙钟延迟、吞吐、错误率、进程CPU/RSS；不以客户端快照耗时代替API耗时。
-- [ ] 记录进程启动、首次请求、热请求；现有真实neural/DeepSeek统计独立引用，不与mock混算。保存host资源/依赖镜像版本；状态/commit。
+- [x] 固定合成只读任务，HTTP与SSE各并发1/4、每格12请求，独立记录墙钟延迟、吞吐、错误率、进程CPU/RSS；不以客户端快照耗时代替API耗时。
+- [x] 记录进程启动、首次请求、热请求；现有真实neural/DeepSeek统计独立引用，不与mock混算。保存host资源/依赖镜像版本；状态/commit。
 
 ## E3 最终交付
-- [ ] 完善README/DEPLOYMENT_GUIDE/PROJECT_FINAL_SUMMARY/架构及LangGraph文档/RECOVERY/最终报告。
-- [ ] 全量pytest tests+research、Ruff check+format、Mypy/pip及冻结legacy214，独立review、scope/secret/ledger审计。
-- [ ] 六项边界明确：公共KB租户隔离、Redis失效限流、生产TLS/备份/灾难恢复、真实模型语义、性能适用规模、Experience当前资格。
+- [x] 完善README/DEPLOYMENT_GUIDE/PROJECT_FINAL_SUMMARY/架构及LangGraph文档/RECOVERY/最终报告。
+- [x] 全量pytest tests+research、Ruff check+format、Mypy/pip及冻结legacy214，独立review、scope/secret/ledger审计。
+- [x] 六项边界明确：公共KB租户隔离、Redis失效限流、生产TLS/备份/灾难恢复、真实模型语义、性能适用规模、Experience当前资格。
 - [ ] scoped commit/normal push/exactlsremote；记录delivery元数据再次正常push核验最终HEAD，STOP。

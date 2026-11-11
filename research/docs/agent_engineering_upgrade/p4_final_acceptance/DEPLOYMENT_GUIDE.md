@@ -87,7 +87,7 @@ export P4B_API_RUN_ID=ubuntu_new_E_api_01
 .venv/bin/ruff check app tests eval alembic research/docs/agent_engineering_upgrade
 .venv/bin/ruff format --check app tests eval alembic research/docs/agent_engineering_upgrade
 .venv/bin/mypy
-.venv/bin/pip check
+.venv/bin/python -m pip check
 .venv/bin/python -m research.docs.agent_engineering_upgrade.p4_final_acceptance.offline research.docs.agent_engineering_upgrade.p4_dependency_integration.regress ubuntu_new_E_legacy_01
 ```
 

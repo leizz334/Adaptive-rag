@@ -1,3 +1,5 @@
+> Ubuntu最终验收与真实三依赖复现请先阅读 [P4-E部署指南](../research/docs/agent_engineering_upgrade/p4_final_acceptance/DEPLOYMENT_GUIDE.md)。本页旧部署示例不代表生产安全验收；共享KB没有私有租户ACL，Redis故障限流fail-open。
+
 # 11 · 部署与运维
 
 > 一句话：默认 Compose 使用 SQLite 和内置检索，单个容器即可启动 API 与 Web；Redis、Qdrant、Postgres 仍可按需接入；`.env` 不进镜像。

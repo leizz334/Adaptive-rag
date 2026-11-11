@@ -29,14 +29,15 @@ _ORDER_ID = re.compile(r"\b(ORD)[-_]?(\d{4})\d+(\d{2})\b", re.IGNORECASE)
 _BEARER = re.compile(r"(?i)\bBearer\s+[^\s\"'<>\\]+")
 _DSN_PASSWORD = re.compile(r"(?i)([a-z][a-z0-9+.-]*://[^\s/:@]+:)[^\s@]+(@)")
 _SECRET_ASSIGNMENT = re.compile(
-    r"(?i)(\b(?:api_key|apikey|access_token|refresh_token|password|secret)\s*[=:]\s*)[^\s,;\"'<>\\]+"
+    r"(?i)(\b(?:api_key|apikey|access_token|refresh_token|password|secret)[\"']?\s*[=:]\s*)"
+    r"(?:([\"'])(.*?)\2|([^\s,;\"'<>\\]+))"
 )
 
 
 def redact_log_text(text: str) -> str:
     text = _BEARER.sub("Bearer " + PII_MASK, text)
     text = _DSN_PASSWORD.sub(lambda m: m[1] + PII_MASK + m[2], text)
-    text = _SECRET_ASSIGNMENT.sub(lambda m: m[1] + PII_MASK, text)
+    text = _SECRET_ASSIGNMENT.sub(lambda m: m[1] + (m[2] or "") + PII_MASK + (m[2] or ""), text)
     return mask_pii(text)
 
 
