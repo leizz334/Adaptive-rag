@@ -123,3 +123,20 @@ class PendingConfirmationRow(Base):
     user_id: Mapped[str] = mapped_column(String(64))
     action_json: Mapped[str] = mapped_column(Text)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class PrivateKnowledgeTenantRow(Base):
+    __tablename__ = "private_knowledge_tenants"
+
+    subject: Mapped[str] = mapped_column(String(64), primary_key=True)
+    generation: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class PrivateKnowledgeDocumentRow(Base):
+    __tablename__ = "private_knowledge_documents"
+
+    subject: Mapped[str] = mapped_column(String(64), primary_key=True)
+    document_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    revision: Mapped[str] = mapped_column(String(32))
+    title: Mapped[str] = mapped_column(String(200))
+    content: Mapped[str] = mapped_column(Text)

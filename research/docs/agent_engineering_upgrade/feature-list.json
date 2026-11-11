@@ -2193,5 +2193,60 @@
     "next_action": "STOP;no additional research/development phase;ExperienceActiveoff",
     "verified_checkpoint": "0210248efc4af9bebc32669bcec14d25b6b6eaee",
     "all_authorized_tasks_complete": true
+  },
+  "P4_F": {
+    "base": "a081291f9665f39fccb590600d51918773869906",
+    "branch": "codex/p4-security-remediation",
+    "status": "IN_PROGRESS",
+    "paid_requests": 0,
+    "experience_active_enabled": false,
+    "tasks": [
+      {
+        "TASK_ID": "P4-F1",
+        "status": "completed_end_to_end_private_acl",
+        "passes": true,
+        "dependencies": [
+          "P4-E3"
+        ],
+        "acceptance_criteria": [
+          "Server-auth owner namespace end-to-end private ingest/BM25/Qdrant/hybrid/rerank/citation/cache/CRUD/reindex;failclosed"
+        ],
+        "evidence": [
+          "p4_security_remediation/SECURITY_DESIGN.md",
+          "p4_security_remediation/evidence/f1_contract_RED.xml",
+          "p4_security_remediation/evidence/f1_review_RED.xml",
+          "p4_security_remediation/evidence/f1_FINAL_GREEN.xml",
+          "p4_security_remediation/evidence/f1_baseline_and_validation.json"
+        ],
+        "commit_hash": null,
+        "validation": "16PASS realtwoASGI/PGRedisQdrant+contracts;Mypy152PASS;reviewfindingsRED4->GREEN;subjectscopedCRUD/BM25/dense/hybrid/cache/rerank/citations;no publicfallback"
+      },
+      {
+        "TASK_ID": "P4-F2",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P4-F1"
+        ],
+        "acceptance_criteria": [
+          "Sensitive chat/KB API Redis failclosed;atomicglobalquota/timeouts/recovery/multiworker;publicreadpolicy"
+        ],
+        "evidence": [],
+        "commit_hash": null
+      },
+      {
+        "TASK_ID": "P4-F3",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P4-F2"
+        ],
+        "acceptance_criteria": [
+          "RealSQLRedisQdrant+HTTPattacks/fullpytestRuffMypy/214zero regressions/report/normalpush/exactHEAD/STOP"
+        ],
+        "evidence": [],
+        "commit_hash": null
+      }
+    ]
   }
 }

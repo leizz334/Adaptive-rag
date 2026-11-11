@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="5" time="0.746" timestamp="2026-11-11T21:38:16.350736+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_p4f_security_contracts" name="test_private_knowledge_requires_verified_authentication" time="0.002" /><testcase classname="tests.unit.test_p4f_security_contracts" name="test_private_mode_is_an_explicit_setting" time="0.001" /><testcase classname="tests.unit.test_p4f_security_contracts" name="test_private_retriever_never_uses_unscoped_access" time="0.443"><failure message="ImportError: cannot import name 'AdaptiveRouter' from partially initialized module 'app.retrieval.adaptive' (most likely due to a circular import) (/home/likl/桌面/Adaptive-RAG/Adaptive-rag/app/retrieval/adaptive.py)">@pytest.mark.asyncio
+    async def test_private_retriever_never_uses_unscoped_access():
+        from app.core.exceptions import ToolPermissionError
+&gt;       from app.retrieval.private import PrivateKnowledgeRetriever
+
+tests/unit/test_p4f_security_contracts.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/retrieval/__init__.py:3: in &lt;module&gt;
+    from app.retrieval.adaptive import AdaptiveRouter
+app/retrieval/adaptive.py:17: in &lt;module&gt;
+    from app.agents.goals import SKU_RE, read_tools
+app/agents/__init__.py:3: in &lt;module&gt;
+    from app.agents.graph import build_graph
+app/agents/graph.py:18: in &lt;module&gt;
+    from app.agents.nodes.router import intent_node, router_node
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Intent and complexity routing nodes."""
+    
+    from __future__ import annotations
+    
+    import time
+    
+    from app.agents.nodes.intent import IntentClassifier
+    from app.agents.state import AgentState
+    from app.core.enums import QueryComplexity, RetrievalStrategy
+    from app.memory.context import node_query
+    from app.observability.tracing import traced
+&gt;   from app.retrieval.adaptive import AdaptiveRouter
+E   ImportError: cannot import name 'AdaptiveRouter' from partially initialized module 'app.retrieval.adaptive' (most likely due to a circular import) (/home/likl/桌面/Adaptive-RAG/Adaptive-rag/app/retrieval/adaptive.py)
+
+app/agents/nodes/router.py:12: ImportError</failure></testcase><testcase classname="tests.unit.test_p4f_security_contracts" name="test_private_document_rejects_blank_text[title]" time="0.113"><failure message="Failed: DID NOT RAISE &lt;class 'pydantic_core._pydantic_core.ValidationError'&gt;">field = 'title'
+
+    @pytest.mark.parametrize('field', ['title','content'])
+    def test_private_document_rejects_blank_text(field):
+        from app.main import create_app  # noqa: F401
+        from app.api.routes.knowledge import DocumentInput
+    
+        payload = {'title':'合成政策', 'content':'有效合成政策'}
+        payload[field] = ' \n\t '
+&gt;       with pytest.raises(ValidationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE &lt;class 'pydantic_core._pydantic_core.ValidationError'&gt;
+
+tests/unit/test_p4f_security_contracts.py:35: Failed</failure></testcase><testcase classname="tests.unit.test_p4f_security_contracts" name="test_private_document_rejects_blank_text[content]" time="0.000"><failure message="Failed: DID NOT RAISE &lt;class 'pydantic_core._pydantic_core.ValidationError'&gt;">field = 'content'
+
+    @pytest.mark.parametrize('field', ['title','content'])
+    def test_private_document_rejects_blank_text(field):
+        from app.main import create_app  # noqa: F401
+        from app.api.routes.knowledge import DocumentInput
+    
+        payload = {'title':'合成政策', 'content':'有效合成政策'}
+        payload[field] = ' \n\t '
+&gt;       with pytest.raises(ValidationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE &lt;class 'pydantic_core._pydantic_core.ValidationError'&gt;
+
+tests/unit/test_p4f_security_contracts.py:35: Failed</failure></testcase></testsuite></testsuites>

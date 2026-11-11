@@ -87,6 +87,7 @@ class ChatService:
         started = time.perf_counter()
         session_id = request.session_id or new_id("sess_")
         async with request_session(self._session_factory) as db:
+            db.info["knowledge_subject"] = request.user_id
             state = await self._initial_state(db, request, session_id, trace_id)
             result = await self._invoke(state)
             response = self._to_response(result, session_id=session_id, trace_id=trace_id)
@@ -103,6 +104,7 @@ class ChatService:
         started = time.perf_counter()
         session_id = request.session_id or new_id("sess_")
         async with request_session(self._session_factory) as db:
+            db.info["knowledge_subject"] = request.user_id
             state = await self._initial_state(db, request, session_id, trace_id)
             yield {"event": "started", "trace_id": trace_id}
             queue: asyncio.Queue[dict | None] = asyncio.Queue()

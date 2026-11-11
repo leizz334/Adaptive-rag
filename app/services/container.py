@@ -72,6 +72,32 @@ async def build_infrastructure(settings: Settings):
 async def build_retrieval(settings: Settings, redis):
     """Build the knowledge ingestion and hybrid retrieval components."""
     embedder = build_embedding_provider(settings)
+    if settings.knowledge_mode == "private":
+        import asyncio
+
+        from app.core.exceptions import ToolPermissionError
+        from app.retrieval.private import PrivateKnowledgeRetriever, PrivateVectorStore
+
+        if settings.use_sqlite or not settings.qdrant_url or redis is None:
+            raise ToolPermissionError("private knowledge requires PostgreSQL, Qdrant and Redis")
+        private_store = PrivateVectorStore(
+            settings.qdrant_url,
+            settings.qdrant_collection + "_private_v1",
+            getattr(embedder, "dim", settings.embedding_dim),
+        )
+        await asyncio.to_thread(private_store.ensure_collection)
+        private_retriever = PrivateKnowledgeRetriever(
+            private_store,
+            embedder,
+            redis,
+            rrf_k=settings.rrf_k,
+            ttl=settings.retrieval_cache_ttl_seconds,
+        )
+        return (
+            private_retriever,
+            DocumentReranker(CrossEncoderRerankProvider(settings)),
+            private_store,
+        )
     cache = (
         RedisRetrievalCache(redis, ttl_seconds=settings.retrieval_cache_ttl_seconds)
         if redis is not None

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.109" timestamp="2026-11-11T21:31:46.280221+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_p4f_security_contracts" name="test_private_knowledge_requires_verified_authentication" time="0.002"><failure message="Failed: DID NOT RAISE &lt;class 'pydantic_core._pydantic_core.ValidationError'&gt;">def test_private_knowledge_requires_verified_authentication():
+&gt;       with pytest.raises(ValidationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE &lt;class 'pydantic_core._pydantic_core.ValidationError'&gt;
+
+tests/unit/test_p4f_security_contracts.py:8: Failed</failure></testcase><testcase classname="tests.unit.test_p4f_security_contracts" name="test_private_mode_is_an_explicit_setting" time="0.002"><failure message="AttributeError: 'Settings' object has no attribute 'knowledge_mode'. Did you mean: 'knowledge_dir'?">def test_private_mode_is_an_explicit_setting():
+&gt;       assert Settings(_env_file=None, knowledge_mode="private").knowledge_mode == "private"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_p4f_security_contracts.py:13: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Settings(app_env='testing', app_name='adaptive-rag-cs', log_level='WARNING', api_v1_prefix='/api/v1', auth_mode='requi..._key=SecretStr(''), agent_langsmith_endpoint='https://api.smith.langchain.com', agent_langsmith_project='adaptive-rag')
+item = 'knowledge_mode'
+
+    def __getattr__(self, item: str) -&gt; Any:
+        private_attributes = object.__getattribute__(self, '__private_attributes__')
+        if item in private_attributes:
+            attribute = private_attributes[item]
+            if hasattr(attribute, '__get__'):
+                return attribute.__get__(self, type(self))  # type: ignore
+    
+            try:
+                # Note: self.__pydantic_private__ cannot be None if self.__private_attributes__ has items
+                return self.__pydantic_private__[item]  # type: ignore
+            except KeyError as exc:
+                raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+        else:
+            # `__pydantic_extra__` can fail to be set if the model is not yet fully initialized.
+            # See `BaseModel.__repr_args__` for more details
+            try:
+                pydantic_extra = object.__getattribute__(self, '__pydantic_extra__')
+            except AttributeError:
+                pydantic_extra = None
+    
+            if pydantic_extra and item in pydantic_extra:
+                return pydantic_extra[item]
+            else:
+                if hasattr(self.__class__, item):
+                    return super().__getattribute__(item)  # Raises AttributeError if appropriate
+                else:
+                    # this is the current error
+&gt;                   raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+E                   AttributeError: 'Settings' object has no attribute 'knowledge_mode'. Did you mean: 'knowledge_dir'?
+
+.venv/lib/python3.12/site-packages/pydantic/main.py:1110: AttributeError</failure></testcase></testsuite></testsuites>

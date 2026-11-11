@@ -24,7 +24,7 @@ class BM25Retriever:
         self._chunks = list(corpus)
         tokenized = [tokenize(chunk.content) for chunk in self._chunks]
         # BM25Okapi requires a non-empty corpus; keep None if ingest has not run.
-        self._bm25 = BM25Okapi(tokenized) if tokenized else None
+        self._bm25 = BM25Okapi(tokenized) if any(tokenized) else None
 
     @traced("retrieval.bm25", "retriever")
     def search(self, query: str, *, top_k: int) -> list[RetrievedChunk]:

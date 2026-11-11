@@ -28,6 +28,8 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def restrict_legacy_auth(self):
+        if self.auth_mode != "required" and self.knowledge_mode == "private":
+            raise ValueError("private knowledge requires verified authentication")
         if self.auth_mode == "legacy_test" and self.app_env != "testing":
             raise ValueError("legacy_test authentication is restricted to testing")
         return self
@@ -83,6 +85,7 @@ class Settings(BaseSettings):
     db_max_overflow: int = 10
     db_pool_timeout: int = 30
     admin_api_token: SecretStr = SecretStr("")
+    knowledge_mode: Literal["public", "private"] = "public"
     knowledge_dir: str = "knowledge"
     unstructured_enabled: bool = True
     unstructured_strategy: str = "auto"

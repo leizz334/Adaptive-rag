@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="5.417" timestamp="2026-11-11T21:39:10.934932+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_p4f_security_contracts" name="test_private_document_rejects_blank_text[title]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'pydantic_core._pydantic_core.ValidationError'&gt;">field = 'title'
+
+    @pytest.mark.parametrize("field", ["title", "content"])
+    def test_private_document_rejects_blank_text(field):
+        from app.api.routes.knowledge import DocumentInput
+    
+        payload = {"title": "合成政策", "content": "有效合成政策"}
+        payload[field] = " \n\t "
+&gt;       with pytest.raises(ValidationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE &lt;class 'pydantic_core._pydantic_core.ValidationError'&gt;
+
+tests/unit/test_p4f_security_contracts.py:35: Failed</failure></testcase><testcase classname="tests.unit.test_p4f_security_contracts" name="test_private_document_rejects_blank_text[content]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'pydantic_core._pydantic_core.ValidationError'&gt;">field = 'content'
+
+    @pytest.mark.parametrize("field", ["title", "content"])
+    def test_private_document_rejects_blank_text(field):
+        from app.api.routes.knowledge import DocumentInput
+    
+        payload = {"title": "合成政策", "content": "有效合成政策"}
+        payload[field] = " \n\t "
+&gt;       with pytest.raises(ValidationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE &lt;class 'pydantic_core._pydantic_core.ValidationError'&gt;
+
+tests/unit/test_p4f_security_contracts.py:35: Failed</failure></testcase><testcase classname="tests.unit.test_p4f_security_contracts" name="test_tokenless_bm25_corpus_is_safe_empty_result" time="0.001"><failure message="ZeroDivisionError: division by zero">def test_tokenless_bm25_corpus_is_safe_empty_result():
+        from app.retrieval.bm25 import BM25Retriever
+        from app.schemas.retrieval import RetrievedChunk
+    
+&gt;       retriever = BM25Retriever(
+            [
+                RetrievedChunk(
+                    chunk_id="empty", document_id="empty", title="empty", content=" \n ", score=0
+                )
+            ]
+        )
+
+tests/unit/test_p4f_security_contracts.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/retrieval/bm25.py:21: in __init__
+    self.build(corpus)
+app/retrieval/bm25.py:27: in build
+    self._bm25 = BM25Okapi(tokenized) if tokenized else None
+                 ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/rank_bm25.py:83: in __init__
+    super().__init__(corpus, tokenizer)
+.venv/lib/python3.12/site-packages/rank_bm25.py:28: in __init__
+    self._calc_idf(nd)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;rank_bm25.BM25Okapi object at 0x763b38e75be0&gt;, nd = {}
+
+    def _calc_idf(self, nd):
+        """
+        Calculates frequencies of terms in documents and in corpus.
+        This algorithm sets a floor on the idf values to eps * average_idf
+        """
+        # collect idf sum to calculate an average idf for epsilon value
+        idf_sum = 0
+        # collect words with negative idf to set them a special epsilon value.
+        # idf can be negative if word is contained in more than half of documents
+        negative_idfs = []
+        for word, freq in nd.items():
+            idf = math.log(self.corpus_size - freq + 0.5) - math.log(freq + 0.5)
+            self.idf[word] = idf
+            idf_sum += idf
+            if idf &lt; 0:
+                negative_idfs.append(word)
+&gt;       self.average_idf = idf_sum / len(self.idf)
+                           ^^^^^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+.venv/lib/python3.12/site-packages/rank_bm25.py:101: ZeroDivisionError</failure></testcase><testcase classname="research.docs.agent_engineering_upgrade.p4_security_remediation.test_private_http" name="test_old_revision_cleanup_cannot_delete_new_revision" time="4.618"><failure message="TypeError: PrivateVectorStore.remove_document() got an unexpected keyword argument 'revision'">api = &lt;research.docs.agent_engineering_upgrade.p4_security_remediation.runtime.Runtime object at 0x763b38b87320&gt;
+
+    def test_old_revision_cleanup_cannot_delete_new_revision(api):
+        from app.retrieval.private import PrivateVectorStore
+        from app.schemas.retrieval import RetrievedChunk
+    
+        store = PrivateVectorStore(api.cfg["qdrant_url"], api.cfg["collection"] + "_revision_probe", 2)
+        try:
+            store.ensure_collection()
+            chunks = [
+                RetrievedChunk(
+                    chunk_id=api.directory.name + revision,
+                    document_id="same",
+                    title="synthetic",
+                    content="synthetic",
+                    score=0,
+                    policy_version=revision,
+                    metadata={"tenant_subject": api.subjects["user"], "revision": revision},
+                )
+                for revision in ["old", "new"]
+            ]
+            store.write(chunks, [[1.0, 0.0], [0.0, 1.0]])
+&gt;           store.remove_document(api.subjects["user"], "same", revision="old")
+E           TypeError: PrivateVectorStore.remove_document() got an unexpected keyword argument 'revision'
+
+research/docs/agent_engineering_upgrade/p4_security_remediation/test_private_http.py:226: TypeError</failure></testcase></testsuite></testsuites>
