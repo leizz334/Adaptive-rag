@@ -115,3 +115,5 @@ Dense/Reranker的排序指标优于本微型语料上的BM25，Reranker CPU检�
 - D与原B回归所属6个服务最终停止、卷与新模型权重保留。成功baseline/development/independent worker exit0；首个失败启动exit3单独保留。原有MySQL持续运行；无prune/down-v或删除用户资源。
 
 最终交付状态与远程HEAD由 `evidence/delivery.json`/Git/final response核验；完整开放语义、生产总体收益、Experience收益均不能强行PASS。**P4-D结束；Experience Active=NO；P4-E_STARTED=NO。**
+
+交付核验：D4检查点 `30cf42a50a80ed8507a104c2ecd39054dd4eeb53` 已正常Push至 `codex/p4-ablation-evaluation`，`git ls-remote` 精确一致。随后仅提交交付元数据并再次正常Push；最终HEAD以Git及最终答复为准，避免文件自身hash递归。所有授权工程任务完成，质量保持PARTIAL_PASS，停止本阶段。
