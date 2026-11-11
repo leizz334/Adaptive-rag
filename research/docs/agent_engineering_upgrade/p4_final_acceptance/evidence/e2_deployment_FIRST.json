@@ -1,0 +1,120 @@
+{
+  "profile": "actual app.asgi; production settings; offline LLM; no neural models",
+  "runs": [
+    {
+      "attempt": 0,
+      "pid": 85142,
+      "process_to_health_ms": 2575.961979000567,
+      "ready": {
+        "ready": true,
+        "dependencies": [
+          {
+            "name": "database",
+            "ready": true,
+            "detail": ""
+          },
+          {
+            "name": "llm",
+            "ready": true,
+            "detail": "configured"
+          },
+          {
+            "name": "redis",
+            "ready": true,
+            "detail": ""
+          },
+          {
+            "name": "vector_store",
+            "ready": true,
+            "detail": "QdrantVectorStore"
+          }
+        ]
+      },
+      "capabilities": {
+        "database": "postgresql",
+        "cache": "redis",
+        "vector_store": "QdrantVectorStore",
+        "retriever": "bm25",
+        "reranker": "lexical",
+        "llm": "offline",
+        "degraded": true
+      },
+      "unauthorized_status": 401,
+      "sse_status": 200,
+      "sse_events": [
+        {
+          "event": "started",
+          "trace_id": "tr_3a3b39907b94401ca9ee477c427e1d4b"
+        },
+        {
+          "event": "node",
+          "node": "apply_guardrail"
+        },
+        {
+          "event": "node",
+          "node": "classify_intent",
+          "intent": "greeting"
+        },
+        {
+          "event": "node",
+          "node": "route_complexity",
+          "strategy": "direct"
+        },
+        {
+          "event": "node",
+          "node": "generate_answer"
+        },
+        {
+          "event": "node",
+          "node": "check_faithfulness"
+        },
+        {
+          "event": "node",
+          "node": "compact_memory"
+        },
+        {
+          "event": "token",
+          "text": "你好，我可以帮你查看商品政策、订单、物流和售后问题。"
+        },
+        {
+          "event": "answer",
+          "data": {
+            "answer": "你好，我可以帮你查看商品政策、订单、物流和售后问题。",
+            "session_id": "sess_57322b2aead1481ca5da3f483444aa9a",
+            "trace_id": "tr_3a3b39907b94401ca9ee477c427e1d4b",
+            "root_run_id": null,
+            "intent": "greeting",
+            "complexity": "simple",
+            "strategy": "direct",
+            "citations": [],
+            "pending_action": null,
+            "refused": false,
+            "error_code": null,
+            "token_usage": {
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0
+            },
+            "latency": {
+              "intent_ms": 0.2820720001182053,
+              "routing_ms": 0.032881998777156696,
+              "retrieval_ms": 0.0,
+              "rerank_ms": 0.0,
+              "tool_ms": 0.0,
+              "llm_ms": 0.0,
+              "total_ms": 33.416098998714006
+            }
+          }
+        },
+        {
+          "event": "done",
+          "trace_id": "tr_3a3b39907b94401ca9ee477c427e1d4b"
+        }
+      ],
+      "secrets_in_public_responses": false,
+      "exit_code": -15
+    }
+  ],
+  "paid_requests": 0,
+  "active": false
+}
