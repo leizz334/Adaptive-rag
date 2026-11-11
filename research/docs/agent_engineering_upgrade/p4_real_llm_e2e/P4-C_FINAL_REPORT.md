@@ -75,3 +75,7 @@ C0 `23b7e31` 冻结 `freeze.json`；开发CD02暴露缺陷后，在C1 `b3c3c69` 
 ### 最终验证实测结果
 
 最终全量pytest：**847PASS、0FAIL/ERROR、1历史SKIP，88.15秒**。原始XML首轮错误与最终成功均保留。静态Ruff/format339/Mypy150/pip均通过。工程验证完成；模型质量保持PARTIAL，交付等待正常push/远程HEAD核验。
+
+### 正常交付已核验
+
+阶段检查点 `2ab952b1c692ab7ad928f0da8688f7b54e63a5bd` 已正常Push至 `codex/p4-real-llm-e2e`，`git ls-remote` 与本地精确一致。C0—C3工程任务均完成，质量结论保持PARTIAL。所属6个服务停止、卷保留，API子进程exit0，原MySQL继续运行。交付元数据见 `evidence/delivery.json`；本段元数据提交随后正常Push并再次核验最终HEAD，最终答复记录该哈希。无force-push，无额外模型调用，无P4-D/E。
