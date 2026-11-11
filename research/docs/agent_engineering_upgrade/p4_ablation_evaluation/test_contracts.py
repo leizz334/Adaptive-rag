@@ -94,3 +94,75 @@ def test_incomplete_pairs_never_form_effect_denominators():
     )
     result = transitions([dict(complete=True, arms={"M0": True, "M1": False})], "M0", "M1")
     assert result["negative"] == 1 and result["positive"] == 0
+
+
+def test_policy_duration_negation_and_wrong_citation_fail_closed():
+    case = dict(kind="rag", relevant_ids=["D_R04"], atoms=[["240天"], ["订单凭证"]], forbidden=[])
+    state = dict(orders=[], audit_logs=[], idempotency_keys=[])
+    row = dict(
+        status=200,
+        body=dict(answer="保修不是240天，需要订单凭证。", citations=[dict(document_id="D_R04")]),
+        tools=[],
+        before=state,
+        after=state,
+    )
+    assert not score(case, row)["objective_success"]
+    row["body"]["answer"] = "保修240天，需要订单凭证。"
+    assert score(case, row)["objective_success"]
+    row["body"]["citations"] = [dict(document_id="D_R01")]
+    assert not score(case, row)["objective_success"]
+
+
+@pytest.mark.parametrize(
+    "qid,answer",
+    [
+        ("D_Q01", "14天内退货，无需未使用，也无需包装和配件。不能保证服务，已烧水照样可以退货。"),
+        ("D_Q02", "保修240天，单侧无声可免费维修，需订单凭证。进水也免费维修；不能保证当天完成。"),
+    ],
+)
+def test_independent_review_policy_contradictions_never_pass(qid, answer):
+    from research.docs.agent_engineering_upgrade.p4_ablation_evaluation.common import HERE
+
+    cases = json.loads((HERE / "tasks.json").read_text())["cases"]
+    case = next(c for c in cases if c["id"] == qid)
+    state = dict(orders=[], audit_logs=[], idempotency_keys=[])
+    row = dict(
+        status=200,
+        body=dict(answer=answer, citations=[dict(document_id=case["relevant_ids"][0])]),
+        tools=[],
+        before=state,
+        after=state,
+    )
+    assert score(case, row)["objective_success"] is not True
+
+
+def test_unassessed_semantic_arm_excludes_effect_pair():
+    assert (
+        transitions([dict(complete=True, arms={"BM25": None, "DENSE": True})], "BM25", "DENSE")[
+            "valid_pairs"
+        ]
+        == 0
+    )
+
+
+@pytest.mark.parametrize("qid", ["D_Q01", "D_Q02"])
+def test_canonical_source_policy_supported_but_incomplete_paraphrase_abstains(qid):
+    from research.docs.agent_engineering_upgrade.p4_ablation_evaluation.common import HERE
+
+    case = next(c for c in json.loads((HERE / "tasks.json").read_text())["cases"] if c["id"] == qid)
+    doc = next(
+        c
+        for c in json.loads((HERE / "corpus.json").read_text())["documents"]
+        if c["id"] in case["relevant_ids"]
+    )
+    state = dict(orders=[], audit_logs=[], idempotency_keys=[])
+    row = dict(
+        status=200,
+        body=dict(answer=doc["content"], citations=[dict(document_id=case["relevant_ids"][0])]),
+        tools=[],
+        before=state,
+        after=state,
+    )
+    assert score(case, row)["objective_success"] is True
+    row["body"]["answer"] = "14天" if qid == "D_Q01" else "240天"
+    assert score(case, row)["objective_success"] is None

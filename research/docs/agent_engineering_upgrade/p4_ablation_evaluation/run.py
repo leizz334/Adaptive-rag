@@ -192,6 +192,7 @@ def pair(api, cfg, case):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("stage", choices=["baseline", "pairs"])
+    parser.add_argument("--split", choices=["development", "independent_test"])
     args = parser.parse_args()
     verify_freeze()
     RUN.mkdir(parents=True, exist_ok=True)
@@ -207,21 +208,30 @@ def main():
                 is not True
             ):
                 raise SafetyStop("real RAG model validation missing")
-        api = Api(args.stage, cfg)
+        if args.stage == "pairs" and not args.split:
+            raise SafetyStop("paired stage requires explicit development/independent invocation")
+        if args.stage == "pairs" and args.split == "independent_test":
+            review = json.loads((HERE / "evidence/development_review.json").read_text())
+            from .common import sha
+
+            if review.get("reviewed") is not True or review.get("freeze_sha256") != sha(
+                HERE / "freeze_d2.json"
+            ):
+                raise SafetyStop("missing/mismatched development review gate")
+        api = Api(args.stage if args.stage == "baseline" else args.split, cfg)
         try:
             api.wait()
             if args.stage == "baseline":
                 baseline(api)
             else:
                 cases = json.loads((HERE / "tasks.json").read_text())["cases"]
-                for split in ["development", "independent_test"]:
-                    for case in cases:
-                        if case["split"] == split:
-                            pair(api, cfg, case)
+                for case in cases:
+                    if case["split"] == args.split:
+                        pair(api, cfg, case)
         finally:
             api.stop()
         write(
-            RUN / (args.stage + "_summary.json"),
+            RUN / ((args.stage if args.stage == "baseline" else args.split) + "_summary.json"),
             dict(totals=Ledger(RUN).totals(), stage=args.stage),
         )
 

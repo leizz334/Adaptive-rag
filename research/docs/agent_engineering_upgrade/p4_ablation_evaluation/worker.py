@@ -42,7 +42,9 @@ from .retrieval import build
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, required=True)
-    parser.add_argument("--stage", choices=["baseline", "pairs"], required=True)
+    parser.add_argument(
+        "--stage", choices=["baseline", "development", "independent_test"], required=True
+    )
     args = parser.parse_args()
     directory = RUN / ("worker_" + args.stage)
     directory.mkdir(exist_ok=False)
@@ -87,7 +89,7 @@ def main():
     async def lifespan(application):
         engine, factory, redis = await build_infrastructure(settings)
         assert engine.dialect.name == "postgresql" and redis is not None and await redis.ping()
-        retriever, reranker, store, modelmetrics = await build(cfg, real=args.stage == "pairs")
+        retriever, reranker, store, modelmetrics = await build(cfg, real=args.stage != "baseline")
         service = ChatService(
             settings=settings,
             llm=provider,
@@ -118,7 +120,7 @@ def main():
                 model_metrics=modelmetrics,
                 stage=args.stage,
                 active=False,
-                models_required=args.stage == "pairs",
+                models_required=args.stage != "baseline",
             ),
         )
         try:

@@ -66,7 +66,7 @@ async def main():
                 model_metrics=modelmetrics,
                 full_corpus_size=len(chunks()),
                 model_download=json.loads((HERE / "evidence/model_download.json").read_text()),
-                setup_ms=(time.perf_counter() - started) * 1000,
+                total_benchmark_ms=(time.perf_counter() - started) * 1000,
                 records=records,
                 label_provenance="separate AI author before retrieval outcomes,not human/blind",
                 cache="disabled",

@@ -14,7 +14,7 @@ from app.retrieval.reranker import DocumentReranker
 from app.retrieval.vector import QdrantVectorStore, VectorRecord, VectorRetriever
 from app.schemas.retrieval import RetrievedChunk
 
-from .common import ARM, HERE
+from .common import ARM, HERE, sha
 
 
 def chunks():
@@ -32,6 +32,13 @@ def chunks():
 
 
 def load_models():
+    integrity_started = time.perf_counter()
+    manifest = json.loads((HERE / "evidence/model_download.json").read_text())
+    for model in manifest["models"]:
+        for item in model["files"]:
+            if sha(HERE / model["private_relative_path"] / item["file"]) != item["sha256"]:
+                raise RuntimeError("pinned model file hash mismatch; no fallback")
+    integrity_ms = (time.perf_counter() - integrity_started) * 1000
     import torch
 
     torch.set_num_threads(2)
@@ -62,6 +69,7 @@ def load_models():
     ), "real reranker unavailable;NO LEXICAL fallback"
     r_ms = (time.perf_counter() - start) * 1000
     metrics = dict(
+        model_integrity_ms=integrity_ms,
         embedding_class=type(embed._model).__name__,
         reranker_class=type(rerank._model).__name__,
         embedding_dim=embed.dim,
