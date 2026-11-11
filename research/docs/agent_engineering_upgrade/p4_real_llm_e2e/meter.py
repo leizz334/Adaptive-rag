@@ -125,8 +125,8 @@ class MeteredTransport(httpx.AsyncBaseTransport):
         ledger = self.ledger
         with exclusive(ledger.run):
             ledger.rows = read(ledger.path) if ledger.path.exists() else []
-            if ledger.fingerprint:
-                ledger.fingerprint()  # recheck frozen inputs before every paid dispatch
+            source_fingerprint = digest(ledger.fingerprint()) if ledger.fingerprint else None
+            # Recheck frozen inputs before every paid dispatch; preserve source linkage.
             reserve_input, reserve_output = len(raw) + 1024, body["max_tokens"]
             ledger.admit(reserve_input, reserve_output)
             row = dict(
@@ -137,6 +137,7 @@ class MeteredTransport(httpx.AsyncBaseTransport):
                 started_at=stamp(),
                 reserve_input=reserve_input,
                 reserve_output=reserve_output,
+                source_freeze_sha256=source_fingerprint,
                 request_sha256=digest(raw),
                 prompt_sha256=digest(body["messages"]),
                 usage=None,

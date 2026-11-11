@@ -54,6 +54,9 @@ def verified_facts(results: list[ToolResult]) -> list[str]:
             if amount:
                 facts.append(f"订单 {oid} 总金额：{amount}。")
         elif result.name == "track_shipment" and oid:
+            tracking = _identifier(data.get("tracking_no"))
+            if tracking:
+                facts.append(f"订单 {oid} 的物流单号：{tracking}。")
             events = data.get("events")
             if isinstance(events, list):
                 if not events:

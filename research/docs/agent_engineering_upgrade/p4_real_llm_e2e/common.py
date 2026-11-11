@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 from pathlib import Path
 
 from research.docs.agent_engineering_upgrade.p2_quality.real import SafetyStop
@@ -16,7 +17,10 @@ def sha(path):
 
 
 def verify_freeze():
-    frozen = json.loads((HERE / "freeze.json").read_bytes())
+    path = Path(os.environ.get("P4C_FREEZE_FILE", str(HERE / "freeze.json"))).resolve()
+    if path.parent != HERE or path.name not in {"freeze.json", "freeze_v2.json"}:
+        raise SafetyStop("unowned freeze file")
+    frozen = json.loads(path.read_bytes())
     if any(sha(ROOT / path) != digest for path, digest in frozen["hashes"].items()):
         raise SafetyStop("frozen application/dataset/scorer/harness drift; no paid dispatch")
     return frozen

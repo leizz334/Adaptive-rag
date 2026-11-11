@@ -1,0 +1,392 @@
+[
+  {
+    "schema": "p4c-request-v1",
+    "sequence": 0,
+    "group": "CD01",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T04:44:28.372092+00:00",
+    "reserve_input": 3803,
+    "reserve_output": 256,
+    "request_sha256": "5441b987975ea94f55f3bc5e794a0f3dd32fb4ae8905f92f3f1f212a7bcc4024",
+    "prompt_sha256": "d86d1b48c866f4a875c5f629d72aaaaf235b3aa26cb0eaf1167793dda7fde25f",
+    "usage": {
+      "prompt_tokens": 698,
+      "completion_tokens": 61,
+      "total_tokens": 759
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"order_inquiry\",\"confidence\":0.95,\"rationale\":\"用户要求核实指定订单的当前状态和总金额，属于查询某笔订单状态，不是物流轨迹，也不是退款或售后，因此归为 order_inquiry。\",\"prompt_version\":\"intent_v3\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 698,
+        "completion_tokens": 61,
+        "total_tokens": 759
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 3136.3943179999296,
+    "completed_at": "2026-11-11T04:44:31.519360+00:00"
+  },
+  {
+    "schema": "p4c-request-v1",
+    "sequence": 1,
+    "group": "CD01",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T04:44:31.547168+00:00",
+    "reserve_input": 1921,
+    "reserve_output": 256,
+    "request_sha256": "e1aa70ae3af2380c4bde05c46d9d43877a256b00ce3deb97c0daadf7a5f8aad5",
+    "prompt_sha256": "627e911e5faa72e6aecc065b664556b9458e2c4ca6fc9bc527e7b48b987f9768",
+    "usage": {
+      "prompt_tokens": 196,
+      "completion_tokens": 54,
+      "total_tokens": 250
+    },
+    "stage": "router",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"confidence\":0.95,\"rationale\":\"用户要求核实具体订单 ORD71021 的当前状态和总金额，需要查询订单系统数据，属于需要系统数据的订单查询场景。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 196,
+        "completion_tokens": 54,
+        "total_tokens": 250
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1365.636042999995,
+    "completed_at": "2026-11-11T04:44:32.924352+00:00"
+  },
+  {
+    "schema": "p4c-request-v1",
+    "sequence": 2,
+    "group": "CD01",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T04:44:32.954454+00:00",
+    "reserve_input": 7624,
+    "reserve_output": 512,
+    "request_sha256": "771940a7aff0c7916f05334c08da1518691437be0fbe78875ae932c2d6790383",
+    "prompt_sha256": "7d635525005d453885d7508766fb9f38ed6040fdb8ebb8598ba8488edd4ea90e",
+    "usage": {
+      "prompt_tokens": 1607,
+      "completion_tokens": 89,
+      "total_tokens": 1696
+    },
+    "stage": "planner",
+    "available_tool_names": [
+      "escalate_to_human",
+      "get_order",
+      "search_knowledge",
+      "track_shipment"
+    ],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"rationale\":\"用户只需核实订单 ORD71021 的当前状态和总金额，get_order 一次即可返回 status 与 total_cents，无需查询物流或商品明细。\",\"steps\":[{\"step_id\":1,\"goal\":\"查询订单 ORD71021 的状态与总金额\",\"tool_name\":\"get_order\",\"arguments\":{\"order_id\":\"ORD71021\"},\"needs_retrieval\":false}]}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1607,
+        "completion_tokens": 89,
+        "total_tokens": 1696
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1624.130217000129,
+    "completed_at": "2026-11-11T04:44:34.590867+00:00"
+  },
+  {
+    "schema": "p4c-request-v1",
+    "sequence": 3,
+    "group": "CD01",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T04:44:34.623251+00:00",
+    "reserve_input": 3290,
+    "reserve_output": 700,
+    "request_sha256": "fd1f6e2cf6079e7068a476e20f4ab3552526acde6550c7a6bf4528f287b1dde4",
+    "prompt_sha256": "1a2b9e0fd987d1e31e6227a4c7a830d505de08f61592c724e2bd725444cf2535",
+    "usage": {
+      "prompt_tokens": 528,
+      "completion_tokens": 129,
+      "total_tokens": 657
+    },
+    "stage": "generate",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"answer\":\"已核实 ORD71021，分两项说明：\\n\\n1. 当前状态：shipped（已发货）。运单号：SYNCD0121。\\n2. 总金额：20860 分，即 208.60 元。\\n\\n补充说明：该订单的支付时间、发货时间、签收时间及收货城市在系统中暂无记录，无法进一步确认；商品明细为空，无法核对具体商品。如需查询物流轨迹或商品明细，请提供更多信息或转人工核实。\",\"citation_chunk_ids\":[],\"refused\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 528,
+        "completion_tokens": 129,
+        "total_tokens": 657
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1697.9234919999726,
+    "completed_at": "2026-11-11T04:44:36.332597+00:00"
+  },
+  {
+    "schema": "p4c-request-v1",
+    "sequence": 4,
+    "group": "CD01",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T04:44:36.360548+00:00",
+    "reserve_input": 2883,
+    "reserve_output": 512,
+    "request_sha256": "d01010c3dda91675645bdef38b815c1f297e06b7add1cdf79347c709ad36f7e6",
+    "prompt_sha256": "96c14db635dd0cfd7af091170c27c560dd9ea83912a8344b3b1493bf73f1ef50",
+    "usage": {
+      "prompt_tokens": 454,
+      "completion_tokens": 7,
+      "total_tokens": 461
+    },
+    "stage": "judge",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"status\":\"SUPPORTED\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 454,
+        "completion_tokens": 7,
+        "total_tokens": 461
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1256.156031000046,
+    "completed_at": "2026-11-11T04:44:37.629497+00:00"
+  },
+  {
+    "schema": "p4c-request-v1",
+    "sequence": 5,
+    "group": "CD02",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T04:44:37.773941+00:00",
+    "reserve_input": 3785,
+    "reserve_output": 256,
+    "request_sha256": "76f662fa0059ce57dac6088704f0abe5e3461f5875847553f42550b94a94e34a",
+    "prompt_sha256": "4b2dbd1f00a09d9643457c6a0d084489b7506f46a4080754cf6aaca1c2d6f149",
+    "usage": {
+      "prompt_tokens": 695,
+      "completion_tokens": 54,
+      "total_tokens": 749
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"logistics\",\"confidence\":0.85,\"rationale\":\"用户明确要求查询物流单号，属于物流轨迹查询；同时询问总金额，但物流查询优先级更高，因此归为 logistics。\",\"prompt_version\":\"intent_v3\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 695,
+        "completion_tokens": 54,
+        "total_tokens": 749
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1283.4690979998413,
+    "completed_at": "2026-11-11T04:44:39.068854+00:00"
+  },
+  {
+    "schema": "p4c-request-v1",
+    "sequence": 6,
+    "group": "CD02",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T04:44:39.096145+00:00",
+    "reserve_input": 1899,
+    "reserve_output": 256,
+    "request_sha256": "1332ee27dbd697b495d715ad7321217c02d1d70e72aea71740c2121498dd2b6e",
+    "prompt_sha256": "714cd6d1a48d021f2dbcc11d6ba9c7718b0d0bdea195578e11366f3866237cfc",
+    "usage": {
+      "prompt_tokens": 192,
+      "completion_tokens": 53,
+      "total_tokens": 245
+    },
+    "stage": "router",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"confidence\":0.95,\"rationale\":\"用户请求查询特定订单 ORD71022 的物流单号和总金额，需要访问订单/物流系统数据，属于工具调用场景。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 192,
+        "completion_tokens": 53,
+        "total_tokens": 245
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1289.1553640001803,
+    "completed_at": "2026-11-11T04:44:40.398869+00:00"
+  },
+  {
+    "schema": "p4c-request-v1",
+    "sequence": 7,
+    "group": "CD02",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T04:44:40.427451+00:00",
+    "reserve_input": 7584,
+    "reserve_output": 512,
+    "request_sha256": "fb389f17de416f7150b2b287ab82542408a266e6927f5213af382baa24699132",
+    "prompt_sha256": "22bc2759f6d87995b03413870b6c410206b7f6b841087e37244b1bd56626cd11",
+    "usage": {
+      "prompt_tokens": 1600,
+      "completion_tokens": 149,
+      "total_tokens": 1749
+    },
+    "stage": "planner",
+    "available_tool_names": [
+      "escalate_to_human",
+      "get_order",
+      "search_knowledge",
+      "track_shipment"
+    ],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"rationale\":\"用户同时需要 ORD71022 的物流单号和总金额：总金额由 get_order 提供，物流单号由 track_shipment 提供，两个明确读取目标分别查询。\",\"steps\":[{\"step_id\":1,\"goal\":\"查询订单 ORD71022 的订单头，获取总金额与状态\",\"tool_name\":\"get_order\",\"arguments\":{\"order_id\":\"ORD71022\"},\"needs_retrieval\":false},{\"step_id\":2,\"goal\":\"查询订单 ORD71022 的物流轨迹，获取运单号\",\"tool_name\":\"track_shipment\",\"arguments\":{\"order_id\":\"ORD71022\"},\"needs_retrieval\":false}]}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1600,
+        "completion_tokens": 149,
+        "total_tokens": 1749
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1728.3270830002948,
+    "completed_at": "2026-11-11T04:44:42.168303+00:00"
+  },
+  {
+    "schema": "p4c-request-v1",
+    "sequence": 8,
+    "group": "CD02",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T04:44:42.199827+00:00",
+    "reserve_input": 3489,
+    "reserve_output": 700,
+    "request_sha256": "7a73691c7406bfdeb936f448e5741646b8a08b5540cf66f8e0f3481c3b8b483f",
+    "prompt_sha256": "663039ee17be03628bb2e99388359b92c66730d67fb9f581958bcf8a30a75603",
+    "usage": {
+      "prompt_tokens": 592,
+      "completion_tokens": 84,
+      "total_tokens": 676
+    },
+    "stage": "generate",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"answer\":\"已查询订单 ORD71022：物流单号为 SYNCD0222；订单总金额为 317.40 元（31740 分）。物流轨迹方面，当前查询未返回任何运输事件，且收货城市为空，因此无法确认具体物流状态与时效，建议稍后重试或转人工核实。\",\"citation_chunk_ids\":[],\"refused\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 592,
+        "completion_tokens": 84,
+        "total_tokens": 676
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1595.1480019998598,
+    "completed_at": "2026-11-11T04:44:43.806968+00:00"
+  },
+  {
+    "schema": "p4c-request-v1",
+    "sequence": 9,
+    "group": "CD02",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T04:44:43.828766+00:00",
+    "reserve_input": 2981,
+    "reserve_output": 512,
+    "request_sha256": "a9c9c77dcce74e33ab62a67a9e7e51bda403f1fbb5249017af444258db0a7574",
+    "prompt_sha256": "cc971eddf098d7ae8509d0ef3ff0c9cc28b2ddac5667247493a42db1eb0f67f0",
+    "usage": {
+      "prompt_tokens": 493,
+      "completion_tokens": 7,
+      "total_tokens": 500
+    },
+    "stage": "judge",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"status\":\"SUPPORTED\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 493,
+        "completion_tokens": 7,
+        "total_tokens": 500
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 960.9140789998492,
+    "completed_at": "2026-11-11T04:44:44.802809+00:00"
+  }
+]
