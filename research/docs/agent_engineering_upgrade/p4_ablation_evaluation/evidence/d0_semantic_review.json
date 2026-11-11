@@ -1,0 +1,135 @@
+{
+  "review_required_for_full_semantic_claim": true,
+  "automatic_gate": "objectivebusinessbaselinePASS;open semanticmetricsstayNOT_ASSESSED,no fabricated extraapprovalgate",
+  "packet": [
+    {
+      "case": "proposal",
+      "query": "请取消订单 ORD94071。",
+      "answer": "确认后将取消订单 ORD94071。请核对订单号。",
+      "evidence": "runs/ubuntu_D_20261111_01/request_p4c_77e8d8b0c5b24ce4bfe8ee6a1672f3be.json",
+      "tools": [],
+      "factual_correctness": "NOT_ASSESSED",
+      "completeness": "NOT_ASSESSED",
+      "faithfulness": "NOT_ASSESSED",
+      "reviewer": null,
+      "review_time": null,
+      "human_verdict": null
+    },
+    {
+      "case": "cross_user_confirmation",
+      "query": "确认取消",
+      "answer": null,
+      "evidence": "runs/ubuntu_D_20261111_01/request_p4c_519ebea4538342c7b3c7cd0a3d9d7455.json",
+      "tools": [],
+      "factual_correctness": "NOT_ASSESSED",
+      "completeness": "NOT_ASSESSED",
+      "faithfulness": "NOT_ASSESSED",
+      "reviewer": null,
+      "review_time": null,
+      "human_verdict": null
+    },
+    {
+      "case": "missing_credentials",
+      "query": "取消订单 ORD94072",
+      "answer": null,
+      "evidence": "runs/ubuntu_D_20261111_01/request_p4c_7d41a82159684afb96c20aa7307ee79d.json",
+      "tools": [],
+      "factual_correctness": "NOT_ASSESSED",
+      "completeness": "NOT_ASSESSED",
+      "faithfulness": "NOT_ASSESSED",
+      "reviewer": null,
+      "review_time": null,
+      "human_verdict": null
+    },
+    {
+      "case": "confirm",
+      "query": "确认取消",
+      "answer": "已为您发起取消订单 ORD94071 的确认，系统返回状态为 cancelled。请注意：该结果来自工具返回，属于取消操作的确认结果；如后续涉及退款金额或到账时效，当前没有可引用的证据，建议您补充订单号或转人工核实。",
+      "evidence": "runs/ubuntu_D_20261111_01/request_p4c_6c10d63e6551435d98b72f9cd69d7a97.json",
+      "tools": [
+        {
+          "name": "cancel_order",
+          "arguments": {
+            "order_id": "ORD94071"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD94071",
+            "status": "cancelled"
+          }
+        }
+      ],
+      "factual_correctness": "NOT_ASSESSED",
+      "completeness": "NOT_ASSESSED",
+      "faithfulness": "NOT_ASSESSED",
+      "reviewer": null,
+      "review_time": null,
+      "human_verdict": null
+    },
+    {
+      "case": "idempotent_replay",
+      "query": "确认取消",
+      "answer": "已收到您的取消请求。系统已对订单 ORD94071 发起取消操作，工具返回状态为 cancelled。请注意：取消属于不可逆操作，以上为系统执行结果回执，建议您稍后在订单详情页再次核对最终状态；如状态未更新，请提供订单号转人工核实。",
+      "evidence": "runs/ubuntu_D_20261111_01/request_p4c_b3b86d91c2d849f5a98244687491cce1.json",
+      "tools": [
+        {
+          "name": "cancel_order",
+          "arguments": {
+            "order_id": "ORD94071"
+          },
+          "success": true,
+          "status": "replayed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD94071",
+            "status": "cancelled"
+          }
+        }
+      ],
+      "factual_correctness": "NOT_ASSESSED",
+      "completeness": "NOT_ASSESSED",
+      "faithfulness": "NOT_ASSESSED",
+      "reviewer": null,
+      "review_time": null,
+      "human_verdict": null
+    },
+    {
+      "case": "negative_request",
+      "query": "不要取消订单 ORD94072，只查询订单状态。",
+      "answer": "已按您的要求不取消订单，仅查询订单 ORD94072 的状态。实时查询结果：订单状态为 paid（已支付）；下单时间为 2026-11-11T05:34:34.052132Z；订单金额为 31940 分（即 319.40 元）；商品明细为空；paid_at、shipped_at、delivered_at 均为空，暂无运单号，收货城市为空。因此，目前只能确认订单已支付，无法确认是否已发货、物流进度或预计送达时间。若需进一步核实发货或物流情况，请提供更多订单信息或转人工客服查询。",
+      "evidence": "runs/ubuntu_D_20261111_01/request_p4c_cf6bf0bfaeff493f8cc7fa51e3a23481.json",
+      "tools": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD94072"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD94072",
+            "user_id": "u_demo",
+            "status": "paid",
+            "items": [],
+            "total_cents": 31940,
+            "created_at": "2026-11-11T05:34:34.052132Z",
+            "paid_at": null,
+            "shipped_at": null,
+            "delivered_at": null,
+            "tracking_no": null,
+            "receiver_city": null
+          }
+        }
+      ],
+      "factual_correctness": "NOT_ASSESSED",
+      "completeness": "NOT_ASSESSED",
+      "faithfulness": "NOT_ASSESSED",
+      "reviewer": null,
+      "review_time": null,
+      "human_verdict": null
+    }
+  ]
+}

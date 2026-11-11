@@ -1,0 +1,557 @@
+[
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 0,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:36.719620+00:00",
+    "reserve_input": 3760,
+    "reserve_output": 256,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "6afb6969326d9778c6874462ca52ab24780a4f5d1a68d4867b5b6262f33a3391",
+    "prompt_sha256": "db1477270ea67a43def79e40982114aa854dd01b10a94580d7dad7c2881319f9",
+    "usage": {
+      "prompt_tokens": 688,
+      "completion_tokens": 42,
+      "total_tokens": 730
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"cancel_order\",\"confidence\":0.98,\"rationale\":\"用户明确要求取消订单 ORD94071，属于取消未发货订单场景。\",\"prompt_version\":\"intent_v3\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 688,
+        "completion_tokens": 42,
+        "total_tokens": 730
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 3250.834109000607,
+    "completed_at": "2026-11-11T05:34:39.981678+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 1,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:39.999757+00:00",
+    "reserve_input": 1877,
+    "reserve_output": 256,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "179323273f4ce7ede37771445122f8e640f0bbbe31052549416e203c74164e3c",
+    "prompt_sha256": "4d54c26fdddd4ba1e8d96c6a29b1a3666ee9d2d1ee0decd1d77d1d2b15b4cab4",
+    "usage": {
+      "prompt_tokens": 185,
+      "completion_tokens": 51,
+      "total_tokens": 236
+    },
+    "stage": "router",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"confidence\":0.95,\"rationale\":\"用户请求取消指定订单 ORD94071，需要访问订单系统查询并执行取消操作，属于需要系统数据的工具调用场景。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 185,
+        "completion_tokens": 51,
+        "total_tokens": 236
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1749.145376999877,
+    "completed_at": "2026-11-11T05:34:41.760327+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 2,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:41.788431+00:00",
+    "reserve_input": 7497,
+    "reserve_output": 512,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "641d9e1689a899a65e83985c6329a0b09b60d644b26e4804e6dd1c19c5354b63",
+    "prompt_sha256": "5e53ab54c0d1f8d016a47f9dbec0bcf30b8c9c1477819e1e62a872c36d97c97a",
+    "usage": {
+      "prompt_tokens": 1554,
+      "completion_tokens": 168,
+      "total_tokens": 1722
+    },
+    "stage": "planner",
+    "available_tool_names": [
+      "cancel_order",
+      "escalate_to_human",
+      "get_order",
+      "search_knowledge"
+    ],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"rationale\":\"用户明确要求取消订单 ORD94071。按取消流程，先查询订单当前状态确认是否可取消（未发货），再展示待确认操作；取消为破坏性操作，需用户确认后才执行，因此本轮只规划查询与确认展示，不执行 cancel_order。\",\"steps\":[{\"step_id\":1,\"goal\":\"查询订单 ORD94071 当前状态与金额，确认是否未发货可取消\",\"tool_name\":\"get_order\",\"arguments\":{\"order_id\":\"ORD94071\"},\"needs_retrieval\":false},{\"step_id\":2,\"goal\":\"向用户展示待确认的取消操作，等待用户确认后再执行 cancel_order\",\"tool_name\":\"cancel_order\",\"arguments\":{\"order_id\":\"ORD94071\"},\"needs_retrieval\":false}]}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1554,
+        "completion_tokens": 168,
+        "total_tokens": 1722
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1946.168451999256,
+    "completed_at": "2026-11-11T05:34:43.745432+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 3,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:44.101232+00:00",
+    "reserve_input": 3745,
+    "reserve_output": 256,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "7274a035280a006180f12a062364b97b4c8dd624abcb08fddaab6b7aec1f8f16",
+    "prompt_sha256": "89a3055daa0334c531ebf8bdbb3ef077f1361419de81d773e55612b4e634beab",
+    "usage": {
+      "prompt_tokens": 683,
+      "completion_tokens": 56,
+      "total_tokens": 739
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"cancel_order\",\"confidence\":0.72,\"rationale\":\"用户说“确认取消”，属于取消订单意图，但未明确是取消订单还是取消退款/其他操作，按优先级归入 cancel_order。\",\"prompt_version\":\"intent_v3\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 683,
+        "completion_tokens": 56,
+        "total_tokens": 739
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1561.5947189999133,
+    "completed_at": "2026-11-11T05:34:45.673849+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 4,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:45.719962+00:00",
+    "reserve_input": 2328,
+    "reserve_output": 700,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "ba595c1b5889983b938e5ed95ecefb7790adc111627c9db64b73cba7ffb2f3ab",
+    "prompt_sha256": "d63f51ddc0dae41bd3f429bb8713574b5b886bb2392a500a912e28b14776cfd4",
+    "usage": {
+      "prompt_tokens": 275,
+      "completion_tokens": 76,
+      "total_tokens": 351
+    },
+    "stage": "generate",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"answer\":\"已为您发起取消订单 ORD94071 的确认，系统返回状态为 cancelled。请注意：该结果来自工具返回，属于取消操作的确认结果；如后续涉及退款金额或到账时效，当前没有可引用的证据，建议您补充订单号或转人工核实。\",\"citation_chunk_ids\":[],\"refused\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 275,
+        "completion_tokens": 76,
+        "total_tokens": 351
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1966.1789629999475,
+    "completed_at": "2026-11-11T05:34:47.697099+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 5,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:47.723509+00:00",
+    "reserve_input": 2476,
+    "reserve_output": 512,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "49c29a75ec1ea85f3c774fedfa54049fd62a7ef20299c206c0979bfb4ae51604",
+    "prompt_sha256": "e3755e93e9947460c45f71c8d55e4339958ae8792d1556059d9cde75d77fe363",
+    "usage": {
+      "prompt_tokens": 312,
+      "completion_tokens": 7,
+      "total_tokens": 319
+    },
+    "stage": "judge",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"status\":\"SUPPORTED\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 312,
+        "completion_tokens": 7,
+        "total_tokens": 319
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 740.0111010001638,
+    "completed_at": "2026-11-11T05:34:48.474515+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 6,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:48.609408+00:00",
+    "reserve_input": 3745,
+    "reserve_output": 256,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "7274a035280a006180f12a062364b97b4c8dd624abcb08fddaab6b7aec1f8f16",
+    "prompt_sha256": "89a3055daa0334c531ebf8bdbb3ef077f1361419de81d773e55612b4e634beab",
+    "usage": {
+      "prompt_tokens": 683,
+      "completion_tokens": 56,
+      "total_tokens": 739
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"cancel_order\",\"confidence\":0.82,\"rationale\":\"用户说“确认取消”，属于取消订单意图，且未提及转人工、退款到账或物流轨迹，按优先级归为 cancel_order。\",\"prompt_version\":\"intent_v3\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 683,
+        "completion_tokens": 56,
+        "total_tokens": 739
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1371.971300000041,
+    "completed_at": "2026-11-11T05:34:49.992223+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 7,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:50.021406+00:00",
+    "reserve_input": 2335,
+    "reserve_output": 700,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "1ee55c1bb4a990b4b1d8fe1752073d7524e460d9d27f67444a6c3c929b1e7f4e",
+    "prompt_sha256": "4486c3a3cb68cb3fcc9f56d46a597500af02c969e096585cbc5b01668317d480",
+    "usage": {
+      "prompt_tokens": 276,
+      "completion_tokens": 82,
+      "total_tokens": 358
+    },
+    "stage": "generate",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"answer\":\"已收到您的取消请求。系统已对订单 ORD94071 发起取消操作，工具返回状态为 cancelled。请注意：取消属于不可逆操作，以上为系统执行结果回执，建议您稍后在订单详情页再次核对最终状态；如状态未更新，请提供订单号转人工核实。\",\"citation_chunk_ids\":[],\"refused\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 276,
+        "completion_tokens": 82,
+        "total_tokens": 358
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 2023.3926829996562,
+    "completed_at": "2026-11-11T05:34:52.055822+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 8,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:52.080421+00:00",
+    "reserve_input": 2514,
+    "reserve_output": 512,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "ad547baeb73d66265c907ccdb8cd1d2300b627bb7a9f0082a253ba4a07192d6d",
+    "prompt_sha256": "b8837e15836d7d8a350de5dcc9a2aa3e6bde5b2d200b0ae111dc9115f65b1b19",
+    "usage": {
+      "prompt_tokens": 322,
+      "completion_tokens": 7,
+      "total_tokens": 329
+    },
+    "stage": "judge",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"status\":\"SUPPORTED\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 322,
+        "completion_tokens": 7,
+        "total_tokens": 329
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1403.5659189994476,
+    "completed_at": "2026-11-11T05:34:53.495025+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 9,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:53.629782+00:00",
+    "reserve_input": 3787,
+    "reserve_output": 256,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "24d90a57a5630e287e5d977977d537c7cdb51fc26759659377f437e60512ce91",
+    "prompt_sha256": "d795f8473b42a561697d99d7f2c0f48bc84fb4798d2d3b1dfb883766d401e16b",
+    "usage": {
+      "prompt_tokens": 693,
+      "completion_tokens": 45,
+      "total_tokens": 738
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"order_inquiry\",\"confidence\":0.95,\"rationale\":\"用户明确要求查询订单状态，且不要取消订单，属于订单查询而非取消订单。\",\"prompt_version\":\"intent_v3\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 693,
+        "completion_tokens": 45,
+        "total_tokens": 738
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1427.840398000626,
+    "completed_at": "2026-11-11T05:34:55.068980+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 10,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:55.094913+00:00",
+    "reserve_input": 1904,
+    "reserve_output": 256,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "a875627ee4469ef9b846ab4067fdb2d54e2e47503c3fa5e3179c08a72912016d",
+    "prompt_sha256": "5f4a7337ea6bc05bb3ffd49e9f77f5acae64db38b75623282541e7908a4e8223",
+    "usage": {
+      "prompt_tokens": 190,
+      "completion_tokens": 49,
+      "total_tokens": 239
+    },
+    "stage": "router",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"confidence\":0.95,\"rationale\":\"用户明确要求不取消订单，仅查询订单状态，需要访问订单系统获取实时数据，属于系统数据查询场景。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 190,
+        "completion_tokens": 49,
+        "total_tokens": 239
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1451.8023099999482,
+    "completed_at": "2026-11-11T05:34:56.557866+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 11,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:56.585263+00:00",
+    "reserve_input": 6666,
+    "reserve_output": 512,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "c3afcf9e5521e0f5af3544ca2c1a570e684d12f4f56dcd094d5cbb6b3dfdb508",
+    "prompt_sha256": "25fb0e44324334de65540344e15c10f8774ab259c4dc29690fd0d96ea0ae7d06",
+    "usage": {
+      "prompt_tokens": 1339,
+      "completion_tokens": 88,
+      "total_tokens": 1427
+    },
+    "stage": "planner",
+    "available_tool_names": [
+      "escalate_to_human",
+      "get_order",
+      "search_knowledge"
+    ],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"rationale\":\"用户明确表示不要取消订单，只需查询订单状态；因此仅调用 get_order 读取订单头信息，不规划任何取消操作。\",\"steps\":[{\"step_id\":1,\"goal\":\"查询订单 ORD94072 的当前状态、金额与支付/发货信息\",\"tool_name\":\"get_order\",\"arguments\":{\"order_id\":\"ORD94072\"},\"needs_retrieval\":false}]}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1339,
+        "completion_tokens": 88,
+        "total_tokens": 1427
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1484.1339829999924,
+    "completed_at": "2026-11-11T05:34:58.080797+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 12,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:34:58.109864+00:00",
+    "reserve_input": 3165,
+    "reserve_output": 700,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "aef2defad6edb10705de118243f4ed887538c8f40d4af227b1b687099b6d7602",
+    "prompt_sha256": "c026042be0779c4b296f2505069ea174003f73e13256dbeb2feb6580e9a4e97d",
+    "usage": {
+      "prompt_tokens": 490,
+      "completion_tokens": 152,
+      "total_tokens": 642
+    },
+    "stage": "generate",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"answer\":\"已按您的要求不取消订单，仅查询订单 ORD94072 的状态。实时查询结果：订单状态为 paid（已支付）；下单时间为 2026-11-11T05:34:34.052132Z；订单金额为 31940 分（即 319.40 元）；商品明细为空；paid_at、shipped_at、delivered_at 均为空，暂无运单号，收货城市为空。因此，目前只能确认订单已支付，无法确认是否已发货、物流进度或预计送达时间。若需进一步核实发货或物流情况，请提供更多订单信息或转人工客服查询。\",\"citation_chunk_ids\":[],\"refused\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 490,
+        "completion_tokens": 152,
+        "total_tokens": 642
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 2021.3244460001079,
+    "completed_at": "2026-11-11T05:35:00.142306+00:00"
+  },
+  {
+    "schema": "p4d-request-v1",
+    "sequence": 13,
+    "group": "baseline",
+    "status": "RESPONSE",
+    "started_at": "2026-11-11T05:35:00.167647+00:00",
+    "reserve_input": 2974,
+    "reserve_output": 512,
+    "source_freeze_sha256": "cf0a1f56804e76a654cab70f161ca635c83221dbe9d0f55f556927dcb6883908",
+    "request_sha256": "63038abfda1c2bf9e15e6ea9bef3953851cb4bc4bfc0f12872279db137c5ca81",
+    "prompt_sha256": "746ee3f39812f8aef3b18a7f8ec25e3d138674a502d62776175c07353c42ebd3",
+    "usage": {
+      "prompt_tokens": 474,
+      "completion_tokens": 7,
+      "total_tokens": 481
+    },
+    "stage": "judge",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"status\":\"SUPPORTED\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 474,
+        "completion_tokens": 7,
+        "total_tokens": 481
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1226.078542000323,
+    "completed_at": "2026-11-11T05:35:01.404939+00:00"
+  }
+]

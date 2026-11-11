@@ -1970,5 +1970,88 @@
     "status": "DELIVERED_ENGINEERING_COMPLETE_MODEL_QUALITY_PARTIAL",
     "verified_checkpoint": "2ab952b1c692ab7ad928f0da8688f7b54e63a5bd",
     "next_action": "STOP; no P4-D/E"
+  },
+  "P4_D": {
+    "base": "75689d2276c19c51354a0d27966597a23c9063d4",
+    "branch": "codex/p4-ablation-evaluation",
+    "limits": {
+      "requests": 180,
+      "tokens": 160000,
+      "usd": 1,
+      "concurrency": 1,
+      "retries": 0
+    },
+    "tasks": [
+      {
+        "TASK_ID": "P4-D0",
+        "status": "completed_real_baseline_verified",
+        "passes": true,
+        "dependencies": [
+          "P4-C3"
+        ],
+        "acceptance_criteria": [
+          "newrealHITLbaseline+counterexamples;frozenGold/scorer/budget/semanticreviewboundaries"
+        ],
+        "evidence": [
+          "p4_ablation_evaluation/freeze_d0.json",
+          "p4_ablation_evaluation/runs/ubuntu_D_20261111_01/baseline.json",
+          "p4_ablation_evaluation/evidence/d0_contract_VERIFIED.xml"
+        ],
+        "commit_hash": null,
+        "validation": "realproposal/confirm/exactlyonecancel+audit/idempotentreplayPASS;negative/unauthorizedPASS;14paid9050tokens$0.0035124upper;semanticNOT_ASSESSED"
+      },
+      {
+        "TASK_ID": "P4-D1",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P4-D0"
+        ],
+        "acceptance_criteria": [
+          "realexistingembedding/reranker+QdrantIR metrics or documentedactualblocker;nohashclaim"
+        ],
+        "evidence": [],
+        "commit_hash": null
+      },
+      {
+        "TASK_ID": "P4-D2",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P4-D1"
+        ],
+        "acceptance_criteria": [
+          "developmentthenindependent completepairedMemory/RAG arms,honesttransitionsandcost"
+        ],
+        "evidence": [],
+        "commit_hash": null
+      },
+      {
+        "TASK_ID": "P4-D3",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P4-D2"
+        ],
+        "acceptance_criteria": [
+          "independentexperiencequalification;eligibleonlyrealE0E2orNOTRUN"
+        ],
+        "evidence": [],
+        "commit_hash": null
+      },
+      {
+        "TASK_ID": "P4-D4",
+        "status": "pending",
+        "passes": false,
+        "dependencies": [
+          "P4-D3"
+        ],
+        "acceptance_criteria": [
+          "fullregression/report/checkpoints/normalpush+remoteHEAD;STOPnoP4E"
+        ],
+        "evidence": [],
+        "commit_hash": null
+      }
+    ]
   }
 }
