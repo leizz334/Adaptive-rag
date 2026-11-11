@@ -14,11 +14,13 @@
 
 ---
 
-## Ubuntu 最终工程验收（P4-E）
+## Ubuntu安全修复与工程验收（P4-F）
 
-[最终交付摘要](research/docs/agent_engineering_upgrade/p4_final_acceptance/PROJECT_FINAL_SUMMARY.md) · [Ubuntu部署与复现](research/docs/agent_engineering_upgrade/p4_final_acceptance/DEPLOYMENT_GUIDE.md) · [工程验收报告](research/docs/agent_engineering_upgrade/p4_final_acceptance/P4-E_FINAL_REPORT.md) · [人工语义审核包](research/docs/agent_engineering_upgrade/p4_final_acceptance/SEMANTIC_REVIEW_PACKET.md)
+[P4-F安全设计与接入](research/docs/agent_engineering_upgrade/p4_security_remediation/SECURITY_DESIGN.md) · [P4-F最终报告](research/docs/agent_engineering_upgrade/p4_security_remediation/P4-F_FINAL_REPORT.md) · [P4-E工程交付摘要](research/docs/agent_engineering_upgrade/p4_final_acceptance/PROJECT_FINAL_SUMMARY.md) · [人工语义审核包](research/docs/agent_engineering_upgrade/p4_final_acceptance/SEMANTIC_REVIEW_PACKET.md)
 
-当前交付面向隔离合成数据与共享公共知识库。**私有多租户知识库的应用层隔离未实现，不得按该用途部署；Redis故障时限流fail-open，生产付费流量需要外围配额保护。** 真实DeepSeek质量仍PARTIAL，完整回答语义NOT_ASSESSED，Experience Active关闭。受控性能数据不等于真实模型吞吐或生产SLO。部署流程及生产未验证项以上述指南/最终报告为准。
+P4-F修复P4-E发现的两项安全问题：显式private模式按服务端认证subject隔离入库、检索、缓存、引用与文档操作；生产聊天及知识库接口采用Redis原子分布式准入，故障/超时拒绝。默认public只放公共非敏感语料，private不降级共享访问。生产环境必须配置Redis；本地测试配额仅限无API凭据的明确testing profile，不能作为全局限流。
+
+此隔离不含组织共享/委托管理，删除不能撤回已发送或在途回答；外围TLS、备份擦除、完整回答语义和真实模型总体收益仍未认证。历史P4-E报告保留当时FAIL事实，修复后的结论以P4-F证据为准。Experience Active关闭。
 
 ## 📷 项目快照
 <p align="center">

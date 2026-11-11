@@ -1,4 +1,4 @@
-> Ubuntu最终验收与真实三依赖复现请先阅读 [P4-E部署指南](../research/docs/agent_engineering_upgrade/p4_final_acceptance/DEPLOYMENT_GUIDE.md)。本页旧部署示例不代表生产安全验收；共享KB没有私有租户ACL，Redis故障限流fail-open。
+> 当前Ubuntu安全profile见 [P4-F安全设计](../research/docs/agent_engineering_upgrade/p4_security_remediation/SECURITY_DESIGN.md)：private按认证subject隔离，生产chat/KB依赖Redis原子准入且故障拒绝。旧部署示例不代表外围生产安全认证；P4-E历史FAIL及修复后证据分别保留。
 
 # 11 · 部署与运维
 
