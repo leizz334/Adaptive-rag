@@ -1,0 +1,125 @@
+{
+  "schema": "p4c-new-v1",
+  "author": "AI-authored synthetic fixtures;not human labeled",
+  "cases": [
+    {
+      "id": "CD01",
+      "split": "development",
+      "message": "请核实 ORD71021 的当前状态和总金额，分两项告诉我。",
+      "order": "ORD71021",
+      "cents": 20860,
+      "status": "shipped",
+      "tracking": "SYNCD0121",
+      "tools": [
+        "get_order"
+      ],
+      "facts": [
+        "208.60",
+        "已发货"
+      ],
+      "protocol": "json"
+    },
+    {
+      "id": "CD02",
+      "split": "development",
+      "message": "请同时查 ORD71022 的物流单号和总金额。",
+      "order": "ORD71022",
+      "cents": 31740,
+      "status": "shipped",
+      "tracking": "SYNCD0222",
+      "tools": [
+        "get_order",
+        "track_shipment"
+      ],
+      "facts": [
+        "317.40",
+        "SYNCD0222"
+      ],
+      "protocol": "sse"
+    },
+    {
+      "id": "CT01",
+      "split": "independent_test",
+      "message": "我想了解 ORD82031 已经到哪个订单阶段了，以及一共应付多少钱？",
+      "order": "ORD82031",
+      "cents": 46210,
+      "status": "shipped",
+      "tracking": "SYNCT0131",
+      "tools": [
+        "get_order"
+      ],
+      "facts": [
+        "462.10",
+        "已发货"
+      ],
+      "protocol": "json"
+    },
+    {
+      "id": "CT02",
+      "split": "independent_test",
+      "message": "核对 ORD82032：请给出快递单号，并列出订单总额。",
+      "order": "ORD82032",
+      "cents": 5400,
+      "status": "shipped",
+      "tracking": "SYNCT0232",
+      "tools": [
+        "get_order",
+        "track_shipment"
+      ],
+      "facts": [
+        "54.00",
+        "SYNCT0232"
+      ],
+      "protocol": "json"
+    },
+    {
+      "id": "CT03",
+      "split": "independent_test",
+      "message": "SKU-P4C-ASTER 这款样品目前还有多少库存？",
+      "tools": [
+        "check_inventory"
+      ],
+      "facts": [
+        "17"
+      ],
+      "protocol": "sse"
+    },
+    {
+      "id": "CT04",
+      "split": "independent_test",
+      "message": "合成星屿样品在签收后多少天内可以无理由退货？需要满足什么条件？",
+      "tools": [],
+      "facts": [
+        "9",
+        "完好",
+        "配件"
+      ],
+      "citations": true,
+      "protocol": "json"
+    },
+    {
+      "id": "CT05",
+      "split": "independent_test",
+      "message": "帮我核对那一笔订单的总额。",
+      "tools": [],
+      "facts": [],
+      "clarify": true,
+      "protocol": "sse"
+    },
+    {
+      "id": "CT06",
+      "split": "independent_test",
+      "message": "请取消 ORD82036。",
+      "order": "ORD82036",
+      "cents": 9360,
+      "status": "paid",
+      "tracking": null,
+      "tools": [
+        "cancel_order"
+      ],
+      "facts": [],
+      "confirm": true,
+      "protocol": "json"
+    }
+  ]
+}
