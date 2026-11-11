@@ -194,7 +194,9 @@ def main():
     parser.add_argument("stage", choices=["baseline", "pairs"])
     parser.add_argument("--split", choices=["development", "independent_test"])
     args = parser.parse_args()
-    verify_freeze()
+    frozen = verify_freeze()
+    if args.stage == "pairs" and frozen.get("stage") != "pairs":
+        raise SafetyStop("paired stage requires frozen paired configuration")
     RUN.mkdir(parents=True, exist_ok=True)
     manifest, cfg = live_config()
     command(manifest, "ps")

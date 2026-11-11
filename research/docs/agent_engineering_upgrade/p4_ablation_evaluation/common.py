@@ -2,6 +2,7 @@ import hashlib
 import json
 import os
 from contextvars import ContextVar
+from importlib.metadata import version
 from pathlib import Path
 
 from research.docs.agent_engineering_upgrade.p4_real_llm_e2e.meter import SafetyStop
@@ -23,4 +24,6 @@ def verify_freeze():
     d = json.loads(path.read_bytes())
     if any(sha(ROOT / p) != h for p, h in d["hashes"].items()):
         raise SafetyStop("source/data/scorer drift closes paid admission")
+    if any(version(name) != expected for name, expected in d.get("packages", {}).items()):
+        raise SafetyStop("frozen dependency versions changed")
     return d
