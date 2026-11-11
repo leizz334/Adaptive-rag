@@ -31,4 +31,4 @@ Spec: 本阶段用户P4-E0—E3需求；AGENTS.md。
 - [x] 完善README/DEPLOYMENT_GUIDE/PROJECT_FINAL_SUMMARY/架构及LangGraph文档/RECOVERY/最终报告。
 - [x] 全量pytest tests+research、Ruff check+format、Mypy/pip及冻结legacy214，独立review、scope/secret/ledger审计。
 - [x] 六项边界明确：公共KB租户隔离、Redis失效限流、生产TLS/备份/灾难恢复、真实模型语义、性能适用规模、Experience当前资格。
-- [ ] scoped commit/normal push/exactlsremote；记录delivery元数据再次正常push核验最终HEAD，STOP。
+- [x] scoped commit/normal push/exactlsremote；记录delivery元数据再次正常push核验最终HEAD，STOP。

@@ -103,3 +103,5 @@ n12且窗口不足1秒/格，不是容量/SLO/soak结果；并发4的HTTP吞吐�
 - Memory只有微型受限收益，RAG/Experience总体收益NOT_ESTABLISHED；不强制Experience Active、不新增研究阶段。
 
 工程材料、受限部署与可靠性可交付；上述FAIL/未知决定整体PARTIAL_PASS。正常Push/远程HEAD在delivery.json和Git最终记录核验；最终元数据自身hash以Git/最终答复为准，避免递归。**完成后STOP，Experience Active=NO，不自动启动任何其他阶段。**
+
+交付核验：检查点 `0210248efc4af9bebc32669bcec14d25b6b6eaee` 已正常Push到 `codex/p4-final-acceptance`，git ls-remote与本地精确一致。此后仅补交付元数据并再次正常Push/核验；最终HEAD见Git/最终答复。所有授权工程任务完成，生产验收限制不变，STOP。
