@@ -25,7 +25,7 @@
 ## F3 最终任务
 - [x] 全量真实依赖HTTP、pytest/Ruff/Mypy/pip/legacy214；故障原证据保留。
 - [x] 独立review；最小修复RED/GREEN、必要最终回归；文档/恢复/secret+scope审计。
-- [ ] 正常commit/push/lsremote核验；最后元数据正常push核验HEAD；停止，无P5。
+- [x] 正常commit/push/lsremote核验；最后元数据正常push核验HEAD；停止，无P5。
 
 ## Review focus
 认证subject不得被body/header覆盖；旧向量/缓存/多worker词法索引不得复活已删文档；异步任务/工具不得丢身份；Redis检查与写入必须原子且超时拒绝；跨租户异常不得降级公开访问。

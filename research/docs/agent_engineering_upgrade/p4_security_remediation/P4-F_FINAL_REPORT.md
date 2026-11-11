@@ -78,3 +78,5 @@ Lua使用Redis服务端TIME、滑动窗口和UUID成员，在一次原子调用�
 5. TLS、外部渗透、生产密钥运维、宿主机/DB管理员威胁、完整回答语义及真实模型总体收益继续NOT_ASSESSED/NOT_ESTABLISHED，不因F通过而升级。
 
 **本阶段安全修复验收通过（上述边界内）；完成后STOP，无新增研究阶段，Experience Active=NO，P5_STARTED=NO。**
+
+交付核验：F3检查点 `ca6260972394aacf53b00a69add0849cf2e10d28` 已正常Push至 `codex/p4-security-remediation`，git ls-remote与本地精确一致。随后仅补交付元数据，再次正常Push并核验最终HEAD；实际最终metadata提交以Git/最终答复为准。全部授权任务完成，STOP。
