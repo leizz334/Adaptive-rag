@@ -1,0 +1,349 @@
+{
+  "totals": {
+    "http_attempts": 36,
+    "accounted_tokens": 24393,
+    "estimated_usd_upper": 0.009370799999999999,
+    "unknown_usage": 0
+  },
+  "model_ids": [
+    "deepseek-flash"
+  ],
+  "provider_latency": {
+    "n": 36,
+    "mean_ms": 1549.1389805277624,
+    "p95_ms": 3136.3943179999296
+  },
+  "by_split": {
+    "development": {
+      "tasks": 2,
+      "mechanical_proxy_pass": 1,
+      "tools_goal_pass": 2,
+      "business_goal_pass": 2,
+      "claims_present": 3,
+      "claims_required": 4,
+      "lexical_goal_coverage_pass": 1,
+      "protocol_pass": 2,
+      "task_latency": {
+        "n": 2,
+        "mean_ms": 8186.726874499982,
+        "p95_ms": 9308.470079000017
+      }
+    },
+    "independent_test": {
+      "tasks": 6,
+      "mechanical_proxy_pass": 5,
+      "tools_goal_pass": 5,
+      "business_goal_pass": 5,
+      "claims_present": 8,
+      "claims_required": 8,
+      "lexical_goal_coverage_pass": 6,
+      "protocol_pass": 6,
+      "task_latency": {
+        "n": 6,
+        "mean_ms": 6831.807765166634,
+        "p95_ms": 9993.874409
+      }
+    }
+  },
+  "by_case": [
+    {
+      "case": "CD01",
+      "split": "development",
+      "protocol": "json",
+      "score": {
+        "task_success_proxy": true,
+        "tool_success": true,
+        "business_state": true,
+        "required_claims_present": 2,
+        "required_claims_total": 2,
+        "required_goal_lexical_coverage": true,
+        "citation_present": true,
+        "protocol_valid": true,
+        "task_success": "NOT_ASSESSED",
+        "full_answer_factual_correctness": "NOT_ASSESSED",
+        "full_answer_faithfulness": "NOT_ASSESSED",
+        "human_semantic_review": "NOT_ASSESSED",
+        "metric_scope": "AI-frozen deterministic business/required-claim proxy;not whole-answer semantic PASS"
+      },
+      "model_calls": 5,
+      "tokens": 3823,
+      "tools": {
+        "get_order": 1
+      },
+      "model_stages": {
+        "intent": 1,
+        "router": 1,
+        "planner": 1,
+        "generate": 1,
+        "judge": 1
+      },
+      "latency_ms": 9308.470079000017,
+      "answer": "已核实 ORD71021，分两项说明：\n\n1. 当前状态：shipped（已发货）。运单号：SYNCD0121。\n2. 总金额：20860 分，即 208.60 元。\n\n补充说明：该订单的支付时间、发货时间、签收时间及收货城市在系统中暂无记录，无法进一步确认；商品明细为空，无法核对具体商品。如需查询物流轨迹或商品明细，请提供更多信息或转人工核实。",
+      "note": null
+    },
+    {
+      "case": "CD02",
+      "split": "development",
+      "protocol": "sse",
+      "score": {
+        "task_success_proxy": false,
+        "tool_success": true,
+        "business_state": true,
+        "required_claims_present": 1,
+        "required_claims_total": 2,
+        "required_goal_lexical_coverage": false,
+        "citation_present": true,
+        "protocol_valid": true,
+        "task_success": "NOT_ASSESSED",
+        "full_answer_factual_correctness": "NOT_ASSESSED",
+        "full_answer_faithfulness": "NOT_ASSESSED",
+        "human_semantic_review": "NOT_ASSESSED",
+        "metric_scope": "AI-frozen deterministic business/required-claim proxy;not whole-answer semantic PASS"
+      },
+      "model_calls": 5,
+      "tokens": 3919,
+      "tools": {
+        "get_order": 1,
+        "track_shipment": 1
+      },
+      "model_stages": {
+        "intent": 1,
+        "router": 1,
+        "planner": 1,
+        "generate": 1,
+        "judge": 1
+      },
+      "latency_ms": 7064.983669999947,
+      "answer": "以下是本次工具结果可确认的信息：\n订单 ORD71022 当前订单状态：已发货。\n订单 ORD71022 总金额：317.40元（人民币）。\n订单 ORD71022 暂无物流轨迹，不能确认签收。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+      "note": null
+    },
+    {
+      "case": "CT01",
+      "split": "independent_test",
+      "protocol": "json",
+      "score": {
+        "task_success_proxy": true,
+        "tool_success": true,
+        "business_state": true,
+        "required_claims_present": 2,
+        "required_claims_total": 2,
+        "required_goal_lexical_coverage": true,
+        "citation_present": true,
+        "protocol_valid": true,
+        "task_success": "NOT_ASSESSED",
+        "full_answer_factual_correctness": "NOT_ASSESSED",
+        "full_answer_faithfulness": "NOT_ASSESSED",
+        "human_semantic_review": "NOT_ASSESSED",
+        "metric_scope": "AI-frozen deterministic business/required-claim proxy;not whole-answer semantic PASS"
+      },
+      "model_calls": 5,
+      "tokens": 3884,
+      "tools": {
+        "get_order": 1
+      },
+      "model_stages": {
+        "intent": 1,
+        "router": 1,
+        "planner": 1,
+        "generate": 1,
+        "judge": 1
+      },
+      "latency_ms": 9993.874409,
+      "answer": "订单 ORD82031 的查询结果如下：\n\n1. 订单阶段：系统显示状态为“shipped”，即已发货。不过，发货时间（shipped_at）字段为空，因此无法确认具体发货时间；物流单号为 SYNCT0131，但该单号对应的实时物流轨迹未在本次查询中返回，无法确认当前运输位置。\n\n2. 应付金额：订单总额为 46210 分，即 462.10 元。支付时间（paid_at）字段为空，因此无法确认该订单是否已完成支付；如需确认实付或待付金额，建议核对支付记录。\n\n如需进一步核实物流进度或支付状态，请提供支付凭证或转人工客服查询。",
+      "note": null
+    },
+    {
+      "case": "CT02",
+      "split": "independent_test",
+      "protocol": "json",
+      "score": {
+        "task_success_proxy": true,
+        "tool_success": true,
+        "business_state": true,
+        "required_claims_present": 2,
+        "required_claims_total": 2,
+        "required_goal_lexical_coverage": true,
+        "citation_present": true,
+        "protocol_valid": true,
+        "task_success": "NOT_ASSESSED",
+        "full_answer_factual_correctness": "NOT_ASSESSED",
+        "full_answer_faithfulness": "NOT_ASSESSED",
+        "human_semantic_review": "NOT_ASSESSED",
+        "metric_scope": "AI-frozen deterministic business/required-claim proxy;not whole-answer semantic PASS"
+      },
+      "model_calls": 5,
+      "tokens": 3957,
+      "tools": {
+        "get_order": 1,
+        "track_shipment": 1
+      },
+      "model_stages": {
+        "intent": 1,
+        "router": 1,
+        "planner": 1,
+        "generate": 1,
+        "judge": 1
+      },
+      "latency_ms": 7742.024631999811,
+      "answer": "以下是本次工具结果可确认的信息：\n订单 ORD82032 当前订单状态：已发货。\n订单 ORD82032 总金额：54.00元（人民币）。\n订单 ORD82032 的物流单号：SYNCT0232。\n订单 ORD82032 暂无物流轨迹，不能确认签收。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+      "note": null
+    },
+    {
+      "case": "CT03",
+      "split": "independent_test",
+      "protocol": "sse",
+      "score": {
+        "task_success_proxy": true,
+        "tool_success": true,
+        "business_state": true,
+        "required_claims_present": 1,
+        "required_claims_total": 1,
+        "required_goal_lexical_coverage": true,
+        "citation_present": true,
+        "protocol_valid": true,
+        "task_success": "NOT_ASSESSED",
+        "full_answer_factual_correctness": "NOT_ASSESSED",
+        "full_answer_faithfulness": "NOT_ASSESSED",
+        "human_semantic_review": "NOT_ASSESSED",
+        "metric_scope": "AI-frozen deterministic business/required-claim proxy;not whole-answer semantic PASS"
+      },
+      "model_calls": 5,
+      "tokens": 3027,
+      "tools": {
+        "check_inventory": 1
+      },
+      "model_stages": {
+        "intent": 1,
+        "router": 1,
+        "planner": 1,
+        "generate": 1,
+        "judge": 1
+      },
+      "latency_ms": 7088.489216000198,
+      "answer": "SKU-P4C-ASTER 当前库存为 17 件（来源：check_inventory 实时查询结果）。该数值为系统当前记录，可能随订单变动，建议下单前再次确认。",
+      "note": null
+    },
+    {
+      "case": "CT04",
+      "split": "independent_test",
+      "protocol": "json",
+      "score": {
+        "task_success_proxy": true,
+        "tool_success": true,
+        "business_state": true,
+        "required_claims_present": 3,
+        "required_claims_total": 3,
+        "required_goal_lexical_coverage": true,
+        "citation_present": true,
+        "protocol_valid": true,
+        "task_success": "NOT_ASSESSED",
+        "full_answer_factual_correctness": "NOT_ASSESSED",
+        "full_answer_faithfulness": "NOT_ASSESSED",
+        "human_semantic_review": "NOT_ASSESSED",
+        "metric_scope": "AI-frozen deterministic business/required-claim proxy;not whole-answer semantic PASS"
+      },
+      "model_calls": 6,
+      "tokens": 2157,
+      "tools": {},
+      "model_stages": {
+        "intent": 1,
+        "router": 1,
+        "rewrite": 1,
+        "grade": 1,
+        "generate": 1,
+        "judge": 1
+      },
+      "latency_ms": 8077.623793999919,
+      "answer": "合成星屿样品在签收后9天内可以申请无理由退货，但需同时满足：商品完好、配件齐全；定制样品不适用该规则。申请仅进入审核，不代表退款已完成。",
+      "note": null
+    },
+    {
+      "case": "CT05",
+      "split": "independent_test",
+      "protocol": "sse",
+      "score": {
+        "task_success_proxy": true,
+        "tool_success": true,
+        "business_state": true,
+        "required_claims_present": 0,
+        "required_claims_total": 0,
+        "required_goal_lexical_coverage": true,
+        "citation_present": true,
+        "protocol_valid": true,
+        "task_success": "NOT_ASSESSED",
+        "full_answer_factual_correctness": "NOT_ASSESSED",
+        "full_answer_faithfulness": "NOT_ASSESSED",
+        "human_semantic_review": "NOT_ASSESSED",
+        "metric_scope": "AI-frozen deterministic business/required-claim proxy;not whole-answer semantic PASS"
+      },
+      "model_calls": 0,
+      "tokens": 0,
+      "tools": {},
+      "model_stages": {},
+      "latency_ms": 16.383779000079812,
+      "answer": "请明确需要处理的订单号；当前会话指代不明确。",
+      "note": "clarification resolved before model;0completion calls"
+    },
+    {
+      "case": "CT06",
+      "split": "independent_test",
+      "protocol": "json",
+      "score": {
+        "task_success_proxy": false,
+        "tool_success": false,
+        "business_state": false,
+        "required_claims_present": 0,
+        "required_claims_total": 0,
+        "required_goal_lexical_coverage": true,
+        "citation_present": true,
+        "protocol_valid": true,
+        "task_success": "NOT_ASSESSED",
+        "full_answer_factual_correctness": "NOT_ASSESSED",
+        "full_answer_faithfulness": "NOT_ASSESSED",
+        "human_semantic_review": "NOT_ASSESSED",
+        "metric_scope": "AI-frozen deterministic business/required-claim proxy;not whole-answer semantic PASS"
+      },
+      "model_calls": 5,
+      "tokens": 3626,
+      "tools": {
+        "get_order": 1
+      },
+      "model_stages": {
+        "intent": 1,
+        "router": 1,
+        "planner": 1,
+        "generate": 1,
+        "judge": 1
+      },
+      "latency_ms": 8072.4507609998,
+      "answer": "已查询到订单 ORD82036：当前状态为 paid（已支付），商品明细为空，订单金额 9360 分（即 93.60 元），创建时间为 2026-11-11，尚未发货（无运单号）。关于取消：该操作不可逆，我目前只能为您发起取消确认，不能声称已经取消完成。请确认是否继续取消该订单；确认后我将提交取消请求，最终结果以系统处理为准。若您需要，也可提供更多信息或转人工协助。",
+      "note": null
+    }
+  ],
+  "semantic_task_success": "NOT_ASSESSED",
+  "whole_answer_factual_correctness": "NOT_ASSESSED",
+  "faithfulness": "NOT_ASSESSED",
+  "invoice_cost": "NOT_ASSESSED",
+  "estimated_cost_policy": "peak cache-miss rates upper bound; usage from all responses;not invoice",
+  "global_limits": {
+    "requests": 80,
+    "tokens": 80000,
+    "usd": 1
+  },
+  "new_paid_retries": 0,
+  "failure_classification": [
+    {
+      "case": "CD02",
+      "category": "APPLICATION_FALLBACK_COMPLETENESS",
+      "repair": "verified tracking identifier retained;offline RED/GREEN;no paid dev repeat",
+      "original_status": "FAIL"
+    },
+    {
+      "case": "CT06",
+      "category": "MODEL_PLAN_OMISSION_PLUS_APPLICATION_MISSING_CONFIRMATION",
+      "repair": "explicit single-order cancellation now gets grounded skill confirmation despite read-only model plan;offline RED/GREEN;original independent failure retained",
+      "original_status": "FAIL",
+      "confirmation_execution_and_replay": "NOT_ASSESSED_REAL_LLM"
+    }
+  ]
+}

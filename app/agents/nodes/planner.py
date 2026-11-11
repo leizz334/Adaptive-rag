@@ -110,6 +110,24 @@ class Planner:
             if plan.rationale == "clarification_required":
                 return plan
             if plan.steps:
+                if (
+                    skill
+                    and skill.get("name") == "order_cancellation"
+                    and len(targets) == 1
+                    and _explicit_write_request(raw, "cancel_order")
+                    and not any(step.tool_name == "cancel_order" for step in plan.steps)
+                ):
+                    # A read-only model plan must not strand an explicit request
+                    # without its structured confirmation. This adds a proposal;
+                    # executor still refuses the write until trusted confirmation.
+                    fallback = skill_to_plan(
+                        skill, query, self._registry, raw_query=raw, order_ids=targets
+                    )
+                    for step in fallback.steps:
+                        if step.tool_name == "cancel_order":
+                            plan.steps.append(
+                                step.model_copy(update={"step_id": len(plan.steps) + 1})
+                            )
                 if skill:
                     plan.rationale = f"skill:{skill['name']};{plan.rationale}"
                 return plan

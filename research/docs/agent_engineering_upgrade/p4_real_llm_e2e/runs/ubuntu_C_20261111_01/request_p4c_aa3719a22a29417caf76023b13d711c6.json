@@ -1,0 +1,726 @@
+{
+  "case": "CT01",
+  "before": {
+    "audit_logs": [],
+    "idempotency_keys": [],
+    "messages": [
+      {
+        "id": 4,
+        "session_id": "sess_4b8df56a02994cec8eef8dadd44b9af5",
+        "role": "assistant",
+        "content": "以下是本次工具结果可确认的信息：\n订单 ORD71022 当前订单状态：已发货。\n订单 ORD71022 总金额：317.40元（人民币）。\n订单 ORD71022 暂无物流轨迹，不能确认签收。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+        "created_at": "2026-11-11 04:44:44.820745+00:00"
+      },
+      {
+        "id": 2,
+        "session_id": "sess_248100539db34953b79c93f5d586d949",
+        "role": "assistant",
+        "content": "已核实 ORD71021，分两项说明：\n\n1. 当前状态：shipped（已发货）。运单号：SYNCD0121。\n2. 总金额：20860 分，即 208.60 元。\n\n补充说明：该订单的支付时间、发货时间、签收时间及收货城市在系统中暂无记录，无法进一步确认；商品明细为空，无法核对具体商品。如需查询物流轨迹或商品明细，请提供更多信息或转人工核实。",
+        "created_at": "2026-11-11 04:44:37.648749+00:00"
+      },
+      {
+        "id": 3,
+        "session_id": "sess_4b8df56a02994cec8eef8dadd44b9af5",
+        "role": "user",
+        "content": "请同时查 ORD71022 的物流单号和总金额。",
+        "created_at": "2026-11-11 04:44:44.819041+00:00"
+      },
+      {
+        "id": 1,
+        "session_id": "sess_248100539db34953b79c93f5d586d949",
+        "role": "user",
+        "content": "请核实 ORD71021 的当前状态和总金额，分两项告诉我。",
+        "created_at": "2026-11-11 04:44:37.646420+00:00"
+      }
+    ],
+    "orders": [
+      {
+        "order_id": "ORD71021",
+        "user_id": "u_demo",
+        "status": "shipped",
+        "total_cents": 20860,
+        "created_at": "2026-11-11 04:42:39.577283+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": "SYNCD0121",
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD71022",
+        "user_id": "u_demo",
+        "status": "shipped",
+        "total_cents": 31740,
+        "created_at": "2026-11-11 04:42:39.578995+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": "SYNCD0222",
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD82031",
+        "user_id": "u_demo",
+        "status": "shipped",
+        "total_cents": 46210,
+        "created_at": "2026-11-11 04:42:39.579773+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": "SYNCT0131",
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD82032",
+        "user_id": "u_demo",
+        "status": "shipped",
+        "total_cents": 5400,
+        "created_at": "2026-11-11 04:42:39.580577+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": "SYNCT0232",
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD82036",
+        "user_id": "u_demo",
+        "status": "paid",
+        "total_cents": 9360,
+        "created_at": "2026-11-11 04:42:39.581382+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      }
+    ],
+    "pending_confirmations": [],
+    "products": [
+      {
+        "sku": "SKU-P4C-ASTER",
+        "name": "合成星屿样品",
+        "category": "评测",
+        "price_cents": 1450,
+        "inventory": 17,
+        "tags": "",
+        "description": ""
+      }
+    ],
+    "refunds": [],
+    "returns": [],
+    "sessions": [
+      {
+        "session_id": "sess_248100539db34953b79c93f5d586d949",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 04:44:28.360912+00:00",
+        "updated_at": "2026-11-11 04:44:37.648620+00:00"
+      },
+      {
+        "session_id": "sess_4b8df56a02994cec8eef8dadd44b9af5",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 04:44:37.766219+00:00",
+        "updated_at": "2026-11-11 04:44:44.820622+00:00"
+      }
+    ],
+    "order_items": []
+  },
+  "payload": {
+    "message": "我想了解 ORD82031 已经到哪个订单阶段了，以及一共应付多少钱？"
+  },
+  "trace_id": "p4c_aa3719a22a29417caf76023b13d711c6",
+  "tools": [
+    {
+      "name": "get_order",
+      "arguments": {
+        "order_id": "ORD82031"
+      },
+      "success": true,
+      "status": "executed",
+      "failure_kind": null,
+      "output": {
+        "order_id": "ORD82031",
+        "user_id": "u_demo",
+        "status": "shipped",
+        "items": [],
+        "total_cents": 46210,
+        "created_at": "2026-11-11T04:42:39.579773Z",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": "SYNCT0131",
+        "receiver_city": null
+      }
+    }
+  ],
+  "events": [
+    {
+      "kind": "tools",
+      "case": "CT01",
+      "time": "2026-11-11T04:46:43.343398+00:00",
+      "trace_id": "p4c_aa3719a22a29417caf76023b13d711c6",
+      "calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD82031"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD82031",
+            "user_id": "u_demo",
+            "status": "shipped",
+            "items": [],
+            "total_cents": 46210,
+            "created_at": "2026-11-11T04:42:39.579773Z",
+            "paid_at": null,
+            "shipped_at": null,
+            "delivered_at": null,
+            "tracking_no": "SYNCT0131",
+            "receiver_city": null
+          }
+        }
+      ]
+    }
+  ],
+  "status": 200,
+  "text": "{\"answer\":\"订单 ORD82031 的查询结果如下：\\n\\n1. 订单阶段：系统显示状态为“shipped”，即已发货。不过，发货时间（shipped_at）字段为空，因此无法确认具体发货时间；物流单号为 SYNCT0131，但该单号对应的实时物流轨迹未在本次查询中返回，无法确认当前运输位置。\\n\\n2. 应付金额：订单总额为 46210 分，即 462.10 元。支付时间（paid_at）字段为空，因此无法确认该订单是否已完成支付；如需确认实付或待付金额，建议核对支付记录。\\n\\n如需进一步核实物流进度或支付状态，请提供支付凭证或转人工客服查询。\",\"session_id\":\"sess_4ced222608ee4960b34a2997310d7f74\",\"trace_id\":\"p4c_aa3719a22a29417caf76023b13d711c6\",\"root_run_id\":\"522bc786-b954-44d1-98fa-1f9cef915325\",\"intent\":\"order_inquiry\",\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"citations\":[],\"pending_action\":null,\"refused\":false,\"error_code\":null,\"token_usage\":{\"prompt_tokens\":503,\"completion_tokens\":176,\"total_tokens\":679},\"latency\":{\"intent_ms\":3613.5401259998616,\"routing_ms\":998.1234080000831,\"retrieval_ms\":0.0,\"rerank_ms\":0.0,\"tool_ms\":7.0631080002385715,\"llm_ms\":2307.9245509998145,\"total_ms\":9987.901750999754}}",
+  "body": {
+    "answer": "订单 ORD82031 的查询结果如下：\n\n1. 订单阶段：系统显示状态为“shipped”，即已发货。不过，发货时间（shipped_at）字段为空，因此无法确认具体发货时间；物流单号为 SYNCT0131，但该单号对应的实时物流轨迹未在本次查询中返回，无法确认当前运输位置。\n\n2. 应付金额：订单总额为 46210 分，即 462.10 元。支付时间（paid_at）字段为空，因此无法确认该订单是否已完成支付；如需确认实付或待付金额，建议核对支付记录。\n\n如需进一步核实物流进度或支付状态，请提供支付凭证或转人工客服查询。",
+    "session_id": "sess_4ced222608ee4960b34a2997310d7f74",
+    "trace_id": "p4c_aa3719a22a29417caf76023b13d711c6",
+    "root_run_id": "522bc786-b954-44d1-98fa-1f9cef915325",
+    "intent": "order_inquiry",
+    "complexity": "tool_required",
+    "strategy": "agent",
+    "citations": [],
+    "pending_action": null,
+    "refused": false,
+    "error_code": null,
+    "token_usage": {
+      "prompt_tokens": 503,
+      "completion_tokens": 176,
+      "total_tokens": 679
+    },
+    "latency": {
+      "intent_ms": 3613.5401259998616,
+      "routing_ms": 998.1234080000831,
+      "retrieval_ms": 0.0,
+      "rerank_ms": 0.0,
+      "tool_ms": 7.0631080002385715,
+      "llm_ms": 2307.9245509998145,
+      "total_ms": 9987.901750999754
+    }
+  },
+  "protocol_valid": true,
+  "latency_ms": 9993.874409,
+  "after": {
+    "audit_logs": [],
+    "idempotency_keys": [],
+    "messages": [
+      {
+        "id": 4,
+        "session_id": "sess_4b8df56a02994cec8eef8dadd44b9af5",
+        "role": "assistant",
+        "content": "以下是本次工具结果可确认的信息：\n订单 ORD71022 当前订单状态：已发货。\n订单 ORD71022 总金额：317.40元（人民币）。\n订单 ORD71022 暂无物流轨迹，不能确认签收。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+        "created_at": "2026-11-11 04:44:44.820745+00:00"
+      },
+      {
+        "id": 2,
+        "session_id": "sess_248100539db34953b79c93f5d586d949",
+        "role": "assistant",
+        "content": "已核实 ORD71021，分两项说明：\n\n1. 当前状态：shipped（已发货）。运单号：SYNCD0121。\n2. 总金额：20860 分，即 208.60 元。\n\n补充说明：该订单的支付时间、发货时间、签收时间及收货城市在系统中暂无记录，无法进一步确认；商品明细为空，无法核对具体商品。如需查询物流轨迹或商品明细，请提供更多信息或转人工核实。",
+        "created_at": "2026-11-11 04:44:37.648749+00:00"
+      },
+      {
+        "id": 5,
+        "session_id": "sess_4ced222608ee4960b34a2997310d7f74",
+        "role": "user",
+        "content": "我想了解 ORD82031 已经到哪个订单阶段了，以及一共应付多少钱？",
+        "created_at": "2026-11-11 04:46:43.337524+00:00"
+      },
+      {
+        "id": 6,
+        "session_id": "sess_4ced222608ee4960b34a2997310d7f74",
+        "role": "assistant",
+        "content": "订单 ORD82031 的查询结果如下：\n\n1. 订单阶段：系统显示状态为“shipped”，即已发货。不过，发货时间（shipped_at）字段为空，因此无法确认具体发货时间；物流单号为 SYNCT0131，但该单号对应的实时物流轨迹未在本次查询中返回，无法确认当前运输位置。\n\n2. 应付金额：订单总额为 46210 分，即 462.10 元。支付时间（paid_at）字段为空，因此无法确认该订单是否已完成支付；如需确认实付或待付金额，建议核对支付记录。\n\n如需进一步核实物流进度或支付状态，请提供支付凭证或转人工客服查询。",
+        "created_at": "2026-11-11 04:46:43.339599+00:00"
+      },
+      {
+        "id": 3,
+        "session_id": "sess_4b8df56a02994cec8eef8dadd44b9af5",
+        "role": "user",
+        "content": "请同时查 ORD71022 的物流单号和总金额。",
+        "created_at": "2026-11-11 04:44:44.819041+00:00"
+      },
+      {
+        "id": 1,
+        "session_id": "sess_248100539db34953b79c93f5d586d949",
+        "role": "user",
+        "content": "请核实 ORD71021 的当前状态和总金额，分两项告诉我。",
+        "created_at": "2026-11-11 04:44:37.646420+00:00"
+      }
+    ],
+    "orders": [
+      {
+        "order_id": "ORD71021",
+        "user_id": "u_demo",
+        "status": "shipped",
+        "total_cents": 20860,
+        "created_at": "2026-11-11 04:42:39.577283+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": "SYNCD0121",
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD71022",
+        "user_id": "u_demo",
+        "status": "shipped",
+        "total_cents": 31740,
+        "created_at": "2026-11-11 04:42:39.578995+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": "SYNCD0222",
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD82031",
+        "user_id": "u_demo",
+        "status": "shipped",
+        "total_cents": 46210,
+        "created_at": "2026-11-11 04:42:39.579773+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": "SYNCT0131",
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD82032",
+        "user_id": "u_demo",
+        "status": "shipped",
+        "total_cents": 5400,
+        "created_at": "2026-11-11 04:42:39.580577+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": "SYNCT0232",
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD82036",
+        "user_id": "u_demo",
+        "status": "paid",
+        "total_cents": 9360,
+        "created_at": "2026-11-11 04:42:39.581382+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      }
+    ],
+    "pending_confirmations": [],
+    "products": [
+      {
+        "sku": "SKU-P4C-ASTER",
+        "name": "合成星屿样品",
+        "category": "评测",
+        "price_cents": 1450,
+        "inventory": 17,
+        "tags": "",
+        "description": ""
+      }
+    ],
+    "refunds": [],
+    "returns": [],
+    "sessions": [
+      {
+        "session_id": "sess_248100539db34953b79c93f5d586d949",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 04:44:28.360912+00:00",
+        "updated_at": "2026-11-11 04:44:37.648620+00:00"
+      },
+      {
+        "session_id": "sess_4b8df56a02994cec8eef8dadd44b9af5",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 04:44:37.766219+00:00",
+        "updated_at": "2026-11-11 04:44:44.820622+00:00"
+      },
+      {
+        "session_id": "sess_4ced222608ee4960b34a2997310d7f74",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-11 04:46:33.364137+00:00",
+        "updated_at": "2026-11-11 04:46:43.339476+00:00"
+      }
+    ],
+    "order_items": []
+  },
+  "spans": [
+    {
+      "name": "chat.turn",
+      "kind": "chain",
+      "id": "522bc786-b954-44d1-98fa-1f9cef915325",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": null,
+      "start_time": "2026-11-11 04:46:33.353773+00:00",
+      "end_time": "2026-11-11 04:46:43.342624+00:00",
+      "latency_ms": 9988.8463770003,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "app_trace_ref": "1843f7b8a408331d4a844f0f",
+        "user_ref": "9283cf89e934be67494d9b6f",
+        "request_ref": "a8f4f570b13abad5162a2a75",
+        "session_ref": "519201d4d95cfb18fce7a2e5"
+      }
+    },
+    {
+      "name": "session.load",
+      "kind": "chain",
+      "id": "9397537d-9a03-48bb-aee6-71fc065dd38a",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "522bc786-b954-44d1-98fa-1f9cef915325",
+      "start_time": "2026-11-11 04:46:33.354622+00:00",
+      "end_time": "2026-11-11 04:46:33.368986+00:00",
+      "latency_ms": 14.363106000018888,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "confirmation.resolve",
+      "kind": "chain",
+      "id": "bac91a9a-70a8-4c94-ae76-218e8bcefd83",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "9397537d-9a03-48bb-aee6-71fc065dd38a",
+      "start_time": "2026-11-11 04:46:33.354632+00:00",
+      "end_time": "2026-11-11 04:46:33.354636+00:00",
+      "latency_ms": 0.0033060000532714184,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "graph.invoke",
+      "kind": "chain",
+      "id": "715420e7-7707-4491-8888-865300bb5be5",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "522bc786-b954-44d1-98fa-1f9cef915325",
+      "start_time": "2026-11-11 04:46:33.369006+00:00",
+      "end_time": "2026-11-11 04:46:43.336513+00:00",
+      "latency_ms": 9967.505864000032,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.guardrail",
+      "kind": "chain",
+      "id": "3fa9b886-0d55-4edb-b20d-92120ef36e71",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "715420e7-7707-4491-8888-865300bb5be5",
+      "start_time": "2026-11-11 04:46:33.370588+00:00",
+      "end_time": "2026-11-11 04:46:33.370597+00:00",
+      "latency_ms": 0.00614200007476029,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.intent",
+      "kind": "chain",
+      "id": "c26f7bdf-ce15-4a70-acf4-57c5b51ff9f3",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "715420e7-7707-4491-8888-865300bb5be5",
+      "start_time": "2026-11-11 04:46:33.371331+00:00",
+      "end_time": "2026-11-11 04:46:36.984938+00:00",
+      "latency_ms": 3613.606229999732,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "id": "068ab954-9243-401c-9627-7f0c9ef738a8",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "c26f7bdf-ce15-4a70-acf4-57c5b51ff9f3",
+      "start_time": "2026-11-11 04:46:33.371518+00:00",
+      "end_time": "2026-11-11 04:46:36.984707+00:00",
+      "latency_ms": 3613.1889419998515,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 699,
+        "completion_tokens": 57,
+        "total_tokens": 756
+      }
+    },
+    {
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "id": "73ec19e6-b64d-432e-8a50-acce5e7ddc62",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "068ab954-9243-401c-9627-7f0c9ef738a8",
+      "start_time": "2026-11-11 04:46:33.371570+00:00",
+      "end_time": "2026-11-11 04:46:36.984661+00:00",
+      "latency_ms": 3613.0987009996716,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.router",
+      "kind": "chain",
+      "id": "689557d6-9c97-416c-8ba0-f825c4394f1d",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "715420e7-7707-4491-8888-865300bb5be5",
+      "start_time": "2026-11-11 04:46:36.986786+00:00",
+      "end_time": "2026-11-11 04:46:37.984953+00:00",
+      "latency_ms": 998.1652880001093,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "id": "94be9ed4-a062-45ee-8b24-167c7d4287a6",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "689557d6-9c97-416c-8ba0-f825c4394f1d",
+      "start_time": "2026-11-11 04:46:36.986833+00:00",
+      "end_time": "2026-11-11 04:46:37.984840+00:00",
+      "latency_ms": 998.0081509997945,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 197,
+        "completion_tokens": 52,
+        "total_tokens": 249
+      }
+    },
+    {
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "id": "c063ee3a-f6ec-45f1-af74-d4d433bb3f3f",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "94be9ed4-a062-45ee-8b24-167c7d4287a6",
+      "start_time": "2026-11-11 04:46:36.986884+00:00",
+      "end_time": "2026-11-11 04:46:37.984805+00:00",
+      "latency_ms": 997.9267570001866,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.planner",
+      "kind": "chain",
+      "id": "a517260a-7d02-4d8c-81bf-44648fa2cdeb",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "715420e7-7707-4491-8888-865300bb5be5",
+      "start_time": "2026-11-11 04:46:37.986267+00:00",
+      "end_time": "2026-11-11 04:46:39.749079+00:00",
+      "latency_ms": 1762.8117939998447,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "id": "afbf8657-c1da-482e-bd44-3deddba6696c",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "a517260a-7d02-4d8c-81bf-44648fa2cdeb",
+      "start_time": "2026-11-11 04:46:37.988355+00:00",
+      "end_time": "2026-11-11 04:46:39.748815+00:00",
+      "latency_ms": 1760.4583960001037,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 1609,
+        "completion_tokens": 83,
+        "total_tokens": 1692
+      }
+    },
+    {
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "id": "e2f37a6a-28ac-4344-a365-2b111bd9d925",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "afbf8657-c1da-482e-bd44-3deddba6696c",
+      "start_time": "2026-11-11 04:46:37.988407+00:00",
+      "end_time": "2026-11-11 04:46:39.748788+00:00",
+      "latency_ms": 1760.3862289997778,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.executor",
+      "kind": "chain",
+      "id": "2e94726e-16e0-45c1-b468-124eb3a82bbf",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "715420e7-7707-4491-8888-865300bb5be5",
+      "start_time": "2026-11-11 04:46:39.750247+00:00",
+      "end_time": "2026-11-11 04:46:39.757328+00:00",
+      "latency_ms": 7.078597999679914,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "tool.execute",
+      "kind": "tool",
+      "id": "8e03c960-f37d-44f6-89df-a9dcea74387d",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "2e94726e-16e0-45c1-b468-124eb3a82bbf",
+      "start_time": "2026-11-11 04:46:39.750303+00:00",
+      "end_time": "2026-11-11 04:46:39.757264+00:00",
+      "latency_ms": 6.961065999803395,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.generate",
+      "kind": "chain",
+      "id": "3eb2febd-ad3c-4895-ac31-d9f7d9ca085c",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "715420e7-7707-4491-8888-865300bb5be5",
+      "start_time": "2026-11-11 04:46:39.757839+00:00",
+      "end_time": "2026-11-11 04:46:42.065887+00:00",
+      "latency_ms": 2308.0471829998714,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "id": "20171c06-5395-4dac-8402-fa722d9e43a1",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "3eb2febd-ad3c-4895-ac31-d9f7d9ca085c",
+      "start_time": "2026-11-11 04:46:39.758005+00:00",
+      "end_time": "2026-11-11 04:46:42.065605+00:00",
+      "latency_ms": 2307.598895999945,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 503,
+        "completion_tokens": 176,
+        "total_tokens": 679
+      }
+    },
+    {
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "id": "15a0456d-452e-4736-a152-b78dd6d2ff95",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "20171c06-5395-4dac-8402-fa722d9e43a1",
+      "start_time": "2026-11-11 04:46:39.758044+00:00",
+      "end_time": "2026-11-11 04:46:42.065577+00:00",
+      "latency_ms": 2307.537279999906,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.faithfulness",
+      "kind": "chain",
+      "id": "bd5955b7-fe8b-4dd0-b29b-0ac553727877",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "715420e7-7707-4491-8888-865300bb5be5",
+      "start_time": "2026-11-11 04:46:42.067139+00:00",
+      "end_time": "2026-11-11 04:46:43.335239+00:00",
+      "latency_ms": 1268.0995150003582,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "id": "e4309991-4024-4811-a839-8116e2e0d268",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "bd5955b7-fe8b-4dd0-b29b-0ac553727877",
+      "start_time": "2026-11-11 04:46:42.067207+00:00",
+      "end_time": "2026-11-11 04:46:43.335113+00:00",
+      "latency_ms": 1267.905067999891,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 501,
+        "completion_tokens": 7,
+        "total_tokens": 508
+      }
+    },
+    {
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "id": "58e4a6ef-1b81-4022-b311-dceca1a51a98",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "e4309991-4024-4811-a839-8116e2e0d268",
+      "start_time": "2026-11-11 04:46:42.067252+00:00",
+      "end_time": "2026-11-11 04:46:43.335086+00:00",
+      "latency_ms": 1267.8391029999148,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "node.memory",
+      "kind": "chain",
+      "id": "09bffbfe-cc31-46b3-82ce-a89c4d3c9a2a",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "715420e7-7707-4491-8888-865300bb5be5",
+      "start_time": "2026-11-11 04:46:43.336096+00:00",
+      "end_time": "2026-11-11 04:46:43.336113+00:00",
+      "latency_ms": 0.014456999906542478,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "session.persist",
+      "kind": "chain",
+      "id": "f5204878-4be6-49ad-ab9f-a1d536724a4a",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "522bc786-b954-44d1-98fa-1f9cef915325",
+      "start_time": "2026-11-11 04:46:43.336545+00:00",
+      "end_time": "2026-11-11 04:46:43.339479+00:00",
+      "latency_ms": 2.9333929996937513,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    },
+    {
+      "name": "transaction.commit",
+      "kind": "chain",
+      "id": "d46f69b6-0c03-47c2-8e21-f9a82f55f345",
+      "root_id": "a9ea6149-bda7-477b-acaa-7f82643816cc",
+      "parent_id": "522bc786-b954-44d1-98fa-1f9cef915325",
+      "start_time": "2026-11-11 04:46:43.339495+00:00",
+      "end_time": "2026-11-11 04:46:43.342377+00:00",
+      "latency_ms": 2.8817050001634925,
+      "status": "ok",
+      "error_type": null,
+      "metadata": {}
+    }
+  ]
+}
