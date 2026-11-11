@@ -25,17 +25,38 @@ _BANK_CARD = re.compile(r"\b(\d{4})\d{8,11}(\d{4})\b")
 _ORDER_ID = re.compile(r"\b(ORD)[-_]?(\d{4})\d+(\d{2})\b", re.IGNORECASE)
 
 
+# Apply at the logging boundary, separately from corpus PII cleaning.
+_BEARER = re.compile(r"(?i)\bBearer\s+[^\s\"'<>\\]+")
+_DSN_PASSWORD = re.compile(r"(?i)([a-z][a-z0-9+.-]*://[^\s/:@]+:)[^\s@]+(@)")
+_SECRET_ASSIGNMENT = re.compile(
+    r"(?i)(\b(?:api_key|apikey|access_token|refresh_token|password|secret)\s*[=:]\s*)[^\s,;\"'<>\\]+"
+)
+
+
+def redact_log_text(text: str) -> str:
+    text = _BEARER.sub("Bearer " + PII_MASK, text)
+    text = _DSN_PASSWORD.sub(lambda m: m[1] + PII_MASK + m[2], text)
+    text = _SECRET_ASSIGNMENT.sub(lambda m: m[1] + PII_MASK, text)
+    return mask_pii(text)
+
+
+def _redact_log_value(value: object) -> object:
+    if isinstance(value, str):
+        return redact_log_text(value)
+    if isinstance(value, dict):
+        return redact_mapping(value)
+    if isinstance(value, list | tuple):
+        return [_redact_log_value(item) for item in value]
+    return value
+
+
 def redact_mapping(payload: dict[str, object]) -> dict[str, object]:
     redacted: dict[str, object] = {}
     for key, value in payload.items():
         if key.lower() in _SECRET_KEYS:
             redacted[key] = PII_MASK
-        elif isinstance(value, str):
-            redacted[key] = mask_pii(value)
-        elif isinstance(value, dict):
-            redacted[key] = redact_mapping(value)  # type: ignore[arg-type]
         else:
-            redacted[key] = value
+            redacted[key] = _redact_log_value(value)
     return redacted
 
 

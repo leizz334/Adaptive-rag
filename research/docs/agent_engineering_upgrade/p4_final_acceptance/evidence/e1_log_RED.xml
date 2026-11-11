@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="0.094" timestamp="2026-11-11T19:33:50.161354+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_p4e_log_privacy" name="test_configured_json_logging_redacts_credentials[formatted_bearer]" time="0.003"><failure message="assert ('{&quot;asctime&quot;: &quot;2026-11-11 19:33:50,210&quot;, &quot;levelname&quot;: &quot;WARNING&quot;, &quot;name&quot;: &quot;p4e.privacy&quot;, &quot;message&quot;: &quot;upstream Authorization: Bearer p4e_synthetic_secret_9A7z&quot;, &quot;trace_id&quot;: &quot;-&quot;, &quot;request_id&quot;: &quot;-&quot;}\n' and 'p4e_synthetic_secret_9A7z' not in '{&quot;asctime&quot;:..._id&quot;: &quot;-&quot;}\n'&#10;  &#10;  'p4e_synthetic_secret_9A7z' is contained here:&#10;    n: Bearer p4e_synthetic_secret_9A7z&quot;, &quot;trace_id&quot;: &quot;-&quot;, &quot;request_id&quot;: &quot;-&quot;}&#10;  ?           +++++++++++++++++++++++++)">kind = 'formatted_bearer'
+
+    @pytest.mark.parametrize("kind", ["formatted_bearer", "nested_extra", "exception_dsn"])
+    def test_configured_json_logging_redacts_credentials(kind):
+        secret = "p4e_synthetic_secret_9A7z"
+        root = logging.getLogger()
+        old_handlers, old_level = root.handlers[:], root.level
+        stream = io.StringIO()
+        try:
+            configure_logging(Settings(_env_file=None, app_env="testing"))
+            root.handlers[0].setStream(stream)
+            logger = logging.getLogger("p4e.privacy")
+            if kind == "formatted_bearer":
+                logger.warning("upstream Authorization: Bearer %s", secret)
+            elif kind == "nested_extra":
+                logger.warning("failed", extra={"payload": {"items": [{"api_key": secret}]}})
+            else:
+                try:
+                    raise ValueError(f"postgresql+asyncpg://synthetic:{secret}@localhost/test")
+                except ValueError:
+                    logger.exception("database failure")
+            output = stream.getvalue()
+&gt;           assert output and secret not in output
+E           assert ('{"asctime": "2026-11-11 19:33:50,210", "levelname": "WARNING", "name": "p4e.privacy", "message": "upstream Authorization: Bearer p4e_synthetic_secret_9A7z", "trace_id": "-", "request_id": "-"}\n' and 'p4e_synthetic_secret_9A7z' not in '{"asctime":..._id": "-"}\n'
+E             
+E             'p4e_synthetic_secret_9A7z' is contained here:
+E               n: Bearer p4e_synthetic_secret_9A7z", "trace_id": "-", "request_id": "-"}
+E             ?           +++++++++++++++++++++++++)
+
+tests/unit/test_p4e_log_privacy.py:32: AssertionError</failure></testcase><testcase classname="tests.unit.test_p4e_log_privacy" name="test_configured_json_logging_redacts_credentials[nested_extra]" time="0.002"><failure message="assert ('{&quot;asctime&quot;: &quot;2026-11-11 19:33:50,250&quot;, &quot;levelname&quot;: &quot;WARNING&quot;, &quot;name&quot;: &quot;p4e.privacy&quot;, &quot;message&quot;: &quot;failed&quot;, &quot;trace_id&quot;: &quot;-&quot;, &quot;request_id&quot;: &quot;-&quot;, &quot;payload&quot;: {&quot;items&quot;: [{&quot;api_key&quot;: &quot;p4e_synthetic_secret_9A7z&quot;}]}}\n' and 'p4e_synthetic_secret_9A7z' not in '{&quot;asctime&quot;:..._9A7z&quot;}]}}\n'&#10;  &#10;  'p4e_synthetic_secret_9A7z' is contained here:&#10;    pi_key&quot;: &quot;p4e_synthetic_secret_9A7z&quot;}]}})">kind = 'nested_extra'
+
+    @pytest.mark.parametrize("kind", ["formatted_bearer", "nested_extra", "exception_dsn"])
+    def test_configured_json_logging_redacts_credentials(kind):
+        secret = "p4e_synthetic_secret_9A7z"
+        root = logging.getLogger()
+        old_handlers, old_level = root.handlers[:], root.level
+        stream = io.StringIO()
+        try:
+            configure_logging(Settings(_env_file=None, app_env="testing"))
+            root.handlers[0].setStream(stream)
+            logger = logging.getLogger("p4e.privacy")
+            if kind == "formatted_bearer":
+                logger.warning("upstream Authorization: Bearer %s", secret)
+            elif kind == "nested_extra":
+                logger.warning("failed", extra={"payload": {"items": [{"api_key": secret}]}})
+            else:
+                try:
+                    raise ValueError(f"postgresql+asyncpg://synthetic:{secret}@localhost/test")
+                except ValueError:
+                    logger.exception("database failure")
+            output = stream.getvalue()
+&gt;           assert output and secret not in output
+E           assert ('{"asctime": "2026-11-11 19:33:50,250", "levelname": "WARNING", "name": "p4e.privacy", "message": "failed", "trace_id": "-", "request_id": "-", "payload": {"items": [{"api_key": "p4e_synthetic_secret_9A7z"}]}}\n' and 'p4e_synthetic_secret_9A7z' not in '{"asctime":..._9A7z"}]}}\n'
+E             
+E             'p4e_synthetic_secret_9A7z' is contained here:
+E               pi_key": "p4e_synthetic_secret_9A7z"}]}})
+
+tests/unit/test_p4e_log_privacy.py:32: AssertionError</failure></testcase><testcase classname="tests.unit.test_p4e_log_privacy" name="test_configured_json_logging_redacts_credentials[exception_dsn]" time="0.002"><failure message="assert ('{&quot;asctime&quot;: &quot;2026-11-11 19:33:50,253&quot;, &quot;levelname&quot;: &quot;ERROR&quot;, &quot;name&quot;: &quot;p4e.privacy&quot;, &quot;message&quot;: &quot;database failure&quot;, &quot;t...:{secret}@localhost/test\\&quot;)\\nValueError: postgresql+asyncpg://synthetic:p4e_synthetic_secret_9A7z@localhost/test&quot;}\n' and 'p4e_synthetic_secret_9A7z' not in '{&quot;asctime&quot;:...ost/test&quot;}\n'&#10;  &#10;  'p4e_synthetic_secret_9A7z' is contained here:&#10;    synthetic:p4e_synthetic_secret_9A7z@localhost/test&quot;})">kind = 'exception_dsn'
+
+    @pytest.mark.parametrize("kind", ["formatted_bearer", "nested_extra", "exception_dsn"])
+    def test_configured_json_logging_redacts_credentials(kind):
+        secret = "p4e_synthetic_secret_9A7z"
+        root = logging.getLogger()
+        old_handlers, old_level = root.handlers[:], root.level
+        stream = io.StringIO()
+        try:
+            configure_logging(Settings(_env_file=None, app_env="testing"))
+            root.handlers[0].setStream(stream)
+            logger = logging.getLogger("p4e.privacy")
+            if kind == "formatted_bearer":
+                logger.warning("upstream Authorization: Bearer %s", secret)
+            elif kind == "nested_extra":
+                logger.warning("failed", extra={"payload": {"items": [{"api_key": secret}]}})
+            else:
+                try:
+                    raise ValueError(f"postgresql+asyncpg://synthetic:{secret}@localhost/test")
+                except ValueError:
+                    logger.exception("database failure")
+            output = stream.getvalue()
+&gt;           assert output and secret not in output
+E           assert ('{"asctime": "2026-11-11 19:33:50,253", "levelname": "ERROR", "name": "p4e.privacy", "message": "database failure", "t...:{secret}@localhost/test\\")\\nValueError: postgresql+asyncpg://synthetic:p4e_synthetic_secret_9A7z@localhost/test"}\n' and 'p4e_synthetic_secret_9A7z' not in '{"asctime":...ost/test"}\n'
+E             
+E             'p4e_synthetic_secret_9A7z' is contained here:
+E               synthetic:p4e_synthetic_secret_9A7z@localhost/test"})
+
+tests/unit/test_p4e_log_privacy.py:32: AssertionError</failure></testcase></testsuite></testsuites>

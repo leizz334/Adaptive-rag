@@ -1,0 +1,58 @@
+{
+  "security_acceptance": "PARTIAL_PASS_PRIVATE_KB_ISOLATION_FAIL",
+  "reliability_acceptance": "PASS_BOUNDED_REAL_SANDBOX",
+  "real_matrix": {
+    "passed": 53,
+    "failed": 0,
+    "dependencies": 13,
+    "API_recovery": 20,
+    "required_auth_HTTP": 20
+  },
+  "additional_tests": {
+    "passed": 7,
+    "real_SQL_interruption": 2,
+    "log_privacy_and_existing_security": 5
+  },
+  "findings": [
+    {
+      "id": "E1_LOG",
+      "RED": "3 failed; formatted bearer/nestedextra/exceptionDSN",
+      "fix": "redact final formatted message, recursive structured values, formatter exceptions",
+      "GREEN": "5 targeted/7 including interruption",
+      "source_changes": [
+        "app/core/security.py",
+        "app/observability/logging.py"
+      ]
+    },
+    {
+      "id": "E1_TENANT",
+      "status": "FAIL",
+      "evidence": "e1_tenant_RED.json",
+      "scope": "private multi-tenant KB; shared publicKB supported only",
+      "fix_disposition": "no vector-only safety claim; requires whole ingest/lexical/vector/cache contract; document deployment prohibition"
+    },
+    {
+      "id": "E1_REDIS",
+      "status": "RISK_ACCEPTANCE_REQUIRED_FOR_PRODUCTION",
+      "behavior": "realRedis fail-open confirmed, authentication remains failclosed",
+      "mitigation": "external gateway quotas/circuit breaker required for paid workloads; not implemented/tested here"
+    },
+    {
+      "id": "E1_PRODUCTION",
+      "status": "NOT_ASSESSED",
+      "items": [
+        "TLS ingress",
+        "external penetration test",
+        "encrypted secrets at rest/rotation operations",
+        "backup restore/RPO/RTO",
+        "long duration soak",
+        "host compromise/sidechannel"
+      ]
+    }
+  ],
+  "credential_logs": "bounded regressionPASS; arbitrary unlabeled secrets/custom handlers cannot be guaranteed",
+  "service_restart": "PASS PostgreSQL persistence, pending confirmation all-worker restart, recovery3dependencies",
+  "transaction_interruption": "RuntimeError and CancelledError after SQL business+audit+idem flush leave paidorder/noaudit/noidem",
+  "ExperienceActive": false,
+  "new_paid_requests": 0
+}
