@@ -30,7 +30,7 @@ Spec: S1-Docker user request + AGENTS.md; native continuous execution authorized
 - [x] Host S1-Release smoke remains usable; failures/evidence kept; review/minimalfix if needed; checkpoint.
 ## D5 delivery
 - [x] README/Docker deployment/finalreport/recovery, precise UbuntuPASS/WindowsNOT_RUN/controlled-vs-real limits.
-- [ ] Source/secret/volume preservation audit, ownedstop(retainvolumes), scopedcommit/normalpush/exactHEAD/metaPush/STOP.
+- [x] Source/secret/volume preservation audit, ownedstop(retainvolumes), scopedcommit/normalpush/exactHEAD/metaPush/STOP.
 
 ## Review focus
 Bootstrap partial-state/cross-volume mismatch must fail safely; PG password must be readable to official Postgres entrypoint without exposing dev-token file. Internal-DNS egress guard cannot accidentally allow paid endpoints. Health must check actual dependencies, not just API200. Restarts cannot rotate tokens/reset cancelled data, overwrite private KB or duplicate SQL writes. Docker build context must exclude all nested .env/.private/node_modules; no mutable user data copied into image.

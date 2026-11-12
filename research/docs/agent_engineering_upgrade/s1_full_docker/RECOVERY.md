@@ -27,3 +27,7 @@ D3检查点`fbf6cdfcc6d2a2c6716543328a2977ec3deb07b3`；D4检查点`3eb22a5`。�
 冷下载中断证据`d3_clean_download_INTERRUPTED.json`；最终是源码字节不变、权限统一后的正常Docker热缓存构建，219镜像文件匹配归档，不声称冷缓存安装PASS。全栈恢复后直接Qdrant持久点与Redis AOF验证完成。
 
 所属两套Compose及host回归服务均已停止；13卷保留、MySQL仍运行。不要再启动或重新执行已通过业务；下一步仅D5文档/源文件最终检查点、正常Push、精确远程HEAD、交付元数据后再次正常Push/HEAD，然后STOP。Git身份用单条命令`git -c user.name=Codex -c user.email=codex@openai.com commit ...`沿用历史，不改全局配置。
+
+## 交付完成
+
+D5源码检查点`ca5feb323c30fb02582b885333166a8be7241441`已正常Push，git ls-remote精确一致；D1—D5均passesTrue。交付元数据随后正常Push，最终HEAD以Git/最终答复为准，不递归写自hash。全部授权工作完成，NEXT_ACTION=STOP，不重跑已通过实验、不启动其他阶段，Experience Active=NO。

@@ -1,6 +1,6 @@
 # S1-Docker 全栈部署验收
 
-状态：工程验收通过，交付Push核验待完成。基线`3ba2271d0ce8a70bd2de07278ae274bb782d6659`，分支`codex/s1-full-docker`。仅Ubuntu；Windows Docker Desktop NOT_RUN。新增付费请求0；Experience Active关闭。真实容器、浏览器、SQL/向量存储与故障恢复均有证据；工程通过保留以下部署限制。
+状态：工程交付完成（保留已记录限制）；源码检查点正常Push且远程HEAD精确一致。基线`3ba2271d0ce8a70bd2de07278ae274bb782d6659`，分支`codex/s1-full-docker`。仅Ubuntu；Windows Docker Desktop NOT_RUN。新增付费请求0；Experience Active关闭。真实容器、浏览器、SQL/向量存储与故障恢复均有证据；工程通过保留以下部署限制。
 
 ## 实现与范围
 
@@ -42,7 +42,7 @@
 - 默认Hash Embedding和lexical reranker仅展示业务链路，不冒充真实语义模型质量。真实DeepSeek引用历史阶段，S1-Docker新增请求0；Experience收益仍NOT_ESTABLISHED。
 - Windows未实测；首次拉取/依赖下载受网络影响；当前依赖范围与基础镜像tag并非永久锁文件，证据记录实际版本/镜像。
 
-部署操作见[DOCKER_DEPLOYMENT_GUIDE.md](DOCKER_DEPLOYMENT_GUIDE.md)，恢复与下一步见[RECOVERY.md](RECOVERY.md)。最终Push/精确HEAD另见交付元数据；当前尚未预先标记远程成功。
+部署操作见[DOCKER_DEPLOYMENT_GUIDE.md](DOCKER_DEPLOYMENT_GUIDE.md)，恢复与下一步见[RECOVERY.md](RECOVERY.md)。源码检查点正常Push/精确HEAD已验证，见`delivery.json`；最终元数据提交的HEAD由Git和交付答复给出，避免递归自hash。
 
 ## 干净源码部署与恢复事实
 
@@ -76,10 +76,10 @@ MYPY = PASS_160_SOURCE_FILES
 HISTORICAL_REGRESSION = 214_CASES_0_NEW_STRICT_REGRESSIONS
 UBUNTU_VERIFICATION = PASS_WITH_DOCUMENTED_LIMITATIONS
 WINDOWS_VERIFICATION = NOT_RUN
-PHASE_STATUS = ENGINEERING_VERIFIED_AWAITING_PUSH
+PHASE_STATUS = COMPLETED_PASS_WITH_DOCUMENTED_LIMITATIONS
 UNRESOLVED_ISSUES = NNP_UNAVAILABLE;COLD_DOWNLOAD_INTERRUPTED;DEPENDENCY_NEW_IP_REQUIRES_API_RESTART;DEV_ONLY_CREDENTIALS
-LAST_COMMIT = SEE_DELIVERY_METADATA_AND_GIT
-GITHUB_PUSH_STATUS = PENDING
+LAST_COMMIT = ca5feb323c30fb02582b885333166a8be7241441 (SOURCE_CHECKPOINT; FINAL_METADATA_HEAD_FROM_GIT)
+GITHUB_PUSH_STATUS = VERIFIED_NORMAL_PUSH_SOURCE_EXACT_HEAD
 RECOVERY_READY = YES
 EXPERIENCE_ACTIVE_ENABLED = NO
 ```
