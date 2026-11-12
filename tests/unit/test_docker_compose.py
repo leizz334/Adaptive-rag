@@ -77,3 +77,11 @@ def test_host_paid_keys_are_not_interpolated_into_runtime(tmp_path, monkeypatch)
         b"not-a-real-secret-must-not-inherit" not in output
         and b"do-not-inherit-registry" not in output
     )
+
+
+def test_only_api_bridges_private_dependencies_to_loopback_web_edge():
+    c = compose()
+    assert c["services"]["api"]["networks"] == ["showcase", "web"]
+    assert c["networks"]["web"].get("internal", False) is False
+    for service in ("postgres", "redis", "qdrant", "initialize"):
+        assert c["services"][service]["networks"] == ["showcase"]

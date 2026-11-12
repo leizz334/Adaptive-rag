@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="9" time="0.846" timestamp="2026-11-12T17:45:58.483736+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_docker_bootstrap" name="test_bootstrap_persists_private_random_credentials" time="0.038" /><testcase classname="tests.unit.test_docker_bootstrap" name="test_malformed_state_is_never_replaced" time="0.024" /><testcase classname="tests.unit.test_docker_bootstrap" name="test_settings_ignore_hostile_environment" time="0.042" /><testcase classname="tests.unit.test_docker_bootstrap" name="test_expired_credentials_fail_closed" time="0.025" /><testcase classname="tests.unit.test_docker_bootstrap" name="test_partial_bootstrap_retains_existing_password" time="0.036" /><testcase classname="tests.unit.test_docker_bootstrap" name="test_network_allowlist_matches_exact_address_and_port" time="0.000" /><testcase classname="tests.unit.test_docker_bootstrap" name="test_seed_retains_cancelled_and_rejects_item_collision" time="0.560" /><testcase classname="tests.unit.test_docker_bootstrap" name="test_original_seed_signature_delegates" time="0.003" /><testcase classname="tests.unit.test_docker_bootstrap" name="test_credentials_without_password_fail_closed" time="0.036"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tmp_path = PosixPath('/tmp/pytest-of-likl/pytest-22/test_credentials_without_passw0')
+
+    def test_credentials_without_password_fail_closed(tmp_path):
+        from app.demo.docker import bootstrap
+        secret, state = tmp_path / 'db', tmp_path / 'state'
+        bootstrap(secret, state, owner_uid=None)
+        (secret / 'postgres_password').unlink()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/unit/test_docker_bootstrap.py:141: Failed</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,40 @@
+{
+  "status": "FAIL",
+  "stage": "before Python execution",
+  "exit_code": 255,
+  "error": "exec /usr/local/bin/python: operation not permitted",
+  "docker_engine": "29.8.0 snap / Ubuntu Core24",
+  "kernel": "6.8.0-138-generic",
+  "matrix": [
+    {
+      "image": "official python:3.12-slim",
+      "no_new_privileges": true,
+      "exit": 255
+    },
+    {
+      "image": "showcase",
+      "user": 0,
+      "cap_drop": "ALL",
+      "no_new_privileges": false,
+      "exit": 0
+    },
+    {
+      "image": "showcase",
+      "user": 1000,
+      "cap_drop": "ALL",
+      "read_only": true,
+      "no_new_privileges": true,
+      "exit": 255
+    },
+    {
+      "image": "showcase",
+      "user": 1000,
+      "cap_drop": "ALL",
+      "read_only": true,
+      "no_new_privileges": false,
+      "exit": 0
+    }
+  ],
+  "diagnosis": "Runtime no-new-privileges option triggers exec denial in this installed Docker/Snap confinement; reproduced on untouched official base image.",
+  "remediation": "Omit optional no-new-privileges flag; keep nonroot API, read-only filesystem, cap-drop, default AppArmor/seccomp, auth/ACL/HITL/limiter. Record missing hardening explicitly; no host daemon change."
+}

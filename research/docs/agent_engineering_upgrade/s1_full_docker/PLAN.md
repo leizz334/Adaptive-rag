@@ -19,8 +19,8 @@ Spec: S1-Docker user request + AGENTS.md; native continuous execution authorized
 - [x] Audit existing Dockerfile/Compose/host launcher; guarded design and config tests RED/GREEN.
 - [x] Multi-stage runtime image with frontend/alembic/shared app assets, independent new Compose and no host keys/secrets context; config/build validation and checkpoint.
 ## D2 one-command initialization
-- [ ] Shared fixture extraction + bootstrap/initialize/serve/health safe CLI with tests RED/GREEN; credential modes/expiry/collision/idempotence/network restrictions.
-- [ ] Real initial deployment one command/health/migration/seed/auth/log checks; state/commit.
+- [x] Shared fixture extraction + bootstrap/initialize/serve/health safe CLI with tests RED/GREEN; credential modes/expiry/collision/idempotence/network restrictions.
+- [x] Real initial deployment one command/health/migration/seed/auth/log checks; state/commit.
 ## D3 real deployment
 - [ ] Clean source archive new owned project build/up with exact requested command semantics.
 - [ ] Real browser7scenarios incl3business/Memory/RAG/HITL/history/Experience; realDB/crossuser proof.
@@ -34,3 +34,7 @@ Spec: S1-Docker user request + AGENTS.md; native continuous execution authorized
 
 ## Review focus
 Bootstrap partial-state/cross-volume mismatch must fail safely; PG password must be readable to official Postgres entrypoint without exposing dev-token file. Internal-DNS egress guard cannot accidentally allow paid endpoints. Health must check actual dependencies, not just API200. Restarts cannot rotate tokens/reset cancelled data, overwrite private KB or duplicate SQL writes. Docker build context must exclude all nested .env/.private/node_modules; no mutable user data copied into image.
+
+## Runtime corrections after D1 (supersede affected network assumptions above)
+- Current Docker Snap denies exec when no-new-privileges is enabled, even in untouched official Python image. Omit this optional flag; keep UID1000 API/read-only/cap-drop/default AppArmor/seccomp and all application security. NNP hardening NOT_AVAILABLE on this tested deployment.
+- An API attached solely to the internal network did not receive an actual published endpoint. Attach only API to a separate web bridge; PG/Redis/Qdrant/initialize remain internal. Loopback-only Web publishing remains; API external egress is prevented by the socket allowlist and disabled provider/cloud configuration, not claimed as a Docker network-level guarantee.

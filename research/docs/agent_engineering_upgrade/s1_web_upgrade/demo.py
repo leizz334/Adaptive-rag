@@ -29,63 +29,9 @@ def config():
 
 
 async def seed(cfg):
-    from sqlalchemy import select
-    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+    from app.demo.fixtures import seed as shared_seed
 
-    from app.repositories.models import OrderItemRow, OrderRow
-
-    engine = create_async_engine(cfg["database_url"])
-    try:
-        async with async_sessionmaker(engine, expire_on_commit=False)() as db:
-            for number, subject in [
-                (95101, "web_demo_a"),
-                (95102, "web_demo_a"),
-                (95103, "web_demo_a"),
-                (95104, "web_demo_a"),
-                (95105, "web_demo_a"),
-                (95106, "web_demo_a"),
-                (95107, "web_demo_a"),
-                (95201, "web_demo_b"),
-            ]:
-                order_id = f"ORD{number}"
-                existing = await db.get(OrderRow, order_id)
-                if existing is not None:
-                    # Never reset a completed demo action or overwrite a collision.
-                    if existing.user_id != subject or existing.total_cents != 6800:
-                        raise ValueError("synthetic seed collision; preserve and inspect")
-                    continue
-                db.add(
-                    OrderRow(
-                        order_id=order_id,
-                        user_id=subject,
-                        status="paid",
-                        total_cents=6800,
-                        created_at=datetime(2026, 11, 10, tzinfo=UTC),
-                        paid_at=datetime(2026, 11, 10, tzinfo=UTC),
-                    )
-                )
-                await db.flush()
-                db.add(
-                    OrderItemRow(
-                        order_id=order_id,
-                        sku="SKU-WEB-BAG",
-                        name="演示帆布包",
-                        quantity=2,
-                        unit_price_cents=3400,
-                        customized=False,
-                    )
-                )
-            await db.commit()
-            assert (
-                len(
-                    (
-                        await db.scalars(select(OrderRow).where(OrderRow.order_id.like("ORD95%")))
-                    ).all()
-                )
-                >= 5
-            )
-    finally:
-        await engine.dispose()
+    await shared_seed(cfg)
 
 
 def prepare():

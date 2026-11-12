@@ -1,0 +1,28 @@
+{
+  "review": "Independent minimal execution-policy delta review",
+  "timestamp_utc": "2026-11-12T13:30:20.752550+00:00",
+  "review_mode": "Read-only config/evidence inspection; no runtime commands",
+  "inputs": [
+    "compose.showcase.yml",
+    "evidence/d2_bootstrap_exec_RED.json",
+    "git diff -- compose.showcase.yml"
+  ],
+  "finding": "No important blocker in this narrowly scoped compatibility change for the trusted local offline demonstration.",
+  "scope": "Only shared app security_opt no-new-privileges:true removed; explanatory comments added. No privileged mode, host security-profile changes or unconfined AppArmor/seccomp settings introduced.",
+  "evidence_assessment": "Provided matrix records exit255 before Python executes with NNP both on untouched official Python image and showcase UID1000/read-only/cap-drop configuration; same showcase configuration without NNP exits0. Supports a host/runtime compatibility workaround, without proving a general Docker or kernel root cause.",
+  "remaining_controls": [
+    "API and initialize explicit UID1000:1000",
+    "Read-only application root filesystem",
+    "All capabilities dropped except scoped bootstrap CHOWN/FOWNER/DAC_OVERRIDE",
+    "Bootstrap network none",
+    "Internal service network and loopback-only published Web port",
+    "Private credential volume and required Bearer/ACL/HITL/rate limiter unchanged",
+    "No Compose override disabling default AppArmor/seccomp"
+  ],
+  "security_limit": "no_new_privs kernel guarantee is absent: exec of setuid/setgid or file-capability binaries is no longer categorically prevented from changing process privileges. Nonroot, cap-drop and read-only settings are useful independent controls but do not provide an identical guarantee. Do not describe this configuration as NNP-hardened or production-certified.",
+  "recommendation": "Document this host-specific omitted hardening and retain default confinement. A compatible runtime may restore NNP after isolated execution verification; no daemon or host policy relaxation is required for the current workaround.",
+  "runtime_verification": "Parent reports successful bootstrap/initialize and API startup after delta; not independently rerun by reviewer.",
+  "phase_pass_claim": false,
+  "windows": "NOT_RUN",
+  "actions": "Only this new sanitized evidence file created; no services, other edits or commits."
+}

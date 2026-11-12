@@ -9,7 +9,8 @@ x-app: &app
     target: showcase
   user: "1000:1000"
   read_only: true
-  security_opt: ["no-new-privileges:true"]
+  # Docker Snap on this Ubuntu host rejects all exec with no-new-privileges.
+  # Keep default AppArmor/seccomp, nonroot API, read-only rootfs and cap_drop.
   cap_drop: [ALL]
   tmpfs: ["/tmp:rw,nosuid,nodev,size=128m,mode=1777"]
   labels: {io.adaptive-rag.showcase: "s1-docker-v1"}
@@ -111,7 +112,7 @@ services:
       postgres: {condition: service_healthy}
       redis: {condition: service_healthy}
       qdrant: {condition: service_healthy}
-    networks: [showcase]
+    networks: [showcase, web]
     ports: ["127.0.0.1:${SHOWCASE_PORT:-8000}:8000"]
     restart: unless-stopped
     volumes:
@@ -125,6 +126,8 @@ services:
       start_period: 30s
 
 networks:
+  web:
+    labels: {io.adaptive-rag.showcase: "s1-docker-v1"}
   showcase:
     internal: true
     labels: {io.adaptive-rag.showcase: "s1-docker-v1"}
