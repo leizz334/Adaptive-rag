@@ -1,0 +1,684 @@
+{
+  "case": "order_status",
+  "method": "POST",
+  "url": "http://127.0.0.1:35083/api/v1/chat",
+  "request": {
+    "message": "查询 ORD10001 当前订单状态。",
+    "user_id": "u_demo"
+  },
+  "fault": "none",
+  "status": 200,
+  "response_headers": {
+    "date": "Thu, 12 Nov 2026 13:33:07 GMT",
+    "server": "uvicorn",
+    "content-length": "840",
+    "content-type": "application/json",
+    "x-trace-id": "p4-order_status",
+    "x-request-id": "req_17ff446c171a4f6d9ed9a7ca5e6113aa",
+    "x-p4-capture-status": "OK"
+  },
+  "body": {
+    "answer": "以下是本次工具结果可确认的信息：\n订单 ORD10001 当前订单状态：已发货。\n订单 ORD10001 总金额：299.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "session_id": "sess_4b4dd0f79a8c4d62a69e92d20d5ebe37",
+    "trace_id": "p4-order_status",
+    "root_run_id": "c743cbb0-8417-4a49-9cf5-75053229350f",
+    "intent": "order_inquiry",
+    "complexity": "tool_required",
+    "strategy": "agent",
+    "citations": [],
+    "pending_action": null,
+    "refused": false,
+    "error_code": null,
+    "token_usage": {
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_tokens": 0
+    },
+    "latency": {
+      "intent_ms": 0.49007900088327006,
+      "routing_ms": 0.24497399863321334,
+      "retrieval_ms": 0.0,
+      "rerank_ms": 0.0,
+      "tool_ms": 4.743412002426339,
+      "llm_ms": 0.5517060017155018,
+      "total_ms": 30.02352399926167
+    }
+  },
+  "transport_error": null,
+  "latency_ms": 35.90049499689485,
+  "database_before": {
+    "audit_logs": [],
+    "idempotency_keys": [],
+    "messages": [
+      {
+        "id": 1,
+        "session_id": "sess_97f989d44df6493ba064182614fab0b1",
+        "role": "user",
+        "content": "你好",
+        "created_at": "2026-11-12 13:33:08.096245"
+      },
+      {
+        "id": 2,
+        "session_id": "sess_97f989d44df6493ba064182614fab0b1",
+        "role": "assistant",
+        "content": "您好，请告诉我需要查询的订单或政策。",
+        "created_at": "2026-11-12 13:33:08.097218"
+      }
+    ],
+    "order_items": [
+      {
+        "id": 1,
+        "order_id": "ORD10001",
+        "sku": "SKU-HEADSET",
+        "name": "降噪耳机 Pro",
+        "quantity": 1,
+        "unit_price_cents": 29900,
+        "customized": 0
+      },
+      {
+        "id": 2,
+        "order_id": "ORD10002",
+        "sku": "SKU-MUG-CUSTOM",
+        "name": "定制马克杯",
+        "quantity": 1,
+        "unit_price_cents": 3900,
+        "customized": 1
+      },
+      {
+        "id": 3,
+        "order_id": "ORD10003",
+        "sku": "SKU-TEE",
+        "name": "纯棉T恤",
+        "quantity": 1,
+        "unit_price_cents": 7900,
+        "customized": 0
+      }
+    ],
+    "orders": [
+      {
+        "order_id": "ORD10001",
+        "user_id": "u_demo",
+        "status": "shipped",
+        "total_cents": 29900,
+        "created_at": "2026-11-09 13:33:01.925755",
+        "paid_at": "2026-11-09 13:33:01.925755",
+        "shipped_at": "2026-11-10 13:33:01.925755",
+        "delivered_at": null,
+        "tracking_no": "SF1234567890",
+        "receiver_city": "上海"
+      },
+      {
+        "order_id": "ORD10002",
+        "user_id": "u_demo",
+        "status": "delivered",
+        "total_cents": 3900,
+        "created_at": "2026-10-23 13:33:01.925755",
+        "paid_at": "2026-10-23 13:33:01.925755",
+        "shipped_at": "2026-10-24 13:33:01.925755",
+        "delivered_at": "2026-10-31 13:33:01.925755",
+        "tracking_no": "YT998877",
+        "receiver_city": "北京"
+      },
+      {
+        "order_id": "ORD10003",
+        "user_id": "u_demo",
+        "status": "paid",
+        "total_cents": 7900,
+        "created_at": "2026-11-12 08:33:01.925755",
+        "paid_at": "2026-11-12 08:33:01.925755",
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": "杭州"
+      }
+    ],
+    "pending_confirmations": [],
+    "private_knowledge_documents": [],
+    "private_knowledge_tenants": [],
+    "products": [
+      {
+        "sku": "SKU-HEADSET",
+        "name": "降噪耳机 Pro",
+        "category": "数码",
+        "price_cents": 29900,
+        "inventory": 42,
+        "tags": "耳机,降噪",
+        "description": "头戴式主动降噪耳机"
+      },
+      {
+        "sku": "SKU-MUG-CUSTOM",
+        "name": "定制马克杯",
+        "category": "家居",
+        "price_cents": 3900,
+        "inventory": 200,
+        "tags": "定制,杯子",
+        "description": "支持印字的定制杯，定制商品不适用7天无理由"
+      },
+      {
+        "sku": "SKU-TEE",
+        "name": "纯棉T恤",
+        "category": "服饰",
+        "price_cents": 7900,
+        "inventory": 0,
+        "tags": "衣服,基础款",
+        "description": "基础纯棉短袖"
+      }
+    ],
+    "refunds": [],
+    "returns": [],
+    "sessions": [
+      {
+        "session_id": "sess_97f989d44df6493ba064182614fab0b1",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-12 13:33:08.082784",
+        "updated_at": "2026-11-12 13:33:08.097077"
+      }
+    ]
+  },
+  "database_after": {
+    "audit_logs": [],
+    "idempotency_keys": [],
+    "messages": [
+      {
+        "id": 1,
+        "session_id": "sess_97f989d44df6493ba064182614fab0b1",
+        "role": "user",
+        "content": "你好",
+        "created_at": "2026-11-12 13:33:08.096245"
+      },
+      {
+        "id": 2,
+        "session_id": "sess_97f989d44df6493ba064182614fab0b1",
+        "role": "assistant",
+        "content": "您好，请告诉我需要查询的订单或政策。",
+        "created_at": "2026-11-12 13:33:08.097218"
+      },
+      {
+        "id": 3,
+        "session_id": "sess_4b4dd0f79a8c4d62a69e92d20d5ebe37",
+        "role": "user",
+        "content": "查询 ORD10001 当前订单状态。",
+        "created_at": "2026-11-12 13:33:08.145229"
+      },
+      {
+        "id": 4,
+        "session_id": "sess_4b4dd0f79a8c4d62a69e92d20d5ebe37",
+        "role": "assistant",
+        "content": "以下是本次工具结果可确认的信息：\n订单 ORD10001 当前订单状态：已发货。\n订单 ORD10001 总金额：299.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+        "created_at": "2026-11-12 13:33:08.146028"
+      }
+    ],
+    "order_items": [
+      {
+        "id": 1,
+        "order_id": "ORD10001",
+        "sku": "SKU-HEADSET",
+        "name": "降噪耳机 Pro",
+        "quantity": 1,
+        "unit_price_cents": 29900,
+        "customized": 0
+      },
+      {
+        "id": 2,
+        "order_id": "ORD10002",
+        "sku": "SKU-MUG-CUSTOM",
+        "name": "定制马克杯",
+        "quantity": 1,
+        "unit_price_cents": 3900,
+        "customized": 1
+      },
+      {
+        "id": 3,
+        "order_id": "ORD10003",
+        "sku": "SKU-TEE",
+        "name": "纯棉T恤",
+        "quantity": 1,
+        "unit_price_cents": 7900,
+        "customized": 0
+      }
+    ],
+    "orders": [
+      {
+        "order_id": "ORD10001",
+        "user_id": "u_demo",
+        "status": "shipped",
+        "total_cents": 29900,
+        "created_at": "2026-11-09 13:33:01.925755",
+        "paid_at": "2026-11-09 13:33:01.925755",
+        "shipped_at": "2026-11-10 13:33:01.925755",
+        "delivered_at": null,
+        "tracking_no": "SF1234567890",
+        "receiver_city": "上海"
+      },
+      {
+        "order_id": "ORD10002",
+        "user_id": "u_demo",
+        "status": "delivered",
+        "total_cents": 3900,
+        "created_at": "2026-10-23 13:33:01.925755",
+        "paid_at": "2026-10-23 13:33:01.925755",
+        "shipped_at": "2026-10-24 13:33:01.925755",
+        "delivered_at": "2026-10-31 13:33:01.925755",
+        "tracking_no": "YT998877",
+        "receiver_city": "北京"
+      },
+      {
+        "order_id": "ORD10003",
+        "user_id": "u_demo",
+        "status": "paid",
+        "total_cents": 7900,
+        "created_at": "2026-11-12 08:33:01.925755",
+        "paid_at": "2026-11-12 08:33:01.925755",
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": "杭州"
+      }
+    ],
+    "pending_confirmations": [],
+    "private_knowledge_documents": [],
+    "private_knowledge_tenants": [],
+    "products": [
+      {
+        "sku": "SKU-HEADSET",
+        "name": "降噪耳机 Pro",
+        "category": "数码",
+        "price_cents": 29900,
+        "inventory": 42,
+        "tags": "耳机,降噪",
+        "description": "头戴式主动降噪耳机"
+      },
+      {
+        "sku": "SKU-MUG-CUSTOM",
+        "name": "定制马克杯",
+        "category": "家居",
+        "price_cents": 3900,
+        "inventory": 200,
+        "tags": "定制,杯子",
+        "description": "支持印字的定制杯，定制商品不适用7天无理由"
+      },
+      {
+        "sku": "SKU-TEE",
+        "name": "纯棉T恤",
+        "category": "服饰",
+        "price_cents": 7900,
+        "inventory": 0,
+        "tags": "衣服,基础款",
+        "description": "基础纯棉短袖"
+      }
+    ],
+    "refunds": [],
+    "returns": [],
+    "sessions": [
+      {
+        "session_id": "sess_97f989d44df6493ba064182614fab0b1",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-12 13:33:08.082784",
+        "updated_at": "2026-11-12 13:33:08.097077"
+      },
+      {
+        "session_id": "sess_4b4dd0f79a8c4d62a69e92d20d5ebe37",
+        "user_id": "u_demo",
+        "summary": "",
+        "created_at": "2026-11-12 13:33:08.127015",
+        "updated_at": "2026-11-12 13:33:08.145901"
+      }
+    ]
+  },
+  "events": [
+    {
+      "kind": "model_started",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.131443+00:00",
+      "stage": "decision",
+      "fault": "none"
+    },
+    {
+      "kind": "model_finished",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.131645+00:00",
+      "stage": "decision"
+    },
+    {
+      "kind": "model_started",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.132318+00:00",
+      "stage": "decision",
+      "fault": "none"
+    },
+    {
+      "kind": "model_finished",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.132436+00:00",
+      "stage": "decision"
+    },
+    {
+      "kind": "model_started",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.135519+00:00",
+      "stage": "decision",
+      "fault": "none"
+    },
+    {
+      "kind": "model_finished",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.136071+00:00",
+      "stage": "decision"
+    },
+    {
+      "kind": "model_started",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.142848+00:00",
+      "stage": "generate",
+      "fault": "none"
+    },
+    {
+      "kind": "model_finished",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.143094+00:00",
+      "stage": "generate"
+    },
+    {
+      "kind": "model_started",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.143725+00:00",
+      "stage": "judge",
+      "fault": "none"
+    },
+    {
+      "kind": "model_finished",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.143818+00:00",
+      "stage": "judge"
+    },
+    {
+      "kind": "spans",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.156408+00:00",
+      "spans": [
+        {
+          "name": "chat.turn",
+          "kind": "chain",
+          "id": "c743cbb0-8417-4a49-9cf5-75053229350f",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": null,
+          "start_time": "2026-11-12 13:33:08.124902+00:00",
+          "end_time": "2026-11-12 13:33:08.155665+00:00",
+          "latency_ms": 30.755552001210162,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "app_trace_ref": "dd112448c00cdc9324620030",
+            "user_ref": "669c2ea7cc29580b22b5c198",
+            "request_ref": "11d2643b7ddfd4165e165a71",
+            "session_ref": "50b9ebbdc3512ccda174fb5d"
+          }
+        },
+        {
+          "name": "session.load",
+          "kind": "chain",
+          "id": "792a8f3f-0d23-4f3c-b47a-f342721cc0d3",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "c743cbb0-8417-4a49-9cf5-75053229350f",
+          "start_time": "2026-11-12 13:33:08.125060+00:00",
+          "end_time": "2026-11-12 13:33:08.129206+00:00",
+          "latency_ms": 4.146369999944,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "confirmation.resolve",
+          "kind": "chain",
+          "id": "407afca0-b02e-4ae4-85ed-f70be5043038",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "792a8f3f-0d23-4f3c-b47a-f342721cc0d3",
+          "start_time": "2026-11-12 13:33:08.125071+00:00",
+          "end_time": "2026-11-12 13:33:08.125075+00:00",
+          "latency_ms": 0.0036370001907926053,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "graph.invoke",
+          "kind": "chain",
+          "id": "f6c7d0bd-c41f-43b0-9e60-7c440f6bc925",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "c743cbb0-8417-4a49-9cf5-75053229350f",
+          "start_time": "2026-11-12 13:33:08.129232+00:00",
+          "end_time": "2026-11-12 13:33:08.144747+00:00",
+          "latency_ms": 15.51400999960606,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.guardrail",
+          "kind": "chain",
+          "id": "4a3fe5a7-919e-4ea4-8d86-22c80a1b21a3",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "f6c7d0bd-c41f-43b0-9e60-7c440f6bc925",
+          "start_time": "2026-11-12 13:33:08.130517+00:00",
+          "end_time": "2026-11-12 13:33:08.130529+00:00",
+          "latency_ms": 0.008666000212542713,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.intent",
+          "kind": "chain",
+          "id": "52b7b893-0624-4f75-9af9-d7747c3dee07",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "f6c7d0bd-c41f-43b0-9e60-7c440f6bc925",
+          "start_time": "2026-11-12 13:33:08.131223+00:00",
+          "end_time": "2026-11-12 13:33:08.131724+00:00",
+          "latency_ms": 0.4992360009055119,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.router",
+          "kind": "chain",
+          "id": "c6faf558-0256-4822-a602-fb56da7c3ab8",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "f6c7d0bd-c41f-43b0-9e60-7c440f6bc925",
+          "start_time": "2026-11-12 13:33:08.132235+00:00",
+          "end_time": "2026-11-12 13:33:08.132488+00:00",
+          "latency_ms": 0.2508549987396691,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.planner",
+          "kind": "chain",
+          "id": "a62600a2-4175-4c28-ab4b-c20deb93574a",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "f6c7d0bd-c41f-43b0-9e60-7c440f6bc925",
+          "start_time": "2026-11-12 13:33:08.133275+00:00",
+          "end_time": "2026-11-12 13:33:08.136221+00:00",
+          "latency_ms": 2.944851999927778,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.executor",
+          "kind": "chain",
+          "id": "3ff0677c-dabe-4d7e-b10f-4ccf2e1b5633",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "f6c7d0bd-c41f-43b0-9e60-7c440f6bc925",
+          "start_time": "2026-11-12 13:33:08.137010+00:00",
+          "end_time": "2026-11-12 13:33:08.141782+00:00",
+          "latency_ms": 4.768037997564534,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "tool.execute",
+          "kind": "tool",
+          "id": "d447a463-2456-4db2-af55-5474de40e3ac",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "3ff0677c-dabe-4d7e-b10f-4ccf2e1b5633",
+          "start_time": "2026-11-12 13:33:08.137105+00:00",
+          "end_time": "2026-11-12 13:33:08.141682+00:00",
+          "latency_ms": 4.577196999889566,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.generate",
+          "kind": "chain",
+          "id": "e58d4f78-2304-4dcd-889c-416c9cd70d17",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "f6c7d0bd-c41f-43b0-9e60-7c440f6bc925",
+          "start_time": "2026-11-12 13:33:08.142603+00:00",
+          "end_time": "2026-11-12 13:33:08.143183+00:00",
+          "latency_ms": 0.5778650011052378,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.faithfulness",
+          "kind": "chain",
+          "id": "4e121532-8847-441f-8cc9-4927f750a952",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "f6c7d0bd-c41f-43b0-9e60-7c440f6bc925",
+          "start_time": "2026-11-12 13:33:08.143643+00:00",
+          "end_time": "2026-11-12 13:33:08.143868+00:00",
+          "latency_ms": 0.22335299945552833,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.memory",
+          "kind": "chain",
+          "id": "8339d029-dd56-4947-a053-cdcb6f991d70",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "f6c7d0bd-c41f-43b0-9e60-7c440f6bc925",
+          "start_time": "2026-11-12 13:33:08.144328+00:00",
+          "end_time": "2026-11-12 13:33:08.144343+00:00",
+          "latency_ms": 0.013294997188495472,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "session.persist",
+          "kind": "chain",
+          "id": "b342c050-bd97-48db-b048-35899c66af44",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "c743cbb0-8417-4a49-9cf5-75053229350f",
+          "start_time": "2026-11-12 13:33:08.144876+00:00",
+          "end_time": "2026-11-12 13:33:08.145904+00:00",
+          "latency_ms": 1.0260440030833706,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "transaction.commit",
+          "kind": "chain",
+          "id": "ce165d42-7440-4d20-9b2e-c73ebc0dfaa2",
+          "root_id": "975ca0d4-ccf8-4c34-b015-5e4557e7e602",
+          "parent_id": "c743cbb0-8417-4a49-9cf5-75053229350f",
+          "start_time": "2026-11-12 13:33:08.145919+00:00",
+          "end_time": "2026-11-12 13:33:08.154844+00:00",
+          "latency_ms": 8.927383001719136,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "kind": "service_response",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.156650+00:00",
+      "trace_id": "p4-order_status",
+      "response": {
+        "answer": "以下是本次工具结果可确认的信息：\n订单 ORD10001 当前订单状态：已发货。\n订单 ORD10001 总金额：299.00元（人民币）。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+        "session_id": "sess_4b4dd0f79a8c4d62a69e92d20d5ebe37",
+        "trace_id": "p4-order_status",
+        "root_run_id": "c743cbb0-8417-4a49-9cf5-75053229350f",
+        "intent": "order_inquiry",
+        "complexity": "tool_required",
+        "strategy": "agent",
+        "citations": [],
+        "pending_action": null,
+        "refused": false,
+        "error_code": null,
+        "token_usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        },
+        "latency": {
+          "intent_ms": 0.49007900088327006,
+          "routing_ms": 0.24497399863321334,
+          "retrieval_ms": 0.0,
+          "rerank_ms": 0.0,
+          "tool_ms": 4.743412002426339,
+          "llm_ms": 0.5517060017155018,
+          "total_ms": 30.02352399926167
+        }
+      }
+    },
+    {
+      "kind": "tools",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.156727+00:00",
+      "trace_id": "p4-order_status",
+      "calls": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD10001"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD10001",
+            "user_id": "u_demo",
+            "status": "shipped",
+            "items": [
+              {
+                "sku": "SKU-HEADSET",
+                "name": "降噪耳机 Pro",
+                "quantity": 1,
+                "unit_price_cents": 29900,
+                "customized": false
+              }
+            ],
+            "total_cents": 29900,
+            "created_at": "2026-11-09T13:33:01.925755",
+            "paid_at": "2026-11-09T13:33:01.925755",
+            "shipped_at": "2026-11-10T13:33:01.925755",
+            "delivered_at": null,
+            "tracking_no": "SF1234567890",
+            "receiver_city": "上海"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "http",
+      "case": "order_status",
+      "time": "2026-11-12T13:33:08.157024+00:00",
+      "method": "POST",
+      "path": "/api/v1/chat",
+      "status": 200
+    }
+  ],
+  "deliberate_disconnect": false
+}
