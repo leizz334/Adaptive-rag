@@ -25,8 +25,8 @@ Spec: User S1-Web requirements and AGENTS.md; continuous native execution alread
 - [x] RED authenticated own-list/cancel ownership tests; minimal endpoints; KB CRUD/upload/search + citation excerpts + HITL states.
 - [x] Cross-user/auth/replay tests; build/target tests/state/commit.
 ## Web-3 execution
-- [ ] RED bounded authenticated trace ownership/sanitization tests; capture real execution summary without raw trace leakage.
-- [ ] Collapsible actual graph/planner/tool/RAG/memory/timing view; no fabricated steps; tests/state/commit.
+- [x] RED bounded authenticated trace ownership/sanitization tests; capture real execution summary without raw trace leakage.
+- [x] Collapsible actual graph/planner/tool/RAG/memory/timing view; no fabricated steps; tests/state/commit.
 ## Web-4 Experience
 - [ ] Read-only committed synthetic snapshot with provenance/version/conditions/review/Shadow and actual E0/E1/E2 comparisons.
 - [ ] UI tests/no Active and honest labels; state/commit.

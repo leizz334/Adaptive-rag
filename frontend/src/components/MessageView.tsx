@@ -3,6 +3,7 @@ import { Check, Copy } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ActionCard } from "./ActionCard";
+import { ExecutionPanel } from "./ExecutionPanel";
 import type { ActionProposal, Citation, Conversation, Message } from "../types";
 import { Logo } from "./Logo";
 
@@ -47,6 +48,7 @@ export function MessageView({ conversation, busy, onConfirm, onCancel }: Message
             {message.state === "complete" && <>
               <CitationList citations={message.citations ?? []} />
               {message.pendingAction && <ActionCard sessionId={conversation.sessionId} action={message.pendingAction} disabled={busy} onConfirm={() => onConfirm(message.pendingAction!, message.id)} onCancel={() => onCancel(message.id)} />}
+              <ExecutionPanel sessionId={conversation.sessionId} rootRunId={message.rootRunId} traceId={message.traceId} liveNodes={message.nodes} />
               <div className="message-tools"><button aria-label="复制回答" title="复制回答" onClick={() => void copy(message)}>{copiedId === message.id ? <Check size={16} /> : <Copy size={16} />}</button></div>
             </>}
             {message.state === "streaming" && message.nodes && <p className="inspection-note">实际节点：{message.nodes.join(" → ")}</p>}
