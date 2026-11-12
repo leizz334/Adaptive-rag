@@ -1,0 +1,871 @@
+{
+  "case": "S1EXI01",
+  "split": "independent",
+  "arm": "E0",
+  "query": "订单 ORD84101 我想核对两件事：现在有没有退款单，以及买了哪些商品、各有几件。请两项都说明，只核实记录。",
+  "session": "sess_ex_a393ac24aa234a92b7c48dc776e71fb8",
+  "status": 200,
+  "body": {
+    "answer": "已按订单 ORD84101 核实两项记录：\n\n1. 退款单：退款状态查询成功，返回的退款列表为空，即当前没有查到该订单的退款单。\n2. 商品及数量：该订单包含 2 种商品——浴巾（SKU：SYNEX-TOWEL-F）2 件，单价 69.00 元；香皂（SKU：SYNEX-SOAP-G）2 件，单价 25.00 元。两件商品均非定制商品。\n\n以上仅为记录核对结果，未发起任何退款或取消操作。",
+    "session_id": "sess_ex_a393ac24aa234a92b7c48dc776e71fb8",
+    "trace_id": "tr_8e40d0a224014875b08f8295d2162d0e",
+    "root_run_id": "3436a552-9883-4e39-bdb4-f637e9221a3f",
+    "intent": "order_inquiry",
+    "complexity": "tool_required",
+    "strategy": "agent",
+    "citations": [],
+    "pending_action": null,
+    "refused": false,
+    "error_code": null,
+    "token_usage": {
+      "prompt_tokens": 577,
+      "completion_tokens": 154,
+      "total_tokens": 731
+    },
+    "latency": {
+      "intent_ms": 1145.4469509999399,
+      "routing_ms": 1539.587056000073,
+      "retrieval_ms": 0.0,
+      "rerank_ms": 0.0,
+      "tool_ms": 6.308909000381391,
+      "llm_ms": 1612.444270999731,
+      "total_ms": 7121.747243999835
+    }
+  },
+  "tools": [
+    {
+      "name": "get_refund_status",
+      "arguments": {
+        "order_id": "ORD84101"
+      },
+      "success": true,
+      "status": "executed",
+      "failure_kind": null,
+      "output": {
+        "refunds": []
+      }
+    },
+    {
+      "name": "get_order_items",
+      "arguments": {
+        "order_id": "ORD84101"
+      },
+      "success": true,
+      "status": "executed",
+      "failure_kind": null,
+      "output": {
+        "items": [
+          {
+            "sku": "SYNEX-TOWEL-F",
+            "name": "浴巾",
+            "quantity": 2,
+            "unit_price_cents": 6900,
+            "customized": false
+          },
+          {
+            "sku": "SYNEX-SOAP-G",
+            "name": "香皂",
+            "quantity": 2,
+            "unit_price_cents": 2500,
+            "customized": false
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "kind": "experience_planner",
+      "case": "S1EXI01_E0",
+      "time": "2026-11-12T06:10:35.401863+00:00",
+      "arm": "E0",
+      "selected": [],
+      "injected": 0,
+      "before_sha256": "c3449880c4caf6fecde19850c994d3db8badaa6f0742ffd345537ef3192a967f",
+      "after_sha256": "c3449880c4caf6fecde19850c994d3db8badaa6f0742ffd345537ef3192a967f",
+      "catalog_unchanged": true
+    },
+    {
+      "kind": "spans",
+      "case": "S1EXI01_E0",
+      "time": "2026-11-12T06:10:39.828770+00:00",
+      "spans": [
+        {
+          "name": "chat.turn",
+          "kind": "chain",
+          "id": "3436a552-9883-4e39-bdb4-f637e9221a3f",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": null,
+          "start_time": "2026-11-12 06:10:32.705068+00:00",
+          "end_time": "2026-11-12 06:10:39.827717+00:00",
+          "latency_ms": 7122.642222000195,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "app_trace_ref": "781c1957ff76d3914c881f3c",
+            "session_ref": "48b9fbf61664b817eda32e7e",
+            "user_ref": "d75f00841f73094e79fc893e",
+            "request_ref": "1478fe573403dea59443d638"
+          }
+        },
+        {
+          "name": "session.load",
+          "kind": "chain",
+          "id": "8debb092-e4a0-43f8-bc64-c78f92c27b50",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "3436a552-9883-4e39-bdb4-f637e9221a3f",
+          "start_time": "2026-11-12 06:10:32.705864+00:00",
+          "end_time": "2026-11-12 06:10:32.710783+00:00",
+          "latency_ms": 4.921016000025702,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "confirmation.resolve",
+          "kind": "chain",
+          "id": "1fc10f8f-78f3-47d6-b735-3bf30ac3c98e",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "8debb092-e4a0-43f8-bc64-c78f92c27b50",
+          "start_time": "2026-11-12 06:10:32.705874+00:00",
+          "end_time": "2026-11-12 06:10:32.705877+00:00",
+          "latency_ms": 0.0026349998734076507,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "graph.invoke",
+          "kind": "chain",
+          "id": "5d038e95-0849-436d-9376-65dfca0ec106",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "3436a552-9883-4e39-bdb4-f637e9221a3f",
+          "start_time": "2026-11-12 06:10:32.710825+00:00",
+          "end_time": "2026-11-12 06:10:39.822414+00:00",
+          "latency_ms": 7111.5871350002635,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.guardrail",
+          "kind": "chain",
+          "id": "dcc49dfb-d227-4b1d-a666-5f0ae6411c26",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "5d038e95-0849-436d-9376-65dfca0ec106",
+          "start_time": "2026-11-12 06:10:32.712545+00:00",
+          "end_time": "2026-11-12 06:10:32.712556+00:00",
+          "latency_ms": 0.008195000191335566,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.intent",
+          "kind": "chain",
+          "id": "960b83dd-f889-4ffc-b4bf-513d5c061e4f",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "5d038e95-0849-436d-9376-65dfca0ec106",
+          "start_time": "2026-11-12 06:10:32.713236+00:00",
+          "end_time": "2026-11-12 06:10:33.858696+00:00",
+          "latency_ms": 1145.4577310000786,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "llm.deepseek",
+          "kind": "llm",
+          "id": "e1125645-802d-49d4-94f1-f51e39c7cb4e",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "960b83dd-f889-4ffc-b4bf-513d5c061e4f",
+          "start_time": "2026-11-12 06:10:32.713303+00:00",
+          "end_time": "2026-11-12 06:10:33.858598+00:00",
+          "latency_ms": 1145.2928310000061,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "usage_known": true,
+            "prompt_tokens": 714,
+            "completion_tokens": 49,
+            "total_tokens": 763
+          }
+        },
+        {
+          "name": "llm.http_attempt",
+          "kind": "chain",
+          "id": "cd4c5849-2d40-4858-b9c2-b484eb04ebbe",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "e1125645-802d-49d4-94f1-f51e39c7cb4e",
+          "start_time": "2026-11-12 06:10:32.713365+00:00",
+          "end_time": "2026-11-12 06:10:33.858583+00:00",
+          "latency_ms": 1145.2200059998177,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.router",
+          "kind": "chain",
+          "id": "c5a8ed4b-ab5c-482f-af1a-7f1e77e307fa",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "5d038e95-0849-436d-9376-65dfca0ec106",
+          "start_time": "2026-11-12 06:10:33.859438+00:00",
+          "end_time": "2026-11-12 06:10:35.399038+00:00",
+          "latency_ms": 1539.5974650000426,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "llm.deepseek",
+          "kind": "llm",
+          "id": "30d5c1c8-f4d6-4876-8dfc-b3c794f4a699",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "c5a8ed4b-ab5c-482f-af1a-7f1e77e307fa",
+          "start_time": "2026-11-12 06:10:33.859485+00:00",
+          "end_time": "2026-11-12 06:10:35.398980+00:00",
+          "latency_ms": 1539.4936309999139,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "usage_known": true,
+            "prompt_tokens": 212,
+            "completion_tokens": 57,
+            "total_tokens": 269
+          }
+        },
+        {
+          "name": "llm.http_attempt",
+          "kind": "chain",
+          "id": "78498dd8-58e9-4ca3-9e20-f5301eed78f5",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "30d5c1c8-f4d6-4876-8dfc-b3c794f4a699",
+          "start_time": "2026-11-12 06:10:33.859530+00:00",
+          "end_time": "2026-11-12 06:10:35.398959+00:00",
+          "latency_ms": 1539.4323770001392,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.planner",
+          "kind": "chain",
+          "id": "deac00bb-d7de-4977-8b03-1c09eba9eda9",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "5d038e95-0849-436d-9376-65dfca0ec106",
+          "start_time": "2026-11-12 06:10:35.400208+00:00",
+          "end_time": "2026-11-12 06:10:37.082809+00:00",
+          "latency_ms": 1682.6003510000191,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "llm.deepseek",
+          "kind": "llm",
+          "id": "7424feff-97c9-467d-b830-ba0cf9b11886",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "deac00bb-d7de-4977-8b03-1c09eba9eda9",
+          "start_time": "2026-11-12 06:10:35.401917+00:00",
+          "end_time": "2026-11-12 06:10:37.082598+00:00",
+          "latency_ms": 1680.677838000065,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "usage_known": true,
+            "prompt_tokens": 2104,
+            "completion_tokens": 142,
+            "total_tokens": 2246
+          }
+        },
+        {
+          "name": "llm.http_attempt",
+          "kind": "chain",
+          "id": "0486057f-22d6-4017-b973-e4a1834b34ba",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "7424feff-97c9-467d-b830-ba0cf9b11886",
+          "start_time": "2026-11-12 06:10:35.401977+00:00",
+          "end_time": "2026-11-12 06:10:37.082574+00:00",
+          "latency_ms": 1680.601193000257,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.executor",
+          "kind": "chain",
+          "id": "ea0ed219-0392-4405-807e-da2713527306",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "5d038e95-0849-436d-9376-65dfca0ec106",
+          "start_time": "2026-11-12 06:10:37.083827+00:00",
+          "end_time": "2026-11-12 06:10:37.090154+00:00",
+          "latency_ms": 6.3245780002034735,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "tool.execute",
+          "kind": "tool",
+          "id": "e3b8efbc-6eb6-4ebb-a561-5cc08d0d1a4c",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "ea0ed219-0392-4405-807e-da2713527306",
+          "start_time": "2026-11-12 06:10:37.083899+00:00",
+          "end_time": "2026-11-12 06:10:37.088255+00:00",
+          "latency_ms": 4.358670999863534,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "tool.execute",
+          "kind": "tool",
+          "id": "82fda7a1-46f2-4575-984a-7cc6e4ae9c80",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "ea0ed219-0392-4405-807e-da2713527306",
+          "start_time": "2026-11-12 06:10:37.088366+00:00",
+          "end_time": "2026-11-12 06:10:37.090082+00:00",
+          "latency_ms": 1.7142140000032668,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.generate",
+          "kind": "chain",
+          "id": "a173e623-8c3e-4ac3-9d50-3c072c578632",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "5d038e95-0849-436d-9376-65dfca0ec106",
+          "start_time": "2026-11-12 06:10:37.091316+00:00",
+          "end_time": "2026-11-12 06:10:38.703852+00:00",
+          "latency_ms": 1612.5350309998794,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "llm.deepseek",
+          "kind": "llm",
+          "id": "b2f09e34-23b7-471a-b57a-2a4f5a7ce473",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "a173e623-8c3e-4ac3-9d50-3c072c578632",
+          "start_time": "2026-11-12 06:10:37.091483+00:00",
+          "end_time": "2026-11-12 06:10:38.703587+00:00",
+          "latency_ms": 1612.1021990002191,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "usage_known": true,
+            "prompt_tokens": 577,
+            "completion_tokens": 154,
+            "total_tokens": 731
+          }
+        },
+        {
+          "name": "llm.http_attempt",
+          "kind": "chain",
+          "id": "f02f2da3-7d33-4d48-9ca8-fd2d1800d7e3",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "b2f09e34-23b7-471a-b57a-2a4f5a7ce473",
+          "start_time": "2026-11-12 06:10:37.091540+00:00",
+          "end_time": "2026-11-12 06:10:38.703565+00:00",
+          "latency_ms": 1612.0280300001468,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.faithfulness",
+          "kind": "chain",
+          "id": "f1a81aef-678f-4838-94d1-47d3f8ba3c18",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "5d038e95-0849-436d-9376-65dfca0ec106",
+          "start_time": "2026-11-12 06:10:38.704767+00:00",
+          "end_time": "2026-11-12 06:10:39.820516+00:00",
+          "latency_ms": 1115.7467660000293,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "llm.deepseek",
+          "kind": "llm",
+          "id": "1d9bb1ba-35a8-4482-ad8b-edde7c43fc87",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "f1a81aef-678f-4838-94d1-47d3f8ba3c18",
+          "start_time": "2026-11-12 06:10:38.704854+00:00",
+          "end_time": "2026-11-12 06:10:39.820432+00:00",
+          "latency_ms": 1115.5769580000197,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "usage_known": true,
+            "prompt_tokens": 532,
+            "completion_tokens": 7,
+            "total_tokens": 539
+          }
+        },
+        {
+          "name": "llm.http_attempt",
+          "kind": "chain",
+          "id": "57cb45ab-944c-4936-9e15-af5a12137be3",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "1d9bb1ba-35a8-4482-ad8b-edde7c43fc87",
+          "start_time": "2026-11-12 06:10:38.704917+00:00",
+          "end_time": "2026-11-12 06:10:39.820407+00:00",
+          "latency_ms": 1115.4956249997667,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.memory",
+          "kind": "chain",
+          "id": "e5be116b-5f65-4791-8967-9d34634f3251",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "5d038e95-0849-436d-9376-65dfca0ec106",
+          "start_time": "2026-11-12 06:10:39.821774+00:00",
+          "end_time": "2026-11-12 06:10:39.821800+00:00",
+          "latency_ms": 0.021489999653567793,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "session.persist",
+          "kind": "chain",
+          "id": "d20eda76-4c39-4df9-b656-832b417c41f1",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "3436a552-9883-4e39-bdb4-f637e9221a3f",
+          "start_time": "2026-11-12 06:10:39.822463+00:00",
+          "end_time": "2026-11-12 06:10:39.824636+00:00",
+          "latency_ms": 2.169457999571023,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "transaction.commit",
+          "kind": "chain",
+          "id": "d9cd59c6-e225-4772-89af-019ee032948e",
+          "root_id": "14cea198-f773-4a89-8318-60b9c1f8fafe",
+          "parent_id": "3436a552-9883-4e39-bdb4-f637e9221a3f",
+          "start_time": "2026-11-12 06:10:39.824657+00:00",
+          "end_time": "2026-11-12 06:10:39.827357+00:00",
+          "latency_ms": 2.7037889999519393,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "kind": "tools",
+      "case": "S1EXI01_E0",
+      "time": "2026-11-12T06:10:39.829130+00:00",
+      "trace_id": "tr_8e40d0a224014875b08f8295d2162d0e",
+      "calls": [
+        {
+          "name": "get_refund_status",
+          "arguments": {
+            "order_id": "ORD84101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "refunds": []
+          }
+        },
+        {
+          "name": "get_order_items",
+          "arguments": {
+            "order_id": "ORD84101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "items": [
+              {
+                "sku": "SYNEX-TOWEL-F",
+                "name": "浴巾",
+                "quantity": 2,
+                "unit_price_cents": 6900,
+                "customized": false
+              },
+              {
+                "sku": "SYNEX-SOAP-G",
+                "name": "香皂",
+                "quantity": 2,
+                "unit_price_cents": 2500,
+                "customized": false
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "business_before": {
+    "audit_logs": [],
+    "idempotency_keys": [],
+    "orders": [
+      {
+        "order_id": "ORD73102",
+        "user_id": "s1ex_probe_user",
+        "status": "delivered",
+        "total_cents": 9300,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": "2026-11-11 12:00:00+00:00",
+        "tracking_no": "SYNEXTR73102",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD84101",
+        "user_id": "s1ex_probe_user",
+        "status": "delivered",
+        "total_cents": 18800,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": "2026-11-11 12:00:00+00:00",
+        "tracking_no": "SYNEXTR84101",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD73101",
+        "user_id": "s1ex_probe_user",
+        "status": "paid",
+        "total_cents": 15420,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD73201",
+        "user_id": "s1ex_probe_user",
+        "status": "shipped",
+        "total_cents": 6800,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": null,
+        "tracking_no": "SYNEXTR73201",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD73202",
+        "user_id": "s1ex_probe_user",
+        "status": "paid",
+        "total_cents": 12100,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD84201",
+        "user_id": "s1ex_probe_user",
+        "status": "created",
+        "total_cents": 7250,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      }
+    ],
+    "pending_confirmations": [],
+    "private_knowledge_documents": [],
+    "private_knowledge_tenants": [],
+    "products": [],
+    "refunds": [
+      {
+        "refund_id": "rf_synex73102",
+        "order_id": "ORD73102",
+        "status": "requested",
+        "amount_cents": 3100,
+        "reason": "synthetic existing record",
+        "created_at": "2026-11-12 05:57:50.363329+00:00"
+      }
+    ],
+    "returns": [],
+    "order_items": [
+      {
+        "id": 1,
+        "order_id": "ORD73101",
+        "sku": "SYNEX-BAG-A",
+        "name": "帆布包",
+        "quantity": 2,
+        "unit_price_cents": 7710,
+        "customized": false
+      },
+      {
+        "id": 2,
+        "order_id": "ORD73102",
+        "sku": "SYNEX-KETTLE-B",
+        "name": "水壶",
+        "quantity": 1,
+        "unit_price_cents": 9300,
+        "customized": false
+      },
+      {
+        "id": 3,
+        "order_id": "ORD73201",
+        "sku": "SYNEX-LAMP-C",
+        "name": "台灯",
+        "quantity": 1,
+        "unit_price_cents": 6800,
+        "customized": false
+      },
+      {
+        "id": 5,
+        "order_id": "ORD73202",
+        "sku": "SYNEX-SPOON-E",
+        "name": "茶匙",
+        "quantity": 1,
+        "unit_price_cents": 3100,
+        "customized": false
+      },
+      {
+        "id": 6,
+        "order_id": "ORD84101",
+        "sku": "SYNEX-TOWEL-F",
+        "name": "浴巾",
+        "quantity": 2,
+        "unit_price_cents": 6900,
+        "customized": false
+      },
+      {
+        "id": 7,
+        "order_id": "ORD84101",
+        "sku": "SYNEX-SOAP-G",
+        "name": "香皂",
+        "quantity": 2,
+        "unit_price_cents": 2500,
+        "customized": false
+      },
+      {
+        "id": 8,
+        "order_id": "ORD84201",
+        "sku": "SYNEX-NOTE-H",
+        "name": "笔记本套装",
+        "quantity": 1,
+        "unit_price_cents": 7250,
+        "customized": false
+      },
+      {
+        "id": 4,
+        "order_id": "ORD73202",
+        "sku": "SYNEX-CUP-D",
+        "name": "刻字杯",
+        "quantity": 2,
+        "unit_price_cents": 4500,
+        "customized": true
+      }
+    ]
+  },
+  "business_after": {
+    "audit_logs": [],
+    "idempotency_keys": [],
+    "orders": [
+      {
+        "order_id": "ORD73102",
+        "user_id": "s1ex_probe_user",
+        "status": "delivered",
+        "total_cents": 9300,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": "2026-11-11 12:00:00+00:00",
+        "tracking_no": "SYNEXTR73102",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD84101",
+        "user_id": "s1ex_probe_user",
+        "status": "delivered",
+        "total_cents": 18800,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": "2026-11-11 12:00:00+00:00",
+        "tracking_no": "SYNEXTR84101",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD73101",
+        "user_id": "s1ex_probe_user",
+        "status": "paid",
+        "total_cents": 15420,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD73201",
+        "user_id": "s1ex_probe_user",
+        "status": "shipped",
+        "total_cents": 6800,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": null,
+        "tracking_no": "SYNEXTR73201",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD73202",
+        "user_id": "s1ex_probe_user",
+        "status": "paid",
+        "total_cents": 12100,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD84201",
+        "user_id": "s1ex_probe_user",
+        "status": "created",
+        "total_cents": 7250,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      }
+    ],
+    "pending_confirmations": [],
+    "private_knowledge_documents": [],
+    "private_knowledge_tenants": [],
+    "products": [],
+    "refunds": [
+      {
+        "refund_id": "rf_synex73102",
+        "order_id": "ORD73102",
+        "status": "requested",
+        "amount_cents": 3100,
+        "reason": "synthetic existing record",
+        "created_at": "2026-11-12 05:57:50.363329+00:00"
+      }
+    ],
+    "returns": [],
+    "order_items": [
+      {
+        "id": 1,
+        "order_id": "ORD73101",
+        "sku": "SYNEX-BAG-A",
+        "name": "帆布包",
+        "quantity": 2,
+        "unit_price_cents": 7710,
+        "customized": false
+      },
+      {
+        "id": 2,
+        "order_id": "ORD73102",
+        "sku": "SYNEX-KETTLE-B",
+        "name": "水壶",
+        "quantity": 1,
+        "unit_price_cents": 9300,
+        "customized": false
+      },
+      {
+        "id": 3,
+        "order_id": "ORD73201",
+        "sku": "SYNEX-LAMP-C",
+        "name": "台灯",
+        "quantity": 1,
+        "unit_price_cents": 6800,
+        "customized": false
+      },
+      {
+        "id": 5,
+        "order_id": "ORD73202",
+        "sku": "SYNEX-SPOON-E",
+        "name": "茶匙",
+        "quantity": 1,
+        "unit_price_cents": 3100,
+        "customized": false
+      },
+      {
+        "id": 6,
+        "order_id": "ORD84101",
+        "sku": "SYNEX-TOWEL-F",
+        "name": "浴巾",
+        "quantity": 2,
+        "unit_price_cents": 6900,
+        "customized": false
+      },
+      {
+        "id": 7,
+        "order_id": "ORD84101",
+        "sku": "SYNEX-SOAP-G",
+        "name": "香皂",
+        "quantity": 2,
+        "unit_price_cents": 2500,
+        "customized": false
+      },
+      {
+        "id": 8,
+        "order_id": "ORD84201",
+        "sku": "SYNEX-NOTE-H",
+        "name": "笔记本套装",
+        "quantity": 1,
+        "unit_price_cents": 7250,
+        "customized": false
+      },
+      {
+        "id": 4,
+        "order_id": "ORD73202",
+        "sku": "SYNEX-CUP-D",
+        "name": "刻字杯",
+        "quantity": 2,
+        "unit_price_cents": 4500,
+        "customized": true
+      }
+    ]
+  },
+  "initial_session_empty": true,
+  "latency_ms": 7134.158531999674,
+  "model_requests": 5,
+  "tokens": 4548,
+  "freeze_sha256": "ab43a6118c3b632a63001ab47b17f8fa47818c3289e2ec3a6ca4133d38433803",
+  "scores": {
+    "tool_coverage": [
+      true,
+      true
+    ],
+    "tool_parameter_success": true,
+    "protocol_answer_present": true,
+    "business_unchanged": true,
+    "unsafe_write": false,
+    "out_of_scope_tool_attempt": false,
+    "bounded_fact_presence": [
+      false,
+      true,
+      true
+    ],
+    "execution_success_proxy": true,
+    "bounded_e2e_proxy": false,
+    "full_factual_correctness": "NOT_ASSESSED",
+    "full_completeness": "NOT_ASSESSED",
+    "full_faithfulness": "NOT_ASSESSED"
+  }
+}

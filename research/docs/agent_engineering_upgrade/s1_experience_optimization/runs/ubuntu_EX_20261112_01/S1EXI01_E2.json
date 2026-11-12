@@ -1,0 +1,882 @@
+{
+  "case": "S1EXI01",
+  "split": "independent",
+  "arm": "E2",
+  "query": "订单 ORD84101 我想核对两件事：现在有没有退款单，以及买了哪些商品、各有几件。请两项都说明，只核实记录。",
+  "session": "sess_ex_f3ddd71fd8654d8ea801be4dc7d1faaf",
+  "status": 200,
+  "body": {
+    "answer": "以下是本次工具结果可确认的信息：\n本次查询暂未发现退款申请记录，不能据此声称退款完成。\n订单商品 SYNEX-TOWEL-F 数量：2件。\n订单商品 SYNEX-SOAP-G 数量：2件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+    "session_id": "sess_ex_f3ddd71fd8654d8ea801be4dc7d1faaf",
+    "trace_id": "tr_39466597d3ac482bb54aee52d56646f6",
+    "root_run_id": "4625472f-f148-46bc-8ce5-a6a536dfa19c",
+    "intent": "order_inquiry",
+    "complexity": "tool_required",
+    "strategy": "agent",
+    "citations": [],
+    "pending_action": null,
+    "refused": false,
+    "error_code": null,
+    "token_usage": {
+      "prompt_tokens": 577,
+      "completion_tokens": 102,
+      "total_tokens": 679
+    },
+    "latency": {
+      "intent_ms": 2669.9447340001825,
+      "routing_ms": 1189.7091920000094,
+      "retrieval_ms": 0.0,
+      "rerank_ms": 0.0,
+      "tool_ms": 10.8158729999559,
+      "llm_ms": 1704.1606889997638,
+      "total_ms": 8716.85837699988
+    }
+  },
+  "tools": [
+    {
+      "name": "get_refund_status",
+      "arguments": {
+        "order_id": "ORD84101"
+      },
+      "success": true,
+      "status": "executed",
+      "failure_kind": null,
+      "output": {
+        "refunds": []
+      }
+    },
+    {
+      "name": "get_order_items",
+      "arguments": {
+        "order_id": "ORD84101"
+      },
+      "success": true,
+      "status": "executed",
+      "failure_kind": null,
+      "output": {
+        "items": [
+          {
+            "sku": "SYNEX-TOWEL-F",
+            "name": "浴巾",
+            "quantity": 2,
+            "unit_price_cents": 6900,
+            "customized": false
+          },
+          {
+            "sku": "SYNEX-SOAP-G",
+            "name": "香皂",
+            "quantity": 2,
+            "unit_price_cents": 2500,
+            "customized": false
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "kind": "experience_planner",
+      "case": "S1EXI01_E2",
+      "time": "2026-11-12T06:10:19.973710+00:00",
+      "arm": "E2",
+      "selected": [
+        {
+          "id": "76b9772f80f2423489225e0dcc6941b5",
+          "family": "tool_coverage",
+          "fingerprint": "6b313008bc4c6ba84cf0ecc7c758890cd5393202db335df299f0caa892050315"
+        },
+        {
+          "id": "e3541c1a81854359a428a0970880e1fa",
+          "family": "answer_coverage",
+          "fingerprint": "4fd00473f47aa8ed3710876b5ae33b2730653fa7769acbfe343d5d246b22bc15"
+        }
+      ],
+      "injected": 2,
+      "before_sha256": "c3449880c4caf6fecde19850c994d3db8badaa6f0742ffd345537ef3192a967f",
+      "after_sha256": "50bbe3263edcfddf392afec72062f7245afd644213cb63e50b427d541a1e4053",
+      "catalog_unchanged": true
+    },
+    {
+      "kind": "spans",
+      "case": "S1EXI01_E2",
+      "time": "2026-11-12T06:10:24.791778+00:00",
+      "spans": [
+        {
+          "name": "chat.turn",
+          "kind": "chain",
+          "id": "4625472f-f148-46bc-8ce5-a6a536dfa19c",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": null,
+          "start_time": "2026-11-12 06:10:16.072992+00:00",
+          "end_time": "2026-11-12 06:10:24.790659+00:00",
+          "latency_ms": 8717.662334000124,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "app_trace_ref": "0cd23ed0b78758b4ca7f2ea8",
+            "session_ref": "a904780b7cc7447df0948529",
+            "user_ref": "d75f00841f73094e79fc893e",
+            "request_ref": "32ba29ffa92cfa1c0a03c584"
+          }
+        },
+        {
+          "name": "session.load",
+          "kind": "chain",
+          "id": "aa0975fb-574a-432a-b7ac-8b7ae7c5d8a4",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "4625472f-f148-46bc-8ce5-a6a536dfa19c",
+          "start_time": "2026-11-12 06:10:16.073657+00:00",
+          "end_time": "2026-11-12 06:10:16.095295+00:00",
+          "latency_ms": 21.63885299978574,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "confirmation.resolve",
+          "kind": "chain",
+          "id": "da11293b-4044-4e3c-a3ef-25ab34dd2a9d",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "aa0975fb-574a-432a-b7ac-8b7ae7c5d8a4",
+          "start_time": "2026-11-12 06:10:16.073668+00:00",
+          "end_time": "2026-11-12 06:10:16.073672+00:00",
+          "latency_ms": 0.003485999968688702,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "graph.invoke",
+          "kind": "chain",
+          "id": "c428b1d4-3b52-4591-ae99-dc49d7c5da57",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "4625472f-f148-46bc-8ce5-a6a536dfa19c",
+          "start_time": "2026-11-12 06:10:16.095330+00:00",
+          "end_time": "2026-11-12 06:10:24.782024+00:00",
+          "latency_ms": 8686.691058000179,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.guardrail",
+          "kind": "chain",
+          "id": "826ca385-e42d-45f9-b56b-2048976838aa",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "c428b1d4-3b52-4591-ae99-dc49d7c5da57",
+          "start_time": "2026-11-12 06:10:16.097118+00:00",
+          "end_time": "2026-11-12 06:10:16.097135+00:00",
+          "latency_ms": 0.015109000287338858,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.intent",
+          "kind": "chain",
+          "id": "72062f85-e8e1-4fb8-93c9-9a92fc9f0b29",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "c428b1d4-3b52-4591-ae99-dc49d7c5da57",
+          "start_time": "2026-11-12 06:10:16.097872+00:00",
+          "end_time": "2026-11-12 06:10:18.767847+00:00",
+          "latency_ms": 2669.9737189996995,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "llm.deepseek",
+          "kind": "llm",
+          "id": "ce28ffe4-90a9-4046-8e7d-da2bdec3fd97",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "72062f85-e8e1-4fb8-93c9-9a92fc9f0b29",
+          "start_time": "2026-11-12 06:10:16.114412+00:00",
+          "end_time": "2026-11-12 06:10:18.767707+00:00",
+          "latency_ms": 2653.2874570002605,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "usage_known": true,
+            "prompt_tokens": 714,
+            "completion_tokens": 49,
+            "total_tokens": 763
+          }
+        },
+        {
+          "name": "llm.http_attempt",
+          "kind": "chain",
+          "id": "294b7fcb-0a5d-4d12-bf6b-7751eeef23f7",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "ce28ffe4-90a9-4046-8e7d-da2bdec3fd97",
+          "start_time": "2026-11-12 06:10:16.114477+00:00",
+          "end_time": "2026-11-12 06:10:18.767689+00:00",
+          "latency_ms": 2653.215070999977,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.router",
+          "kind": "chain",
+          "id": "1864d93b-2bbc-4514-8490-c808b9e7378e",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "c428b1d4-3b52-4591-ae99-dc49d7c5da57",
+          "start_time": "2026-11-12 06:10:18.768761+00:00",
+          "end_time": "2026-11-12 06:10:19.958512+00:00",
+          "latency_ms": 1189.7490470000776,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "llm.deepseek",
+          "kind": "llm",
+          "id": "54700edf-25ef-4373-994d-75400b299d7c",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "1864d93b-2bbc-4514-8490-c808b9e7378e",
+          "start_time": "2026-11-12 06:10:18.768814+00:00",
+          "end_time": "2026-11-12 06:10:19.958408+00:00",
+          "latency_ms": 1189.5925240000906,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "usage_known": true,
+            "prompt_tokens": 212,
+            "completion_tokens": 54,
+            "total_tokens": 266
+          }
+        },
+        {
+          "name": "llm.http_attempt",
+          "kind": "chain",
+          "id": "9d1e1fba-dbad-4484-83fc-a48f18c22856",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "54700edf-25ef-4373-994d-75400b299d7c",
+          "start_time": "2026-11-12 06:10:18.768874+00:00",
+          "end_time": "2026-11-12 06:10:19.958381+00:00",
+          "latency_ms": 1189.5109309998588,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.planner",
+          "kind": "chain",
+          "id": "a0b06c0d-d9b0-4fa9-b1a5-5a8c842a1d12",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "c428b1d4-3b52-4591-ae99-dc49d7c5da57",
+          "start_time": "2026-11-12 06:10:19.960292+00:00",
+          "end_time": "2026-11-12 06:10:22.082073+00:00",
+          "latency_ms": 2121.7808920000607,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "llm.deepseek",
+          "kind": "llm",
+          "id": "3d235377-7dfc-4498-afd2-30c5ea5f456b",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "a0b06c0d-d9b0-4fa9-b1a5-5a8c842a1d12",
+          "start_time": "2026-11-12 06:10:19.973775+00:00",
+          "end_time": "2026-11-12 06:10:22.081672+00:00",
+          "latency_ms": 2107.8948660001515,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "usage_known": true,
+            "prompt_tokens": 2274,
+            "completion_tokens": 146,
+            "total_tokens": 2420
+          }
+        },
+        {
+          "name": "llm.http_attempt",
+          "kind": "chain",
+          "id": "5073c27e-f12e-4d48-abb2-fe1b6fe5c6ed",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "3d235377-7dfc-4498-afd2-30c5ea5f456b",
+          "start_time": "2026-11-12 06:10:19.973836+00:00",
+          "end_time": "2026-11-12 06:10:22.081638+00:00",
+          "latency_ms": 2107.8077729998768,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.executor",
+          "kind": "chain",
+          "id": "867d93c8-30b7-4f0e-8845-ac5103d9c550",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "c428b1d4-3b52-4591-ae99-dc49d7c5da57",
+          "start_time": "2026-11-12 06:10:22.083397+00:00",
+          "end_time": "2026-11-12 06:10:22.094254+00:00",
+          "latency_ms": 10.844776000340062,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "tool.execute",
+          "kind": "tool",
+          "id": "6d08aced-57fe-4451-b929-c99391b0fd63",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "867d93c8-30b7-4f0e-8845-ac5103d9c550",
+          "start_time": "2026-11-12 06:10:22.083513+00:00",
+          "end_time": "2026-11-12 06:10:22.092348+00:00",
+          "latency_ms": 8.837314000174956,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "tool.execute",
+          "kind": "tool",
+          "id": "afa56a14-54aa-4984-b8db-34005caad39c",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "867d93c8-30b7-4f0e-8845-ac5103d9c550",
+          "start_time": "2026-11-12 06:10:22.092492+00:00",
+          "end_time": "2026-11-12 06:10:22.094158+00:00",
+          "latency_ms": 1.6690379998181015,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.generate",
+          "kind": "chain",
+          "id": "cf47743b-e473-414c-9706-a88dfe79eec2",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "c428b1d4-3b52-4591-ae99-dc49d7c5da57",
+          "start_time": "2026-11-12 06:10:22.095026+00:00",
+          "end_time": "2026-11-12 06:10:23.799297+00:00",
+          "latency_ms": 1704.2697029996816,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "llm.deepseek",
+          "kind": "llm",
+          "id": "ca670f37-a104-4866-9e84-8ade81963535",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "cf47743b-e473-414c-9706-a88dfe79eec2",
+          "start_time": "2026-11-12 06:10:22.095289+00:00",
+          "end_time": "2026-11-12 06:10:23.798748+00:00",
+          "latency_ms": 1703.4568190001664,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "usage_known": true,
+            "prompt_tokens": 577,
+            "completion_tokens": 102,
+            "total_tokens": 679
+          }
+        },
+        {
+          "name": "llm.http_attempt",
+          "kind": "chain",
+          "id": "6fa97efd-3f7f-44ef-9915-b8a2025b6cf8",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "ca670f37-a104-4866-9e84-8ade81963535",
+          "start_time": "2026-11-12 06:10:22.095344+00:00",
+          "end_time": "2026-11-12 06:10:23.798722+00:00",
+          "latency_ms": 1703.383611999925,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.faithfulness",
+          "kind": "chain",
+          "id": "2998d0fb-230c-405d-bf4f-578d0350ee1b",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "c428b1d4-3b52-4591-ae99-dc49d7c5da57",
+          "start_time": "2026-11-12 06:10:23.800148+00:00",
+          "end_time": "2026-11-12 06:10:24.780358+00:00",
+          "latency_ms": 980.2062579997255,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "llm.deepseek",
+          "kind": "llm",
+          "id": "da854171-2058-4767-b09c-6dad6ee04638",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "2998d0fb-230c-405d-bf4f-578d0350ee1b",
+          "start_time": "2026-11-12 06:10:23.800257+00:00",
+          "end_time": "2026-11-12 06:10:24.780264+00:00",
+          "latency_ms": 980.0064529999872,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {
+            "usage_known": true,
+            "prompt_tokens": 476,
+            "completion_tokens": 7,
+            "total_tokens": 483
+          }
+        },
+        {
+          "name": "llm.http_attempt",
+          "kind": "chain",
+          "id": "9a657c44-fb89-4b27-a941-0befb3ad8806",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "da854171-2058-4767-b09c-6dad6ee04638",
+          "start_time": "2026-11-12 06:10:23.800308+00:00",
+          "end_time": "2026-11-12 06:10:24.780238+00:00",
+          "latency_ms": 979.9357410001903,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "node.memory",
+          "kind": "chain",
+          "id": "ade363c2-e644-4b1f-903f-7ae3d1858e79",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "c428b1d4-3b52-4591-ae99-dc49d7c5da57",
+          "start_time": "2026-11-12 06:10:24.781567+00:00",
+          "end_time": "2026-11-12 06:10:24.781589+00:00",
+          "latency_ms": 0.018745000033959514,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "session.persist",
+          "kind": "chain",
+          "id": "aa0e25bb-499e-48c8-86c8-76bd89bb0f1c",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "4625472f-f148-46bc-8ce5-a6a536dfa19c",
+          "start_time": "2026-11-12 06:10:24.782059+00:00",
+          "end_time": "2026-11-12 06:10:24.785871+00:00",
+          "latency_ms": 3.8108930002636043,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        },
+        {
+          "name": "transaction.commit",
+          "kind": "chain",
+          "id": "c99b4588-29a2-4a2f-9f5b-17d1cbd07b8d",
+          "root_id": "20cb34ac-c861-479c-9e48-b3624956c3e8",
+          "parent_id": "4625472f-f148-46bc-8ce5-a6a536dfa19c",
+          "start_time": "2026-11-12 06:10:24.785907+00:00",
+          "end_time": "2026-11-12 06:10:24.790310+00:00",
+          "latency_ms": 4.40307299959386,
+          "status": "ok",
+          "error_type": null,
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "kind": "tools",
+      "case": "S1EXI01_E2",
+      "time": "2026-11-12T06:10:24.792219+00:00",
+      "trace_id": "tr_39466597d3ac482bb54aee52d56646f6",
+      "calls": [
+        {
+          "name": "get_refund_status",
+          "arguments": {
+            "order_id": "ORD84101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "refunds": []
+          }
+        },
+        {
+          "name": "get_order_items",
+          "arguments": {
+            "order_id": "ORD84101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "items": [
+              {
+                "sku": "SYNEX-TOWEL-F",
+                "name": "浴巾",
+                "quantity": 2,
+                "unit_price_cents": 6900,
+                "customized": false
+              },
+              {
+                "sku": "SYNEX-SOAP-G",
+                "name": "香皂",
+                "quantity": 2,
+                "unit_price_cents": 2500,
+                "customized": false
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "business_before": {
+    "audit_logs": [],
+    "idempotency_keys": [],
+    "orders": [
+      {
+        "order_id": "ORD73102",
+        "user_id": "s1ex_probe_user",
+        "status": "delivered",
+        "total_cents": 9300,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": "2026-11-11 12:00:00+00:00",
+        "tracking_no": "SYNEXTR73102",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD84101",
+        "user_id": "s1ex_probe_user",
+        "status": "delivered",
+        "total_cents": 18800,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": "2026-11-11 12:00:00+00:00",
+        "tracking_no": "SYNEXTR84101",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD73101",
+        "user_id": "s1ex_probe_user",
+        "status": "paid",
+        "total_cents": 15420,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD73201",
+        "user_id": "s1ex_probe_user",
+        "status": "shipped",
+        "total_cents": 6800,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": null,
+        "tracking_no": "SYNEXTR73201",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD73202",
+        "user_id": "s1ex_probe_user",
+        "status": "paid",
+        "total_cents": 12100,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD84201",
+        "user_id": "s1ex_probe_user",
+        "status": "created",
+        "total_cents": 7250,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      }
+    ],
+    "pending_confirmations": [],
+    "private_knowledge_documents": [],
+    "private_knowledge_tenants": [],
+    "products": [],
+    "refunds": [
+      {
+        "refund_id": "rf_synex73102",
+        "order_id": "ORD73102",
+        "status": "requested",
+        "amount_cents": 3100,
+        "reason": "synthetic existing record",
+        "created_at": "2026-11-12 05:57:50.363329+00:00"
+      }
+    ],
+    "returns": [],
+    "order_items": [
+      {
+        "id": 1,
+        "order_id": "ORD73101",
+        "sku": "SYNEX-BAG-A",
+        "name": "帆布包",
+        "quantity": 2,
+        "unit_price_cents": 7710,
+        "customized": false
+      },
+      {
+        "id": 2,
+        "order_id": "ORD73102",
+        "sku": "SYNEX-KETTLE-B",
+        "name": "水壶",
+        "quantity": 1,
+        "unit_price_cents": 9300,
+        "customized": false
+      },
+      {
+        "id": 3,
+        "order_id": "ORD73201",
+        "sku": "SYNEX-LAMP-C",
+        "name": "台灯",
+        "quantity": 1,
+        "unit_price_cents": 6800,
+        "customized": false
+      },
+      {
+        "id": 5,
+        "order_id": "ORD73202",
+        "sku": "SYNEX-SPOON-E",
+        "name": "茶匙",
+        "quantity": 1,
+        "unit_price_cents": 3100,
+        "customized": false
+      },
+      {
+        "id": 6,
+        "order_id": "ORD84101",
+        "sku": "SYNEX-TOWEL-F",
+        "name": "浴巾",
+        "quantity": 2,
+        "unit_price_cents": 6900,
+        "customized": false
+      },
+      {
+        "id": 7,
+        "order_id": "ORD84101",
+        "sku": "SYNEX-SOAP-G",
+        "name": "香皂",
+        "quantity": 2,
+        "unit_price_cents": 2500,
+        "customized": false
+      },
+      {
+        "id": 8,
+        "order_id": "ORD84201",
+        "sku": "SYNEX-NOTE-H",
+        "name": "笔记本套装",
+        "quantity": 1,
+        "unit_price_cents": 7250,
+        "customized": false
+      },
+      {
+        "id": 4,
+        "order_id": "ORD73202",
+        "sku": "SYNEX-CUP-D",
+        "name": "刻字杯",
+        "quantity": 2,
+        "unit_price_cents": 4500,
+        "customized": true
+      }
+    ]
+  },
+  "business_after": {
+    "audit_logs": [],
+    "idempotency_keys": [],
+    "orders": [
+      {
+        "order_id": "ORD73102",
+        "user_id": "s1ex_probe_user",
+        "status": "delivered",
+        "total_cents": 9300,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": "2026-11-11 12:00:00+00:00",
+        "tracking_no": "SYNEXTR73102",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD84101",
+        "user_id": "s1ex_probe_user",
+        "status": "delivered",
+        "total_cents": 18800,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": "2026-11-11 12:00:00+00:00",
+        "tracking_no": "SYNEXTR84101",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD73101",
+        "user_id": "s1ex_probe_user",
+        "status": "paid",
+        "total_cents": 15420,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD73201",
+        "user_id": "s1ex_probe_user",
+        "status": "shipped",
+        "total_cents": 6800,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": "2026-11-11 09:00:00+00:00",
+        "delivered_at": null,
+        "tracking_no": "SYNEXTR73201",
+        "receiver_city": "合成市"
+      },
+      {
+        "order_id": "ORD73202",
+        "user_id": "s1ex_probe_user",
+        "status": "paid",
+        "total_cents": 12100,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": "2026-11-10 09:00:00+00:00",
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      },
+      {
+        "order_id": "ORD84201",
+        "user_id": "s1ex_probe_user",
+        "status": "created",
+        "total_cents": 7250,
+        "created_at": "2026-11-10 08:00:00+00:00",
+        "paid_at": null,
+        "shipped_at": null,
+        "delivered_at": null,
+        "tracking_no": null,
+        "receiver_city": null
+      }
+    ],
+    "pending_confirmations": [],
+    "private_knowledge_documents": [],
+    "private_knowledge_tenants": [],
+    "products": [],
+    "refunds": [
+      {
+        "refund_id": "rf_synex73102",
+        "order_id": "ORD73102",
+        "status": "requested",
+        "amount_cents": 3100,
+        "reason": "synthetic existing record",
+        "created_at": "2026-11-12 05:57:50.363329+00:00"
+      }
+    ],
+    "returns": [],
+    "order_items": [
+      {
+        "id": 1,
+        "order_id": "ORD73101",
+        "sku": "SYNEX-BAG-A",
+        "name": "帆布包",
+        "quantity": 2,
+        "unit_price_cents": 7710,
+        "customized": false
+      },
+      {
+        "id": 2,
+        "order_id": "ORD73102",
+        "sku": "SYNEX-KETTLE-B",
+        "name": "水壶",
+        "quantity": 1,
+        "unit_price_cents": 9300,
+        "customized": false
+      },
+      {
+        "id": 3,
+        "order_id": "ORD73201",
+        "sku": "SYNEX-LAMP-C",
+        "name": "台灯",
+        "quantity": 1,
+        "unit_price_cents": 6800,
+        "customized": false
+      },
+      {
+        "id": 5,
+        "order_id": "ORD73202",
+        "sku": "SYNEX-SPOON-E",
+        "name": "茶匙",
+        "quantity": 1,
+        "unit_price_cents": 3100,
+        "customized": false
+      },
+      {
+        "id": 6,
+        "order_id": "ORD84101",
+        "sku": "SYNEX-TOWEL-F",
+        "name": "浴巾",
+        "quantity": 2,
+        "unit_price_cents": 6900,
+        "customized": false
+      },
+      {
+        "id": 7,
+        "order_id": "ORD84101",
+        "sku": "SYNEX-SOAP-G",
+        "name": "香皂",
+        "quantity": 2,
+        "unit_price_cents": 2500,
+        "customized": false
+      },
+      {
+        "id": 8,
+        "order_id": "ORD84201",
+        "sku": "SYNEX-NOTE-H",
+        "name": "笔记本套装",
+        "quantity": 1,
+        "unit_price_cents": 7250,
+        "customized": false
+      },
+      {
+        "id": 4,
+        "order_id": "ORD73202",
+        "sku": "SYNEX-CUP-D",
+        "name": "刻字杯",
+        "quantity": 2,
+        "unit_price_cents": 4500,
+        "customized": true
+      }
+    ]
+  },
+  "initial_session_empty": true,
+  "latency_ms": 8729.828356000326,
+  "model_requests": 5,
+  "tokens": 4611,
+  "freeze_sha256": "ab43a6118c3b632a63001ab47b17f8fa47818c3289e2ec3a6ca4133d38433803",
+  "scores": {
+    "tool_coverage": [
+      true,
+      true
+    ],
+    "tool_parameter_success": true,
+    "protocol_answer_present": true,
+    "business_unchanged": true,
+    "unsafe_write": false,
+    "out_of_scope_tool_attempt": false,
+    "bounded_fact_presence": [
+      false,
+      false,
+      false
+    ],
+    "execution_success_proxy": true,
+    "bounded_e2e_proxy": false,
+    "full_factual_correctness": "NOT_ASSESSED",
+    "full_completeness": "NOT_ASSESSED",
+    "full_faithfulness": "NOT_ASSESSED"
+  }
+}

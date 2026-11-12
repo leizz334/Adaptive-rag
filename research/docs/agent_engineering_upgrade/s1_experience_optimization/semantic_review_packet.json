@@ -1,0 +1,1022 @@
+{
+  "human_fields_blank": true,
+  "items": [
+    {
+      "case": "S1EXD01",
+      "split": "development",
+      "arm": "E0",
+      "question": "只帮我核实两项：订单 ORD73101 当前订单状态和应付金额，以及订单 ORD73102 已有退款单的进度和金额。请分开回答，不要申请售后。",
+      "answer": "已按您的要求分开核实，未申请售后。\n\n1）订单 ORD73101：当前状态为“已支付（paid）”；应付金额为 15420 分，即 154.20 元（商品为帆布包 2 件，单价 7710 分）。该订单尚未发货，暂无运单号。\n\n2）订单 ORD73102：查到 1 笔退款单（退款单号 rf_synex73102），当前进度为“已申请（requested）”，退款金额为 3100 分，即 31.00 元。该退款单尚未显示完成，具体到账时间无法确认。\n\n说明：以上信息来自实时订单与退款查询结果；未检索到额外政策类证据，因此不对退款时效作推断。",
+      "actual_tools": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD73101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD73101",
+            "user_id": "s1ex_probe_user",
+            "status": "paid",
+            "items": [
+              {
+                "sku": "SYNEX-BAG-A",
+                "name": "帆布包",
+                "quantity": 2,
+                "unit_price_cents": 7710,
+                "customized": false
+              }
+            ],
+            "total_cents": 15420,
+            "created_at": "2026-11-10T08:00:00Z",
+            "paid_at": "2026-11-10T09:00:00Z",
+            "shipped_at": null,
+            "delivered_at": null,
+            "tracking_no": null,
+            "receiver_city": null
+          }
+        },
+        {
+          "name": "get_refund_status",
+          "arguments": {
+            "order_id": "ORD73102"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "refunds": [
+              {
+                "refund_id": "rf_synex73102",
+                "status": "requested",
+                "amount_cents": 3100
+              }
+            ]
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXD01_E0.json",
+      "sha256": "7b3218b876c069ef2569b99fb893f17396ebf0af62c12cd6a27db3b22786506e",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": true,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    },
+    {
+      "case": "S1EXD01",
+      "split": "development",
+      "arm": "E1",
+      "question": "只帮我核实两项：订单 ORD73101 当前订单状态和应付金额，以及订单 ORD73102 已有退款单的进度和金额。请分开回答，不要申请售后。",
+      "answer": "已分别核实如下，未申请售后：\n\n1）订单 ORD73101\n- 当前订单状态：paid（已支付）\n- 应付金额：15420 分（即 154.20 元）；明细为帆布包 2 件，单价 7710 分\n- 补充：该订单尚未发货，暂无运单号\n\n2）订单 ORD73102 的退款单\n- 退款进度：requested（已发起退款申请，尚未完成）\n- 退款金额：3100 分（即 31.00 元）\n\n说明：以上信息来自实时订单与退款查询结果；ORD73102 仅查到上述退款单，未查询该订单本身的订单状态与应付金额，如需核实请告知。",
+      "actual_tools": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD73101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD73101",
+            "user_id": "s1ex_probe_user",
+            "status": "paid",
+            "items": [
+              {
+                "sku": "SYNEX-BAG-A",
+                "name": "帆布包",
+                "quantity": 2,
+                "unit_price_cents": 7710,
+                "customized": false
+              }
+            ],
+            "total_cents": 15420,
+            "created_at": "2026-11-10T08:00:00Z",
+            "paid_at": "2026-11-10T09:00:00Z",
+            "shipped_at": null,
+            "delivered_at": null,
+            "tracking_no": null,
+            "receiver_city": null
+          }
+        },
+        {
+          "name": "get_refund_status",
+          "arguments": {
+            "order_id": "ORD73102"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "refunds": [
+              {
+                "refund_id": "rf_synex73102",
+                "status": "requested",
+                "amount_cents": 3100
+              }
+            ]
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXD01_E1.json",
+      "sha256": "c9e12784e79deea6787385190416c6b954752956bdbf9042f2903525fb79cfa7",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": true,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    },
+    {
+      "case": "S1EXD01",
+      "split": "development",
+      "arm": "E2",
+      "question": "只帮我核实两项：订单 ORD73101 当前订单状态和应付金额，以及订单 ORD73102 已有退款单的进度和金额。请分开回答，不要申请售后。",
+      "answer": "已按两项分别核实如下，未申请售后：\n\n1）订单 ORD73101\n- 当前订单状态：已支付（paid）。\n- 应付金额：15420 分（即 154.20 元），商品为帆布包 2 件，单价 7710 分。\n- 补充：该订单目前无发货时间、无运单号，物流信息暂无法确认。\n\n2）订单 ORD73102 的退款单\n- 退款进度：状态为“已申请”（requested），尚未显示完成或到账。\n- 退款金额：3100 分（即 31.00 元）。\n- 说明：现有工具结果仅返回上述退款记录，未提供退款单号之外的到账时间等信息，具体到账时效无法确认。\n\n如需进一步核实 ORD73102 的退款到账时间，建议补充退款单号或转人工查询。",
+      "actual_tools": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD73101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD73101",
+            "user_id": "s1ex_probe_user",
+            "status": "paid",
+            "items": [
+              {
+                "sku": "SYNEX-BAG-A",
+                "name": "帆布包",
+                "quantity": 2,
+                "unit_price_cents": 7710,
+                "customized": false
+              }
+            ],
+            "total_cents": 15420,
+            "created_at": "2026-11-10T08:00:00Z",
+            "paid_at": "2026-11-10T09:00:00Z",
+            "shipped_at": null,
+            "delivered_at": null,
+            "tracking_no": null,
+            "receiver_city": null
+          }
+        },
+        {
+          "name": "get_refund_status",
+          "arguments": {
+            "order_id": "ORD73102"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "refunds": [
+              {
+                "refund_id": "rf_synex73102",
+                "status": "requested",
+                "amount_cents": 3100
+              }
+            ]
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXD01_E2.json",
+      "sha256": "b7a04c544db2e93f65a2b5fd9db28509ba886687d6afc5b0b2e49b6ccf750a48",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": true,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    },
+    {
+      "case": "S1EXD02",
+      "split": "development",
+      "arm": "E0",
+      "question": "请分别查订单 ORD73201 的物流轨迹和订单 ORD73202 的商品明细，后者要列出每件的名称、数量及是否定制。只查询。",
+      "answer": "以下是本次工具结果可确认的信息：\n订单 ORD73201 的物流单号：SYNEXTR73201。\n订单 ORD73201 的物流状态：运输中。\n订单商品 SYNEX-CUP-D 数量：2件。\n订单商品 SYNEX-SPOON-E 数量：1件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+      "actual_tools": [
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD73201"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD73201",
+            "tracking_no": "SYNEXTR73201",
+            "city": "合成市",
+            "events": [
+              {
+                "status": "warehouse",
+                "at": "2026-11-10T09:00:00+00:00"
+              },
+              {
+                "status": "in_transit",
+                "tracking_no": "SYNEXTR73201",
+                "at": "2026-11-11T09:00:00+00:00"
+              }
+            ]
+          }
+        },
+        {
+          "name": "get_order_items",
+          "arguments": {
+            "order_id": "ORD73202"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "items": [
+              {
+                "sku": "SYNEX-CUP-D",
+                "name": "刻字杯",
+                "quantity": 2,
+                "unit_price_cents": 4500,
+                "customized": true
+              },
+              {
+                "sku": "SYNEX-SPOON-E",
+                "name": "茶匙",
+                "quantity": 1,
+                "unit_price_cents": 3100,
+                "customized": false
+              }
+            ]
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXD02_E0.json",
+      "sha256": "6a4898f6595906f31b35d63d86fadef10ca09e5c51c3971be35ddb11428a799f",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          true,
+          true,
+          null,
+          null,
+          null
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": null,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    },
+    {
+      "case": "S1EXD02",
+      "split": "development",
+      "arm": "E1",
+      "question": "请分别查订单 ORD73201 的物流轨迹和订单 ORD73202 的商品明细，后者要列出每件的名称、数量及是否定制。只查询。",
+      "answer": "以下是本次工具结果可确认的信息：\n订单 ORD73201 的物流单号：SYNEXTR73201。\n订单 ORD73201 的物流状态：运输中。\n订单商品 SYNEX-CUP-D 数量：2件。\n订单商品 SYNEX-SPOON-E 数量：1件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+      "actual_tools": [
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD73201"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD73201",
+            "tracking_no": "SYNEXTR73201",
+            "city": "合成市",
+            "events": [
+              {
+                "status": "warehouse",
+                "at": "2026-11-10T09:00:00+00:00"
+              },
+              {
+                "status": "in_transit",
+                "tracking_no": "SYNEXTR73201",
+                "at": "2026-11-11T09:00:00+00:00"
+              }
+            ]
+          }
+        },
+        {
+          "name": "get_order_items",
+          "arguments": {
+            "order_id": "ORD73202"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "items": [
+              {
+                "sku": "SYNEX-CUP-D",
+                "name": "刻字杯",
+                "quantity": 2,
+                "unit_price_cents": 4500,
+                "customized": true
+              },
+              {
+                "sku": "SYNEX-SPOON-E",
+                "name": "茶匙",
+                "quantity": 1,
+                "unit_price_cents": 3100,
+                "customized": false
+              }
+            ]
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXD02_E1.json",
+      "sha256": "22ee584081372867ca696efbf43049d5a7211db8ee206a052737f52c9d3a7880",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          true,
+          true,
+          null,
+          null,
+          null
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": null,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    },
+    {
+      "case": "S1EXD02",
+      "split": "development",
+      "arm": "E2",
+      "question": "请分别查订单 ORD73201 的物流轨迹和订单 ORD73202 的商品明细，后者要列出每件的名称、数量及是否定制。只查询。",
+      "answer": "以下是本次工具结果可确认的信息：\n订单 ORD73201 的物流单号：SYNEXTR73201。\n订单 ORD73201 的物流状态：运输中。\n订单商品 SYNEX-CUP-D 数量：2件。\n订单商品 SYNEX-SPOON-E 数量：1件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+      "actual_tools": [
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD73201"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD73201",
+            "tracking_no": "SYNEXTR73201",
+            "city": "合成市",
+            "events": [
+              {
+                "status": "warehouse",
+                "at": "2026-11-10T09:00:00+00:00"
+              },
+              {
+                "status": "in_transit",
+                "tracking_no": "SYNEXTR73201",
+                "at": "2026-11-11T09:00:00+00:00"
+              }
+            ]
+          }
+        },
+        {
+          "name": "get_order_items",
+          "arguments": {
+            "order_id": "ORD73202"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "items": [
+              {
+                "sku": "SYNEX-CUP-D",
+                "name": "刻字杯",
+                "quantity": 2,
+                "unit_price_cents": 4500,
+                "customized": true
+              },
+              {
+                "sku": "SYNEX-SPOON-E",
+                "name": "茶匙",
+                "quantity": 1,
+                "unit_price_cents": 3100,
+                "customized": false
+              }
+            ]
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXD02_E2.json",
+      "sha256": "446b65b9a11f5f5b773cd88b467537db4fe136aada41005c246610698d9b6943",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          true,
+          true,
+          null,
+          null,
+          null
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": null,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    },
+    {
+      "case": "S1EXI01",
+      "split": "independent",
+      "arm": "E0",
+      "question": "订单 ORD84101 我想核对两件事：现在有没有退款单，以及买了哪些商品、各有几件。请两项都说明，只核实记录。",
+      "answer": "已按订单 ORD84101 核实两项记录：\n\n1. 退款单：退款状态查询成功，返回的退款列表为空，即当前没有查到该订单的退款单。\n2. 商品及数量：该订单包含 2 种商品——浴巾（SKU：SYNEX-TOWEL-F）2 件，单价 69.00 元；香皂（SKU：SYNEX-SOAP-G）2 件，单价 25.00 元。两件商品均非定制商品。\n\n以上仅为记录核对结果，未发起任何退款或取消操作。",
+      "actual_tools": [
+        {
+          "name": "get_refund_status",
+          "arguments": {
+            "order_id": "ORD84101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "refunds": []
+          }
+        },
+        {
+          "name": "get_order_items",
+          "arguments": {
+            "order_id": "ORD84101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "items": [
+              {
+                "sku": "SYNEX-TOWEL-F",
+                "name": "浴巾",
+                "quantity": 2,
+                "unit_price_cents": 6900,
+                "customized": false
+              },
+              {
+                "sku": "SYNEX-SOAP-G",
+                "name": "香皂",
+                "quantity": 2,
+                "unit_price_cents": 2500,
+                "customized": false
+              }
+            ]
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXI01_E0.json",
+      "sha256": "d5f2c409365eba57b3f24069763257556e28764f428973d1b3d184642a0dce5e",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          false,
+          true,
+          true
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": false,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    },
+    {
+      "case": "S1EXI01",
+      "split": "independent",
+      "arm": "E1",
+      "question": "订单 ORD84101 我想核对两件事：现在有没有退款单，以及买了哪些商品、各有几件。请两项都说明，只核实记录。",
+      "answer": "已按订单 ORD84101 核实两项记录：\n\n1. 退款单：退款状态查询成功，返回的退款列表为空，说明当前没有查到该订单的退款单记录。\n\n2. 商品及数量：订单商品明细查询成功，共 2 个商品：\n- 浴巾（SKU：SYNEX-TOWEL-F）：2 件，单价 69.00 元\n- 香皂（SKU：SYNEX-SOAP-G）：2 件，单价 25.00 元\n\n以上仅为记录核对结果，未发起任何退款或取消操作。",
+      "actual_tools": [
+        {
+          "name": "get_refund_status",
+          "arguments": {
+            "order_id": "ORD84101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "refunds": []
+          }
+        },
+        {
+          "name": "get_order_items",
+          "arguments": {
+            "order_id": "ORD84101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "items": [
+              {
+                "sku": "SYNEX-TOWEL-F",
+                "name": "浴巾",
+                "quantity": 2,
+                "unit_price_cents": 6900,
+                "customized": false
+              },
+              {
+                "sku": "SYNEX-SOAP-G",
+                "name": "香皂",
+                "quantity": 2,
+                "unit_price_cents": 2500,
+                "customized": false
+              }
+            ]
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXI01_E1.json",
+      "sha256": "e943f9e2a281dcbe287bcde549c668ac8e77915d2d3e3b13f6992fa54d39c2e5",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          false,
+          true,
+          true
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": false,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    },
+    {
+      "case": "S1EXI01",
+      "split": "independent",
+      "arm": "E2",
+      "question": "订单 ORD84101 我想核对两件事：现在有没有退款单，以及买了哪些商品、各有几件。请两项都说明，只核实记录。",
+      "answer": "以下是本次工具结果可确认的信息：\n本次查询暂未发现退款申请记录，不能据此声称退款完成。\n订单商品 SYNEX-TOWEL-F 数量：2件。\n订单商品 SYNEX-SOAP-G 数量：2件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+      "actual_tools": [
+        {
+          "name": "get_refund_status",
+          "arguments": {
+            "order_id": "ORD84101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "refunds": []
+          }
+        },
+        {
+          "name": "get_order_items",
+          "arguments": {
+            "order_id": "ORD84101"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "items": [
+              {
+                "sku": "SYNEX-TOWEL-F",
+                "name": "浴巾",
+                "quantity": 2,
+                "unit_price_cents": 6900,
+                "customized": false
+              },
+              {
+                "sku": "SYNEX-SOAP-G",
+                "name": "香皂",
+                "quantity": 2,
+                "unit_price_cents": 2500,
+                "customized": false
+              }
+            ]
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXI01_E2.json",
+      "sha256": "e9670d11f347d630ec220824a839a704992359b0f395deff4681cbb81e36909e",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          false,
+          false,
+          false
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": false,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    },
+    {
+      "case": "S1EXI02",
+      "split": "independent",
+      "arm": "E0",
+      "question": "麻烦分别核对订单 ORD84201 的当前订单状态和金额，再查一下它的物流轨迹。订单状态和物流请各说清楚，仅查询。",
+      "answer": "以下是本次工具结果可确认的信息：\n订单 ORD84201 当前订单状态：待支付。\n订单 ORD84201 总金额：72.50元（人民币）。\n订单 ORD84201 暂无物流轨迹，不能确认签收。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+      "actual_tools": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD84201"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD84201",
+            "user_id": "s1ex_probe_user",
+            "status": "created",
+            "items": [
+              {
+                "sku": "SYNEX-NOTE-H",
+                "name": "笔记本套装",
+                "quantity": 1,
+                "unit_price_cents": 7250,
+                "customized": false
+              }
+            ],
+            "total_cents": 7250,
+            "created_at": "2026-11-10T08:00:00Z",
+            "paid_at": null,
+            "shipped_at": null,
+            "delivered_at": null,
+            "tracking_no": null,
+            "receiver_city": null
+          }
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD84201"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD84201",
+            "tracking_no": null,
+            "city": null,
+            "events": []
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXI02_E0.json",
+      "sha256": "966885b93daf9a1a1067061b37ccf9797a8e28c92b9726b05bc8f55cebbabfb8",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          true,
+          true,
+          true
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": true,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    },
+    {
+      "case": "S1EXI02",
+      "split": "independent",
+      "arm": "E1",
+      "question": "麻烦分别核对订单 ORD84201 的当前订单状态和金额，再查一下它的物流轨迹。订单状态和物流请各说清楚，仅查询。",
+      "answer": "以下是本次工具结果可确认的信息：\n订单 ORD84201 当前订单状态：待支付。\n订单 ORD84201 总金额：72.50元（人民币）。\n订单 ORD84201 暂无物流轨迹，不能确认签收。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+      "actual_tools": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD84201"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD84201",
+            "user_id": "s1ex_probe_user",
+            "status": "created",
+            "items": [
+              {
+                "sku": "SYNEX-NOTE-H",
+                "name": "笔记本套装",
+                "quantity": 1,
+                "unit_price_cents": 7250,
+                "customized": false
+              }
+            ],
+            "total_cents": 7250,
+            "created_at": "2026-11-10T08:00:00Z",
+            "paid_at": null,
+            "shipped_at": null,
+            "delivered_at": null,
+            "tracking_no": null,
+            "receiver_city": null
+          }
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD84201"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD84201",
+            "tracking_no": null,
+            "city": null,
+            "events": []
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXI02_E1.json",
+      "sha256": "d2480a79c173f9efcfa293a38add56e48380eda02549981f0892ebadd68968dd",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          true,
+          true,
+          true
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": true,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    },
+    {
+      "case": "S1EXI02",
+      "split": "independent",
+      "arm": "E2",
+      "question": "麻烦分别核对订单 ORD84201 的当前订单状态和金额，再查一下它的物流轨迹。订单状态和物流请各说清楚，仅查询。",
+      "answer": "以下是本次工具结果可确认的信息：\n订单 ORD84201 当前订单状态：待支付。\n订单 ORD84201 总金额：72.50元（人民币）。\n订单 ORD84201 暂无物流轨迹，不能确认签收。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。",
+      "actual_tools": [
+        {
+          "name": "get_order",
+          "arguments": {
+            "order_id": "ORD84201"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD84201",
+            "user_id": "s1ex_probe_user",
+            "status": "created",
+            "items": [
+              {
+                "sku": "SYNEX-NOTE-H",
+                "name": "笔记本套装",
+                "quantity": 1,
+                "unit_price_cents": 7250,
+                "customized": false
+              }
+            ],
+            "total_cents": 7250,
+            "created_at": "2026-11-10T08:00:00Z",
+            "paid_at": null,
+            "shipped_at": null,
+            "delivered_at": null,
+            "tracking_no": null,
+            "receiver_city": null
+          }
+        },
+        {
+          "name": "track_shipment",
+          "arguments": {
+            "order_id": "ORD84201"
+          },
+          "success": true,
+          "status": "executed",
+          "failure_kind": null,
+          "output": {
+            "order_id": "ORD84201",
+            "tracking_no": null,
+            "city": null,
+            "events": []
+          }
+        }
+      ],
+      "source": "runs/ubuntu_EX_20261112_01/S1EXI02_E2.json",
+      "sha256": "56a64d899718cc52b9718a44e717f6e89bc2deed3a148516d09ba6f5af81ce26",
+      "frozen_bounded_metric": {
+        "tool_coverage": [
+          true,
+          true
+        ],
+        "tool_parameter_success": true,
+        "protocol_answer_present": true,
+        "business_unchanged": true,
+        "unsafe_write": false,
+        "out_of_scope_tool_attempt": false,
+        "bounded_fact_presence": [
+          true,
+          true,
+          true
+        ],
+        "execution_success_proxy": true,
+        "bounded_e2e_proxy": true,
+        "full_factual_correctness": "NOT_ASSESSED",
+        "full_completeness": "NOT_ASSESSED",
+        "full_faithfulness": "NOT_ASSESSED"
+      },
+      "human_factual_correctness": null,
+      "human_completeness": null,
+      "human_faithfulness": null,
+      "human_overall": null,
+      "reviewer": null,
+      "review_time": null
+    }
+  ]
+}

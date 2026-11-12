@@ -1204,5 +1204,1211 @@
     "http_status": 200,
     "latency_ms": 1006.7723140000453,
     "completed_at": "2026-11-12T06:07:18.701343+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 30,
+    "group": "S1EXI01_E2",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:16.123674+00:00",
+    "reserve_input": 3881,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "aff266adab7f2c739f7d5e43cd498c2515680bf6f4d1013b4a0339d7a8536b4c",
+    "prompt_sha256": "124330f8ed19f94010c130208c7f59420a21af47364d6d458e1a6fccc6b18135",
+    "usage": {
+      "prompt_tokens": 714,
+      "completion_tokens": 49,
+      "total_tokens": 763
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"order_inquiry\",\"confidence\":0.92,\"rationale\":\"用户要核对指定订单的退款单是否存在及商品明细，属于查询订单状态与记录，不是物流轨迹、退款申请或退货换货操作。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 714,
+        "completion_tokens": 49,
+        "total_tokens": 763
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 2601.792428999943,
+    "completed_at": "2026-11-12T06:10:18.746322+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 31,
+    "group": "S1EXI01_E2",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:18.777323+00:00",
+    "reserve_input": 1999,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "4b58ad2edc85f05cd2ad175f86f3641ba7d327e4dfb91325a1eb727ac256deab",
+    "prompt_sha256": "8243e367176dad17b792f0bebaf2dae7a2b8ebf1da7fa7ac6d9f8faf807cd5ee",
+    "usage": {
+      "prompt_tokens": 212,
+      "completion_tokens": 54,
+      "total_tokens": 266
+    },
+    "stage": "router",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"confidence\":0.95,\"rationale\":\"用户要求核实订单 ORD84101 的退款记录和商品明细，需要查询订单/退款系统数据，属于需要系统数据的订单查询。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 212,
+        "completion_tokens": 54,
+        "total_tokens": 266
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1147.6652540000032,
+    "completed_at": "2026-11-12T06:10:19.936903+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 32,
+    "group": "S1EXI01_E2",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:19.982330+00:00",
+    "reserve_input": 10390,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "431493726bc47511fe0ec19e3fca3789fe09c7d15c6455567d2ace06d7170bfb",
+    "prompt_sha256": "f1c332a79cfc761a2012dcb55353224721b8bf597a77ad4c7af81c5eae9f1f6a",
+    "usage": {
+      "prompt_tokens": 2274,
+      "completion_tokens": 146,
+      "total_tokens": 2420
+    },
+    "stage": "planner",
+    "available_tool_names": [
+      "escalate_to_human",
+      "get_order",
+      "get_order_items",
+      "get_refund_status",
+      "search_knowledge",
+      "track_shipment"
+    ],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"rationale\":\"用户有两个明确只读目标：核对退款单记录、核对商品明细与数量。分别用 get_refund_status 和 get_order_items 查询订单 ORD84101，无需订单头或物流。\",\"steps\":[{\"step_id\":1,\"goal\":\"查询订单 ORD84101 的退款单列表与状态\",\"tool_name\":\"get_refund_status\",\"arguments\":{\"order_id\":\"ORD84101\"},\"needs_retrieval\":false},{\"step_id\":2,\"goal\":\"查询订单 ORD84101 的商品明细及各商品数量\",\"tool_name\":\"get_order_items\",\"arguments\":{\"order_id\":\"ORD84101\"},\"needs_retrieval\":false}]}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 2274,
+        "completion_tokens": 146,
+        "total_tokens": 2420
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 2065.4767239998364,
+    "completed_at": "2026-11-12T06:10:22.060052+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 33,
+    "group": "S1EXI01_E2",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:22.104769+00:00",
+    "reserve_input": 3496,
+    "reserve_output": 700,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "ea1b5a86149f4a908fd10b8b16051017e0bc8e360aaac4e6381de61a8688273b",
+    "prompt_sha256": "827c357710d20d8b30224eb608fdc4a5c321a65ec3e9f9235fe402af42170f80",
+    "usage": {
+      "prompt_tokens": 577,
+      "completion_tokens": 102,
+      "total_tokens": 679
+    },
+    "stage": "generate",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"answer\":\"已按订单 ORD84101 核实两项记录：\\n\\n1. 退款记录：退款查询结果为空，当前没有查到该订单的退款单。\\n2. 商品及数量：该订单包含 2 种商品——浴巾 2 件、香皂 2 件。\\n\\n以上仅为记录核对结果；未发起任何退款、取消或其他变更操作。\",\"citation_chunk_ids\":[],\"refused\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 577,
+        "completion_tokens": 102,
+        "total_tokens": 679
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1667.3952690002807,
+    "completed_at": "2026-11-12T06:10:23.784013+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 34,
+    "group": "S1EXI01_E2",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:23.808761+00:00",
+    "reserve_input": 2988,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "efdc522072920a16bc11ab5ea6bf935d0a872bfd03107e4df9aede002d228be8",
+    "prompt_sha256": "a1978a84e6306d3f2653f93ba90af17a38243f270038d17d15d51a54aab4de7f",
+    "usage": {
+      "prompt_tokens": 476,
+      "completion_tokens": 7,
+      "total_tokens": 483
+    },
+    "stage": "judge",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"status\":\"SUPPORTED\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 476,
+        "completion_tokens": 7,
+        "total_tokens": 483
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 938.0413049998424,
+    "completed_at": "2026-11-12T06:10:24.758938+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 35,
+    "group": "S1EXI01_E1",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:24.959452+00:00",
+    "reserve_input": 3881,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "aff266adab7f2c739f7d5e43cd498c2515680bf6f4d1013b4a0339d7a8536b4c",
+    "prompt_sha256": "124330f8ed19f94010c130208c7f59420a21af47364d6d458e1a6fccc6b18135",
+    "usage": {
+      "prompt_tokens": 714,
+      "completion_tokens": 64,
+      "total_tokens": 778
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"order_inquiry\",\"confidence\":0.92,\"rationale\":\"用户要求核实指定订单 ORD84101 的退款单是否存在以及购买商品明细，属于查询订单状态与记录，不是物流轨迹、退款申请或退货换货操作。\",\"prompt_version\":\"intent_v3\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 714,
+        "completion_tokens": 64,
+        "total_tokens": 778
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1521.1696270002903,
+    "completed_at": "2026-11-12T06:10:26.492581+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 36,
+    "group": "S1EXI01_E1",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:26.527768+00:00",
+    "reserve_input": 1999,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "4b58ad2edc85f05cd2ad175f86f3641ba7d327e4dfb91325a1eb727ac256deab",
+    "prompt_sha256": "8243e367176dad17b792f0bebaf2dae7a2b8ebf1da7fa7ac6d9f8faf807cd5ee",
+    "usage": {
+      "prompt_tokens": 212,
+      "completion_tokens": 57,
+      "total_tokens": 269
+    },
+    "stage": "router",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"confidence\":0.95,\"rationale\":\"用户要求核实订单 ORD84101 的退款记录和商品明细，需要查询订单/退款系统数据，属于系统数据查询，应由 agent 处理。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 212,
+        "completion_tokens": 57,
+        "total_tokens": 269
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1476.8135189997338,
+    "completed_at": "2026-11-12T06:10:28.016589+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 37,
+    "group": "S1EXI01_E1",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:28.063723+00:00",
+    "reserve_input": 9571,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "d943849b4ca77949861e03a032bad3745fe5ac9465206c1e546e220a6a7b4899",
+    "prompt_sha256": "f2663aaba7cda0fe657597133d1b641ebbe0b8f0454ba05c900151ff613248c0",
+    "usage": {
+      "prompt_tokens": 2104,
+      "completion_tokens": 137,
+      "total_tokens": 2241
+    },
+    "stage": "planner",
+    "available_tool_names": [
+      "escalate_to_human",
+      "get_order",
+      "get_order_items",
+      "get_refund_status",
+      "search_knowledge",
+      "track_shipment"
+    ],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"rationale\":\"用户要核对两项记录：是否有退款单，以及商品明细与数量。分别用 get_refund_status 和 get_order_items 查询即可，无需订单头或物流。\",\"steps\":[{\"step_id\":1,\"goal\":\"查询订单 ORD84101 的退款单列表\",\"tool_name\":\"get_refund_status\",\"arguments\":{\"order_id\":\"ORD84101\"},\"needs_retrieval\":false},{\"step_id\":2,\"goal\":\"查询订单 ORD84101 的商品明细与数量\",\"tool_name\":\"get_order_items\",\"arguments\":{\"order_id\":\"ORD84101\"},\"needs_retrieval\":false}]}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 2104,
+        "completion_tokens": 137,
+        "total_tokens": 2241
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1537.780173000101,
+    "completed_at": "2026-11-12T06:10:29.613590+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 38,
+    "group": "S1EXI01_E1",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:29.651901+00:00",
+    "reserve_input": 3496,
+    "reserve_output": 700,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "ea1b5a86149f4a908fd10b8b16051017e0bc8e360aaac4e6381de61a8688273b",
+    "prompt_sha256": "827c357710d20d8b30224eb608fdc4a5c321a65ec3e9f9235fe402af42170f80",
+    "usage": {
+      "prompt_tokens": 577,
+      "completion_tokens": 156,
+      "total_tokens": 733
+    },
+    "stage": "generate",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"answer\":\"已按订单 ORD84101 核实两项记录：\\n\\n1. 退款单：退款状态查询成功，返回的退款列表为空，说明当前没有查到该订单的退款单记录。\\n\\n2. 商品及数量：订单商品明细查询成功，共 2 个商品：\\n- 浴巾（SKU：SYNEX-TOWEL-F）：2 件，单价 69.00 元\\n- 香皂（SKU：SYNEX-SOAP-G）：2 件，单价 25.00 元\\n\\n以上仅为记录核对结果，未发起任何退款或取消操作。\",\"citation_chunk_ids\":[],\"refused\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 577,
+        "completion_tokens": 156,
+        "total_tokens": 733
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1550.830089000101,
+    "completed_at": "2026-11-12T06:10:31.215035+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 39,
+    "group": "S1EXI01_E1",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:31.248682+00:00",
+    "reserve_input": 3097,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "b1c300734b3380629ea9815704b239fc0af4f69ac280bb45eb87142cd9946e00",
+    "prompt_sha256": "77175e0949756b424cf1e58686972ddad2dd69cc38e4ff4803c08600661e7eeb",
+    "usage": {
+      "prompt_tokens": 533,
+      "completion_tokens": 7,
+      "total_tokens": 540
+    },
+    "stage": "judge",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"status\":\"SUPPORTED\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 533,
+        "completion_tokens": 7,
+        "total_tokens": 540
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1263.441273999888,
+    "completed_at": "2026-11-12T06:10:32.524900+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 40,
+    "group": "S1EXI01_E0",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:32.723582+00:00",
+    "reserve_input": 3881,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "aff266adab7f2c739f7d5e43cd498c2515680bf6f4d1013b4a0339d7a8536b4c",
+    "prompt_sha256": "124330f8ed19f94010c130208c7f59420a21af47364d6d458e1a6fccc6b18135",
+    "usage": {
+      "prompt_tokens": 714,
+      "completion_tokens": 49,
+      "total_tokens": 763
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"order_inquiry\",\"confidence\":0.92,\"rationale\":\"用户要核对指定订单的退款单是否存在及商品明细，属于查询订单状态与记录，不是物流轨迹、退款申请或退货换货操作。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 714,
+        "completion_tokens": 49,
+        "total_tokens": 763
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1101.3295339998876,
+    "completed_at": "2026-11-12T06:10:33.837542+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 41,
+    "group": "S1EXI01_E0",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:33.867858+00:00",
+    "reserve_input": 1999,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "4b58ad2edc85f05cd2ad175f86f3641ba7d327e4dfb91325a1eb727ac256deab",
+    "prompt_sha256": "8243e367176dad17b792f0bebaf2dae7a2b8ebf1da7fa7ac6d9f8faf807cd5ee",
+    "usage": {
+      "prompt_tokens": 212,
+      "completion_tokens": 57,
+      "total_tokens": 269
+    },
+    "stage": "router",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"confidence\":0.95,\"rationale\":\"用户要求核实订单 ORD84101 的退款记录和商品明细，需要查询订单/退款系统数据，属于系统数据查询，应由 agent 处理。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 212,
+        "completion_tokens": 57,
+        "total_tokens": 269
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1497.3679649997393,
+    "completed_at": "2026-11-12T06:10:35.377318+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 42,
+    "group": "S1EXI01_E0",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:35.410865+00:00",
+    "reserve_input": 9571,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "d943849b4ca77949861e03a032bad3745fe5ac9465206c1e546e220a6a7b4899",
+    "prompt_sha256": "f2663aaba7cda0fe657597133d1b641ebbe0b8f0454ba05c900151ff613248c0",
+    "usage": {
+      "prompt_tokens": 2104,
+      "completion_tokens": 142,
+      "total_tokens": 2246
+    },
+    "stage": "planner",
+    "available_tool_names": [
+      "escalate_to_human",
+      "get_order",
+      "get_order_items",
+      "get_refund_status",
+      "search_knowledge",
+      "track_shipment"
+    ],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"rationale\":\"用户要核对两项记录：退款单情况与商品明细。分别用 get_refund_status 查退款单、get_order_items 查商品及数量，无需查订单头或物流。\",\"steps\":[{\"step_id\":1,\"goal\":\"查询订单 ORD84101 的退款单列表与状态\",\"tool_name\":\"get_refund_status\",\"arguments\":{\"order_id\":\"ORD84101\"},\"needs_retrieval\":false},{\"step_id\":2,\"goal\":\"查询订单 ORD84101 的商品明细与数量\",\"tool_name\":\"get_order_items\",\"arguments\":{\"order_id\":\"ORD84101\"},\"needs_retrieval\":false}]}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 2104,
+        "completion_tokens": 142,
+        "total_tokens": 2246
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1645.3399560000435,
+    "completed_at": "2026-11-12T06:10:37.068940+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 43,
+    "group": "S1EXI01_E0",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:37.102130+00:00",
+    "reserve_input": 3496,
+    "reserve_output": 700,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "ea1b5a86149f4a908fd10b8b16051017e0bc8e360aaac4e6381de61a8688273b",
+    "prompt_sha256": "827c357710d20d8b30224eb608fdc4a5c321a65ec3e9f9235fe402af42170f80",
+    "usage": {
+      "prompt_tokens": 577,
+      "completion_tokens": 154,
+      "total_tokens": 731
+    },
+    "stage": "generate",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"answer\":\"已按订单 ORD84101 核实两项记录：\\n\\n1. 退款单：退款状态查询成功，返回的退款列表为空，即当前没有查到该订单的退款单。\\n2. 商品及数量：该订单包含 2 种商品——浴巾（SKU：SYNEX-TOWEL-F）2 件，单价 69.00 元；香皂（SKU：SYNEX-SOAP-G）2 件，单价 25.00 元。两件商品均非定制商品。\\n\\n以上仅为记录核对结果，未发起任何退款或取消操作。\",\"citation_chunk_ids\":[],\"refused\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 577,
+        "completion_tokens": 154,
+        "total_tokens": 731
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1567.251658999794,
+    "completed_at": "2026-11-12T06:10:38.681836+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 44,
+    "group": "S1EXI01_E0",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:38.716466+00:00",
+    "reserve_input": 3093,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "f35318872dad4dbb6173b4205b3f7308a408704af8de6820c9d83439c23c04d1",
+    "prompt_sha256": "617160e98d7aabf472ae70a43a0f42fea45c0d9f906431a1a0c6f6924ea838ea",
+    "usage": {
+      "prompt_tokens": 532,
+      "completion_tokens": 7,
+      "total_tokens": 539
+    },
+    "stage": "judge",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"status\":\"SUPPORTED\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 532,
+        "completion_tokens": 7,
+        "total_tokens": 539
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1069.8635989997456,
+    "completed_at": "2026-11-12T06:10:39.799072+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 45,
+    "group": "S1EXI02_E2",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:40.023741+00:00",
+    "reserve_input": 3884,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "76bf661b82e5c608e821880e46766935f69007f34d8f411d0a1b90e9707bb3ca",
+    "prompt_sha256": "4ff0f83107aa30fab15cae6c10a3bc1d84398e413243f6cba2005e2dd650759e",
+    "usage": {
+      "prompt_tokens": 715,
+      "completion_tokens": 62,
+      "total_tokens": 777
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"logistics\",\"confidence\":0.86,\"rationale\":\"用户同时要求核对订单状态/金额并查询物流轨迹，明确要求物流轨迹，按优先级第6条物流优先于第7条订单查询，因此归为 logistics。\",\"prompt_version\":\"intent_v3\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 715,
+        "completion_tokens": 62,
+        "total_tokens": 777
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1560.1615989999118,
+    "completed_at": "2026-11-12T06:10:41.596274+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 46,
+    "group": "S1EXI02_E2",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:41.623814+00:00",
+    "reserve_input": 1998,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "a1d9c4207365c1b6e8008b2f0f6f6607406d9e9a70cb7b16aa1f7b1e4f3d4f73",
+    "prompt_sha256": "3ea647a16a93b6b56963e77e65d403947a6a9f97e242992ed508f1aefbe0c061",
+    "usage": {
+      "prompt_tokens": 212,
+      "completion_tokens": 57,
+      "total_tokens": 269
+    },
+    "stage": "router",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"confidence\":0.95,\"rationale\":\"用户要求查询具体订单 ORD84201 的订单状态、金额和物流轨迹，需要访问订单与物流系统数据，属于工具/系统查询场景。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 212,
+        "completion_tokens": 57,
+        "total_tokens": 269
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 941.7331589997957,
+    "completed_at": "2026-11-12T06:10:42.578419+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 47,
+    "group": "S1EXI02_E2",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:42.625481+00:00",
+    "reserve_input": 8601,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "c6d8112f76414521bc4ccd5cd9fd1ad48bb36b3da9358066ae0a90fe14071f29",
+    "prompt_sha256": "7f1ce5331cdb8f918bae3bb41118cce3093900ae06feecd06365fc520ca32e37",
+    "usage": {
+      "prompt_tokens": 1810,
+      "completion_tokens": 166,
+      "total_tokens": 1976
+    },
+    "stage": "planner",
+    "available_tool_names": [
+      "escalate_to_human",
+      "get_order",
+      "search_knowledge",
+      "track_shipment"
+    ],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"rationale\":\"用户有两个明确读取目标：1) 订单 ORD84201 的当前状态与金额，用 get_order 获取订单头证据；2) 该订单的物流轨迹，用 track_shipment 获取物流事件。两者各取所需证据，仅查询，不涉及写操作。\",\"steps\":[{\"step_id\":1,\"goal\":\"查询订单 ORD84201 的当前状态与金额\",\"tool_name\":\"get_order\",\"arguments\":{\"order_id\":\"ORD84201\"},\"needs_retrieval\":false},{\"step_id\":2,\"goal\":\"查询订单 ORD84201 的物流轨迹与运单信息\",\"tool_name\":\"track_shipment\",\"arguments\":{\"order_id\":\"ORD84201\"},\"needs_retrieval\":false}]}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1810,
+        "completion_tokens": 166,
+        "total_tokens": 1976
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1863.3577880000303,
+    "completed_at": "2026-11-12T06:10:44.501389+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 48,
+    "group": "S1EXI02_E2",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:44.539340+00:00",
+    "reserve_input": 3793,
+    "reserve_output": 700,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "7511a4021f57edd4e70cce37c317a3212da4be478a159c0fc052b2dc1c3e20ee",
+    "prompt_sha256": "3e5688204ffab6c8336b0d812c5a0d326b18898b361cb08c8744b51c30f26373",
+    "usage": {
+      "prompt_tokens": 668,
+      "completion_tokens": 157,
+      "total_tokens": 825
+    },
+    "stage": "generate",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"answer\":\"已按订单号 ORD84201 完成仅查询，结果如下：\\n\\n1. 订单状态：当前为“已创建（created）”，尚未支付、尚未发货、尚未签收。\\n2. 订单金额：商品为“笔记本套装”1 件，单价 7250 分，订单总额 7250 分（即 72.50 元）。\\n3. 物流轨迹：该订单目前没有运单号，也没有物流城市和物流事件，因此暂时无法查询到物流轨迹；需等发货并生成运单号后再查。\\n\\n本次仅查询，未进行任何修改或操作。\",\"citation_chunk_ids\":[],\"refused\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 668,
+        "completion_tokens": 157,
+        "total_tokens": 825
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 2171.0837519999586,
+    "completed_at": "2026-11-12T06:10:46.722972+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 49,
+    "group": "S1EXI02_E2",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:46.757499+00:00",
+    "reserve_input": 3178,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "2e3e93eec6d7a8cc7cbd4a3fa6dc1bab72dc32a893dc39e661f13c7f10321c70",
+    "prompt_sha256": "0e1472ba9756145b5c49120bd72e91548658c5641f204c518bd18ca869d9d65e",
+    "usage": {
+      "prompt_tokens": 543,
+      "completion_tokens": 7,
+      "total_tokens": 550
+    },
+    "stage": "judge",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"status\":\"SUPPORTED\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 543,
+        "completion_tokens": 7,
+        "total_tokens": 550
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1106.621708000148,
+    "completed_at": "2026-11-12T06:10:47.876886+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 50,
+    "group": "S1EXI02_E1",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:48.078652+00:00",
+    "reserve_input": 3884,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "76bf661b82e5c608e821880e46766935f69007f34d8f411d0a1b90e9707bb3ca",
+    "prompt_sha256": "4ff0f83107aa30fab15cae6c10a3bc1d84398e413243f6cba2005e2dd650759e",
+    "usage": {
+      "prompt_tokens": 715,
+      "completion_tokens": 74,
+      "total_tokens": 789
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"logistics\",\"confidence\":0.82,\"rationale\":\"用户同时要求核对订单状态/金额并查询物流轨迹，明确要求物流轨迹且强调仅查询；按优先级物流轨迹（催发货/运单号/快递到哪）优先于订单状态查询，故归为 logistics。\",\"prompt_version\":\"intent_v3\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 715,
+        "completion_tokens": 74,
+        "total_tokens": 789
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1551.7499980001048,
+    "completed_at": "2026-11-12T06:10:49.643234+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 51,
+    "group": "S1EXI02_E1",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:49.676023+00:00",
+    "reserve_input": 1998,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "a1d9c4207365c1b6e8008b2f0f6f6607406d9e9a70cb7b16aa1f7b1e4f3d4f73",
+    "prompt_sha256": "3ea647a16a93b6b56963e77e65d403947a6a9f97e242992ed508f1aefbe0c061",
+    "usage": {
+      "prompt_tokens": 212,
+      "completion_tokens": 57,
+      "total_tokens": 269
+    },
+    "stage": "router",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"confidence\":0.95,\"rationale\":\"用户要求查询具体订单 ORD84201 的订单状态、金额和物流轨迹，需要访问订单与物流系统数据，属于工具/系统查询场景。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 212,
+        "completion_tokens": 57,
+        "total_tokens": 269
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1394.2141759998776,
+    "completed_at": "2026-11-12T06:10:51.082903+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 52,
+    "group": "S1EXI02_E1",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:51.129364+00:00",
+    "reserve_input": 7782,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "5e5915a1b64f0d3a2772dc8cf2c27584483a511a654e18645a0c05d50012b3e4",
+    "prompt_sha256": "3f0d81d0d913e303143a8e3fc7358228406502c802a0c69100f303909c664245",
+    "usage": {
+      "prompt_tokens": 1640,
+      "completion_tokens": 144,
+      "total_tokens": 1784
+    },
+    "stage": "planner",
+    "available_tool_names": [
+      "escalate_to_human",
+      "get_order",
+      "search_knowledge",
+      "track_shipment"
+    ],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"rationale\":\"用户需要两类证据：订单头（状态、金额）用 get_order；物流轨迹用 track_shipment。订单号明确为 ORD84201，分别查询即可，无需额外步骤。\",\"steps\":[{\"step_id\":1,\"goal\":\"查询订单 ORD84201 的订单状态与金额\",\"tool_name\":\"get_order\",\"arguments\":{\"order_id\":\"ORD84201\"},\"needs_retrieval\":false},{\"step_id\":2,\"goal\":\"查询订单 ORD84201 的物流轨迹与运单信息\",\"tool_name\":\"track_shipment\",\"arguments\":{\"order_id\":\"ORD84201\"},\"needs_retrieval\":false}]}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1640,
+        "completion_tokens": 144,
+        "total_tokens": 1784
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1499.8736930001542,
+    "completed_at": "2026-11-12T06:10:52.643015+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 53,
+    "group": "S1EXI02_E1",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:52.678658+00:00",
+    "reserve_input": 3793,
+    "reserve_output": 700,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "7511a4021f57edd4e70cce37c317a3212da4be478a159c0fc052b2dc1c3e20ee",
+    "prompt_sha256": "3e5688204ffab6c8336b0d812c5a0d326b18898b361cb08c8744b51c30f26373",
+    "usage": {
+      "prompt_tokens": 668,
+      "completion_tokens": 182,
+      "total_tokens": 850
+    },
+    "stage": "generate",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"answer\":\"已按订单号 ORD84201 完成查询，结果如下：\\n\\n1. 订单状态：当前为「created（已创建）」，尚未支付（paid_at 为空），也尚未发货（shipped_at 为空）。\\n2. 订单金额：商品为「笔记本套装」1 件，单价 72.50 元，订单总额 72.50 元。\\n3. 物流轨迹：该订单目前没有运单号（tracking_no 为空），也没有收货城市和物流事件记录，因此暂时无法查询到物流轨迹；这通常是因为订单尚未发货。\\n\\n本次仅做查询，未进行任何修改操作。如后续已发货但仍查不到轨迹，请提供运单号或联系人工客服进一步核实。\",\"citation_chunk_ids\":[],\"refused\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 668,
+        "completion_tokens": 182,
+        "total_tokens": 850
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 2169.4900880002024,
+    "completed_at": "2026-11-12T06:10:54.860397+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 54,
+    "group": "S1EXI02_E1",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:54.895069+00:00",
+    "reserve_input": 3178,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "2e3e93eec6d7a8cc7cbd4a3fa6dc1bab72dc32a893dc39e661f13c7f10321c70",
+    "prompt_sha256": "0e1472ba9756145b5c49120bd72e91548658c5641f204c518bd18ca869d9d65e",
+    "usage": {
+      "prompt_tokens": 543,
+      "completion_tokens": 7,
+      "total_tokens": 550
+    },
+    "stage": "judge",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"status\":\"SUPPORTED\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 543,
+        "completion_tokens": 7,
+        "total_tokens": 550
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1371.228168000016,
+    "completed_at": "2026-11-12T06:10:56.278602+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 55,
+    "group": "S1EXI02_E0",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:56.486793+00:00",
+    "reserve_input": 3884,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "76bf661b82e5c608e821880e46766935f69007f34d8f411d0a1b90e9707bb3ca",
+    "prompt_sha256": "4ff0f83107aa30fab15cae6c10a3bc1d84398e413243f6cba2005e2dd650759e",
+    "usage": {
+      "prompt_tokens": 715,
+      "completion_tokens": 62,
+      "total_tokens": 777
+    },
+    "stage": "intent",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"label\":\"logistics\",\"confidence\":0.82,\"rationale\":\"用户同时要求核对订单状态/金额并查询物流轨迹，明确要求物流轨迹，按优先级第6条物流优先于第7条订单查询，因此归为 logistics。\",\"prompt_version\":\"intent_v3\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 715,
+        "completion_tokens": 62,
+        "total_tokens": 777
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1796.024874000068,
+    "completed_at": "2026-11-12T06:10:58.295417+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 56,
+    "group": "S1EXI02_E0",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:58.320029+00:00",
+    "reserve_input": 1998,
+    "reserve_output": 256,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "a1d9c4207365c1b6e8008b2f0f6f6607406d9e9a70cb7b16aa1f7b1e4f3d4f73",
+    "prompt_sha256": "3ea647a16a93b6b56963e77e65d403947a6a9f97e242992ed508f1aefbe0c061",
+    "usage": {
+      "prompt_tokens": 212,
+      "completion_tokens": 58,
+      "total_tokens": 270
+    },
+    "stage": "router",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"complexity\":\"tool_required\",\"strategy\":\"agent\",\"confidence\":0.95,\"rationale\":\"用户要求查询具体订单 ORD84201 的订单状态、金额和物流轨迹，需要访问订单与物流系统数据，属于工具/系统查询类任务。\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 212,
+        "completion_tokens": 58,
+        "total_tokens": 270
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1615.2426119997472,
+    "completed_at": "2026-11-12T06:10:59.948069+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 57,
+    "group": "S1EXI02_E0",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:10:59.983095+00:00",
+    "reserve_input": 7782,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "5e5915a1b64f0d3a2772dc8cf2c27584483a511a654e18645a0c05d50012b3e4",
+    "prompt_sha256": "3f0d81d0d913e303143a8e3fc7358228406502c802a0c69100f303909c664245",
+    "usage": {
+      "prompt_tokens": 1640,
+      "completion_tokens": 146,
+      "total_tokens": 1786
+    },
+    "stage": "planner",
+    "available_tool_names": [
+      "escalate_to_human",
+      "get_order",
+      "search_knowledge",
+      "track_shipment"
+    ],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"rationale\":\"用户明确要求核对订单 ORD84201 的状态与金额，并查询物流轨迹，属于两个独立读取目标：订单头用 get_order，物流轨迹用 track_shipment，各一步即可。\",\"steps\":[{\"step_id\":1,\"goal\":\"查询订单 ORD84201 的当前状态与金额\",\"tool_name\":\"get_order\",\"arguments\":{\"order_id\":\"ORD84201\"},\"needs_retrieval\":false},{\"step_id\":2,\"goal\":\"查询订单 ORD84201 的物流轨迹与运单信息\",\"tool_name\":\"track_shipment\",\"arguments\":{\"order_id\":\"ORD84201\"},\"needs_retrieval\":false}]}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1640,
+        "completion_tokens": 146,
+        "total_tokens": 1786
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1693.3812219999709,
+    "completed_at": "2026-11-12T06:11:01.689078+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 58,
+    "group": "S1EXI02_E0",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:11:01.729484+00:00",
+    "reserve_input": 3793,
+    "reserve_output": 700,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "7511a4021f57edd4e70cce37c317a3212da4be478a159c0fc052b2dc1c3e20ee",
+    "prompt_sha256": "3e5688204ffab6c8336b0d812c5a0d326b18898b361cb08c8744b51c30f26373",
+    "usage": {
+      "prompt_tokens": 668,
+      "completion_tokens": 170,
+      "total_tokens": 838
+    },
+    "stage": "generate",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"answer\":\"已按订单号 ORD84201 完成查询，结果如下：\\n\\n1. 订单状态：当前为 created（已创建），尚未支付、发货或签收（paid_at、shipped_at、delivered_at 均为空）。\\n2. 订单金额：商品为“笔记本套装”1 件，单价 7250 分，订单总额 7250 分（即 72.50 元）。\\n3. 物流轨迹：该订单目前没有运单号（tracking_no 为空），也没有物流事件记录，因此暂时无法查询到物流轨迹；需等发货并生成运单号后再查。\\n\\n本次仅做查询，未进行任何修改操作。\",\"citation_chunk_ids\":[],\"refused\":false}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 668,
+        "completion_tokens": 170,
+        "total_tokens": 838
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 2383.2956410001316,
+    "completed_at": "2026-11-12T06:11:04.126042+00:00"
+  },
+  {
+    "schema": "s1ex-request-v1",
+    "sequence": 59,
+    "group": "S1EXI02_E0",
+    "status": "RESPONSE",
+    "started_at": "2026-11-12T06:11:04.160306+00:00",
+    "reserve_input": 3178,
+    "reserve_output": 512,
+    "source_freeze_sha256": "54ecc2776868a4451c03ae7f0c4aac8325fc64c00b12cb8c79a641e96d3aeb3c",
+    "request_sha256": "2e3e93eec6d7a8cc7cbd4a3fa6dc1bab72dc32a893dc39e661f13c7f10321c70",
+    "prompt_sha256": "0e1472ba9756145b5c49120bd72e91548658c5641f204c518bd18ca869d9d65e",
+    "usage": {
+      "prompt_tokens": 543,
+      "completion_tokens": 7,
+      "total_tokens": 550
+    },
+    "stage": "judge",
+    "available_tool_names": [],
+    "response": {
+      "model": "deepseek-flash",
+      "choices": [
+        {
+          "message": {
+            "content": "{\"status\":\"SUPPORTED\"}"
+          },
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 543,
+        "completion_tokens": 7,
+        "total_tokens": 550
+      }
+    },
+    "error": null,
+    "http_status": 200,
+    "latency_ms": 1519.7242660001393,
+    "completed_at": "2026-11-12T06:11:05.692443+00:00"
   }
 ]
