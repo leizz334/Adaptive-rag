@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.819" timestamp="2026-11-12T14:02:03.765687+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_s1ex_admission" name="test_actual_planner_injection_evidence_is_recorded_before_dispatch" time="0.027"><failure message="assert (0 == 1)&#10; +  where 0 = len([])">tmp_path = PosixPath('/tmp/pytest-of-likl/pytest-5/test_actual_planner_injection_0')
+
+    @pytest.mark.asyncio
+    async def test_actual_planner_injection_evidence_is_recorded_before_dispatch(tmp_path):
+        from app.experience.contracts import EvidenceRef
+        from app.experience.reflection import ExperienceCandidate
+        from research.docs.agent_engineering_upgrade.p4_api_e2e.worker import CASE
+        from research.docs.agent_engineering_upgrade.s1_experience_optimization.common import (
+            HERE,
+            read,
+            scope_for,
+        )
+        import json
+    
+        task = read(HERE / "tasks.json")["tasks"][0]
+        session = task["sessions"]["E2"]
+        scope = scope_for(session)
+    
+        class Repository:
+            async def list(self, _):
+                return [
+                    ExperienceCandidate.model_validate(x)
+                    for x in read(HERE / "qualified_test_records.json")
+                    if x["scope"] == scope.model_dump()
+                ]
+    
+        provider = AsyncMock()
+        permits = {k: EvidenceRef.model_validate(v) for k, v in read(HERE / "permits.json").items()}
+        wrapper = ExperienceLLM(
+            provider,
+            Repository(),
+            build_tool_registry(object()),
+            permits,
+            EvidenceResolver(STATE),
+            tmp_path,
+        )
+        token = CURRENT.set(
+            {"arm": "E2", "session": session, "query": task["query"], "group": "test_group"}
+        )
+        case_token = CASE.set("test_group")
+        try:
+            await wrapper.generate(
+                [
+                    {
+                        "role": "system",
+                        "content": PLANNER_SYSTEM.format(tools="fixture", skill_context="fixture"),
+                    }
+                ]
+            )
+            events = [json.loads(x) for x in (tmp_path / "events.jsonl").read_text().splitlines()]
+&gt;           assert (
+                len(events) == 1
+                and events[0]["kind"] == "experience_planner"
+                and events[0]["injected"] == 2
+            )
+E           assert (0 == 1)
+E            +  where 0 = len([])
+
+tests/unit/test_s1ex_admission.py:89: AssertionError</failure></testcase></testsuite></testsuites>

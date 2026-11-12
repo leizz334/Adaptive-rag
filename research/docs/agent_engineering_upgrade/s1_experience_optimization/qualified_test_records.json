@@ -1,0 +1,1946 @@
+[
+  {
+    "experience_id": "bcccff04d9ab4ea4a76bd530b6f81fbb",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "94145978aa7d9b240e38f2eff85894c05cdb454ee2e4e20747013f8732c283a3",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "aff835526e5a4a3cbe6881bc95931e3c",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "94145978aa7d9b240e38f2eff85894c05cdb454ee2e4e20747013f8732c283a3",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "cc00a02cb94e4e1b92366270e5eb5522",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "94145978aa7d9b240e38f2eff85894c05cdb454ee2e4e20747013f8732c283a3",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "0eecf5b5f3f1473cb5ffd2fce0164c72",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "a527c3d8a4e2e30f7154fccdbc24312816833d6a14339adb2ada4df3a343253f",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "e56973a563b9458a9898442366dc557c",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "a527c3d8a4e2e30f7154fccdbc24312816833d6a14339adb2ada4df3a343253f",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "4e059a85daff401c8da130a3f9876bd3",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "a527c3d8a4e2e30f7154fccdbc24312816833d6a14339adb2ada4df3a343253f",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "7c545d6c305e43ea8b3176d54f5babb7",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "9f76d654bccf0ece4d6a96e11dcc0cb1f73b684c9b614ffc97ad6446e0d12864",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "c2c0955272324681a96e5548c678ed1b",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "9f76d654bccf0ece4d6a96e11dcc0cb1f73b684c9b614ffc97ad6446e0d12864",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "c9858b8f690f4bbf879886cf1dd946a7",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "9f76d654bccf0ece4d6a96e11dcc0cb1f73b684c9b614ffc97ad6446e0d12864",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "5898c38ab7924e419cabb37f68e08b41",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "012c6610e857d450fe6408445cf8d4d287b4b4fcee52e7d591cfe2d2693e15e5",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "b750a757f198461289407636b808742f",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "012c6610e857d450fe6408445cf8d4d287b4b4fcee52e7d591cfe2d2693e15e5",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "f93a97dccb234816b2eb52abf4c8ee33",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "012c6610e857d450fe6408445cf8d4d287b4b4fcee52e7d591cfe2d2693e15e5",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "c5cd89d8c7fe4ae3b8154eafd51991a5",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "ed6a1702ad90ce10a172318523cdca2a2603a23663fd80b9704cb3f660c165c7",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "ef598928fc01406390781988b960aae1",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "ed6a1702ad90ce10a172318523cdca2a2603a23663fd80b9704cb3f660c165c7",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "126a9e1ea04c42f08dbe7c575b18cb77",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "ed6a1702ad90ce10a172318523cdca2a2603a23663fd80b9704cb3f660c165c7",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "68f0a7225b5e41349a74e03e142e0d60",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "3b908ce1f3ea57e22dc7d0488f8e19a23d7b62257f63e30c1bbfe0ab0a780446",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "7c50abbfc77c4739ac5813113bd605f8",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "3b908ce1f3ea57e22dc7d0488f8e19a23d7b62257f63e30c1bbfe0ab0a780446",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "0145195444854aeebeb383c773547639",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "3b908ce1f3ea57e22dc7d0488f8e19a23d7b62257f63e30c1bbfe0ab0a780446",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "746dd87fe51646b5a33917b86f313e9a",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "00ac13770947852b33e8751274c3fd65d01f8ee7f4291ba4bcf8bfb5c68d669e",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "7e643c9994ac43ffaee415af58c97a52",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "00ac13770947852b33e8751274c3fd65d01f8ee7f4291ba4bcf8bfb5c68d669e",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "3691ac6e04504f5997a32948cee3500e",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "00ac13770947852b33e8751274c3fd65d01f8ee7f4291ba4bcf8bfb5c68d669e",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "13c98b741f4347e68c1cfc6e97c83c50",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "2a8df145ff65720599b8d2708de21a5d8add643d6f10d6f707bc67ba606932bb",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "a05ad9365e5948d7b9b106e23255dead",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "2a8df145ff65720599b8d2708de21a5d8add643d6f10d6f707bc67ba606932bb",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "a9ed44da46af43c19edf07fc53e534da",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "2a8df145ff65720599b8d2708de21a5d8add643d6f10d6f707bc67ba606932bb",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "76b9772f80f2423489225e0dcc6941b5",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "f94615729e1f35ab7b4980439bccfa66a8cc64071bde2c2320449de7669b9e46",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "e982891f40544797956618d0960d2ebd",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "f94615729e1f35ab7b4980439bccfa66a8cc64071bde2c2320449de7669b9e46",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "e3541c1a81854359a428a0970880e1fa",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "f94615729e1f35ab7b4980439bccfa66a8cc64071bde2c2320449de7669b9e46",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "ddf9285956c34e71af9d8a1caee4e8cf",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "28021f2eef44619af3f0b1e844bcebabbf0d967a43b25b54b3ab9f06f651e001",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "4f77f922781947f8b92c773a50bbc818",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "28021f2eef44619af3f0b1e844bcebabbf0d967a43b25b54b3ab9f06f651e001",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "6633bc2d21fb4864a3a085640bdc1997",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "28021f2eef44619af3f0b1e844bcebabbf0d967a43b25b54b3ab9f06f651e001",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "54301d7334714dbcbb19b27a31191d41",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "c5eda7a61051b9e62d8b615a7271cd58bf82e476cb6187a4fea27a4f6210071b",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "8c74c25cfa7642718b5c0ab519db2abd",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "c5eda7a61051b9e62d8b615a7271cd58bf82e476cb6187a4fea27a4f6210071b",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "00815c3a1bdf4c38aaaa32be83bf7640",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "c5eda7a61051b9e62d8b615a7271cd58bf82e476cb6187a4fea27a4f6210071b",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "01f8c19bae1240ecabaa3a5d240df7e5",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "27acf4f8dc84d79b3686a5c611bf6a92ffb984e561cdd460894783a9bf4b16d5",
+      "verified": true
+    },
+    "source_trace_id": "P2S-PSV22-R0",
+    "source_case_id": "PSV22",
+    "failure_type": "PLANNER_MISSING_TOOL",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/datasets/validation_holdout_v21.json",
+        "sha256": "e18a0323784f265ba3439b7fc446c2b920174dd80edd1be806bb1aa76a6901ba",
+        "pointer": "/scenarios/21/turns/0",
+        "kind": "evaluation"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/results/0/evidence/tool_calls",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/evidence/s6_real_aggregate_v21.json",
+        "sha256": "a3084dad115268871e5e05d598443885eec73d0c42c36b97300b01dd1e092d9f",
+        "pointer": "/groups/6/answer_scores",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/requests.json",
+        "sha256": "2d83d87a450135b3c75b6b4444f3615218c93b166294bcb70dfb170d537db930",
+        "pointer": "/39/available_tool_names",
+        "kind": "trace"
+      },
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/nodes/3/output",
+        "kind": "trace"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "tool_coverage",
+    "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  },
+  {
+    "experience_id": "930811ecd17b4b5cafb2703633f50e23",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "27acf4f8dc84d79b3686a5c611bf6a92ffb984e561cdd460894783a9bf4b16d5",
+      "verified": true
+    },
+    "source_trace_id": "synthetic_contract_failure",
+    "source_case_id": "synthetic_plan_case",
+    "failure_type": "PLANNER_ARGUMENT_ERROR",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "s1_experience_optimization/evidence/controlled_plan_contract_failure.json",
+        "sha256": "24e2efc2e18038b78fda103deba197439cadb74b68c4bf5a5d6596df7f75c303",
+        "pointer": "",
+        "kind": "evaluation"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "plan_contract",
+    "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+    "applicability_conditions": [
+      "live_fact",
+      "plan_contract"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+    "version": 4
+  },
+  {
+    "experience_id": "3da6c416f1924f7f85a6e649dd127c61",
+    "schema_version": "experience-shadow-v1",
+    "scope": {
+      "tenant_ref": "08949a9ab2cc239acc2b0aa946e08ee0d3a43eaf86d2d1df85edae5981a817ed",
+      "user_ref": "fc40f3ea9b3a346de2712a48eeeb89234a44020710be236556cf68b9e45aff44",
+      "session_ref": "27acf4f8dc84d79b3686a5c611bf6a92ffb984e561cdd460894783a9bf4b16d5",
+      "verified": true
+    },
+    "source_trace_id": "historical_public_answer_omission",
+    "source_case_id": "historical_answer_case",
+    "failure_type": "GOAL_OMISSION",
+    "failure_confidence": "HIGH",
+    "evidence_refs": [
+      {
+        "artifact": "p2_answer_reliability/runs/20261108_S6_pairs_03/captures/PSV22_R0_0.json",
+        "sha256": "6884098aacb4dcfdd2cfb9cda72fdab0f51842751ea767348abf5204f54f2f4f",
+        "pointer": "/traces/0/turns/0/response/answer",
+        "kind": "request"
+      }
+    ],
+    "root_cause_hypothesis": "Observed failure supports a candidate principle; the internal root cause is not uniquely established.",
+    "family": "answer_coverage",
+    "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+    "applicability_conditions": [
+      "live_fact",
+      "multi_goal"
+    ],
+    "non_applicability_conditions": [
+      "untrusted_input",
+      "clarification_required",
+      "write_unconfirmed"
+    ],
+    "risk_level": "LOW",
+    "validation_status": "VERIFIED_OFFLINE",
+    "review_status": "MODEL_REVIEWED",
+    "created_at": "2026-11-12T00:00:00Z",
+    "updated_at": "2026-11-12T00:00:00Z",
+    "expires_at": "2026-11-19T00:00:00Z",
+    "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+    "version": 4
+  }
+]
