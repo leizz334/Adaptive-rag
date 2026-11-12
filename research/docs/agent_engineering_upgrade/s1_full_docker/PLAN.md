@@ -22,9 +22,9 @@ Spec: S1-Docker user request + AGENTS.md; native continuous execution authorized
 - [x] Shared fixture extraction + bootstrap/initialize/serve/health safe CLI with tests RED/GREEN; credential modes/expiry/collision/idempotence/network restrictions.
 - [x] Real initial deployment one command/health/migration/seed/auth/log checks; state/commit.
 ## D3 real deployment
-- [ ] Clean source archive new owned project build/up with exact requested command semantics.
-- [ ] Real browser7scenarios incl3business/Memory/RAG/HITL/history/Experience; realDB/crossuser proof.
-- [ ] Restart API/all deps and stop/start/up again; preserve credentials/schema/row counts/business state/knowledge/ACL; no reset; checkpoint.
+- [x] Clean source archive new owned project build/up with exact requested command semantics.
+- [x] Real browser7scenarios incl3business/Memory/RAG/HITL/history/Experience; realDB/crossuser proof.
+- [x] Restart API/all deps and stop/start/up again; preserve credentials/schema/row counts/business state/knowledge/ACL; no reset; checkpoint.
 ## D4 regression
 - [ ] Frontend tests/type/build + actual Playwright; fullhostpytest realdependency sandbox/Ruff/Mypy/pip/legacy214.
 - [ ] Host S1-Release smoke remains usable; failures/evidence kept; review/minimalfix if needed; checkpoint.

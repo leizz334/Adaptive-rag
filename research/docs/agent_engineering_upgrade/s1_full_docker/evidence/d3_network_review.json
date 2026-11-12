@@ -1,0 +1,35 @@
+{
+  "review": "Independent source review of API web-network compatibility delta",
+  "timestamp_utc": "2026-11-12T13:41:12.481118+00:00",
+  "mode": "Read-only source and saved evidence inspection; no services or runtime probes",
+  "inputs": [
+    "compose.showcase.yml:115",
+    "compose.showcase.yml:128",
+    "app/demo/docker.py:158-193",
+    "tests/unit/test_docker_compose.py:82",
+    "evidence/d2_host_port_RED.json",
+    "evidence/d2_network_GREEN.xml",
+    "DOCKER_DEPLOYMENT_GUIDE.md:84",
+    "RECOVERY.md:17"
+  ],
+  "important_findings": [],
+  "opinion": "No important finding for the explicitly scoped trusted local offline demo. The extra ordinary bridge is limited to API and fixes the recorded missing host endpoint while retaining loopback-only publication.",
+  "verified_source_properties": [
+    "Only API joins both showcase and web; dependencies and initialize remain on internal showcase; bootstrap has no network",
+    "Web publication remains 127.0.0.1:${SHOWCASE_PORT:-8000}:8000; dependency ports are not host-published",
+    "Private volume separation, nonroot/read-only/cap-drop API, explicit offline settings and required authentication unchanged",
+    "A contract test asserts API-only bridging; saved test XML reports14tests without failures/errors/skips",
+    "Deployment guide and recovery explicitly state API does not have network-layer outbound isolation"
+  ],
+  "security_limits": [
+    "API now has an ordinary bridge and potential network-layer external connectivity; internal showcase cannot be cited as API egress enforcement",
+    "The Python socket monkeypatch is an application-level control, not a kernel firewall or a sandbox for arbitrary/native code; numeric-address denial probe validates its tested path only",
+    "No claim of universal outbound prevention, production hardening, or protection against Docker administrators is justified",
+    "Dependency IPs are resolved at API startup; independently recreated dependencies may require API restart, as documented"
+  ],
+  "runtime_evidence_scope": "Saved RED establishes healthy-container versus absent host publication on this Engine. Parent reports loopback success and external numeric socket denial after change; reviewer did not repeat runtime probes.",
+  "pending": "Fresh clean Git archive deployment/browser/persistence acceptance remains pending and is not established by this review.",
+  "phase_pass_claim": false,
+  "windows": "NOT_RUN",
+  "actions": "Only this new sanitized review file created; no other edits, services or commits."
+}
