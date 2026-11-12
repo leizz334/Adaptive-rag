@@ -67,6 +67,8 @@ def read_goals(query: str) -> tuple[ReadGoal, ...]:
     if any(
         c in text
         for c in (
+            "商品名称",
+            "商品名字",
             "商品明细",
             "订单明细",
             "买了什么",
@@ -176,14 +178,15 @@ def coverage(query: str, results: list[ToolResult], answer: str) -> list[dict]:
             elif goal.field == "inventory":
                 mentioned = bool(re.search(rf"{re.escape(str(value))}\s*件", answer))
             elif goal.field == "items":
+                requested = "，".join(positive_clauses(query))
                 mentioned = isinstance(value, list) and all(
-                    isinstance(i, dict)
-                    and str(i.get("sku", "")) in answer
-                    and bool(re.search(rf"{re.escape(str(i.get('quantity')))}\s*件", answer))
-                    for i in value
+                    _item_conveyed(item, value, answer, requested) for item in value
                 )
             elif goal.field == "refunds":
-                mentioned = "退款" in answer and (bool(value) or "未" in answer or "无" in answer)
+                mentioned = isinstance(value, list) and (
+                    (bool(value) and "退款" in answer)
+                    or (not value and _empty_refunds_conveyed(answer))
+                )
             elif goal.field == "chunks":
                 mentioned = None
             else:
@@ -192,3 +195,74 @@ def coverage(query: str, results: list[ToolResult], answer: str) -> list[dict]:
                 break
         rows.append(dict(goal=goal.kind, tool=goal.tool, observed=bool(values), conveyed=mentioned))
     return rows
+
+
+def _item_conveyed(item: object, items: list, answer: str, requested: str) -> bool:
+    """Bind quantities and requested attributes to the same item clause.
+
+    Names can identify an item without a SKU only when the tool actually
+    provides that name. This is a bounded hint, not a semantic verifier.
+    """
+    if not isinstance(item, dict):
+        return False
+    sku, name = item.get("sku"), item.get("name")
+    need_name = any(
+        word in requested
+        for word in (
+            "名称",
+            "名字",
+            "商品明细",
+            "订单明细",
+            "哪些商品",
+            "买了什么",
+            "买的东西",
+        )
+    )
+    need_customized = "定制" in requested
+    other_identifiers = {
+        identifier
+        for other in items
+        if isinstance(other, dict) and other is not item
+        for identifier in (other.get("sku"), other.get("name"))
+        if isinstance(identifier, str) and identifier and identifier not in (sku, name)
+    }
+    # A comma may separate attributes OR start another item. Stop at another
+    # known item's identifier so its quantity/flag cannot satisfy this item.
+    boundary = r"[；;。\n]"
+    if other_identifiers:
+        boundary += "|(?=" + "|".join(re.escape(v) for v in other_identifiers) + ")"
+    for clause in re.split(boundary, answer):
+        if not any(isinstance(v, str) and v and v in clause for v in (sku, name)):
+            continue
+        if not re.search(rf"(?<!\d){re.escape(str(item.get('quantity')))}\s*件", clause):
+            continue
+        if need_name and not (isinstance(name, str) and name and name in clause):
+            continue
+        if need_customized:
+            customized = item.get("customized")
+            pattern = (
+                r"(?<!非)(?<!不)(?<!未)定制\s*[:：]\s*(?:是|true)|(?<!不)属于定制|(?<!不)是定制"
+                if customized is True
+                else r"(?:非|不属于|不是|未)定制|定制\s*[:：]\s*(?:否|false)"
+                if customized is False
+                else None
+            )
+            if pattern is None or not re.search(pattern, clause, re.I):
+                continue
+        return True
+    return False
+
+
+def _empty_refunds_conveyed(answer: str) -> bool:
+    # Keep absence attached to a refund record; unrelated 未发货/无需 cannot
+    # establish an empty refund list.
+    return bool(
+        re.search(
+            r"(?:暂?无|没(?:有)?(?:查询到|查到|发现|找到)?|未(?:查询到|查到|发现|找到))"
+            r"(?:(?:该|此|本|这笔)?订单(?:\s*ORD\d+)?的?)?"
+            r"(?:任何|相关|已有|新的)?退款(?:申请记录|记录|申请|单)"
+            r"|退款(?:申请记录|记录|申请|单)[^，,。；;！!？?\n]{0,8}"
+            r"(?:为空|为零|为0|不存在)",
+            answer,
+        )
+    )

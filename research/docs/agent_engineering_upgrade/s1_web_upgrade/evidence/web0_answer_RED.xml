@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="11" skipped="0" tests="11" time="0.632" timestamp="2026-11-12T15:15:55.748607+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_web_answer_fields" name="test_name_only_request_is_an_order_items_goal" time="0.002"><failure message="AssertionError: assert [] == ['get_order_items']&#10;  &#10;  Right contains one more item: 'get_order_items'&#10;  Use -v to get more diff">def test_name_only_request_is_an_order_items_goal():
+&gt;       assert read_tools("订单ORD8080商品名称是什么") == ["get_order_items"]
+E       AssertionError: assert [] == ['get_order_items']
+E         
+E         Right contains one more item: 'get_order_items'
+E         Use -v to get more diff
+
+tests/unit/test_web_answer_fields.py:39: AssertionError</failure></testcase><testcase classname="tests.unit.test_web_answer_fields" name="test_empty_refund_natural_absence_is_conveyed[\u6ca1\u6709\u67e5\u5230\u8be5\u8ba2\u5355\u7684\u9000\u6b3e\u5355\u3002]" time="0.001"><failure message="assert False is True">answer = '没有查到该订单的退款单。'
+
+    @pytest.mark.parametrize("answer", [
+        "没有查到该订单的退款单。", "没查到退款申请记录。", "该订单没有退款记录。",
+    ])
+    def test_empty_refund_natural_absence_is_conveyed(answer):
+&gt;       assert coverage("查看退款记录", tools(), answer)[0]["conveyed"] is True
+E       assert False is True
+
+tests/unit/test_web_answer_fields.py:46: AssertionError</failure></testcase><testcase classname="tests.unit.test_web_answer_fields" name="test_empty_refund_natural_absence_is_conveyed[\u6ca1\u67e5\u5230\u9000\u6b3e\u7533\u8bf7\u8bb0\u5f55\u3002]" time="0.000"><failure message="assert False is True">answer = '没查到退款申请记录。'
+
+    @pytest.mark.parametrize("answer", [
+        "没有查到该订单的退款单。", "没查到退款申请记录。", "该订单没有退款记录。",
+    ])
+    def test_empty_refund_natural_absence_is_conveyed(answer):
+&gt;       assert coverage("查看退款记录", tools(), answer)[0]["conveyed"] is True
+E       assert False is True
+
+tests/unit/test_web_answer_fields.py:46: AssertionError</failure></testcase><testcase classname="tests.unit.test_web_answer_fields" name="test_empty_refund_natural_absence_is_conveyed[\u8be5\u8ba2\u5355\u6ca1\u6709\u9000\u6b3e\u8bb0\u5f55\u3002]" time="0.000"><failure message="assert False is True">answer = '该订单没有退款记录。'
+
+    @pytest.mark.parametrize("answer", [
+        "没有查到该订单的退款单。", "没查到退款申请记录。", "该订单没有退款记录。",
+    ])
+    def test_empty_refund_natural_absence_is_conveyed(answer):
+&gt;       assert coverage("查看退款记录", tools(), answer)[0]["conveyed"] is True
+E       assert False is True
+
+tests/unit/test_web_answer_fields.py:46: AssertionError</failure></testcase><testcase classname="tests.unit.test_web_answer_fields" name="test_unrelated_negative_does_not_cover_empty_refunds[\u9000\u6b3e\u5df2\u5b8c\u6210\uff0c\u65e0\u9700\u7b49\u5f85\u3002]" time="0.000"><failure message="assert True is False">answer = '退款已完成，无需等待。'
+
+    @pytest.mark.parametrize("answer", ["退款已完成，无需等待。", "未发货，退款已到账。"])
+    def test_unrelated_negative_does_not_cover_empty_refunds(answer):
+&gt;       assert coverage("查看退款记录", tools(), answer)[0]["conveyed"] is False
+E       assert True is False
+
+tests/unit/test_web_answer_fields.py:51: AssertionError</failure></testcase><testcase classname="tests.unit.test_web_answer_fields" name="test_unrelated_negative_does_not_cover_empty_refunds[\u672a\u53d1\u8d27\uff0c\u9000\u6b3e\u5df2\u5230\u8d26\u3002]" time="0.000"><failure message="assert True is False">answer = '未发货，退款已到账。'
+
+    @pytest.mark.parametrize("answer", ["退款已完成，无需等待。", "未发货，退款已到账。"])
+    def test_unrelated_negative_does_not_cover_empty_refunds(answer):
+&gt;       assert coverage("查看退款记录", tools(), answer)[0]["conveyed"] is False
+E       assert True is False
+
+tests/unit/test_web_answer_fields.py:51: AssertionError</failure></testcase><testcase classname="tests.unit.test_web_answer_fields" name="test_coverage_rejects_omitted_requested_names_and_customized" time="0.000"><failure message="assert False&#10; +  where False = any(&lt;generator object test_coverage_rejects_omitted_requested_names_and_customized.&lt;locals&gt;.&lt;genexpr&gt; at 0x7cb910067ed0&gt;)">def test_coverage_rejects_omitted_requested_names_and_customized():
+        rows = coverage(QUERY, tools(), "SKU-TOWEL 2件；SKU-SOAP 3件。暂无退款记录。")
+&gt;       assert any(row["conveyed"] is False for row in rows)
+E       assert False
+E        +  where False = any(&lt;generator object test_coverage_rejects_omitted_requested_names_and_customized.&lt;locals&gt;.&lt;genexpr&gt; at 0x7cb910067ed0&gt;)
+
+tests/unit/test_web_answer_fields.py:56: AssertionError</failure></testcase><testcase classname="tests.unit.test_web_answer_fields" name="test_safe_recovery_preserves_item_names_and_boolean_flags" time="0.000"><failure message="AssertionError: assert ('浴巾' in '以下是本次工具结果可确认的信息：\n订单商品 SKU-TOWEL 数量：2件。\n订单商品 SKU-SOAP 数量：3件。\n本次查询暂未发现退款申请记录，不能据此声称退款完成。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。')">def test_safe_recovery_preserves_item_names_and_boolean_flags():
+        answer = safe_answer(tools())
+&gt;       assert "浴巾" in answer and "香皂" in answer
+E       AssertionError: assert ('浴巾' in '以下是本次工具结果可确认的信息：\n订单商品 SKU-TOWEL 数量：2件。\n订单商品 SKU-SOAP 数量：3件。\n本次查询暂未发现退款申请记录，不能据此声称退款完成。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。')
+
+tests/unit/test_web_answer_fields.py:61: AssertionError</failure></testcase><testcase classname="tests.unit.test_web_answer_fields" name="test_complete_name_based_answer_is_not_replaced_for_missing_skus" time="0.002"><failure message="AssertionError: assert '以下是本次工具结果可确认...事实不代表其他操作已完成。' == '浴巾2件，定制：是；香皂...。没有查到该订单的退款单。'&#10;  &#10;  - 浴巾2件，定制：是；香皂3件，定制：否。没有查到该订单的退款单。&#10;  + 以下是本次工具结果可确认的信息：&#10;  + 订单商品 SKU-TOWEL 数量：2件。&#10;  + 订单商品 SKU-SOAP 数量：3件。&#10;  + 本次查询暂未发现退款申请记录，不能据此声称退款完成。&#10;  + 其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。">async def test_complete_name_based_answer_is_not_replaced_for_missing_skus():
+        answer = "浴巾2件，定制：是；香皂3件，定制：否。没有查到该订单的退款单。"
+        result = await generate_node(dict(user_query=QUERY, strategy=RetrievalStrategy.AGENT,
+                                          tool_results=tools()), Model(answer))
+&gt;       assert result["final_answer"] == answer
+E       AssertionError: assert '以下是本次工具结果可确认...事实不代表其他操作已完成。' == '浴巾2件，定制：是；香皂...。没有查到该订单的退款单。'
+E         
+E         - 浴巾2件，定制：是；香皂3件，定制：否。没有查到该订单的退款单。
+E         + 以下是本次工具结果可确认的信息：
+E         + 订单商品 SKU-TOWEL 数量：2件。
+E         + 订单商品 SKU-SOAP 数量：3件。
+E         + 本次查询暂未发现退款申请记录，不能据此声称退款完成。
+E         + 其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。
+
+tests/unit/test_web_answer_fields.py:70: AssertionError</failure></testcase><testcase classname="tests.unit.test_web_answer_fields" name="test_generation_failure_or_omission_recovers_all_requested_item_fields[None]" time="0.001"><failure message="AssertionError: assert ('浴巾' in '以下是本次工具结果可确认的信息：\n订单商品 SKU-TOWEL 数量：2件。\n订单商品 SKU-SOAP 数量：3件。\n本次查询暂未发现退款申请记录，不能据此声称退款完成。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。')">answer = None
+
+    @pytest.mark.parametrize("answer", [None, "SKU-TOWEL 2件；SKU-SOAP 3件。暂无退款记录。"])
+    async def test_generation_failure_or_omission_recovers_all_requested_item_fields(answer):
+        result = await generate_node(dict(user_query=QUERY, strategy=RetrievalStrategy.AGENT,
+                                          tool_results=tools()), Model(answer))
+        text = result["final_answer"]
+&gt;       assert "浴巾" in text and "香皂" in text
+E       AssertionError: assert ('浴巾' in '以下是本次工具结果可确认的信息：\n订单商品 SKU-TOWEL 数量：2件。\n订单商品 SKU-SOAP 数量：3件。\n本次查询暂未发现退款申请记录，不能据此声称退款完成。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。')
+
+tests/unit/test_web_answer_fields.py:78: AssertionError</failure></testcase><testcase classname="tests.unit.test_web_answer_fields" name="test_generation_failure_or_omission_recovers_all_requested_item_fields[SKU-TOWEL 2\u4ef6\uff1bSKU-SOAP 3\u4ef6\u3002\u6682\u65e0\u9000\u6b3e\u8bb0\u5f55\u3002]" time="0.001"><failure message="AssertionError: assert ('浴巾' in 'SKU-TOWEL 2件；SKU-SOAP 3件。暂无退款记录。')">answer = 'SKU-TOWEL 2件；SKU-SOAP 3件。暂无退款记录。'
+
+    @pytest.mark.parametrize("answer", [None, "SKU-TOWEL 2件；SKU-SOAP 3件。暂无退款记录。"])
+    async def test_generation_failure_or_omission_recovers_all_requested_item_fields(answer):
+        result = await generate_node(dict(user_query=QUERY, strategy=RetrievalStrategy.AGENT,
+                                          tool_results=tools()), Model(answer))
+        text = result["final_answer"]
+&gt;       assert "浴巾" in text and "香皂" in text
+E       AssertionError: assert ('浴巾' in 'SKU-TOWEL 2件；SKU-SOAP 3件。暂无退款记录。')
+
+tests/unit/test_web_answer_fields.py:78: AssertionError</failure></testcase></testsuite></testsuites>

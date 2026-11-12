@@ -72,7 +72,14 @@ def verified_facts(results: list[ToolResult]) -> list[str]:
                 item_sku = _identifier(item.get("sku"))
                 qty = item.get("quantity")
                 if item_sku and type(qty) is int and qty >= 0:
-                    facts.append(f"订单商品 {item_sku} 数量：{qty}件。")
+                    fields = [f"数量：{qty}件"]
+                    name = item.get("name")
+                    if isinstance(name, str) and name.strip() and len(name) <= 300:
+                        fields.append(f"名称（工具原文）：{name.strip()!r}")
+                    customized = item.get("customized")
+                    if type(customized) is bool:
+                        fields.append("定制：" + ("是" if customized else "否"))
+                    facts.append(f"订单商品 {item_sku} " + "，".join(fields) + "。")
         elif result.name in {"get_product_detail", "check_inventory"} and sku:
             inventory = data.get("inventory")
             if type(inventory) is int and inventory >= 0:
