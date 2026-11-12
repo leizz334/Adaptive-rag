@@ -16,7 +16,14 @@ from app.experience.contracts import (
     LocalContract,
 )
 
-Family = Literal["mixed_evidence", "judge_output", "fallback_evidence"]
+Family = Literal[
+    "mixed_evidence",
+    "judge_output",
+    "fallback_evidence",
+    "tool_coverage",
+    "plan_contract",
+    "answer_coverage",
+]
 
 
 class LessonTemplate(TypedDict):
@@ -42,6 +49,26 @@ CATALOG: dict[Family, LessonTemplate] = {
         excluded=["untrusted_input", "write_unconfirmed"],
     ),
 }
+CATALOG.update(
+    {
+        "tool_coverage": dict(
+            lesson="规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+            required=["live_fact", "multi_goal"],
+            excluded=["untrusted_input", "clarification_required", "write_unconfirmed"],
+        ),
+        "plan_contract": dict(
+            lesson="规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+            required=["live_fact", "plan_contract"],
+            excluded=["untrusted_input", "clarification_required", "write_unconfirmed"],
+        ),
+        "answer_coverage": dict(
+            lesson="规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+            required=["live_fact", "multi_goal"],
+            excluded=["untrusted_input", "clarification_required", "write_unconfirmed"],
+        ),
+    }
+)
+
 HYPOTHESIS = "Observed failure supports a candidate principle; the internal root cause is not uniquely established."
 
 
@@ -122,6 +149,10 @@ def reflect(assessment: FailureAssessment, scope: ExperienceScope, *, now=None):
         FailureType.JUDGE_INVALID_OUTPUT: "judge_output",
         FailureType.JUDGE_API_ERROR: "judge_output",
         FailureType.FALLBACK_ERROR: "fallback_evidence",
+        FailureType.PLANNER_MISSING_TOOL: "tool_coverage",
+        FailureType.PLANNER_TOOL_SELECTION_ERROR: "plan_contract",
+        FailureType.PLANNER_ARGUMENT_ERROR: "plan_contract",
+        FailureType.GOAL_OMISSION: "answer_coverage",
     }
     family = families.get(assessment.failure_type)
     if family is None:

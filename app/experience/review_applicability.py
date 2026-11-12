@@ -127,6 +127,9 @@ def review_applicability(
         "mixed_evidence": {"live_fact", "static_policy"},
         "judge_output": {"judge_invalid"},
         "fallback_evidence": {"fallback_needed"},
+        "tool_coverage": {"live_fact", "multi_goal"},
+        "plan_contract": {"live_fact", "plan_contract"},
+        "answer_coverage": {"live_fact", "multi_goal", "evidence_available"},
     }[candidate.family]
     if not required <= tags:
         return decision(status="NO_MATCH", reason="NOT_RELEVANT")

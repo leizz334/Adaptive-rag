@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="0.081" timestamp="2026-11-12T13:33:38.146112+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_s1ex_reflection" name="test_verified_structural_failure_reflects_safe_principle[PLANNER_MISSING_TOOL-tags0-tool_coverage]" time="0.002"><failure message="pydantic_core._pydantic_core.ValidationError: 1 validation error for FailureAssessment&#10;context_tags.1&#10;  Input should be 'live_fact', 'static_policy', 'judge_invalid', 'judge_supported', 'evidence_available', 'fallback_needed', 'write_unconfirmed', 'untrusted_input', 'clarification_required', 'pure_policy', 'fresh_read_needed' or 'owner_check_required' [type=literal_error, input_value='multi_goal', input_type=str]&#10;    For further information visit https://errors.pydantic.dev/2.14/v/literal_error">failure = 'PLANNER_MISSING_TOOL', tags = ['live_fact', 'multi_goal']
+family = 'tool_coverage'
+
+    @pytest.mark.parametrize('failure,tags,family',[
+        ('PLANNER_MISSING_TOOL',['live_fact','multi_goal'],'tool_coverage'),
+        ('PLANNER_ARGUMENT_ERROR',['live_fact','plan_contract'],'plan_contract'),
+        ('GOAL_OMISSION',['live_fact','multi_goal','evidence_available'],'answer_coverage'),
+    ])
+    def test_verified_structural_failure_reflects_safe_principle(failure,tags,family):
+        scope=ExperienceScope(tenant_ref='a'*64,user_ref='b'*64,session_ref='c'*64,verified=True)
+&gt;       assessment=FailureAssessment(source_trace_id='synthetic_trace',source_case_id='synthetic_case',source_version='d'*40,failure_type=FailureType(failure),evidence_level='VERIFIED_FAILURE',first_error_node='planner',direct_failure='bounded verified structural divergence',root_cause_hypothesis='not uniquely known',confidence='HIGH',confidence_source='TRACE_CONTRACT',evidence_refs=[EvidenceRef(artifact='evidence/opaque.json',sha256='e'*64)],propagation=[],alternative_explanations=[],context_tags=tags)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for FailureAssessment
+E       context_tags.1
+E         Input should be 'live_fact', 'static_policy', 'judge_invalid', 'judge_supported', 'evidence_available', 'fallback_needed', 'write_unconfirmed', 'untrusted_input', 'clarification_required', 'pure_policy', 'fresh_read_needed' or 'owner_check_required' [type=literal_error, input_value='multi_goal', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.14/v/literal_error
+
+tests/unit/test_s1ex_reflection.py:16: ValidationError</failure></testcase><testcase classname="tests.unit.test_s1ex_reflection" name="test_verified_structural_failure_reflects_safe_principle[PLANNER_ARGUMENT_ERROR-tags1-plan_contract]" time="0.001"><failure message="pydantic_core._pydantic_core.ValidationError: 1 validation error for FailureAssessment&#10;context_tags.1&#10;  Input should be 'live_fact', 'static_policy', 'judge_invalid', 'judge_supported', 'evidence_available', 'fallback_needed', 'write_unconfirmed', 'untrusted_input', 'clarification_required', 'pure_policy', 'fresh_read_needed' or 'owner_check_required' [type=literal_error, input_value='plan_contract', input_type=str]&#10;    For further information visit https://errors.pydantic.dev/2.14/v/literal_error">failure = 'PLANNER_ARGUMENT_ERROR', tags = ['live_fact', 'plan_contract']
+family = 'plan_contract'
+
+    @pytest.mark.parametrize('failure,tags,family',[
+        ('PLANNER_MISSING_TOOL',['live_fact','multi_goal'],'tool_coverage'),
+        ('PLANNER_ARGUMENT_ERROR',['live_fact','plan_contract'],'plan_contract'),
+        ('GOAL_OMISSION',['live_fact','multi_goal','evidence_available'],'answer_coverage'),
+    ])
+    def test_verified_structural_failure_reflects_safe_principle(failure,tags,family):
+        scope=ExperienceScope(tenant_ref='a'*64,user_ref='b'*64,session_ref='c'*64,verified=True)
+&gt;       assessment=FailureAssessment(source_trace_id='synthetic_trace',source_case_id='synthetic_case',source_version='d'*40,failure_type=FailureType(failure),evidence_level='VERIFIED_FAILURE',first_error_node='planner',direct_failure='bounded verified structural divergence',root_cause_hypothesis='not uniquely known',confidence='HIGH',confidence_source='TRACE_CONTRACT',evidence_refs=[EvidenceRef(artifact='evidence/opaque.json',sha256='e'*64)],propagation=[],alternative_explanations=[],context_tags=tags)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for FailureAssessment
+E       context_tags.1
+E         Input should be 'live_fact', 'static_policy', 'judge_invalid', 'judge_supported', 'evidence_available', 'fallback_needed', 'write_unconfirmed', 'untrusted_input', 'clarification_required', 'pure_policy', 'fresh_read_needed' or 'owner_check_required' [type=literal_error, input_value='plan_contract', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.14/v/literal_error
+
+tests/unit/test_s1ex_reflection.py:16: ValidationError</failure></testcase><testcase classname="tests.unit.test_s1ex_reflection" name="test_verified_structural_failure_reflects_safe_principle[GOAL_OMISSION-tags2-answer_coverage]" time="0.000"><failure message="pydantic_core._pydantic_core.ValidationError: 1 validation error for FailureAssessment&#10;context_tags.1&#10;  Input should be 'live_fact', 'static_policy', 'judge_invalid', 'judge_supported', 'evidence_available', 'fallback_needed', 'write_unconfirmed', 'untrusted_input', 'clarification_required', 'pure_policy', 'fresh_read_needed' or 'owner_check_required' [type=literal_error, input_value='multi_goal', input_type=str]&#10;    For further information visit https://errors.pydantic.dev/2.14/v/literal_error">failure = 'GOAL_OMISSION'
+tags = ['live_fact', 'multi_goal', 'evidence_available']
+family = 'answer_coverage'
+
+    @pytest.mark.parametrize('failure,tags,family',[
+        ('PLANNER_MISSING_TOOL',['live_fact','multi_goal'],'tool_coverage'),
+        ('PLANNER_ARGUMENT_ERROR',['live_fact','plan_contract'],'plan_contract'),
+        ('GOAL_OMISSION',['live_fact','multi_goal','evidence_available'],'answer_coverage'),
+    ])
+    def test_verified_structural_failure_reflects_safe_principle(failure,tags,family):
+        scope=ExperienceScope(tenant_ref='a'*64,user_ref='b'*64,session_ref='c'*64,verified=True)
+&gt;       assessment=FailureAssessment(source_trace_id='synthetic_trace',source_case_id='synthetic_case',source_version='d'*40,failure_type=FailureType(failure),evidence_level='VERIFIED_FAILURE',first_error_node='planner',direct_failure='bounded verified structural divergence',root_cause_hypothesis='not uniquely known',confidence='HIGH',confidence_source='TRACE_CONTRACT',evidence_refs=[EvidenceRef(artifact='evidence/opaque.json',sha256='e'*64)],propagation=[],alternative_explanations=[],context_tags=tags)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for FailureAssessment
+E       context_tags.1
+E         Input should be 'live_fact', 'static_policy', 'judge_invalid', 'judge_supported', 'evidence_available', 'fallback_needed', 'write_unconfirmed', 'untrusted_input', 'clarification_required', 'pure_policy', 'fresh_read_needed' or 'owner_check_required' [type=literal_error, input_value='multi_goal', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.14/v/literal_error
+
+tests/unit/test_s1ex_reflection.py:16: ValidationError</failure></testcase></testsuite></testsuites>

@@ -42,6 +42,8 @@ ContextTag = Literal[
     "pure_policy",
     "fresh_read_needed",
     "owner_check_required",
+    "multi_goal",
+    "plan_contract",
 ]
 
 
