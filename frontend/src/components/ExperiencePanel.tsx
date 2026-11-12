@@ -1,0 +1,13 @@
+import data from "../data/experience-history.json";
+
+export function ExperiencePanel() {
+  return <section className="workspace-page experience-page"><p className="eyebrow">EXPERIENCE MEMORY / RESEARCH EVIDENCE</p><h1>经验与 Shadow</h1><p className="page-intro">离线历史合成实验快照 · {data.as_of}。复用 P3 审核机制，展示可验证的失败反思与受控实验，不是生产在线自学习。</p>
+    <div className="evidence-banner"><strong>EXPERIENCE_BENEFIT=NOT_ESTABLISHED</strong><span>生产 Active 关闭 · 人工审批 0 · 完整语义 NOT_ASSESSED</span></div>
+    <div className="metric-grid"><article><small>真实模型请求</small><strong>{data.requests}</strong></article><article><small>计量 Token</small><strong>{data.tokens.toLocaleString()}</strong></article><article><small>费用上界</small><strong>${data.cost_upper_usd.toFixed(7)}</strong></article><article><small>独立任务</small><strong>2</strong></article></div>
+    <h2>失败 → 原则 → 资格验证</h2><p className="inspection-note">3 条原则，36 个精确作用域副本；60 项独立 AI 结构检查，不是人工审批或收益证明。历史契约曾匹配，当前 Web 源码未重新验证，不授予注入许可。</p>
+    <div className="lesson-grid">{data.lessons.map((r) => <article className="lesson-card" key={r.family}><div className="lesson-family">{r.family}</div><h3>{r.failure_type}</h3><p>{r.lesson}</p><details><summary>适用与安全排除条件</summary><pre>{JSON.stringify({applicable:r.applicability_conditions,excluded:r.non_applicability_conditions},null,2)}</pre></details><div className="lesson-status"><span>{r.review_status}</span><span>{r.validation_status}</span></div><small>来源 {r.source_trace_id} / {r.source_case_id} · v{r.version}</small><small>到期 {r.expires_at} · 当前兼容：NOT_REVALIDATED</small><code title={r.source_version}>source {r.source_version.slice(0,12)}</code></article>)}</div>
+    <h2>E0 / E1 / E2 配对对照</h2><p>Shadow 实际记录：E1 匹配后仅观察，4 题 Planner 提示 SHA 均保持不变；E2 每题隔离注入 2 条原则。工具顺序和参数三臂一致，没有观察到决策改进。</p><div className="comparison-scroll"><table className="comparison-table"><thead><tr><th>新任务 / 划分</th><th>E0 无经验</th><th>E1 Shadow</th><th>E2 隔离注入</th></tr></thead><tbody>{data.pairs.map((p) => <tr key={p.case}><td>{p.case}<small>{p.split}</small></td>{["E0","E1","E2"].map((arm) => {const score=p.bounded[arm as keyof typeof p.bounded];return <td key={arm}><span className="status-ok">工具/业务执行通过</span><small>有界回答：{score === null ? "NOT_ASSESSED" : score ? "PASS" : "FAIL"}</small></td>;})}</tr>)}</tbody></table></div>
+    <p className="inspection-note">三臂有界代理均为 2/3 可评分样本，D02 均未评分。观察到 1 例商品名称字段负向变化，generate 提示相同且 fallback 丢字段，不能解释为经验因果负迁移。旧冻结分数和 Gold 原样保留；Web-0 后续最小修复不改写历史实验。</p>
+    <details><summary>来源与复现信息</summary><p>提交 {data.source_checkpoint}</p><code>{data.source_path}</code><p>原记录 SHA256 {data.source_records_sha256}</p><p>source manifest、对照原始捕获和零付费演示命令见仓库 S1-EX 最终报告和 DEMO.md。此面板没有生产经验存储访问、审核、晋升或 Active 开关。</p></details>
+  </section>;
+}

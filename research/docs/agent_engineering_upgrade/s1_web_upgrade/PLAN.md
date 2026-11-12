@@ -28,8 +28,8 @@ Spec: User S1-Web requirements and AGENTS.md; continuous native execution alread
 - [x] RED bounded authenticated trace ownership/sanitization tests; capture real execution summary without raw trace leakage.
 - [x] Collapsible actual graph/planner/tool/RAG/memory/timing view; no fabricated steps; tests/state/commit.
 ## Web-4 Experience
-- [ ] Read-only committed synthetic snapshot with provenance/version/conditions/review/Shadow and actual E0/E1/E2 comparisons.
-- [ ] UI tests/no Active and honest labels; state/commit.
+- [x] Read-only committed synthetic snapshot with provenance/version/conditions/review/Shadow and actual E0/E1/E2 comparisons.
+- [x] UI tests/no Active and honest labels; state/commit.
 ## Web-5 verification and delivery
 - [ ] Guarded fresh real services + controlled worker, real browser3scenario E2E incl multiuser negatives; preserve RED before fixes.
 - [ ] Full frontend tests/ts/build, backend pytest/Ruff/Mypy/pip/legacy214, preservation/secrets review.

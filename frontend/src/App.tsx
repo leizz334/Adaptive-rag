@@ -8,6 +8,7 @@ import { MessageView } from "./components/MessageView";
 import { SearchDialog } from "./components/SearchDialog";
 import { Sidebar } from "./components/Sidebar";
 import { KnowledgePanel } from "./components/KnowledgePanel";
+import { ExperiencePanel } from "./components/ExperiencePanel";
 import { CredentialGate } from "./components/CredentialGate";
 import type { ActionProposal } from "./types";
 
@@ -20,7 +21,7 @@ const SUGGESTIONS = [
 
 function Workbench({ identity, onDisconnect }: { identity: Identity; onDisconnect: () => void }) {
   const chat = useChat();
-  const [tab, setTab] = useState<"chat" | "knowledge">("chat");
+  const [tab, setTab] = useState<"chat" | "knowledge" | "experience">("chat");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -72,8 +73,8 @@ function Workbench({ identity, onDisconnect }: { identity: Identity; onDisconnec
         <div className="topbar-right"><span className="identity-label" title="服务端认证主体">{identity.subject}</span><button className="text-button" onClick={onDisconnect}>切换身份</button><span className={`connection-pill ${healthy === false ? "offline" : ""}`}><span />{healthy === null ? "连接中" : healthy ? "已连接" : "服务未连接"}</span><button className="icon-button help-button" title="说明" aria-label="说明" onClick={() => window.open("https://github.com/leizz334/Adaptive-rag", "_blank", "noopener,noreferrer")}><CircleHelp size={19} /></button></div>
       </header>
       {healthy === false && <div className="service-banner" role="status"><strong>暂时无法连接服务</strong><span>请确认后端已启动后重试。</span></div>}
-      <nav className="workspace-tabs" aria-label="工作台视图">{([["chat","对话工作台"],["knowledge","私有知识库"]] as const).map(([key,label]) => <button key={key} role="tab" aria-selected={tab === key} onClick={() => setTab(key)}>{label}</button>)}</nav>
-      {tab === "knowledge" ? <KnowledgePanel onClose={() => setTab("chat")} /> : <>
+      <nav className="workspace-tabs" aria-label="工作台视图">{([["chat","对话工作台"],["knowledge","私有知识库"],["experience","Experience Shadow"]] as const).map(([key,label]) => <button key={key} role="tab" aria-selected={tab === key} onClick={() => setTab(key)}>{label}</button>)}</nav>
+      {tab === "knowledge" ? <KnowledgePanel onClose={() => setTab("chat")} /> : tab === "experience" ? <ExperiencePanel /> : <>
       <div className="workspace-toolbar"><span>多轮会话 · 真实工具 · 可审计执行</span><label>响应模式 <select aria-label="响应模式" disabled={chat.busy} value={chat.transport} onChange={(e) => chat.setTransport(e.target.value as "sse" | "http")}><option value="sse">SSE</option><option value="http">HTTP</option></select></label></div>
       {chat.active ? <div className="chat-content"><MessageView conversation={chat.active} busy={chat.busy} onConfirm={confirm} onCancel={(messageId) => chat.dismissAction(chat.active!.id, messageId)} /></div>
         : <div className="welcome"><div className="welcome-inner"><Logo /><h1>从问题到可验证的行动</h1><p>在真实工具、知识来源和人工确认之间，查看 Agent 如何完成任务。</p><div className="suggestions">{SUGGESTIONS.map((item) => <button key={item.title} onClick={() => suggest(item.prompt)}><span className="suggestion-icon">{item.icon}</span><span><strong>{item.title}</strong><small>{item.prompt}</small></span><ArrowDown size={15} /></button>)}</div></div></div>}

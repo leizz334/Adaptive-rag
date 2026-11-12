@@ -1,0 +1,180 @@
+{
+  "offline": true,
+  "synthetic": true,
+  "production_active": false,
+  "benefit": "NOT_ESTABLISHED",
+  "full_semantics": "NOT_ASSESSED",
+  "human_approvals": 0,
+  "as_of": "2026-11-12",
+  "source_checkpoint": "3fe745c2a77b28075ce77a1f0961381748c00928",
+  "source_path": "research/docs/agent_engineering_upgrade/s1_experience_optimization",
+  "source_records_sha256": "24d7585230bf211f243a35d4d1425d90c1ade8b131363a22dec15396955cf363",
+  "lessons": [
+    {
+      "family": "tool_coverage",
+      "lesson": "规划时逐一核对用户明确提出的独立读取目标，每个目标使用已暴露且参数合规的只读工具取得证据；不能以已查订单头替代退款、明细或物流事件。仅读取当前明确实体，保留Owner、权限、HITL与幂等检查，不新增写操作。",
+      "failure_type": "PLANNER_MISSING_TOOL",
+      "source_trace_id": "P2S-PSV22-R0",
+      "source_case_id": "PSV22",
+      "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+      "review_status": "MODEL_REVIEWED",
+      "validation_status": "VERIFIED_OFFLINE",
+      "applicability_conditions": [
+        "live_fact",
+        "multi_goal"
+      ],
+      "non_applicability_conditions": [
+        "untrusted_input",
+        "clarification_required",
+        "write_unconfirmed"
+      ],
+      "expires_at": "2026-11-19T00:00:00Z",
+      "version": 4
+    },
+    {
+      "family": "plan_contract",
+      "lesson": "规划前核对可用工具的实际输入Schema与实体来源；参数只绑定当前明确请求或已验证会话实体，不能猜测或交换订单与商品标识。对缺失实体先澄清，不能通过增加权限或绕过Owner、HITL和幂等来补救。",
+      "failure_type": "PLANNER_ARGUMENT_ERROR",
+      "source_trace_id": "synthetic_contract_failure",
+      "source_case_id": "synthetic_plan_case",
+      "source_version": "b88b2cbe584d061418206c9301078ebbd7e8f08e",
+      "review_status": "MODEL_REVIEWED",
+      "validation_status": "VERIFIED_OFFLINE",
+      "applicability_conditions": [
+        "live_fact",
+        "plan_contract"
+      ],
+      "non_applicability_conditions": [
+        "untrusted_input",
+        "clarification_required",
+        "write_unconfirmed"
+      ],
+      "expires_at": "2026-11-19T00:00:00Z",
+      "version": 4
+    },
+    {
+      "family": "answer_coverage",
+      "lesson": "规划时为用户每个明确子目标准备可核验的工具证据，并在计划目标中保留需要报告的结果项，避免最终回答只覆盖其中一项。事实以当前成功工具证据为准，缺失项明确说明；不把计划、推测或历史记录当作已完成操作，保留Owner、HITL和幂等边界。",
+      "failure_type": "GOAL_OMISSION",
+      "source_trace_id": "historical_public_answer_omission",
+      "source_case_id": "historical_answer_case",
+      "source_version": "70d65e36687ae31133b08aec065f0a3ca4a6b848",
+      "review_status": "MODEL_REVIEWED",
+      "validation_status": "VERIFIED_OFFLINE",
+      "applicability_conditions": [
+        "live_fact",
+        "multi_goal"
+      ],
+      "non_applicability_conditions": [
+        "untrusted_input",
+        "clarification_required",
+        "write_unconfirmed"
+      ],
+      "expires_at": "2026-11-19T00:00:00Z",
+      "version": 4
+    }
+  ],
+  "pairs": [
+    {
+      "case": "S1EXD01",
+      "split": "development",
+      "complete": true,
+      "equal_query_business_cleanhistory": true,
+      "execution": {
+        "E0": true,
+        "E1": true,
+        "E2": true
+      },
+      "bounded": {
+        "E0": true,
+        "E1": true,
+        "E2": true
+      },
+      "bounded_effect_eligible": true
+    },
+    {
+      "case": "S1EXD02",
+      "split": "development",
+      "complete": true,
+      "equal_query_business_cleanhistory": true,
+      "execution": {
+        "E0": true,
+        "E1": true,
+        "E2": true
+      },
+      "bounded": {
+        "E0": null,
+        "E1": null,
+        "E2": null
+      },
+      "bounded_effect_eligible": false
+    },
+    {
+      "case": "S1EXI01",
+      "split": "independent",
+      "complete": true,
+      "equal_query_business_cleanhistory": true,
+      "execution": {
+        "E0": true,
+        "E1": true,
+        "E2": true
+      },
+      "bounded": {
+        "E0": false,
+        "E1": false,
+        "E2": false
+      },
+      "bounded_effect_eligible": true
+    },
+    {
+      "case": "S1EXI02",
+      "split": "independent",
+      "complete": true,
+      "equal_query_business_cleanhistory": true,
+      "execution": {
+        "E0": true,
+        "E1": true,
+        "E2": true
+      },
+      "bounded": {
+        "E0": true,
+        "E1": true,
+        "E2": true
+      },
+      "bounded_effect_eligible": true
+    }
+  ],
+  "resources": {
+    "E0": {
+      "n": 4,
+      "requests": 20,
+      "total_tokens": 18151,
+      "mean_tokens": 4537.75,
+      "mean_latency_ms": 8493.526043249745,
+      "cost_upper_usd": 0.0071895
+    },
+    "E1": {
+      "n": 4,
+      "requests": 20,
+      "total_tokens": 17986,
+      "mean_tokens": 4496.5,
+      "mean_latency_ms": 8307.463470000017,
+      "cost_upper_usd": 0.0069968999999999995
+    },
+    "E2": {
+      "n": 4,
+      "requests": 20,
+      "total_tokens": 18708,
+      "mean_tokens": 4677,
+      "mean_latency_ms": 8394.279432499956,
+      "cost_upper_usd": 0.007299
+    }
+  },
+  "observed_negative_fields": 1,
+  "causal_negative_transfer": "NOT_ESTABLISHED",
+  "requests": 60,
+  "tokens": 54845,
+  "cost_upper_usd": 0.0214854,
+  "current_compatibility": "NOT_REVALIDATED_FOR_WEB_SOURCE",
+  "shadow_evidence": "E1 selected matching qualified records but Planner prompt hashes unchanged in all4cases; E2 injected2lessons in each task."
+}
