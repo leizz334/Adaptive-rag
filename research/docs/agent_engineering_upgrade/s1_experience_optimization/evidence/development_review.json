@@ -1,0 +1,149 @@
+{
+  "reviewer_kind": "execution_agent_structural_and_readonly_answer_review",
+  "human_approval": false,
+  "allow_independent": true,
+  "freeze_sha256": "ab43a6118c3b632a63001ab47b17f8fa47818c3289e2ec3a6ca4133d38433803",
+  "complete_triplets": 2,
+  "model_requests": 30,
+  "totals": {
+    "http_attempts": 30,
+    "accounted_tokens": 28265,
+    "estimated_usd_upper": 0.0112218,
+    "unknown_usage": 0
+  },
+  "E1_prompt_intervention": false,
+  "E2_actual_injection_verified": true,
+  "query_business_initial_session_equality": true,
+  "bounded_answer_note": "D02allarmsNOT_ASSESSED for entityassociation,executiontoolscorrect;no scorer/Goldtuning",
+  "full_semantics": "NOT_ASSESSED",
+  "no_changes_to_source_gold_scorer": true,
+  "results": [
+    {
+      "case": "S1EXD01",
+      "arm": "E0",
+      "tools": [
+        [
+          "get_order",
+          {
+            "order_id": "ORD73101"
+          }
+        ],
+        [
+          "get_refund_status",
+          {
+            "order_id": "ORD73102"
+          }
+        ]
+      ],
+      "execution": true,
+      "bounded": true,
+      "answer": "已按您的要求分开核实，未申请售后。\n\n1）订单 ORD73101：当前状态为“已支付（paid）”；应付金额为 15420 分，即 154.20 元（商品为帆布包 2 件，单价 7710 分）。该订单尚未发货，暂无运单号。\n\n2）订单 ORD73102：查到 1 笔退款单（退款单号 rf_synex73102），当前进度为“已申请（requested）”，退款金额为 3100 分，即 31.00 元。该退款单尚未显示完成，具体到账时间无法确认。\n\n说明：以上信息来自实时订单与退款查询结果；未检索到额外政策类证据，因此不对退款时效作推断。"
+    },
+    {
+      "case": "S1EXD01",
+      "arm": "E1",
+      "tools": [
+        [
+          "get_order",
+          {
+            "order_id": "ORD73101"
+          }
+        ],
+        [
+          "get_refund_status",
+          {
+            "order_id": "ORD73102"
+          }
+        ]
+      ],
+      "execution": true,
+      "bounded": true,
+      "answer": "已分别核实如下，未申请售后：\n\n1）订单 ORD73101\n- 当前订单状态：paid（已支付）\n- 应付金额：15420 分（即 154.20 元）；明细为帆布包 2 件，单价 7710 分\n- 补充：该订单尚未发货，暂无运单号\n\n2）订单 ORD73102 的退款单\n- 退款进度：requested（已发起退款申请，尚未完成）\n- 退款金额：3100 分（即 31.00 元）\n\n说明：以上信息来自实时订单与退款查询结果；ORD73102 仅查到上述退款单，未查询该订单本身的订单状态与应付金额，如需核实请告知。"
+    },
+    {
+      "case": "S1EXD01",
+      "arm": "E2",
+      "tools": [
+        [
+          "get_order",
+          {
+            "order_id": "ORD73101"
+          }
+        ],
+        [
+          "get_refund_status",
+          {
+            "order_id": "ORD73102"
+          }
+        ]
+      ],
+      "execution": true,
+      "bounded": true,
+      "answer": "已按两项分别核实如下，未申请售后：\n\n1）订单 ORD73101\n- 当前订单状态：已支付（paid）。\n- 应付金额：15420 分（即 154.20 元），商品为帆布包 2 件，单价 7710 分。\n- 补充：该订单目前无发货时间、无运单号，物流信息暂无法确认。\n\n2）订单 ORD73102 的退款单\n- 退款进度：状态为“已申请”（requested），尚未显示完成或到账。\n- 退款金额：3100 分（即 31.00 元）。\n- 说明：现有工具结果仅返回上述退款记录，未提供退款单号之外的到账时间等信息，具体到账时效无法确认。\n\n如需进一步核实 ORD73102 的退款到账时间，建议补充退款单号或转人工查询。"
+    },
+    {
+      "case": "S1EXD02",
+      "arm": "E0",
+      "tools": [
+        [
+          "track_shipment",
+          {
+            "order_id": "ORD73201"
+          }
+        ],
+        [
+          "get_order_items",
+          {
+            "order_id": "ORD73202"
+          }
+        ]
+      ],
+      "execution": true,
+      "bounded": null,
+      "answer": "以下是本次工具结果可确认的信息：\n订单 ORD73201 的物流单号：SYNEXTR73201。\n订单 ORD73201 的物流状态：运输中。\n订单商品 SYNEX-CUP-D 数量：2件。\n订单商品 SYNEX-SPOON-E 数量：1件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。"
+    },
+    {
+      "case": "S1EXD02",
+      "arm": "E1",
+      "tools": [
+        [
+          "track_shipment",
+          {
+            "order_id": "ORD73201"
+          }
+        ],
+        [
+          "get_order_items",
+          {
+            "order_id": "ORD73202"
+          }
+        ]
+      ],
+      "execution": true,
+      "bounded": null,
+      "answer": "以下是本次工具结果可确认的信息：\n订单 ORD73201 的物流单号：SYNEXTR73201。\n订单 ORD73201 的物流状态：运输中。\n订单商品 SYNEX-CUP-D 数量：2件。\n订单商品 SYNEX-SPOON-E 数量：1件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。"
+    },
+    {
+      "case": "S1EXD02",
+      "arm": "E2",
+      "tools": [
+        [
+          "track_shipment",
+          {
+            "order_id": "ORD73201"
+          }
+        ],
+        [
+          "get_order_items",
+          {
+            "order_id": "ORD73202"
+          }
+        ]
+      ],
+      "execution": true,
+      "bounded": null,
+      "answer": "以下是本次工具结果可确认的信息：\n订单 ORD73201 的物流单号：SYNEXTR73201。\n订单 ORD73201 的物流状态：运输中。\n订单商品 SYNEX-CUP-D 数量：2件。\n订单商品 SYNEX-SPOON-E 数量：1件。\n其余所需结论暂时无法可靠确认，请补充信息或转人工；上述事实不代表其他操作已完成。"
+    }
+  ],
+  "verified_answer_field_omission": "D02allarms finalfallbackcontainsSKUquantitybutomitsrequestedproductnamesandcustomized;notcompletenessPASS. Frozenassociationproxyabstains;do not upgrade or tune scorer."
+}
