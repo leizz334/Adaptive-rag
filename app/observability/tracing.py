@@ -132,6 +132,10 @@ class TraceRecorder:
             _parent.reset(parent)
             _active.reset(token)
             try:
+                if "workbench_store" in run:
+                    from app.observability.workbench import finalize_snapshot
+
+                    finalize_snapshot(run)
                 self.sink(run["spans"])
             except Exception:
                 self.export_errors += 1

@@ -63,6 +63,9 @@ class ChatService:
         tracer: TraceRecorder | None = None,
         memory_store: PreferenceMemory | None = None,
     ) -> None:
+        from app.observability.workbench import WorkbenchStore
+
+        self.workbench_store = WorkbenchStore()
         self._settings = settings
         self._memory_store = memory_store
         self._tracer = tracer or TraceRecorder.from_settings(settings)
@@ -90,6 +93,7 @@ class ChatService:
             db.info["knowledge_subject"] = request.user_id
             state = await self._initial_state(db, request, session_id, trace_id)
             result = await self._invoke(state)
+            self._capture_workbench(result)
             response = self._to_response(result, session_id=session_id, trace_id=trace_id)
             await self._persist(db, request, response, summary=result.get("summary") or "")
             await self._commit(db)
@@ -162,6 +166,7 @@ class ChatService:
             if holder["error"] is not None:
                 raise holder["error"]
             merged: AgentState = holder["merged"]
+            self._capture_workbench(merged)
             response = self._to_response(merged, session_id=session_id, trace_id=trace_id)
             await self._persist(db, request, response, summary=merged.get("summary") or "")
             await self._commit(db)
@@ -217,7 +222,7 @@ class ChatService:
             and identity.user_id == request.user_id
         ):
             preferences = {r.key: r.value for r in self._memory_store.recall(identity)}
-        return {
+        state: AgentState = {
             "trace_id": trace_id,
             "session_id": session_id,
             "user_id": request.user_id,
@@ -239,6 +244,14 @@ class ChatService:
             "confirmed_action": confirmed_action,
             "idempotency_key": request.idempotency_key,
         }
+
+        self._capture_workbench(state, initial=True)
+        return state
+
+    def _capture_workbench(self, state, *, initial=False):
+        from app.observability.workbench import capture_state
+
+        capture_state(state, self._settings.memory_mode, self.workbench_store, initial=initial)
 
     async def _persist_pending(
         self, db: AsyncSession, request: ChatRequest, response: ChatResponse

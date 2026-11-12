@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, Copy, ShieldCheck } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { ActionCard } from "./ActionCard";
 import type { ActionProposal, Citation, Conversation, Message } from "../types";
 import { Logo } from "./Logo";
 
@@ -13,15 +14,6 @@ function CitationList({ citations }: { citations: Citation[] }) {
     {unique.map((item, index) => <span className="citation" key={item.chunk_id} title={`${item.document_id} · ${item.chunk_id}`}>
       <span className="citation-index">{index + 1}</span><span>{item.title}{item.section ? ` · ${item.section}` : ""}</span>
     </span>)}
-  </div>;
-}
-
-function ActionCard({ action, onConfirm, onCancel, disabled }: { action: ActionProposal; onConfirm: () => void; onCancel: () => void; disabled: boolean }) {
-  return <div className="action-card">
-    <div className="action-icon"><ShieldCheck size={19} /></div>
-    <div className="action-content"><strong>需要你的确认</strong><p>{action.summary}</p>
-      <div className="action-buttons"><button className="confirm-button" disabled={disabled} onClick={onConfirm}>确认执行</button><button className="cancel-button" disabled={disabled} onClick={onCancel}>取消</button></div>
-    </div>
   </div>;
 }
 
@@ -54,9 +46,10 @@ export function MessageView({ conversation, busy, onConfirm, onCancel }: Message
             {message.content ? <div className={`markdown ${message.state === "error" ? "message-error" : ""}`}><ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown></div> : <div className="thinking"><span /><span /><span /></div>}
             {message.state === "complete" && <>
               <CitationList citations={message.citations ?? []} />
-              {message.pendingAction && <ActionCard action={message.pendingAction} disabled={busy} onConfirm={() => onConfirm(message.pendingAction!, message.id)} onCancel={() => onCancel(message.id)} />}
+              {message.pendingAction && <ActionCard sessionId={conversation.sessionId} action={message.pendingAction} disabled={busy} onConfirm={() => onConfirm(message.pendingAction!, message.id)} onCancel={() => onCancel(message.id)} />}
               <div className="message-tools"><button aria-label="复制回答" title="复制回答" onClick={() => void copy(message)}>{copiedId === message.id ? <Check size={16} /> : <Copy size={16} />}</button></div>
             </>}
+            {message.state === "streaming" && message.nodes && <p className="inspection-note">实际节点：{message.nodes.join(" → ")}</p>}
             {message.state === "stopped" && <span className="message-note">生成已停止</span>}
           </div>
         </div>)}

@@ -22,8 +22,8 @@ Spec: User S1-Web requirements and AGENTS.md; continuous native execution alread
 - [x] RED API bearer/error/abort/protocol tests; memory-only identity/session management and robust SSE/HTTP client.
 - [x] Credential status, transport mode, timeout/cancel/error UI; markdown preserved; tests/build/state/commit.
 ## Web-2 private knowledge and HITL
-- [ ] RED authenticated own-list/cancel ownership tests; minimal endpoints; KB CRUD/upload/search + citation excerpts + HITL states.
-- [ ] Cross-user/auth/replay tests; build/target tests/state/commit.
+- [x] RED authenticated own-list/cancel ownership tests; minimal endpoints; KB CRUD/upload/search + citation excerpts + HITL states.
+- [x] Cross-user/auth/replay tests; build/target tests/state/commit.
 ## Web-3 execution
 - [ ] RED bounded authenticated trace ownership/sanitization tests; capture real execution summary without raw trace leakage.
 - [ ] Collapsible actual graph/planner/tool/RAG/memory/timing view; no fabricated steps; tests/state/commit.

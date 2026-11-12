@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="9" time="1.793" timestamp="2026-11-12T15:21:19.832317+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_web_workbench" name="test_trace_store_bounds_ttl_owner_and_defensive_copy" time="0.023" /><testcase classname="tests.unit.test_web_workbench" name="test_state_projection_has_no_raw_prompt_arguments_or_credentials" time="0.001" /><testcase classname="tests.unit.test_web_workbench" name="test_cancel_rejects_foreign_completed_and_repeat" time="0.467" /><testcase classname="tests.unit.test_web_workbench" name="test_access_rejects_legacy_and_rate_failure" time="0.001" /><testcase classname="tests.unit.test_web_workbench" name="test_principal_self_only_verified_identity" time="0.001" /><testcase classname="tests.unit.test_web_workbench" name="test_actual_offline_chat_and_sse_capture_owner_nodes_and_disabled_miss" time="0.776" /><testcase classname="tests.unit.test_web_workbench" name="test_document_listing_own_metadata_only" time="0.027" /><testcase classname="tests.unit.test_web_workbench" name="test_action_status_expiry_and_cancel_expired" time="0.024" /><testcase classname="tests.unit.test_web_workbench" name="test_planner_and_tool_summaries_allowlist_nested_untrusted_values" time="0.000"><failure message="KeyError: 'arguments'">def test_planner_and_tool_summaries_allowlist_nested_untrusted_values():
+        from app.observability.workbench import project_state
+        step = SimpleNamespace(step_id=1,tool_name='get_order',needs_retrieval=False,
+            arguments={'order_id':'ORD10001','sku':'SKU-01','user_id':'PRIVATE_USER','nested':{'secret':'PRIVATE_NESTED'}})
+        tool = SimpleNamespace(name='get_order',success=True,output={
+            'status':'shipped','total_cents':123,'items':[{'secret':'PRIVATE_ITEM'}],
+            'refunds':[{'secret':'PRIVATE_REFUND'}],'tracking_events':[{'secret':'PRIVATE_EVENT'}],
+            'internal':{'password':'PRIVATE_PASSWORD'},'user_id':'PRIVATE_USER'})
+        value = project_state({'plan':SimpleNamespace(steps=[step]),'tool_results':[tool]},'M1')
+&gt;       assert value['planner_steps'][0]['arguments'] == {'order_id':'ORD10001','sku':'SKU-01'}
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'arguments'
+
+tests/unit/test_web_workbench.py:179: KeyError</failure></testcase></testsuite></testsuites>

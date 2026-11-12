@@ -102,3 +102,33 @@ async def search(payload: SearchInput, access: Access):
                 for c in ranked
             ],
         }
+
+
+@router.get("/documents")
+async def list_documents(access: Access):
+    """List owned SQL metadata without embedding, searching or exposing content."""
+    from sqlalchemy import select
+
+    from app.repositories.models import PrivateKnowledgeDocumentRow
+
+    principal, container = access
+    async with request_session(container.session_factory) as db:
+        rows = (
+            await db.scalars(
+                select(PrivateKnowledgeDocumentRow)
+                .where(PrivateKnowledgeDocumentRow.subject == principal.subject)
+                .order_by(PrivateKnowledgeDocumentRow.document_id)
+                .limit(100)
+            )
+        ).all()
+        return {
+            "documents": [
+                dict(
+                    document_id=r.document_id,
+                    title=r.title,
+                    revision=r.revision,
+                    character_count=len(r.content),
+                )
+                for r in rows
+            ]
+        }

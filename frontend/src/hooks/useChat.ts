@@ -41,11 +41,11 @@ function reducer(state: State, action: Action): State {
     case "start": {
       const existing = state.conversations.find((item) => item.id === action.conversation.id);
       const next = existing
-        ? { ...existing, updatedAt: Date.now(), messages: [...existing.messages, action.user, action.assistant] }
+        ? { ...existing, updatedAt: Date.now(), messages: [...existing.messages, action.user, action.assistant].slice(-100) }
         : { ...action.conversation, messages: [action.user, action.assistant] };
       return {
         activeId: next.id,
-        conversations: [next, ...state.conversations.filter((item) => item.id !== next.id)],
+        conversations: [next, ...state.conversations.filter((item) => item.id !== next.id)].slice(0, 50),
       };
     }
     case "node":
@@ -150,7 +150,7 @@ export function useChat() {
         },
         controller.signal,
       );
-      if (!answered) throw new Error("连接已结束，但未收到最终回答。请重试。");
+      if (!answered) throw new Error("连接已结束，但未收到最终回答。结果可能已提交，请先核对状态。");
       return true;
     } catch (error) {
       const stopped = controller.signal.aborted;
