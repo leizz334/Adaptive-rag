@@ -31,9 +31,9 @@ Spec: User S1-Web requirements and AGENTS.md; continuous native execution alread
 - [x] Read-only committed synthetic snapshot with provenance/version/conditions/review/Shadow and actual E0/E1/E2 comparisons.
 - [x] UI tests/no Active and honest labels; state/commit.
 ## Web-5 verification and delivery
-- [ ] Guarded fresh real services + controlled worker, real browser3scenario E2E incl multiuser negatives; preserve RED before fixes.
-- [ ] Full frontend tests/ts/build, backend pytest/Ruff/Mypy/pip/legacy214, preservation/secrets review.
-- [ ] Final docs/README/demo/recovery; checkpoint/normalpush/exactHEAD; STOP no S2/S3/P5/Active.
+- [x] Guarded fresh real services + controlled worker, real browser3scenario E2E incl multiuser negatives; preserve RED before fixes.
+- [x] Full frontend tests/ts/build, backend pytest/Ruff/Mypy/pip/legacy214, preservation/secrets review.
+- [x] Final docs/README/demo/recovery; checkpoint/normalpush/exactHEAD; STOP no S2/S3/P5/Active.
 
 ## Review Focus
 Credentials never persisted/logged, old local history not exposed to another subject; expired credentials clear views. SSE error/EOF/timeout cannot appear as success. Private CRUD and trace id/session guessed by other users must return opaque refusal. HITL cancel/confirm races preserve server atomicity. Snapshot history and absent telemetry clearly labeled, no fake live steps.
