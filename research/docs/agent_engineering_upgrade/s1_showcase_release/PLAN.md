@@ -22,8 +22,8 @@ Spec: User S1-Release request; AGENTS.md. Continuous execution authorized; prior
 - [x] Parameterize existing real browser E2E config for per-run private config; preserve old defaults/old artifacts.
 - [x] Run3required scenarios + Experience, exact business write audit and crossuser failures; document steps/expectations/evidence, checkpoint.
 ## S1-R3 docs
-- [ ] Rewrite rootREADME for interview audience; architecture/workflow/modulemap, screenshots, safe tested commands, metrics and production boundaries.
-- [ ] 5–10minute DEMO_SCRIPT + ARCHITECTURE_OVERVIEW + ENGINEERING_HIGHLIGHTS; link/command validation, checkpoint.
+- [x] Rewrite rootREADME for interview audience; architecture/workflow/modulemap, screenshots, safe tested commands, metrics and production boundaries.
+- [x] 5–10minute DEMO_SCRIPT + ARCHITECTURE_OVERVIEW + ENGINEERING_HIGHLIGHTS; link/command validation, checkpoint.
 ## S1-R4 UX
 - [ ] Small Owner-only history/list restore if feasible, RED/GREEN/isolation/error/concurrency; otherwise explicit limitation without blocking release.
 - [ ] Update current docs for actual behavior, type/build/targeted tests and browser refresh evidence, checkpoint.
