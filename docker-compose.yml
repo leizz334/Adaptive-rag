@@ -1,3 +1,8 @@
+# Legacy API-image example, NOT the verified interview startup path.
+# Use `python -m scripts.showcase init --run-id <fresh_id>` for the tested
+# host API + owned PostgreSQL/Redis/Qdrant Compose profile. This file alone
+# does not provision auth/Redis/Qdrant; production startup correctly refuses it.
+# Paid providers are deliberately disabled even when the shell/.env has keys.
 services:
   api:
     build: .
@@ -10,7 +15,13 @@ services:
       QDRANT_URL: ""
       APP_ENV: production
       LOG_LEVEL: INFO
-      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      DEEPSEEK_API_KEY: ""
+      EMBEDDING_API_KEY: ""
+      AUTH_MODE: required
+      AUTH_CREDENTIALS: ${AUTH_CREDENTIALS:-}
+      KNOWLEDGE_MODE: private
+      EXPERIENCE_MEMORY_MODE: "off"
+      MCP_ENABLED: "false"
       LOCAL_EMBEDDING_ENABLED: "false"
       CROSS_ENCODER_ENABLED: "false"
       UNSTRUCTURED_ENABLED: "false"
