@@ -14,6 +14,8 @@ function dateGroup(timestamp: number): string {
 }
 
 interface SidebarProps {
+  listBusy?: boolean;
+  listError?: string;
   conversations: Conversation[];
   activeId: string | null;
   open: boolean;
@@ -44,17 +46,21 @@ export function Sidebar(props: SidebarProps) {
         <button className="sidebar-action" onClick={props.onNew}><Logo small /><span>新对话</span></button>
         <button className="sidebar-action" onClick={props.onSearch}><Search size={19} /><span>搜索对话</span><kbd>⌘ K</kbd></button>
       </div>
-      <nav className="conversation-list" aria-label="本地对话列表">
+      <nav className="conversation-list" aria-label="会话列表">
+        {props.listBusy && <p role="status">正在读取会话…</p>}
+        {props.listError && <p role="alert">{props.listError}</p>}
+        {!props.listBusy && !props.listError && !props.conversations.length && <p>暂无会话</p>}
         {[...groups].map(([group, conversations]) => <div className="conversation-group" key={group}>
           <h2>{group}</h2>
           {conversations.map((item) => <div className={`conversation-row ${props.activeId === item.id ? "selected" : ""}`} key={item.id}>
             <button className="conversation-select" onClick={() => props.onSelect(item.id)} title={item.title}>
               <MessageSquare size={16} className="conversation-icon" /><span>{item.title}</span>
             </button>
-            <button className="conversation-delete" title="删除对话" aria-label={`删除对话 ${item.title}`} onClick={() => props.onRemove(item.id)}><Trash2 size={15} /></button>
+            <button className="conversation-delete" title="仅从当前页面隐藏；服务端历史保留" aria-label={`删除对话 ${item.title}`} onClick={() => props.onRemove(item.id)}><Trash2 size={15} /></button>
           </div>)}
         </div>)}
       </nav>
+      <p>删除仅隐藏当前页面，刷新后可重新读取。</p>
       <div className="sidebar-footer">
         <button className="sidebar-footer-button" onClick={props.onTheme}>
           {props.theme === "light" ? <Moon size={18} /> : <Sun size={18} />}

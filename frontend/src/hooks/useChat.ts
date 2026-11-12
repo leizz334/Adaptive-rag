@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { ChatResponse, Conversation, Message } from "../types";
-import { ApiError, chatHttp, streamChat } from "../lib/api";
+import { ApiError, chatHttp, streamChat, requestJson } from "../lib/api";
 
+import { collapseCompletedSession, mergeSessions, restoreMessages, type SessionSummary } from "../lib/history";
 
 interface State {
   conversations: Conversation[];
@@ -9,6 +10,8 @@ interface State {
 }
 
 type Action =
+  | { type: "list"; sessions: SessionSummary[]; hidden: Set<string> }
+  | { type: "history"; id: string; messages: Message[]; truncated: boolean }
   | { type: "select"; id: string | null }
   | { type: "delete"; id: string }
   | { type: "start"; conversation: Conversation; user: Message; assistant: Message }
@@ -31,6 +34,8 @@ function updateConversation(
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
+    case "list": return {...state, conversations:mergeSessions(state.conversations,action.sessions,action.hidden)};
+    case "history": return updateConversation(state,action.id,item => ({...item,messages:action.messages,historyLoaded:true,historical:true,truncated:action.truncated}));
     case "select":
       return { ...state, activeId: action.id };
     case "delete":
@@ -57,8 +62,8 @@ function reducer(state: State, action: Action): State {
           ? { ...message, content: message.content + action.text }
           : message),
       }));
-    case "complete":
-      return updateConversation(state, action.conversationId, (item) => ({
+    case "complete": {
+      const updated = updateConversation(state, action.conversationId, (item) => ({
         ...item,
         sessionId: action.response.session_id,
         updatedAt: Date.now(),
@@ -77,6 +82,9 @@ function reducer(state: State, action: Action): State {
             }
           : message),
       }));
+      const duplicateIds = new Set(updated.conversations.filter(c => c.id !== action.conversationId && c.sessionId === action.response.session_id).map(c => c.id));
+      return { ...updated, activeId: duplicateIds.has(updated.activeId ?? "") ? action.conversationId : updated.activeId, conversations: collapseCompletedSession(updated.conversations, action.conversationId, action.response.session_id) };
+    }
     case "fail":
       return updateConversation(state, action.conversationId, (item) => ({
         ...item,
@@ -105,6 +113,21 @@ export function useChat() {
   const requestRef = useRef<AbortController | null>(null);
   const busyRef = useRef(false);
   const [busy, setBusy] = useState(false);
+  const historyRef = useRef<AbortController | null>(null);
+  const generation = useRef(0);
+  const hidden = useRef(new Set<string>());
+  const [historyBusy, setHistoryBusy] = useState(false);
+  const [historyError, setHistoryError] = useState("");
+  const [listBusy, setListBusy] = useState(true);
+  const [listError, setListError] = useState("");
+  useEffect(() => {
+    const controller = new AbortController();
+    void requestJson<{sessions:SessionSummary[]}>("/sessions",{signal:controller.signal}).then(data => {
+      if (!controller.signal.aborted) { mergeSessions([],data.sessions,new Set()); dispatch({type:"list",sessions:data.sessions,hidden:hidden.current}); }
+    }).catch(error => {if (!controller.signal.aborted) setListError(error instanceof Error ? error.message : "会话列表读取失败");})
+      .finally(() => {if (!controller.signal.aborted) setListBusy(false);});
+    return () => { controller.abort(); historyRef.current?.abort(); generation.current++; };
+  }, []);
   const [transport, setTransport] = useState<"sse" | "http">("sse");
   useEffect(() => () => requestRef.current?.abort(), []);
 
@@ -112,9 +135,10 @@ export function useChat() {
 
   const send = useCallback(async (raw: string, confirmActionId?: string) => {
     const text = raw.trim();
-    if (!text || text.length > 4000 || busyRef.current) return false;
+    if (!text || text.length > 4000 || busyRef.current || historyRef.current) return false;
     const current = stateRef.current;
     const existing = current.conversations.find((item) => item.id === current.activeId);
+    if (existing?.historyLoaded === false) return false;
     const conversation: Conversation = existing ?? {
       id: crypto.randomUUID(),
       title: text.length > 32 ? `${text.slice(0, 32)}…` : text,
@@ -173,13 +197,29 @@ export function useChat() {
 
   const select = useCallback((id: string | null) => {
     stop();
+    historyRef.current?.abort();
+    historyRef.current = null;
+    const version = ++generation.current;
+    setHistoryBusy(false); setHistoryError("");
     dispatch({ type: "select", id });
+    const item = stateRef.current.conversations.find(c => c.id === id);
+    if (!item?.sessionId || item.historyLoaded !== false) return;
+    const controller = new AbortController();
+    historyRef.current = controller; setHistoryBusy(true);
+    void requestJson<{messages:unknown;truncated:boolean}>(`/sessions/${encodeURIComponent(item.sessionId)}/messages`,{signal:controller.signal})
+      .then(data => { if (version !== generation.current || controller.signal.aborted) return;
+        if (typeof data.truncated !== "boolean") throw new ApiError("PROTOCOL_ERROR");
+        dispatch({type:"history",id:item.id,messages:restoreMessages(data.messages),truncated:data.truncated});
+      }).catch(error => {if (version === generation.current && !controller.signal.aborted) setHistoryError(error instanceof Error ? error.message : "历史读取失败");})
+      .finally(() => {if (version === generation.current) {historyRef.current=null;setHistoryBusy(false);} });
   }, [stop]);
 
   const remove = useCallback((id: string) => {
-    if (stateRef.current.activeId === id) stop();
+    const item = stateRef.current.conversations.find(c => c.id === id);
+    if (item?.sessionId) hidden.current.add(item.sessionId);
+    if (stateRef.current.activeId === id) select(null);
     dispatch({ type: "delete", id });
-  }, [stop]);
+  }, [select]);
 
   const dismissAction = useCallback((conversationId: string, messageId: string) => {
     dispatch({ type: "dismiss", conversationId, messageId });
@@ -190,7 +230,8 @@ export function useChat() {
     transport, setTransport,
     conversations: state.conversations,
     active,
-    busy,
+    busy: busy || historyBusy,
+    historyBusy, historyError, listBusy, listError,
     send,
     stop,
     select,

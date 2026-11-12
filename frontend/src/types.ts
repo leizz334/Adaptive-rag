@@ -71,6 +71,9 @@ export interface Message {
 }
 
 export interface Conversation {
+  historyLoaded?: boolean;
+  historical?: boolean;
+  truncated?: boolean;
   id: string;
   title: string;
   updatedAt: number;

@@ -11,7 +11,7 @@ from app.core.auth import Principal
 from app.core.exceptions import ToolPermissionError
 from app.core.request_scope import request_session
 from app.core.time import utcnow
-from app.repositories.models import IdempotencyRow, PendingConfirmationRow, SessionRow
+from app.repositories.models import IdempotencyRow, MessageRow, PendingConfirmationRow, SessionRow
 from app.services.container import AppContainer
 
 router = APIRouter(tags=["workbench"])
@@ -90,3 +90,62 @@ async def cancel_action(session_id: str, action_id: str, access: Access):
         await db.delete(row)
         await db.commit()
     return dict(action_id=action_id, status="cancelled")
+
+
+@router.get("/sessions")
+async def list_sessions(access: Access):
+    principal, container = access
+    first_user = (
+        select(MessageRow.content)
+        .where(MessageRow.session_id == SessionRow.session_id, MessageRow.role == "user")
+        .order_by(MessageRow.id)
+        .limit(1)
+        .correlate(SessionRow)
+        .scalar_subquery()
+    )
+    async with request_session(container.session_factory) as db:
+        rows = await db.execute(
+            select(SessionRow.session_id, SessionRow.updated_at, first_user.label("title"))
+            .where(SessionRow.user_id == principal.subject)
+            .order_by(SessionRow.updated_at.desc(), SessionRow.session_id)
+            .limit(50)
+        )
+        return {
+            "sessions": [
+                dict(
+                    session_id=row.session_id,
+                    title=(row.title or "空对话")[:80],
+                    updated_at=row.updated_at.replace(tzinfo=UTC).isoformat(),
+                )
+                for row in rows
+            ]
+        }
+
+
+@router.get("/sessions/{session_id}/messages")
+async def session_messages(session_id: str, access: Access):
+    principal, container = access
+    async with request_session(container.session_factory) as db:
+        await owned_session(db, session_id, principal.subject)
+        rows = list(
+            await db.scalars(
+                select(MessageRow)
+                .where(
+                    MessageRow.session_id == session_id, MessageRow.role.in_(["user", "assistant"])
+                )
+                .order_by(MessageRow.id.desc())
+                .limit(101)
+            )
+        )
+        return {
+            "messages": [
+                dict(
+                    id=str(row.id),
+                    role=row.role,
+                    content=row.content,
+                    created_at=row.created_at.replace(tzinfo=UTC).isoformat(),
+                )
+                for row in reversed(rows[:100])
+            ],
+            "truncated": len(rows) > 100,
+        }

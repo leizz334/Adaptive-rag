@@ -111,3 +111,37 @@ test('06 actual offline network failure and transport cancellation do not auto-r
   await session.send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
   await session.detach();
 });
+
+test('07 SQL history survives refresh only after reauthentication and stays Owner isolated',async({page})=>{
+  await login(page);await page.getByRole('button',{name:'新对话',exact:true}).first().click();
+  const question=`查询 ORD95101 的订单状态和金额，本轮会话恢复检查 ${Date.now()}`;
+  const first=await send(page,question);expect(first.answer).toContain('68');
+  const own=await page.request.get(`/api/v1/sessions/${first.session_id}/messages`,{headers:auth('a')});expect(own.status()).toBe(200);
+  const messages=(await own.json()).messages;expect(messages.every((m:{role:string})=>['user','assistant'].includes(m.role))).toBeTruthy();
+  const foreign=await page.request.get(`/api/v1/sessions/${first.session_id}/messages`,{headers:auth('b')});expect(foreign.status()).toBe(404);
+  const missing=await page.request.get('/api/v1/sessions/nonexistent/messages',{headers:auth('a')});expect(missing.status()).toBe(404);
+  expect(await foreign.json()).toEqual(await missing.json());
+  await page.reload();await expect(page.getByLabel('本地开发凭证')).toBeVisible();await page.getByLabel('本地开发凭证').fill(config.tokens.a);await page.getByRole('button',{name:'验证并进入'}).click();
+  const slow=await page.context().newCDPSession(page);await slow.send('Network.enable');
+  await slow.send('Network.emulateNetworkConditions',{offline:false,latency:1500,downloadThroughput:200000,uploadThroughput:200000});
+  const requested=page.waitForRequest(r=>r.url().endsWith(`/sessions/${first.session_id}/messages`));
+  await page.getByRole('button',{name:question,exact:true}).click();await requested;
+  const aborted=page.waitForEvent('requestfailed',{predicate:r=>r.url().endsWith(`/sessions/${first.session_id}/messages`)});
+  await page.getByRole('button',{name:'新对话',exact:true}).first().click();await aborted;
+  await slow.send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
+  await expect(page.locator('.user-message')).toHaveCount(0);
+  await page.getByRole('button',{name:question,exact:true}).click();
+  await expect(page.locator('.user-message')).toContainText(question);await expect(page.locator('.assistant-body')).toContainText('68');
+  await expect(page.getByText(/历史文本：/)).toBeVisible();
+  await expect(page.locator('.action-card')).toHaveCount(0);
+  const continued=await send(page,'这单的商品明细是什么');expect(continued.session_id).toBe(first.session_id);expect(continued.answer).toContain('演示帆布包');
+  await page.reload();await page.getByLabel('本地开发凭证').fill(config.tokens.a);await page.getByRole('button',{name:'验证并进入'}).click();
+  await slow.send('Network.emulateNetworkConditions',{offline:false,latency:1500,downloadThroughput:200000,uploadThroughput:200000});
+  const pendingRead=page.waitForRequest(r=>r.url().endsWith(`/sessions/${first.session_id}/messages`));
+  await page.getByRole('button',{name:question,exact:true}).click();await pendingRead;
+  const identityAbort=page.waitForEvent('requestfailed',{predicate:r=>r.url().endsWith(`/sessions/${first.session_id}/messages`)});
+  await page.getByRole('button',{name:'切换身份'}).click();await identityAbort;
+  await slow.send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});await slow.detach();
+  await page.getByLabel('本地开发凭证').fill(config.tokens.b);await page.getByRole('button',{name:'验证并进入'}).click();
+  await expect(page.getByRole('button',{name:question,exact:true})).toHaveCount(0);await expect(page.locator('.user-message')).toHaveCount(0);
+});

@@ -106,7 +106,7 @@ npm run build --prefix frontend
 .venv/bin/python -m scripts.showcase serve --run-id interview_01
 ```
 
-stop只操作经过身份/标签核验的本run进程与容器，保留数据卷。**不执行down -v或prune。** 旧根`docker-compose.yml`是API镜像示例，不是已验完整演示路径；缺少认证/Redis等时应安全拒绝启动。[详细启动与恢复](research/docs/agent_engineering_upgrade/s1_showcase_release/STARTUP.md)。`.env.example`仅作配置参考，不替代初始化，也不要覆盖现有环境文件。
+开发凭证有效期为24小时；start/serve保留原凭证，不会绕过到期或覆盖文件。到期后用新run演示。stop只操作经过身份/标签核验的本run进程与容器，保留数据卷。**不执行down -v或prune。** 旧根`docker-compose.yml`是API镜像示例，不是已验完整演示路径；缺少认证/Redis等时应安全拒绝启动。[详细启动与恢复](research/docs/agent_engineering_upgrade/s1_showcase_release/STARTUP.md)。`.env.example`仅作配置参考，不替代初始化，也不要覆盖现有环境文件。
 
 ## 三个演示与浏览器验收
 
@@ -166,7 +166,7 @@ npm run build --prefix frontend
 
 ## 已知限制与后续学习
 
-凭证仅页面内存；S1-Web可见会话原仅内存，服务端历史恢复以本阶段R4最终证据为准。无生产登录/发证或组织共享。私有文档至多100篇/主体、10000字符/篇，只支持txt/md完整更新；Trace是128条/15分钟单进程快照，重启/worker切换可能404。Memory M3偏好原型不作为已上线能力，Experience Active关闭。TLS、凭证轮换、备份擦除等完整生产条件未认证。
+凭证仅页面内存，刷新后重新认证；可读取本人最近50个服务端会话、每会话最近100条user/assistant文本。历史不恢复旧引用/Trace/人工确认权限，超出数量明确受限；页面删除只隐藏，不删除SQL历史。无生产登录/发证或组织共享。私有文档至多100篇/主体、10000字符/篇，只支持txt/md完整更新；Trace是128条/15分钟单进程快照，重启/worker切换可能404。Memory M3偏好原型不作为已上线能力，Experience Active关闭。TLS、凭证轮换、备份擦除等完整生产条件未认证。
 
 后续S2建议学习事务/异步取消、独立语义评测、身份与运维边界，详见[工程说明](research/docs/agent_engineering_upgrade/s1_showcase_release/ENGINEERING_HIGHLIGHTS.md)。本交付不自动启动S2/S3/P5。
 

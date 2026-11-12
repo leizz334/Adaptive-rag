@@ -1,0 +1,44 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+________________________ test_owned_bounded_projection _________________________
+
+access = (Principal(subject='alice', roles=frozenset({'user'})), namespace(session_factory=async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7e7e491efad0>, autoflush=True, expire_on_commit=False)))
+
+    async def test_owned_bounded_projection(access):
+>       from app.api.routes.workbench import list_sessions, session_messages
+E       ImportError: cannot import name 'list_sessions' from 'app.api.routes.workbench' (/home/likl/桌面/Adaptive-RAG/Adaptive-rag/app/api/routes/workbench.py)
+
+tests/unit/test_release_history.py:26: ImportError
+_____________________ test_opaque_owner_rejection[foreign] _____________________
+
+access = (Principal(subject='alice', roles=frozenset({'user'})), namespace(session_factory=async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7e7e197af010>, autoflush=True, expire_on_commit=False)))
+session_id = 'foreign'
+
+    @pytest.mark.parametrize('session_id',['foreign','missing'])
+    async def test_opaque_owner_rejection(access,session_id):
+>       from app.api.routes.workbench import session_messages
+E       ImportError: cannot import name 'session_messages' from 'app.api.routes.workbench' (/home/likl/桌面/Adaptive-RAG/Adaptive-rag/app/api/routes/workbench.py)
+
+tests/unit/test_release_history.py:40: ImportError
+_____________________ test_opaque_owner_rejection[missing] _____________________
+
+access = (Principal(subject='alice', roles=frozenset({'user'})), namespace(session_factory=async_sessionmaker(class_='AsyncSession', bind=<sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x7e7e19524750>, autoflush=True, expire_on_commit=False)))
+session_id = 'missing'
+
+    @pytest.mark.parametrize('session_id',['foreign','missing'])
+    async def test_opaque_owner_rejection(access,session_id):
+>       from app.api.routes.workbench import session_messages
+E       ImportError: cannot import name 'session_messages' from 'app.api.routes.workbench' (/home/likl/桌面/Adaptive-RAG/Adaptive-rag/app/api/routes/workbench.py)
+
+tests/unit/test_release_history.py:40: ImportError
+=============================== warnings summary ===============================
+tests/unit/test_release_history.py::test_owned_bounded_projection
+  /home/likl/桌面/Adaptive-RAG/Adaptive-rag/.venv/lib/python3.12/site-packages/langgraph/checkpoint/base/__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.
+    from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/unit/test_release_history.py::test_owned_bounded_projection - Im...
+FAILED tests/unit/test_release_history.py::test_opaque_owner_rejection[foreign]
+FAILED tests/unit/test_release_history.py::test_opaque_owner_rejection[missing]
+3 failed, 1 warning in 0.87s

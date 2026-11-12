@@ -59,4 +59,4 @@ flowchart LR
 
 私有RAG的文档正文与所有检索路径依赖服务端主体。Redis检索缓存绑定主体和版本，Qdrant元数据/过滤与SQL有效版本共同隔离。普通公共语料和private模式明确区分，private不可用不降级共享。
 
-会话持久化使用已有SessionRow/MessageRow，Memory用于选择本轮上下文，不把历史回答当作当前订单事实。历史UI恢复若可用仅返回自己的user/assistant文本，不重建旧citation、Trace或pending权限。完整恢复状态以R4证据和最终报告为准。
+会话持久化使用已有SessionRow/MessageRow，Memory用于选择本轮上下文，不把历史回答当作当前订单事实。历史UI通过Owner保护的SQL只读接口恢复本人最近50会话/每会话100条user/assistant文本，不返回summary/system/tool，不重建旧citation、Trace或pending权限；重新认证后显式选择，原会话可以继续。超出部分截断，删除仅本页隐藏，R4真实浏览器验证刷新、越权、快速切换和身份中止。
