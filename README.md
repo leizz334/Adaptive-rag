@@ -145,7 +145,7 @@ cd ..
 | 历史回归 | 214案例，202 PASS、12既有非PASS；新增严格PASS→FAIL为0 |
 | 真实DeepSeek P4-C/D | 开发/独立集、真实工具/SQL/HTTP/SSE和预算记录已执行；质量结论PARTIAL，不能等同总体语义成功 |
 | S1-EX真实E0/E1/E2 | 4组完整配对，60请求/54,845Token；工具/业务执行代理三臂均4/4，有界回答均2/3可评分；收益NOT_ESTABLISHED |
-| S1-Release当前交付 | 本阶段完整类型/构建/浏览器/后端验证以[最终报告](research/docs/agent_engineering_upgrade/s1_showcase_release/S1_RELEASE_FINAL_REPORT.md)和原始证据为准 |
+| S1-Release当前交付 | **951 pytest PASS +1历史SKIP、22前端测试、7真实浏览器场景**；类型/构建、Ruff/Mypy、214历史回归通过，详见[最终报告](research/docs/agent_engineering_upgrade/s1_showcase_release/S1_RELEASE_FINAL_REPORT.md) |
 
 [真实模型C](research/docs/agent_engineering_upgrade/p4_real_llm_e2e/P4-C_FINAL_REPORT.md) · [消融D](research/docs/agent_engineering_upgrade/p4_ablation_evaluation/P4-D_FINAL_REPORT.md) · [安全F](research/docs/agent_engineering_upgrade/p4_security_remediation/P4-F_FINAL_REPORT.md) · [Experience S1-EX](research/docs/agent_engineering_upgrade/s1_experience_optimization/S1-EX_FINAL_REPORT.md)
 
@@ -162,7 +162,7 @@ npm run build --prefix frontend
 .venv/bin/python -m research.docs.agent_engineering_upgrade.p4_final_acceptance.offline pytest tests -q
 ```
 
-真实依赖全量回归需要单独全新验证项目和既有run-id参数，见最终报告/RECOVERY；不要对演示或用户数据库执行破坏性迁移回环。
+真实依赖全量回归需要单独全新验证项目和既有run-id参数，见[完整验证命令](research/docs/agent_engineering_upgrade/s1_showcase_release/VERIFYING.md)；不要对演示或用户数据库执行破坏性迁移回环。
 
 ## 已知限制与后续学习
 

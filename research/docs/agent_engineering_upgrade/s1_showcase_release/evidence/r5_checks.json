@@ -1,0 +1,106 @@
+{
+  "ruff": {
+    "command": [
+      ".venv/bin/ruff",
+      "check",
+      "app",
+      "tests",
+      "eval",
+      "alembic",
+      "research",
+      "scripts/showcase.py"
+    ],
+    "exit": 0,
+    "stdout": "All checks passed!\n",
+    "stderr": ""
+  },
+  "format": {
+    "command": [
+      ".venv/bin/ruff",
+      "format",
+      "--check",
+      "app",
+      "tests",
+      "eval",
+      "alembic",
+      "research",
+      "scripts/showcase.py"
+    ],
+    "exit": 0,
+    "stdout": "390 files already formatted\n",
+    "stderr": ""
+  },
+  "mypy": {
+    "command": [
+      ".venv/bin/mypy"
+    ],
+    "exit": 0,
+    "stdout": "app/observability/execution.py:12: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]\napp/experience/shadow.py:56: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]\napp/observability/tracing.py:248: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]\neval/memory_ablation.py:54: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]\nSuccess: no issues found in 157 source files\n",
+    "stderr": ""
+  },
+  "pip": {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "exit": 0,
+    "stdout": "No broken requirements found.\n",
+    "stderr": ""
+  },
+  "pytest": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "1",
+    "tests": "952",
+    "time": "198.626",
+    "timestamp": "2026-11-12T16:44:21.584370+08:00",
+    "hostname": "likl-ThinkBook-14-G4-ARA"
+  },
+  "frontend": {
+    "passed": 22,
+    "failed": 0,
+    "typecheck": "PASS",
+    "build": "PASS"
+  },
+  "browser": {
+    "passed": 7,
+    "failed": 0,
+    "engine": "REAL_CHROMIUM",
+    "API_mock_routes": false,
+    "model": "CONTROLLED_OFFLINE",
+    "paid": 0
+  },
+  "legacy": {
+    "cases": 214,
+    "passed": 202,
+    "strict_regressions": []
+  },
+  "business": {
+    "database": "REAL_POSTGRESQL",
+    "runs": [
+      {
+        "order_id": "ORD95102",
+        "status": "cancelled",
+        "cancel_write_audit_count": 1
+      },
+      {
+        "order_id": "ORD95103",
+        "status": "cancelled",
+        "cancel_write_audit_count": 1
+      }
+    ],
+    "revoked_proposal_order": "ORD95104",
+    "revoked_business_state": "paid",
+    "same_action_replay_single_write": true
+  },
+  "commands": {
+    "backend": "P4B_RUN_LIVE=1 P4B_MANIFEST=<repo>/research/docs/agent_engineering_upgrade/p4_dependency_integration/.private/p4b_showcase_release_verify_01/manifest.json P4_E2E_RUN_ID=ubuntu_RELEASE5_http_20261112 P4B_AUTH_RUN_ID=ubuntu_RELEASE5_auth_20261112 P4B_API_RUN_ID=ubuntu_RELEASE5_api_20261112 .venv/bin/python -m research.docs.agent_engineering_upgrade.p4_final_acceptance.offline pytest tests research/docs/agent_engineering_upgrade -q --junitxml=research/docs/agent_engineering_upgrade/s1_showcase_release/evidence/r5_full_VERIFIED.xml",
+    "frontend": "npm test --prefix frontend; npm run typecheck --prefix frontend; npm run build --prefix frontend",
+    "browser": ".venv/bin/python -m scripts.showcase browser --run-id release_20261112_01 --cancel-order ORD95103",
+    "legacy": ".venv/bin/python -m research.docs.agent_engineering_upgrade.p4_final_acceptance.offline research.docs.agent_engineering_upgrade.p4_dependency_integration.regress ubuntu_RELEASE5_legacy_20261112",
+    "warning": "commands are completed evidence, not instructions to replay consumed mutation; fresh-run examples in VERIFYING.md"
+  }
+}
