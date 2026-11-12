@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-const config = JSON.parse(readFileSync(resolve('../research/docs/agent_engineering_upgrade/s1_web_upgrade/.private/demo_api.json'),'utf8'));
+const config = JSON.parse(readFileSync(resolve(process.env.S1WEB_DEMO_CONFIG ?? '../research/docs/agent_engineering_upgrade/s1_web_upgrade/.private/demo_api.json'),'utf8'));
 const auth = (subject: 'a'|'b') => ({ Authorization: `Bearer ${config.tokens[subject]}` });
 async function login(page: Page, subject: 'a'|'b' = 'a') {
   await page.goto('/'); await page.getByLabel('本地开发凭证').fill(config.tokens[subject]);
@@ -34,7 +34,7 @@ test('01 multi-turn Memory + actual tool state + HTTP/SSE + session switching',a
   await page.getByRole('button',{name:'新对话',exact:true}).first().click();
   await page.getByLabel('响应模式').selectOption('http');
   const third=await send(page,'查询 ORD95101 的订单状态');expect(third.session_id).not.toBe(first.session_id);
-  await page.getByRole('button',{name:'请查询 ORD95101 的订单状态和金额',exact:true}).click();
+  await page.getByRole('button',{name:'请查询 ORD95101 的订单状态和金额',exact:true}).first().click();
   await expect(page.locator('.user-message')).toHaveCount(2);
 });
 

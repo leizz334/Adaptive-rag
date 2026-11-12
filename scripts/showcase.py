@@ -243,16 +243,77 @@ def status(run_id):
     return result
 
 
+def browser(run_id, cancel_order):
+    """Real Chromium against an already healthy owned API; never expose auth captures."""
+    if cancel_order not in {"ORD95102", "ORD95103", "ORD95105", "ORD95106", "ORD95107"}:
+        raise ValueError("choose an unused synthetic cancellation order")
+    status(run_id)
+    directory, _, _, _ = bind_demo(run_id)
+    browser_id = "showcase_" + uuid4().hex
+    output = directory / "browser_runs"
+    output.mkdir(exist_ok=True)
+    env = os.environ.copy()
+    env.update(
+        S1WEB_DEMO_CONFIG=str(directory / "demo_api.json"),
+        S1WEB_OUTPUT_ROOT=str(output),
+        S1WEB_BROWSER_RUN=browser_id,
+        S1WEB_CANCEL_ORDER=cancel_order,
+    )
+    log = output / (browser_id + ".private.log")
+    fd = os.open(log, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, "w") as stream:
+        result = subprocess.run(
+            ["npm", "run", "test:e2e"], cwd=ROOT / "frontend", env=env, stdout=stream, stderr=stream
+        )
+    report = json.loads((output / ("browser-" + browser_id + ".json")).read_text())
+    cases = []
+    for suite in report["suites"]:
+        for spec in suite.get("specs", []):
+            for item in spec["tests"]:
+                row = item["results"][0]
+                cases.append(
+                    dict(title=spec["title"], status=row["status"], duration_ms=row["duration"])
+                )
+    summary = dict(
+        run_id=run_id,
+        browser_run_id=browser_id,
+        engine="REAL_PLAYWRIGHT_CHROMIUM",
+        cases=cases,
+        passed=sum(x["status"] == "passed" for x in cases),
+        failed=sum(x["status"] != "passed" for x in cases),
+        retries=0,
+        API_mock_routes=False,
+        real_dependencies=["FastAPI", "PostgreSQL", "Redis", "Qdrant"],
+        model="CONTROLLED_OFFLINE_NOT_REAL_LLM",
+        paid_requests=0,
+        cancellation_order=cancel_order,
+        private_raw_report=str(output / ("browser-" + browser_id + ".json")),
+    )
+    save_new(output / (browser_id + ".summary.json"), summary)
+    if result.returncode or summary["failed"] or len(cases) < 6:
+        raise RuntimeError("real browser validation failed; private raw evidence retained")
+    return summary
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["init", "start", "serve", "status", "stop", "info"])
+    parser.add_argument(
+        "action", choices=["init", "start", "serve", "status", "stop", "info", "browser"]
+    )
     parser.add_argument("--run-id", required=True)
+    parser.add_argument(
+        "--cancel-order",
+        default="ORD95102",
+        help="browser only: unused synthetic cancellation order",
+    )
     args = parser.parse_args()
     os.chdir(ROOT)
     if args.action == "init":
         initialize(args.run_id)
     elif args.action == "serve":
         serve(args.run_id)
+    elif args.action == "browser":
+        print(json.dumps(browser(args.run_id, args.cancel_order), ensure_ascii=False, indent=2))
     else:
         result = (
             status(args.run_id)

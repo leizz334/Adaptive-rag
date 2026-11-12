@@ -17,10 +17,10 @@ Spec: User S1-Release request; AGENTS.md. Continuous execution authorized; prior
 ## S1-R1 startup
 - [x] Audit scripts/Compose/env examples; add scripts.showcase init/serve/status/start/stop/info with per-run ownership and no-paid profile; RED/GREEN launcher safety tests.
 - [x] Real owned Compose dependencies + actual built frontend/FastAPI startup/health/stop/restart. Record task state and scoped commit.
-- [ ] From committed source, isolated git-archive pip/npm install verification, preserve results under release evidence (can accompany R2 checkpoint).
+- [x] From committed source, isolated git-archive pip/npm install verification, preserve results under release evidence (can accompany R2 checkpoint).
 ## S1-R2 demonstrations
-- [ ] Parameterize existing real browser E2E config for per-run private config; preserve old defaults/old artifacts.
-- [ ] Run3required scenarios + Experience, exact business write audit and crossuser failures; document steps/expectations/evidence, checkpoint.
+- [x] Parameterize existing real browser E2E config for per-run private config; preserve old defaults/old artifacts.
+- [x] Run3required scenarios + Experience, exact business write audit and crossuser failures; document steps/expectations/evidence, checkpoint.
 ## S1-R3 docs
 - [ ] Rewrite rootREADME for interview audience; architecture/workflow/modulemap, screenshots, safe tested commands, metrics and production boundaries.
 - [ ] 5–10minute DEMO_SCRIPT + ARCHITECTURE_OVERVIEW + ENGINEERING_HIGHLIGHTS; link/command validation, checkpoint.
