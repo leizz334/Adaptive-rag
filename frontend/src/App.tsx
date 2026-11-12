@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowDown, CircleHelp, Menu, PanelLeftOpen } from "lucide-react";
-import { checkHealth } from "./lib/api";
+import { checkHealth, clearCredential, type Identity } from "./lib/api";
 import { useChat } from "./hooks/useChat";
 import { Composer } from "./components/Composer";
 import { Logo } from "./components/Logo";
 import { MessageView } from "./components/MessageView";
 import { SearchDialog } from "./components/SearchDialog";
 import { Sidebar } from "./components/Sidebar";
+import { CredentialGate } from "./components/CredentialGate";
 import type { ActionProposal } from "./types";
 
 const SUGGESTIONS = [
@@ -16,7 +17,7 @@ const SUGGESTIONS = [
   { icon: "✳", title: "售后处理", prompt: "退货申请需要提供哪些信息？" },
 ];
 
-function App() {
+function Workbench({ identity, onDisconnect }: { identity: Identity; onDisconnect: () => void }) {
   const chat = useChat();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -66,16 +67,23 @@ function App() {
     <main className="main-panel">
       <header className="topbar">
         <button className="icon-button open-sidebar" aria-label="打开侧栏" title="打开侧栏" onClick={() => { setSidebarCollapsed(false); setSidebarOpen(true); }}>{sidebarCollapsed ? <PanelLeftOpen size={20} /> : <Menu size={20} />}</button>
-        <span className="model-title">Adaptive RAG</span>
-        <div className="topbar-right"><span className={`connection-pill ${healthy === false ? "offline" : ""}`}><span />{healthy === null ? "连接中" : healthy ? "已连接" : "服务未连接"}</span><button className="icon-button help-button" title="说明" aria-label="说明" onClick={() => window.open("https://github.com/JEen-wang/Adaptive-rag", "_blank", "noopener,noreferrer")}><CircleHelp size={19} /></button></div>
+        <span className="model-title">Adaptive RAG <small>Agent 工作台</small></span>
+        <div className="topbar-right"><span className="identity-label" title="服务端认证主体">{identity.subject}</span><button className="text-button" onClick={onDisconnect}>切换身份</button><span className={`connection-pill ${healthy === false ? "offline" : ""}`}><span />{healthy === null ? "连接中" : healthy ? "已连接" : "服务未连接"}</span><button className="icon-button help-button" title="说明" aria-label="说明" onClick={() => window.open("https://github.com/leizz334/Adaptive-rag", "_blank", "noopener,noreferrer")}><CircleHelp size={19} /></button></div>
       </header>
       {healthy === false && <div className="service-banner" role="status"><strong>暂时无法连接服务</strong><span>请确认后端已启动后重试。</span></div>}
+      <div className="workspace-toolbar"><span>多轮会话 · 真实工具 · 可审计执行</span><label>响应模式 <select aria-label="响应模式" disabled={chat.busy} value={chat.transport} onChange={(e) => chat.setTransport(e.target.value as "sse" | "http")}><option value="sse">SSE</option><option value="http">HTTP</option></select></label></div>
       {chat.active ? <div className="chat-content"><MessageView conversation={chat.active} busy={chat.busy} onConfirm={confirm} onCancel={(messageId) => chat.dismissAction(chat.active!.id, messageId)} /></div>
-        : <div className="welcome"><div className="welcome-inner"><Logo /><h1>有什么可以帮忙的？</h1><p>让知识、订单与售后服务在一次对话中自然协作。</p><div className="suggestions">{SUGGESTIONS.map((item) => <button key={item.title} onClick={() => suggest(item.prompt)}><span className="suggestion-icon">{item.icon}</span><span><strong>{item.title}</strong><small>{item.prompt}</small></span><ArrowDown size={15} /></button>)}</div></div></div>}
+        : <div className="welcome"><div className="welcome-inner"><Logo /><h1>从问题到可验证的行动</h1><p>在真实工具、知识来源和人工确认之间，查看 Agent 如何完成任务。</p><div className="suggestions">{SUGGESTIONS.map((item) => <button key={item.title} onClick={() => suggest(item.prompt)}><span className="suggestion-icon">{item.icon}</span><span><strong>{item.title}</strong><small>{item.prompt}</small></span><ArrowDown size={15} /></button>)}</div></div></div>}
       <Composer busy={chat.busy} onSend={(message) => void chat.send(message)} onStop={chat.stop} draft={draft} onDraft={setDraft} inputRef={inputRef} />
     </main>
     {searchOpen && <SearchDialog conversations={chat.conversations} onClose={() => setSearchOpen(false)} onSelect={selectChat} />}
   </div>;
 }
 
+function App() {
+  const [identity, setIdentity] = useState<Identity | null>(null);
+  const disconnect = () => { clearCredential(); setIdentity(null); };
+  useEffect(() => { window.addEventListener("credential-expired", disconnect); return () => window.removeEventListener("credential-expired", disconnect); }, []);
+  return identity ? <Workbench key={identity.subject} identity={identity} onDisconnect={disconnect} /> : <CredentialGate onAuthenticated={setIdentity} />;
+}
 export default App;

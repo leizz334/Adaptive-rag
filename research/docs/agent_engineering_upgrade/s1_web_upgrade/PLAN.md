@@ -19,8 +19,8 @@ Spec: User S1-Web requirements and AGENTS.md; continuous native execution alread
 - [x] RED current requested item fields/refund absence; minimal answer coverage/fallback fix; targeted GREEN.
 - [x] Record results/state and commit Web-0.
 ## Web-1 core workbench
-- [ ] RED API bearer/error/abort/protocol tests; memory-only identity/session management and robust SSE/HTTP client.
-- [ ] Credential status, transport mode, timeout/cancel/error UI; markdown preserved; tests/build/state/commit.
+- [x] RED API bearer/error/abort/protocol tests; memory-only identity/session management and robust SSE/HTTP client.
+- [x] Credential status, transport mode, timeout/cancel/error UI; markdown preserved; tests/build/state/commit.
 ## Web-2 private knowledge and HITL
 - [ ] RED authenticated own-list/cancel ownership tests; minimal endpoints; KB CRUD/upload/search + citation excerpts + HITL states.
 - [ ] Cross-user/auth/replay tests; build/target tests/state/commit.

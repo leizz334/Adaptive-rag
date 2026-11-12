@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import type { ChatResponse, Conversation, Message } from "../types";
-import { streamChat } from "../lib/api";
-import { loadConversations, saveConversations } from "../lib/storage";
+import { ApiError, chatHttp, streamChat } from "../lib/api";
+
 
 interface State {
   conversations: Conversation[];
@@ -12,6 +12,7 @@ type Action =
   | { type: "select"; id: string | null }
   | { type: "delete"; id: string }
   | { type: "start"; conversation: Conversation; user: Message; assistant: Message }
+  | { type: "node"; conversationId: string; messageId: string; node: string }
   | { type: "token"; conversationId: string; messageId: string; text: string }
   | { type: "complete"; conversationId: string; messageId: string; response: ChatResponse }
   | { type: "fail"; conversationId: string; messageId: string; message: string; stopped: boolean }
@@ -47,6 +48,8 @@ function reducer(state: State, action: Action): State {
         conversations: [next, ...state.conversations.filter((item) => item.id !== next.id)],
       };
     }
+    case "node":
+      return updateConversation(state, action.conversationId, (item) => ({ ...item, messages: item.messages.map((m) => m.id === action.messageId ? { ...m, nodes: [...(m.nodes ?? []), action.node] } : m) }));
     case "token":
       return updateConversation(state, action.conversationId, (item) => ({
         ...item,
@@ -68,6 +71,8 @@ function reducer(state: State, action: Action): State {
               pendingAction: action.response.pending_action,
               strategy: action.response.strategy,
               traceId: action.response.trace_id,
+              rootRunId: action.response.root_run_id,
+              errorCode: action.response.error_code ?? undefined,
               latencyMs: action.response.latency.total_ms,
             }
           : message),
@@ -93,30 +98,14 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-const DEMO_USER_ID = import.meta.env.VITE_DEMO_USER_ID || "u_demo";
-
 export function useChat() {
-  const [state, dispatch] = useReducer(reducer, undefined, () => ({
-    conversations: loadConversations(),
-    activeId: null,
-  }));
+  const [state, dispatch] = useReducer(reducer, { conversations: [], activeId: null });
   const stateRef = useRef(state);
   stateRef.current = state;
   const requestRef = useRef<AbortController | null>(null);
   const busyRef = useRef(false);
   const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => saveConversations(state.conversations), 300);
-    return () => window.clearTimeout(timer);
-  }, [state.conversations]);
-
-  useEffect(() => {
-    const flush = () => saveConversations(stateRef.current.conversations);
-    window.addEventListener("pagehide", flush);
-    return () => window.removeEventListener("pagehide", flush);
-  }, []);
-
+  const [transport, setTransport] = useState<"sse" | "http">("sse");
   useEffect(() => () => requestRef.current?.abort(), []);
 
   const stop = useCallback(() => requestRef.current?.abort(), []);
@@ -142,21 +131,22 @@ export function useChat() {
 
     let answered = false;
     try {
-      await streamChat(
-        {
+      const payload = {
           message: text,
-          user_id: DEMO_USER_ID,
+          ...(confirmActionId ? { idempotency_key: confirmActionId } : {}),
           ...(conversation.sessionId ? { session_id: conversation.sessionId } : {}),
           ...(confirmActionId ? { confirm_action_id: confirmActionId } : {}),
-        },
+        };
+      const complete = (response: ChatResponse) => { answered = true; dispatch({ type: "complete", conversationId: conversation.id, messageId: assistant.id, response }); };
+      if (transport === "http") complete(await chatHttp(payload, controller.signal));
+      else await streamChat(
+        payload,
         (event) => {
+          if (event.event === "node") dispatch({ type: "node", conversationId: conversation.id, messageId: assistant.id, node: event.node });
           if (event.event === "token") {
             dispatch({ type: "token", conversationId: conversation.id, messageId: assistant.id, text: event.text });
           }
-          if (event.event === "answer") {
-            answered = true;
-            dispatch({ type: "complete", conversationId: conversation.id, messageId: assistant.id, response: event.data });
-          }
+          if (event.event === "answer") complete(event.data);
         },
         controller.signal,
       );
@@ -170,7 +160,7 @@ export function useChat() {
           conversationId: conversation.id,
           messageId: assistant.id,
           stopped,
-          message: error instanceof Error ? error.message : "请求失败，请稍后重试。",
+          message: error instanceof ApiError ? `${error.message} [${error.code}]${error.traceId ? ` Trace: ${error.traceId}` : ""}` : error instanceof Error ? error.message : "请求失败，请稍后重试。",
         });
       }
       return false;
@@ -179,7 +169,7 @@ export function useChat() {
       busyRef.current = false;
       setBusy(false);
     }
-  }, []);
+  }, [transport]);
 
   const select = useCallback((id: string | null) => {
     stop();
@@ -197,6 +187,7 @@ export function useChat() {
 
   const active = state.conversations.find((item) => item.id === state.activeId) ?? null;
   return {
+    transport, setTransport,
     conversations: state.conversations,
     active,
     busy,
