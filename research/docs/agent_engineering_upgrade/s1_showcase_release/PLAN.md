@@ -28,8 +28,8 @@ Spec: User S1-Release request; AGENTS.md. Continuous execution authorized; prior
 - [x] Small Owner-only history/list restore if feasible, RED/GREEN/isolation/error/concurrency; otherwise explicit limitation without blocking release.
 - [x] Update current docs for actual behavior, type/build/targeted tests and browser refresh evidence, checkpoint.
 ## S1-R5 verification/delivery
-- [ ] Full frontend/type/build/browser + real backend/pytest/Ruff/Mypy/pip/legacy214; source/credential/history preservation review.
-- [ ] Finalreport/recovery/ownedstop/scopedcommit/normalpush/lsremote; metadata normalpush/finalHEAD; STOP.
+- [x] Full frontend/type/build/browser + real backend/pytest/Ruff/Mypy/pip/legacy214; source/credential/history preservation review.
+- [x] Finalreport/recovery/ownedstop/scopedcommit/normalpush/lsremote; metadata normalpush/finalHEAD; STOP.
 
 ## Review focus
 Run-id/manifest tampering or stale PID cannot stop other processes/resources; resumed init never resets data. Creds must stay ignored0600, history endpoints never create/access foreign sessions. Read restoration must not race new messages or identity changes; old citations/ActionIDs must not be invented. README commands must choose fresh owned resources and actual auth; controlled engineering results and real quality metrics must remain distinct.
