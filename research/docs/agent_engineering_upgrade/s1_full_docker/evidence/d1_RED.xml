@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="0.202" timestamp="2026-11-12T17:44:59.789856+08:00" hostname="likl-ThinkBook-14-G4-ARA"><testcase classname="tests.unit.test_docker_compose" name="test_internal_dependencies_and_no_host_database_ports_or_fixed_resources" time="0.001"><failure message="FileNotFoundError: [Errno 2] No such file or directory: '/home/likl/桌面/Adaptive-RAG/Adaptive-rag/compose.showcase.yml'">def test_internal_dependencies_and_no_host_database_ports_or_fixed_resources():
+&gt;       c=compose()
+          ^^^^^^^^^
+
+tests/unit/test_docker_compose.py:18: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unit/test_docker_compose.py:14: in compose
+    return yaml.safe_load((ROOT/'compose.showcase.yml').read_text())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../miniconda3/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/home/likl/桌面/Adaptive-RAG/Adaptive-rag/compose.showcase.yml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+&gt;       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/home/likl/桌面/Adaptive-RAG/Adaptive-rag/compose.showcase.yml'
+
+../../../miniconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError</failure></testcase><testcase classname="tests.unit.test_docker_compose" name="test_readiness_and_secret_volume_separation" time="0.000"><failure message="FileNotFoundError: [Errno 2] No such file or directory: '/home/likl/桌面/Adaptive-RAG/Adaptive-rag/compose.showcase.yml'">def test_readiness_and_secret_volume_separation():
+&gt;       c=compose();s=c['services']
+          ^^^^^^^^^
+
+tests/unit/test_docker_compose.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/unit/test_docker_compose.py:14: in compose
+    return yaml.safe_load((ROOT/'compose.showcase.yml').read_text())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../miniconda3/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/home/likl/桌面/Adaptive-RAG/Adaptive-rag/compose.showcase.yml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+&gt;       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/home/likl/桌面/Adaptive-RAG/Adaptive-rag/compose.showcase.yml'
+
+../../../miniconda3/lib/python3.12/pathlib.py:1013: FileNotFoundError</failure></testcase><testcase classname="tests.unit.test_docker_compose" name="test_context_excludes_nested_user_secrets_and_does_not_copy_research_results" time="0.000"><failure message="AssertionError: assert ('**/.private' in '.git\n.gitignore\n.venv\nfrontend/node_modules\nfrontend/dist\nvenv\n__pycache__\n*.pyc\n.pytest_cache\n.mypy_cache\n...cal\ndata/local\ndata/*.db\n*.sqlite3\neval/reports/*.json\n.idea\n.vscode\n.DS_Store\ntests\ndocs\n*.md\n!README.md\n')">def test_context_excludes_nested_user_secrets_and_does_not_copy_research_results():
+        ignore=(ROOT/'.dockerignore').read_text()
+&gt;       assert '**/.private' in ignore and '**/.env*' in ignore and '**/node_modules' in ignore
+E       AssertionError: assert ('**/.private' in '.git\n.gitignore\n.venv\nfrontend/node_modules\nfrontend/dist\nvenv\n__pycache__\n*.pyc\n.pytest_cache\n.mypy_cache\n...cal\ndata/local\ndata/*.db\n*.sqlite3\neval/reports/*.json\n.idea\n.vscode\n.DS_Store\ntests\ndocs\n*.md\n!README.md\n')
+
+tests/unit/test_docker_compose.py:42: AssertionError</failure></testcase><testcase classname="tests.unit.test_docker_compose" name="test_host_paid_keys_are_not_interpolated_into_runtime" time="0.050"><failure message="subprocess.CalledProcessError: Command '['docker', 'compose', '--env-file', '/tmp/pytest-of-likl/pytest-18/test_host_paid_keys_are_not_in0/empty', '-f', '/home/likl/桌面/Adaptive-RAG/Adaptive-rag/compose.showcase.yml', 'config', '--format', 'json']' returned non-zero exit status 1.">tmp_path = PosixPath('/tmp/pytest-of-likl/pytest-18/test_host_paid_keys_are_not_in0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x70acb48a7170&gt;
+
+    @pytest.mark.skipif(not shutil.which('docker'),reason='Docker CLI absent; not runtime acceptance')
+    def test_host_paid_keys_are_not_interpolated_into_runtime(tmp_path,monkeypatch):
+        monkeypatch.setenv('DEEPSEEK_API_KEY','not-a-real-secret-must-not-inherit')
+        monkeypatch.setenv('AUTH_CREDENTIALS','do-not-inherit-registry')
+        empty=tmp_path/'empty';empty.write_text('')
+&gt;       output=subprocess.check_output(['docker','compose','--env-file',str(empty),'-f',str(ROOT/'compose.showcase.yml'),'config','--format','json'],cwd=ROOT)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/unit/test_docker_compose.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../miniconda3/lib/python3.12/subprocess.py:468: in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = False, timeout = None, check = True
+popenargs = (['docker', 'compose', '--env-file', '/tmp/pytest-of-likl/pytest-18/test_host_paid_keys_are_not_in0/empty', '-f', '/home/likl/桌面/Adaptive-RAG/Adaptive-rag/compose.showcase.yml', ...],)
+kwargs = {'cwd': PosixPath('/home/likl/桌面/Adaptive-RAG/Adaptive-rag'), 'stdout': -1}
+process = &lt;Popen: returncode: 1 args: ['docker', 'compose', '--env-file', '/tmp/pytest...&gt;
+stdout = b'', stderr = None, retcode = 1
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output &amp; stderr attributes if those streams
+        were captured.
+    
+        If timeout (seconds) is given and the process takes too long,
+         a TimeoutExpired exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+&gt;               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['docker', 'compose', '--env-file', '/tmp/pytest-of-likl/pytest-18/test_host_paid_keys_are_not_in0/empty', '-f', '/home/likl/桌面/Adaptive-RAG/Adaptive-rag/compose.showcase.yml', 'config', '--format', 'json']' returned non-zero exit status 1.
+
+../../../miniconda3/lib/python3.12/subprocess.py:573: CalledProcessError</failure></testcase></testsuite></testsuites>
