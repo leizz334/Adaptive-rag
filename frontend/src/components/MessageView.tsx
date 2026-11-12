@@ -46,6 +46,7 @@ export function MessageView({ conversation, busy, onConfirm, onCancel }: Message
           <div className="assistant-body">
             {message.content ? <div className={`markdown ${message.state === "error" ? "message-error" : ""}`}><ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown></div> : <div className="thinking"><span /><span /><span /></div>}
             {message.state === "complete" && <>
+              {message.errorCode && <p className="inspection-note">服务端状态：{message.errorCode}</p>}
               <CitationList citations={message.citations ?? []} />
               {message.pendingAction && <ActionCard sessionId={conversation.sessionId} action={message.pendingAction} disabled={busy} onConfirm={() => onConfirm(message.pendingAction!, message.id)} onCancel={() => onCancel(message.id)} />}
               <ExecutionPanel sessionId={conversation.sessionId} rootRunId={message.rootRunId} traceId={message.traceId} liveNodes={message.nodes} />

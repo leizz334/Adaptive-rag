@@ -1,0 +1,44 @@
+{
+  "engine": "REAL_PLAYWRIGHT_CHROMIUM",
+  "results": [
+    {
+      "title": "01 multi-turn Memory + actual tool state + HTTP/SSE + session switching",
+      "status": "passed",
+      "duration_ms": 1105,
+      "errors": []
+    },
+    {
+      "title": "02 private KB upload/search/citations/update/delete and cross-tenant opaque rejection",
+      "status": "failed",
+      "duration_ms": 1435,
+      "errors": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.retrieval-card')\nExpected substring: \u001b[32m\"三十天\"\u001b[39m\nError: strict mode violation: locator('.retrieval-card') resolved to 3 elements:\n    1) <article class=\"retrieval-card\">…</article> aka getByText('鲸蓝1794469055421会员退货规则web-')\n    2) <article class=\"retrieval-card\">…</article> aka getByText('鲸蓝会员退货规则web-policy-1794468667341 · [REDACTED')\n    3) <article class=\"retrieval-card\">…</article> aka getByText('鲸蓝会员退货规则web-policy-1794468764514 · [REDACTED')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" locator('.retrieval-card') with timeout 12000ms\u001b[22m\n\u001b[2m  - waiting for locator('.retrieval-card')\u001b[22m\n\n\n  51 |   const result=await send(page,`${policy}是什么？`);expect(result.citations.some((c:{document_id:string})=>c.document_id===id)).toBeTruthy();\n  52 |   await expect(page.getByLabel('回答来源')).toContainText(policy);\n> 53 |   await page.getByRole('button',{name:/Agent Execution/}).last().click();await expect(page.locator('.retrieval-card')).toContainText('三十天');\n     |                                                                                                                        ^\n  54 |   const foreign=await page.request.get(`/api/v1/sessions/${result.session_id}/traces/${result.root_run_id}`,{headers:auth('b')});expect(foreign.status()).toBe(404);\n  55 |   const forged=await page.request.post('/api/v1/chat',{headers:auth('b'),data:{message:'查询 ORD95101',user_id:'web_demo_a'}});expect(forged.status()).toBe(403);\n  56 |   const deletion=await page.request.delete('/api/v1/knowledge/documents/'+id,{headers:auth('b')});expect(deletion.status()).toBe(404);\n    at /home/likl/桌面/Adaptive-RAG/Adaptive-rag/frontend/e2e/workbench.spec.ts:53:120"
+      ]
+    },
+    {
+      "title": "03 Planner + HITL confirmation + actual cancellation + idempotent replay",
+      "status": "passed",
+      "duration_ms": 991,
+      "errors": []
+    },
+    {
+      "title": "04 revoke pending proposal + cross-user session and refresh credential isolation",
+      "status": "passed",
+      "duration_ms": 431,
+      "errors": []
+    },
+    {
+      "title": "05 honest Experience history + responsive workbench",
+      "status": "passed",
+      "duration_ms": 317,
+      "errors": []
+    },
+    {
+      "title": "06 actual offline network failure and transport cancellation do not auto-replay",
+      "status": "passed",
+      "duration_ms": 373,
+      "errors": []
+    }
+  ],
+  "failure_disposition": "strict locator matched3ownedretrievedsources; narrow by current document id, do not weaken citation assertion"
+}

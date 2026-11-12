@@ -83,7 +83,7 @@ function reducer(state: State, action: Action): State {
         messages: item.messages.map((message) => message.id === action.messageId
           ? {
               ...message,
-              content: action.stopped ? message.content || "已停止生成。" : action.message,
+              content: action.stopped ? message.content || "已停止接收。服务端结果可能已提交，请先核对状态。" : action.message,
               state: action.stopped ? "stopped" : "error",
             }
           : message),

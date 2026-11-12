@@ -1,0 +1,157 @@
+{
+  "ruff": {
+    "command": [
+      ".venv/bin/ruff",
+      "check",
+      "app",
+      "tests",
+      "eval",
+      "alembic",
+      "research"
+    ],
+    "exit": 0,
+    "stdout": "All checks passed!\n",
+    "stderr": ""
+  },
+  "format": {
+    "command": [
+      ".venv/bin/ruff",
+      "format",
+      "--check",
+      "app",
+      "tests",
+      "eval",
+      "alembic",
+      "research"
+    ],
+    "exit": 0,
+    "stdout": "387 files already formatted\n",
+    "stderr": ""
+  },
+  "mypy": {
+    "command": [
+      ".venv/bin/mypy"
+    ],
+    "exit": 0,
+    "stdout": "app/observability/execution.py:12: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]\napp/experience/shadow.py:56: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]\napp/observability/tracing.py:248: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]\neval/memory_ablation.py:54: note: By default the bodies of untyped functions are not checked, consider using --check-untyped-defs  [annotation-unchecked]\nSuccess: no issues found in 157 source files\n",
+    "stderr": ""
+  },
+  "pip": {
+    "command": [
+      ".venv/bin/python",
+      "-m",
+      "pip",
+      "check"
+    ],
+    "exit": 0,
+    "stdout": "No broken requirements found.\n",
+    "stderr": ""
+  },
+  "pytest": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "1",
+    "tests": "935",
+    "time": "184.660",
+    "timestamp": "2026-11-12T15:36:21.076441+08:00",
+    "hostname": "likl-ThinkBook-14-G4-ARA"
+  },
+  "frontend": {
+    "passed": 19,
+    "failed": 0,
+    "tscheck_build": "PASS npm run typecheck + npm run build"
+  },
+  "legacy": {
+    "cases": 214,
+    "passed": 202,
+    "strict_regressions": []
+  },
+  "browser": {
+    "engine": "REAL_PLAYWRIGHT_CHROMIUM",
+    "cases": 6,
+    "passed": 6,
+    "retries": 0,
+    "workers": 1,
+    "API_route_mock": false,
+    "real_services": [
+      "FastAPI",
+      "PostgreSQL",
+      "Redis",
+      "Qdrant"
+    ],
+    "llm": "CONTROLLED_OFFLINE_NOT_REAL_LLM",
+    "new_paid_requests": 0,
+    "scenarios": [
+      {
+        "title": "01 multi-turn Memory + actual tool state + HTTP/SSE + session switching",
+        "status": "passed",
+        "duration_ms": 1086,
+        "errors": []
+      },
+      {
+        "title": "02 private KB upload/search/citations/update/delete and cross-tenant opaque rejection",
+        "status": "passed",
+        "duration_ms": 1295,
+        "errors": []
+      },
+      {
+        "title": "03 Planner + HITL confirmation + actual cancellation + idempotent replay",
+        "status": "passed",
+        "duration_ms": 876,
+        "errors": []
+      },
+      {
+        "title": "04 revoke pending proposal + cross-user session and refresh credential isolation",
+        "status": "passed",
+        "duration_ms": 429,
+        "errors": []
+      },
+      {
+        "title": "05 honest Experience history + responsive workbench",
+        "status": "passed",
+        "duration_ms": 283,
+        "errors": []
+      },
+      {
+        "title": "06 actual offline network failure and transport cancellation do not auto-replay",
+        "status": "passed",
+        "duration_ms": 368,
+        "errors": []
+      }
+    ]
+  },
+  "business": {
+    "final_browser_order": "ORD95106",
+    "completed_mutations": [
+      {
+        "order_id": "ORD95102",
+        "status": "cancelled",
+        "cancel_write_audit_count": 1
+      },
+      {
+        "order_id": "ORD95103",
+        "status": "cancelled",
+        "cancel_write_audit_count": 1
+      },
+      {
+        "order_id": "ORD95105",
+        "status": "cancelled",
+        "cancel_write_audit_count": 1
+      },
+      {
+        "order_id": "ORD95106",
+        "status": "cancelled",
+        "cancel_write_audit_count": 1
+      }
+    ],
+    "same_action_confirm_and_replay_exactly_one_business_write": true,
+    "revoked_proposal_order": {
+      "order_id": "ORD95104",
+      "status": "paid",
+      "unchanged": true
+    },
+    "database": "REAL_POSTGRESQL",
+    "production_data": false
+  }
+}

@@ -67,7 +67,7 @@ P4-F修复P4-E发现的两项安全问题：显式private模式按服务端认�
 | **有出处的检索** | BM25、稠密向量、RRF 融合与精排；回答可带 `citations` | [检索模块](app/retrieval/) |
 | **多跳与自纠错** | 复合问题拆分检索，答案经过忠实度检查 | [智能体节点](app/agents/nodes/) |
 | **人工确认** | 高风险写操作先返回 `pending_action`，确认后才执行 | [工具与权限](app/tools/) |
-| **Web 对话工作台** | 流式显示、引用、本地会话搜索、深色模式与确认卡片 | [前端](frontend/) |
+| **Web 对话工作台** | 认证HTTP/SSE、私有知识库、HITL、实际执行Trace与Experience历史 | [前端](frontend/) |
 | **可测可观测** | 离线评测、回归测试、结构化日志与 Prometheus 指标 | [评测](eval/) · [可观测性](app/observability/) |
 
 ### 五条处理路径
@@ -196,7 +196,7 @@ npm ci
 npm run dev
 ```
 
-访问 **http://127.0.0.1:5173**。开发服务器会把 `/api` 代理到本地 FastAPI。执行 `npm run build` 后，FastAPI 检测到 `frontend/dist` 也会在根路径提供页面；Docker 镜像会自动构建前端。前端会话列表存于浏览器本地，详见[前端 README](frontend/README.md)。
+访问 **http://127.0.0.1:5173**。开发服务器会把 `/api` 代理到本地 FastAPI。执行 `npm run build` 后，FastAPI 检测到 `frontend/dist` 也会在根路径提供页面；Docker 镜像会自动构建前端。前端使用经服务端验证的开发Bearer身份，凭证与会话仅保留在页面内存，详见[前端 README](frontend/README.md)。
 
 <details>
 <summary><strong>🧪 想体验订单工具与人工确认？展开查看演示数据步骤</strong></summary>
@@ -319,10 +319,10 @@ docs/             技术手册与教学文档
 
 这是可运行的工程示例，**目前不应直接面向不可信用户开放**：
 
-- API 尚未认证请求中的 `user_id`；前端默认 `u_demo` 仅供本地演示。部署前应由可信服务端认证并绑定身份。
+- API 使用受信Bearer注册表并在服务端绑定主体；浏览器只有明确的本地开发凭证配置，没有生产登录/发证服务。TLS与凭证运维仍需部署层保障。
 - 订单与物流来自本地仓储演示数据，没有连接真实承运商或支付网关。
-- Web 会话列表保存在当前浏览器的 `localStorage`，清除站点数据或换设备后不会恢复。
-- 知识库启动时全量 ingest，尚无增量删除接口；Embedding / 精排权重不可用时会降级，降级后的效果未单独评测。
+- Web 凭证与可见会话只保存在页面内存，刷新后需重新认证；当前没有服务端历史列表恢复接口。
+- 显式private模式支持按认证主体隔离的文档CRUD与检索；公共模式启动ingest不属于私有共享。Embedding/精排降级明确标识，不能当作真实神经检索质量。
 
 更多实现边界与后续方向见[限制与路线图](docs/12-limitations.md)。
 
@@ -364,7 +364,7 @@ docs/             技术手册与教学文档
 | 速度与成本 | 记录每个节点的耗时、调用次数和 Token 用量，为简单问题设置快速路径，为多跳检索设置预算。[工作流](app/agents/graph.py) · [指标](app/observability/metrics.py) | 减少不必要的模型调用。 |
 | 首次演示 | 让首页示例问题与演示订单初始化保持一致，并提供一键准备演示数据的入口。[首页](frontend/src/App.tsx) · [种子数据](app/services/seed.py) | 打开页面即可验证订单与确认流程。 |
 | 模型启动 | 预热本地 Embedding 与精排模型，持久化权重缓存，显示加载或降级状态。[Embedding](app/providers/embeddings.py) · [精排](app/providers/reranker.py) | 减少首问等待和重建后的重复下载。 |
-| 前端会话 | 将仅存于 `localStorage` 的会话与服务端历史打通，并增加断线重连状态。[本地存储](frontend/src/lib/storage.ts) | 刷新、换设备后仍可继续对话。 |
+| 前端会话 | 将当前内存会话与受保护的服务端历史打通，并增加断线重连状态。[本地存储](frontend/src/lib/storage.ts) | 刷新、换设备后仍可继续对话。 |
 
 ### 3. 工程化与复杂改造
 
@@ -391,3 +391,5 @@ docs/             技术手册与教学文档
   <sub>从一个问题开始，沿着策略、证据、工具与指标追到代码。<br>
   指标口径以 <a href="eval/MEASURED.md">eval/MEASURED.md</a> 为准。</sub>
 </p>
+
+S1-Web交付：[最终报告](research/docs/agent_engineering_upgrade/s1_web_upgrade/S1-WEB_FINAL_REPORT.md) · [零付费浏览器演示](research/docs/agent_engineering_upgrade/s1_web_upgrade/DEMO_GUIDE.md)。Experience Active关闭，历史真实收益仍NOT_ESTABLISHED。

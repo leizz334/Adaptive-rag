@@ -36,3 +36,48 @@ describe("verified credential transport", () => {
     await expect(streamChat({ message: "hi" }, () => {}, new AbortController().signal)).rejects.toMatchObject({ code: "PROTOCOL_ERROR" });
   });
 });
+
+describe("credential lifecycle races", () => {
+  it("a late previous identity 401 cannot clear the current verified credential", async () => {
+    let finish!: (value: Response) => void;
+    const oldResponse = new Promise<Response>((resolve) => { finish = resolve; });
+    const fetcher = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({subject:"owner-a",roles:[]})))
+      .mockReturnValueOnce(oldResponse)
+      .mockResolvedValueOnce(new Response(JSON.stringify({subject:"owner-b",roles:[]})))
+      .mockResolvedValueOnce(new Response(JSON.stringify({documents:[]})));
+    vi.stubGlobal("fetch", fetcher);
+    await authenticate("a".repeat(43));
+    const previous = requestJson("/knowledge/documents").catch(() => null);
+    await authenticate("b".repeat(43));
+    finish(new Response(JSON.stringify({error_code:"UNAUTHORIZED"}),{status:401}));
+    await previous;
+    await expect(requestJson("/knowledge/documents")).resolves.toEqual({documents:[]});
+    expect(new Headers(fetcher.mock.calls[3]?.[1]?.headers).get("Authorization") === `Bearer ${"b".repeat(43)}`).toBe(true);
+  });
+  it("identity change aborts requests attached to the prior credential", async () => {
+    const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify({subject:"owner-a",roles:[]})));
+    vi.stubGlobal("fetch",fetcher);await authenticate("a".repeat(43));
+    const pending = requestJson("/knowledge/documents").catch(() => null);
+    const signal=fetcher.mock.calls[1]?.[1]?.signal as AbortSignal;
+    clearCredential();expect(signal.aborted).toBe(true);await pending;
+  });
+});
+
+describe("response body transport errors", () => {
+  it.each([['TimeoutError','TIMEOUT'],['TypeError','NETWORK_ERROR']])("normalizes an SSE body %s", async (name, code) => {
+    const body = new ReadableStream({start(controller) { controller.error(name === 'TypeError' ? new TypeError('RAW_SOCKET_DETAIL') : new DOMException('RAW_TIMEOUT_DETAIL','TimeoutError')); }});
+    vi.stubGlobal('fetch',vi.fn().mockResolvedValueOnce(new Response(JSON.stringify({subject:'a',roles:[]})))
+      .mockResolvedValueOnce(new Response(body,{headers:{'content-type':'text/event-stream'}})));
+    await authenticate('x'.repeat(43));
+    await expect(streamChat({message:'hello'},()=>{},new AbortController().signal)).rejects.toMatchObject({code});
+  });
+});
+
+it("rejects a malformed HTTP chat envelope before the view reads nested fields",async()=>{
+  const {chatHttp}=await import('./api');
+  vi.stubGlobal('fetch',vi.fn().mockResolvedValueOnce(new Response(JSON.stringify({subject:'a',roles:[]})))
+    .mockResolvedValueOnce(new Response(JSON.stringify({answer:'partial'}))));
+  await authenticate('x'.repeat(43));
+  await expect(chatHttp({message:'hi'},new AbortController().signal)).rejects.toMatchObject({code:'PROTOCOL_ERROR'});
+});
