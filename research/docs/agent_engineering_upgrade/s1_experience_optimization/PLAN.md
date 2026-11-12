@@ -28,7 +28,7 @@ Spec: 本阶段S1-EX用户需求；AGENTS.md。用户要求自动连续执行，
 ## EX3 delivery
 - [x] 全量pytest/static/legacy214，失败原证据与必要最小修复；freshreview。
 - [x] S1-EX_FINAL_REPORT/EXPERIENCE_ARCHITECTURE/DEMO/RECOVERY/对照表/人审包；scope/secret/ledger审计、ownedstop。
-- [ ] scopedcommit/normalpush/lsremote，最后交付metadata再正常push精确HEAD；STOP等待后续S1产品化，无P5/Active。
+- [x] scopedcommit/normalpush/lsremote，最后交付metadata再正常push精确HEAD；STOP等待后续S1产品化，无P5/Active。
 
 ## Review focus
 没有伪造humanapproval；兼容性不能绕过撤销/expiry；Gold/answer facts不能进入Agent；E1只观察不能改变prompts；E2提示不能增加工具权限或覆盖现有系统约束；未知paid结果必须停。
