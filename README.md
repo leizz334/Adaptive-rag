@@ -4,7 +4,7 @@
 
 **默认是受控LLM演示，零付费请求。** 真实DeepSeek评测另有冻结证据；完整语义质量尚未认证，Experience收益未建立。项目用于工程学习与面试展示，不直接宣称生产就绪。
 
-[快速启动](#ubuntu快速启动) · [8分钟演示稿](research/docs/agent_engineering_upgrade/s1_showcase_release/DEMO_SCRIPT.md) · [最终验收](research/docs/agent_engineering_upgrade/s1_showcase_release/S1_RELEASE_FINAL_REPORT.md) · [工程难点](research/docs/agent_engineering_upgrade/s1_showcase_release/ENGINEERING_HIGHLIGHTS.md)
+[快速启动](#ubuntu快速启动) · [Docker验收](research/docs/agent_engineering_upgrade/s1_full_docker/S1_DOCKER_FINAL_REPORT.md) · [8分钟演示稿](research/docs/agent_engineering_upgrade/s1_showcase_release/DEMO_SCRIPT.md) · [最终验收](research/docs/agent_engineering_upgrade/s1_showcase_release/S1_RELEASE_FINAL_REPORT.md) · [工程难点](research/docs/agent_engineering_upgrade/s1_showcase_release/ENGINEERING_HIGHLIGHTS.md)
 
 ## 可以实际演示什么
 
@@ -73,6 +73,25 @@ flowchart LR
 受控演示使用Hash Embedding与lexical重排，**不冒充真实神经检索质量**。真实Embedding/Reranker验证见P4-D。
 
 ## Ubuntu快速启动
+
+全Docker路径（宿主只需Docker Engine和Compose，无需Python/Node）：在包含`compose.showcase.yml`的仓库版本中运行：
+
+```bash
+docker compose -f compose.showcase.yml up -d --build
+docker compose -f compose.showcase.yml ps -a
+```
+
+API健康后访问`http://127.0.0.1:8000`。开发Token在独立私有卷中随机生成，不打印到启动日志；需本机操作者显式读取。Docker凭证有效期30天，停止保留卷、恢复不重置数据或静默轮换凭证。详见[Docker启动、取凭证与恢复](research/docs/agent_engineering_upgrade/s1_full_docker/DOCKER_DEPLOYMENT_GUIDE.md)。**Ubuntu已通过真实容器、7项浏览器E2E和重启持久化验收；Windows Docker Desktop：NOT_RUN。** 此路径保持OfflineLLMProvider、付费请求0、Experience Active关闭。 验收使用干净Git源码及已验证Docker缓存；冷缓存独立下载尝试因网络停滞中断，未宣称通过。
+
+在私密本机终端显式读取A主体开发凭证（输出为秘密，勿录屏或提交）：
+
+```bash
+docker compose -f compose.showcase.yml exec -T api python -c 'from app.demo.docker import read_credentials; print(read_credentials()["tokens"]["a"])'
+```
+
+将其粘贴到页面“本地开发凭证”。Docker Snap的NNP兼容限制、内部网络边界及完整测试见[Docker最终报告](research/docs/agent_engineering_upgrade/s1_full_docker/S1_DOCKER_FINAL_REPORT.md)。
+
+以下为已交付的宿主启动器路径：
 
 需要Python3.11+、Node20.19+或22.12+、Docker Engine及Compose；本机验证使用Python3.12/Node22。确认当前用户可以访问本机Docker。新克隆：
 
@@ -146,6 +165,7 @@ cd ..
 | 真实DeepSeek P4-C/D | 开发/独立集、真实工具/SQL/HTTP/SSE和预算记录已执行；质量结论PARTIAL，不能等同总体语义成功 |
 | S1-EX真实E0/E1/E2 | 4组完整配对，60请求/54,845Token；工具/业务执行代理三臂均4/4，有界回答均2/3可评分；收益NOT_ESTABLISHED |
 | S1-Release当前交付 | **951 pytest PASS +1历史SKIP、22前端测试、7真实浏览器场景**；类型/构建、Ruff/Mypy、214历史回归通过，详见[最终报告](research/docs/agent_engineering_upgrade/s1_showcase_release/S1_RELEASE_FINAL_REPORT.md) |
+| S1-Docker全栈交付 | **965 pytest PASS +1历史SKIP、22前端测试、7真实浏览器场景**；Ubuntu一键Compose/重启持久化通过，Windows NOT_RUN；[证据与限制](research/docs/agent_engineering_upgrade/s1_full_docker/S1_DOCKER_FINAL_REPORT.md) |
 
 [真实模型C](research/docs/agent_engineering_upgrade/p4_real_llm_e2e/P4-C_FINAL_REPORT.md) · [消融D](research/docs/agent_engineering_upgrade/p4_ablation_evaluation/P4-D_FINAL_REPORT.md) · [安全F](research/docs/agent_engineering_upgrade/p4_security_remediation/P4-F_FINAL_REPORT.md) · [Experience S1-EX](research/docs/agent_engineering_upgrade/s1_experience_optimization/S1-EX_FINAL_REPORT.md)
 

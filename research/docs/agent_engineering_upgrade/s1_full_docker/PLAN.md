@@ -29,7 +29,7 @@ Spec: S1-Docker user request + AGENTS.md; native continuous execution authorized
 - [x] Frontend tests/type/build + actual Playwright; fullhostpytest realdependency sandbox/Ruff/Mypy/pip/legacy214.
 - [x] Host S1-Release smoke remains usable; failures/evidence kept; review/minimalfix if needed; checkpoint.
 ## D5 delivery
-- [ ] README/Docker deployment/finalreport/recovery, precise UbuntuPASS/WindowsNOT_RUN/controlled-vs-real limits.
+- [x] README/Docker deployment/finalreport/recovery, precise UbuntuPASS/WindowsNOT_RUN/controlled-vs-real limits.
 - [ ] Source/secret/volume preservation audit, ownedstop(retainvolumes), scopedcommit/normalpush/exactHEAD/metaPush/STOP.
 
 ## Review focus
