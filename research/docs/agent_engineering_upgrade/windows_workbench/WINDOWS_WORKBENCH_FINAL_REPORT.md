@@ -1,6 +1,6 @@
 # Windows Docker 工作台修复验收
 
-日期：2026-11-13。W1–W3 已分别提交，W4 实测完成，最终普通 Push 与远端 HEAD 校验结果由本目录交付状态记录。付费 DeepSeek 请求 **0**，Experience Active 始终关闭。
+日期：2026-11-13。W1–W4 已分别提交，源码交付检查点 `287a88623232b721d009f540e43d5a999467af47` 已普通 Push，远端 HEAD 精确一致。最终元数据提交的实际 HEAD 见 Git 历史与最终回复。付费 DeepSeek 请求 **0**，Experience Active 始终关闭。
 
 ## 工作台回答根因
 

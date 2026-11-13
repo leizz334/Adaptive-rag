@@ -15,7 +15,7 @@ Real Dev 要求服务端显式启用、有效 Key、持久预算文件和有限�
 - [x] W1：指定问题真实根因与三业务场景通过；不修改正常 Offline 模型逻辑；检查点 f734d71。
 - [x] W2：导航 RED→GREEN；移除前端 Experience；22 前端测试/类型/构建通过；检查点 315075a。
 - [x] W3：显式 Real Dev/持久预算/独立 Compose；健康缺陷 RED→GREEN；72 组合测试通过；检查点 e67eb52。
-- [ ] W4：独立验证资源运行完整后端 pytest、Ruff/Mypy、前端测试/构建和真实 Chromium（HTTP/SSE、多轮、引用、私有 KB、HITL、刷新/身份隔离、手机导航），运行原 214 历史回归，不改 Gold 或旧结果。独立最终代码审查、处理重要发现、保护核对、中文报告、提交与正常 Push，核验远端 HEAD 后停止。
+- [x] W4：1023 pytest PASS / 1 历史 SKIP、214 零新增回归、22 前端测试及类型构建、7 真实 Chromium 场景、Ruff check/Mypy/pip 通过；全目录格式旧脚本限制保留。6239 文件和 Stash 不变。源检查点 287a886 已普通 Push 且远端精确一致；最终元数据 Push 后停止。
 
 每个任务的状态、真实命令与首次失败保存在本目录；私人凭证、原始敏感日志与保护基线只放忽略的 `.private`。Git 对象恢复与代码任务独立；原磁盘错误不能冒充修复完成。测试工具使用 Linux 环境以支持 fcntl/权限语义；Windows 现有 Conda、WSL 和 Node 环境不覆盖。
 
