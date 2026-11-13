@@ -89,7 +89,9 @@ test('04 revoke pending proposal + cross-user session and refresh credential iso
 });
 
 test('05 ordinary navigation + Offline policy citations + responsive workbench',async({page})=>{
-  await login(page);
+  // B has an empty policy corpus; A intentionally retains W1's same-policy evidence.
+  const subject='b';
+  await login(page,subject);
   const tabs=page.getByRole('navigation',{name:'工作台视图'}).getByRole('tab');
   await expect(tabs).toHaveText(['对话工作台','私有知识库']);
   await expect(page.getByRole('navigation',{name:'会话列表'})).toBeVisible();
@@ -127,7 +129,7 @@ test('05 ordinary navigation + Offline policy citations + responsive workbench',
     await expect(page.getByLabel('输入消息')).toBeVisible();
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBeTruthy();
   } finally {
-    const deletion=await page.request.delete('/api/v1/knowledge/documents/'+id,{headers:auth('a')});
+    const deletion=await page.request.delete('/api/v1/knowledge/documents/'+id,{headers:auth(subject)});
     expect(deletion.status()).toBe(200);
   }
 });

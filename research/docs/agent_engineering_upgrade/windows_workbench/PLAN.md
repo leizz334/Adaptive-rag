@@ -12,9 +12,9 @@ Real Dev 要求服务端显式启用、有效 Key、持久预算文件和有限�
 
 ## 原子任务
 
-- [ ] W1：保存指定问题的真实根因证据；独立合成数据验证多轮订单、私有 KB 引用、HITL/幂等。若只是正常限制则文档说明，不修改模型逻辑。测试并提交任务证据。
-- [ ] W2：先写导航/移动端预期测试并看见 RED；删除 ExperiencePanel、唯一数据/测试/样式与 App 引用；保留后端 Experience 完整；正常用户文案明确 Offline 边界；前端测试、类型及构建 GREEN 后任务提交。
-- [ ] W3：先写缺 Key、缺预算、HTTP 次数/Token/费用、并发/重启/不确定请求、流式/重试和 Offline 隔离 RED；增加最小服务端入口/持久预算/独立 Compose 配置，复用 DeepSeekProvider 和原 Graph；假传输 GREEN，公开配置不含 Key；任务提交。
+- [x] W1：指定问题真实根因与三业务场景通过；不修改正常 Offline 模型逻辑；检查点 f734d71。
+- [x] W2：导航 RED→GREEN；移除前端 Experience；22 前端测试/类型/构建通过；检查点 315075a。
+- [x] W3：显式 Real Dev/持久预算/独立 Compose；健康缺陷 RED→GREEN；72 组合测试通过；检查点 e67eb52。
 - [ ] W4：独立验证资源运行完整后端 pytest、Ruff/Mypy、前端测试/构建和真实 Chromium（HTTP/SSE、多轮、引用、私有 KB、HITL、刷新/身份隔离、手机导航），运行原 214 历史回归，不改 Gold 或旧结果。独立最终代码审查、处理重要发现、保护核对、中文报告、提交与正常 Push，核验远端 HEAD 后停止。
 
 每个任务的状态、真实命令与首次失败保存在本目录；私人凭证、原始敏感日志与保护基线只放忽略的 `.private`。Git 对象恢复与代码任务独立；原磁盘错误不能冒充修复完成。测试工具使用 Linux 环境以支持 fcntl/权限语义；Windows 现有 Conda、WSL 和 Node 环境不覆盖。
