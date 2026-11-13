@@ -1,6 +1,6 @@
 # Adaptive-RAG Agent Web 工作台
 
-React + TypeScript + Vite，复用原聊天/Markdown组件。支持HTTP/SSE、多轮内存会话、私有知识库CRUD/文本上传/检索、真实引用、HITL确认/撤销/幂等重放、真实执行Trace与离线Experience证据。
+React + TypeScript + Vite，复用原聊天/Markdown组件。支持HTTP/SSE、多轮内存会话、私有知识库CRUD/文本上传/检索、真实引用、HITL确认/撤销/幂等重放、真实执行Trace。
 
 ## 启动
 
@@ -26,7 +26,9 @@ SSE节点事件实时展示；答案通过服务端完整验证/提交后才分�
 
 私有知识只用认证主体，最多100文档，每份10000字符；上传仅UTF-8 .txt/.md。更新需要完整新正文，不提供正文自动回填。引用来自实际API，片段见执行面板。HITL有效期来自服务端；撤销不能回滚已完成业务；同Action幂等重放不重复写。
 
-Trace是128条/15分钟单进程快照，重启/worker切换可能404；不包含原始Prompt/完整State/摘要内容/凭据。Memory只展示真实模式/历史计数/摘要使用bool，不虚构M3命中。Experience面板为已提交合成离线历史，EXPERIENCE_BENEFIT=NOT_ESTABLISHED、人工语义NOT_ASSESSED，无Active开关。
+Trace是128条/15分钟单进程快照，重启/worker切换可能404；不包含原始Prompt/完整State/摘要内容/凭据。Memory只展示真实模式/历史计数/摘要使用bool，不虚构M3命中。
+
+页面包含对话、会话列表和私有知识库。模型模式由服务端 capabilities 返回；Offline 模式只支持有限规则与工具操作，知识回答可能直接摘录原文。请先上传当前身份的相关文档，再提问并核对引用。页面不提供模型切换或模型密钥输入。
 
 ## 浏览器验收
 

@@ -88,11 +88,48 @@ test('04 revoke pending proposal + cross-user session and refresh credential iso
   await page.reload();await expect(page.getByLabel('本地开发凭证')).toBeVisible();
 });
 
-test('05 honest Experience history + responsive workbench',async({page})=>{
-  await login(page);await page.getByRole('tab',{name:'Experience Shadow'}).click();
-  await expect(page.getByText('EXPERIENCE_BENEFIT=NOT_ESTABLISHED',{exact:true})).toBeVisible();await expect(page.getByRole('switch')).toHaveCount(0);
-  await page.setViewportSize({width:390,height:844});await expect(page.getByRole('heading',{name:'经验与 Shadow'})).toBeVisible();
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBeTruthy();
+test('05 ordinary navigation + Offline policy citations + responsive workbench',async({page})=>{
+  await login(page);
+  const tabs=page.getByRole('navigation',{name:'工作台视图'}).getByRole('tab');
+  await expect(tabs).toHaveText(['对话工作台','私有知识库']);
+  await expect(page.getByRole('navigation',{name:'会话列表'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'今天有什么可以帮你？'})).toBeVisible();
+  const mode=page.getByRole('status',{name:'模型模式说明'});
+  await expect(mode).toContainText('Offline');
+  await expect(mode).toContainText('原文片段');
+  await expect(mode).toContainText('上传相关文档');
+  await page.getByRole('tab',{name:'私有知识库'}).click();
+  await expect(page.getByRole('heading',{name:'你的知识库'})).toBeVisible();
+  const id='web-custom-policy-'+Date.now();
+  const title='合成定制商品售后政策';
+  const question='定制商品过了七天，但有质量问题还能退吗？';
+  const policy=`# ${title}\n${question}定制商品不适用七天无理由退货；如存在质量问题，超过七天仍可申请售后退换，须提供合成订单和质量证明，最终按审核处理。本段仅供隔离演示，并非真实商家政策。`;
+  await page.getByLabel('上传纯文本文档').setInputFiles({name:id+'.md',mimeType:'text/markdown',buffer:Buffer.from(policy)});
+  await page.getByLabel('文档 ID',{exact:true}).fill(id);await page.getByLabel('标题',{exact:true}).fill(title);
+  await page.getByRole('button',{name:'创建文档',exact:true}).click();
+  await expect(page.getByLabel('文档列表')).toContainText(id);
+  try {
+    await page.getByRole('button',{name:'返回对话'}).click();
+    const result=await send(page,question);
+    expect(result.citations.some((c:{document_id:string})=>c.document_id===id)).toBeTruthy();
+    await expect(page.getByLabel('回答来源')).toContainText(title);
+    await expect(page.locator('.assistant-body').last()).toContainText('质量问题');
+    await expect(page.locator('.assistant-body').last()).toContainText('超过七天');
+    await page.setViewportSize({width:390,height:844});
+    await expect(mode).toBeVisible();await expect(page.getByLabel('输入消息')).toBeVisible();
+    await page.getByRole('button',{name:'打开侧栏'}).click();
+    await expect(page.getByRole('navigation',{name:'会话列表'})).toBeVisible();
+    await page.getByRole('button',{name:'收起侧栏'}).click();
+    await page.getByRole('tab',{name:'私有知识库'}).click();
+    await expect(page.getByRole('heading',{name:'你的知识库'})).toBeVisible();
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBeTruthy();
+    await page.getByRole('button',{name:'返回对话'}).click();
+    await expect(page.getByLabel('输入消息')).toBeVisible();
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBeTruthy();
+  } finally {
+    const deletion=await page.request.delete('/api/v1/knowledge/documents/'+id,{headers:auth('a')});
+    expect(deletion.status()).toBe(200);
+  }
 });
 
 test('06 actual offline network failure and transport cancellation do not auto-replay',async({page,context})=>{
