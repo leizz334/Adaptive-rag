@@ -113,7 +113,7 @@ def bootstrap(secret_dir=SECRET_DIR, state_dir=STATE_DIR, *, owner_uid=1000):
                 os.chown(path, owner_uid, owner_uid)
 
 
-def runtime_settings(secret_dir=SECRET_DIR, state_dir=STATE_DIR):
+def runtime_settings(secret_dir=SECRET_DIR, state_dir=STATE_DIR, *, scrub_proxy=True):
     from app.config.settings import Settings
 
     # Explicit defaults for every field prevent host environment/dotenv overrides.
@@ -145,7 +145,7 @@ def runtime_settings(secret_dir=SECRET_DIR, state_dir=STATE_DIR):
         rate_limit_per_minute=10000,
     )
     for key in list(os.environ):
-        if key.lower().endswith("_proxy") or key in {
+        if (scrub_proxy and key.lower().endswith("_proxy")) or key in {
             "LANGCHAIN_API_KEY",
             "LANGSMITH_API_KEY",
             "LANGCHAIN_TRACING_V2",

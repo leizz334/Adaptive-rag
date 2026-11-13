@@ -1,0 +1,40 @@
+# Explicit overlay; use together with compose.showcase.yml, in a separate project.
+# Key contents never appear in this file. Provide a private local secret file.
+name: adaptive-rag-real-agent-dev
+
+services:
+  bootstrap:
+    command: [python, -m, app.demo.real_dev, bootstrap]
+    volumes:
+      - real_budget:/var/lib/real-agent
+  api:
+    command: [python, -m, app.demo.real_dev, serve]
+    environment:
+      REAL_AGENT_DEV_ENABLED: "true"
+      DEEPSEEK_API_KEY: ""
+      DEEPSEEK_API_KEY_FILE: /run/secrets/deepseek_api_key
+      DEEPSEEK_MODEL: "${REAL_AGENT_MODEL:-deepseek-chat}"
+      DEEPSEEK_BASE_URL: "${REAL_AGENT_BASE_URL:-https://api.deepseek.com}"
+      REAL_AGENT_MAX_REQUESTS: "${REAL_AGENT_MAX_REQUESTS:?Set an explicit HTTP attempt limit}"
+      REAL_AGENT_MAX_TOKENS: "${REAL_AGENT_MAX_TOKENS:?Set an explicit aggregate token limit}"
+      REAL_AGENT_MAX_USD: "${REAL_AGENT_MAX_USD:?Set an explicit estimated cost limit}"
+      REAL_AGENT_INPUT_USD_PER_MILLION: "${REAL_AGENT_INPUT_USD_PER_MILLION:?Set a conservative current input price bound}"
+      REAL_AGENT_OUTPUT_USD_PER_MILLION: "${REAL_AGENT_OUTPUT_USD_PER_MILLION:?Set a conservative current output price bound}"
+      EXPERIENCE_MEMORY_MODE: "off"
+    ports: !override ["127.0.0.1:${REAL_AGENT_PORT:-8001}:8000"]
+    secrets: [deepseek_api_key]
+    volumes:
+      - real_budget:/var/lib/real-agent
+    healthcheck:
+      test: [CMD, python, -m, app.demo.real_dev, health]
+    labels:
+      io.adaptive-rag.runtime-mode: real-agent-dev
+
+secrets:
+  deepseek_api_key:
+    file: "${REAL_AGENT_KEY_FILE:?Set a private local DeepSeek key file path}"
+
+volumes:
+  real_budget:
+    labels:
+      io.adaptive-rag.runtime-mode: real-agent-dev

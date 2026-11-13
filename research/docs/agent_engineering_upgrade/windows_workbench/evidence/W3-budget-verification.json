@@ -1,0 +1,54 @@
+{
+  "task": "W3 paid-attempt budget component",
+  "date": "2026-11-13",
+  "scope": [
+    "app/providers/paid_budget.py",
+    "tests/unit/test_paid_budget.py"
+  ],
+  "runtime": "Linux WSL; /home/panda/.venvs/adaptive-rag-workbench/bin/python",
+  "network": "httpx.MockTransport only; zero real provider dispatches; fake test key",
+  "red_green": [
+    {
+      "red": "Initial tests failed collection: ModuleNotFoundError app.providers.paid_budget",
+      "green": "Implemented agreed ledger and transport interface; meaningful behavioral assertions then exercised all paths"
+    },
+    {
+      "red": "Corrupted accounting regression: decimal.InvalidOperation escaped generic admission boundary (1 failed, 27 passed)",
+      "green": "Decimal and malformed metadata errors become generic nonretryable BudgetBlocked"
+    },
+    {
+      "red": "Read cancellation regression: HTTPX response cleanup replaced CancelledError with BudgetBlocked (1 failed, 29 passed)",
+      "green": "Mark uncertainty durably and preserve cancellation through response cleanup"
+    }
+  ],
+  "verification": [
+    {
+      "command": "python -m pytest tests/unit/test_paid_budget.py -q",
+      "result": "PASS: 30 passed in 1.38s"
+    },
+    {
+      "command": "python -m ruff check app/providers/paid_budget.py tests/unit/test_paid_budget.py",
+      "result": "PASS: All checks passed!"
+    },
+    {
+      "command": "python -m mypy app/providers/paid_budget.py --follow-imports=silent",
+      "result": "PASS: Success: no issues found in 1 source file"
+    }
+  ],
+  "verified_behavior": [
+    "Request, conservative token and Decimal USD caps block before dispatch",
+    "Reservation persists before each HTTP attempt, including actual DeepSeekProvider 429 retries",
+    "BEGIN IMMEDIATE serializes admission across threads, ledger instances and processes",
+    "Restart retains reservations; changed configuration fingerprint fails closed",
+    "Unknown attempt transitions, pending and uncertain attempts fail closed without refunds",
+    "No prompts, answers, headers or credentials stored in SQLite",
+    "Private Linux directory/file modes; symlink, corrupt and foreign ledger rejection",
+    "HTTPS origin/path and request model/output limit validation before admission",
+    "JSON and SSE body consumption completes accounting; network, partial body and cancellation preserve charged reservations"
+  ],
+  "limits": [
+    "Native Windows ledger use explicitly fails closed; run in Linux Docker/WSL with a private filesystem directory",
+    "No paid connectivity or current provider pricing was exercised or asserted",
+    "Targeted component checks only while parent concurrently changes launcher and dependency injection; parent owns combined regression verification"
+  ]
+}

@@ -125,10 +125,16 @@ async def build_retrieval(settings: Settings, redis):
     return retriever, reranker, store
 
 
-async def build_container(settings: Settings, seed: bool = False) -> AppContainer:
+async def build_container(
+    settings: Settings, seed: bool = False, *, llm_provider: LLMProvider | None = None
+) -> AppContainer:
     """Compose runtime services from independently testable infrastructure builders."""
     llm: LLMProvider = (
-        DeepSeekProvider(settings) if settings.llm_configured else OfflineLLMProvider()
+        llm_provider
+        if llm_provider is not None
+        else DeepSeekProvider(settings)
+        if settings.llm_configured
+        else OfflineLLMProvider()
     )
     engine, session_factory, redis = await build_infrastructure(settings)
     # Only explicitly offline tests without any Redis configuration may use local quota.

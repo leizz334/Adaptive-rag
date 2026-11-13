@@ -91,6 +91,10 @@ docker compose -f compose.showcase.yml exec -T api python -c 'from app.demo.dock
 
 将其粘贴到页面“本地开发凭证”。Docker Snap的NNP兼容限制、内部网络边界及完整测试见[Docker最终报告](research/docs/agent_engineering_upgrade/s1_full_docker/S1_DOCKER_FINAL_REPORT.md)。
 
+Windows + WSL Docker 使用同一个 Offline Compose；普通 WSL 用户使用 `sudo docker`，保持 WSL 会话开启。当前工作台只保留对话、会话和私有知识库。Offline 不能代替真实模型推理，政策问题需先上传当前用户的相关资料；仓库公共政策不会自动进入私有库。
+
+需要真实 DeepSeek 时，使用独立、显式启用的 [Real Agent Dev](docs/real-agent-dev.md)：单独项目/端口/预算卷，Key 文件只在服务端挂载，必须配置有限请求、Token 和费用上限。默认 Offline 不受影响。本轮没有执行真实付费请求。
+
 以下为已交付的宿主启动器路径：
 
 需要Python3.11+、Node20.19+或22.12+、Docker Engine及Compose；本机验证使用Python3.12/Node22。确认当前用户可以访问本机Docker。新克隆：
@@ -144,7 +148,7 @@ cd ..
 
 这是真实Chromium、真实API/数据库测试，无route mock、单worker/重试0，会执行本run的合成取消。每轮原始报告隔离保存在私有目录，公开只输出安全汇总。
 
-![Experience：明确零收益与历史资格](research/docs/agent_engineering_upgrade/s1_showcase_release/evidence/experience_release.png)
+后台 Experience Memory、审核和历史实验完整保留；普通用户工作台不再提供 Experience 实验页面。[旧页面截图仅作为历史归档](research/docs/agent_engineering_upgrade/s1_showcase_release/evidence/experience_release.png)。
 
 ## 工程难点
 
