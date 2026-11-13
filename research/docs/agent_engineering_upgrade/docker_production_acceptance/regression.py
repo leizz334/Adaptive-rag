@@ -34,7 +34,9 @@ os.environ.update(
     GIT_OBJECT_DIRECTORY="/mnt/c/Users/panda/.codex/recovery/Adaptive-rag-20261113-467df67775c0485fbcd23b50481ed14a.git/objects",
 )
 sys.path.insert(0, str(ROOT))
-from research.docs.agent_engineering_upgrade.p4_dependency_integration.sandbox import command  # noqa: E402
+from research.docs.agent_engineering_upgrade.p4_dependency_integration.sandbox import (  # noqa: E402
+    command,
+)
 
 
 def check(name, argv):

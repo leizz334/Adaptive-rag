@@ -39,7 +39,14 @@ if __name__ == "__main__":
         prefix = (
             "import os,sys;os.chdir(" + repr(LINUX_ROOT) + ");sys.argv=" + repr(sys.argv[2:]) + "\n"
         )
-        print(wsl(prefix + Path(sys.argv[2]).read_text(encoding="utf8"), timeout=3600))
+        source = prefix + Path(sys.argv[2]).read_text(encoding="utf8")
+        guarded = (
+            "import traceback,json\ntry:\n exec(compile("
+            + repr(source)
+            + ", '<phase-command>', 'exec'))\n"
+            + "except Exception as exc:\n print(json.dumps({'error_type':type(exc).__name__,'lines':[r.lineno for r in traceback.extract_tb(exc.__traceback__)]}));raise SystemExit(1)"
+        )
+        print(wsl(guarded, timeout=3600))
     elif sys.argv[1] == "inventory":
         code = """
 import subprocess,json

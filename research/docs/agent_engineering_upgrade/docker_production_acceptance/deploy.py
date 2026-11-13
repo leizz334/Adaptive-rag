@@ -17,8 +17,6 @@ API = PROJECT + "-api-1"
 IMAGE = "adaptive-rag-production:be2931f-20261113"
 ROLLBACK = "adaptive-rag-production:rollback-20261113"
 os.umask(0o077)
-PRIVATE.mkdir(parents=True, exist_ok=True, mode=0o700)
-EVIDENCE.mkdir(parents=True, exist_ok=True)
 
 
 def run(*args, binary=False):
@@ -119,95 +117,51 @@ def status():
     ]
 
 
-action = sys.argv[1]
-if action == "baseline":
-    raw = run("docker", "inspect", API, binary=True)
-    (PRIVATE / "original-api-inspect.json").write_bytes(raw)
-    image = json.loads(raw)[0]["Image"]
-    run("docker", "tag", image, ROLLBACK)
-    backup = run(
-        "docker",
-        "exec",
-        PROJECT + "-postgres-1",
-        "pg_dump",
-        "-U",
-        "adaptive",
-        "-d",
-        "adaptive_showcase",
-        "--format=custom",
-        binary=True,
-    )
-    with (PRIVATE / "postgres-before.dump").open("xb") as stream:
-        stream.write(backup)
-    (PRIVATE / "rollback.json").write_text(json.dumps({"services": {"api": {"image": ROLLBACK}}}))
-    (PRIVATE / "upgrade.json").write_text(json.dumps({"services": {"api": {"image": IMAGE}}}))
-    save("before-data.json", fingerprint())
-    save(
-        "rollback.json",
-        {
-            "old_image_id": image,
-            "rollback_tag": ROLLBACK,
-            "private_directory": str(PRIVATE),
-            "command": "docker compose --env-file /dev/null -p adaptive-rag-showcase -f compose.showcase.yml -f "
-            + str(PRIVATE / "rollback.json")
-            + " up -d --no-deps --no-build api",
-            "database_backup": str(PRIVATE / "postgres-before.dump"),
-            "initialize_will_not_run": True,
-            "status": status(),
-        },
-    )
-    print(
-        json.dumps(
-            {
-                "baseline": "PASS",
-                "db_revision": fingerprint()["alembic_revision"],
-                "rollback": ROLLBACK,
-                "backup_bytes": len(backup),
-            }
-        )
-    )
-elif action == "build":
-    with (PRIVATE / "build.log").open("w") as log:
-        result = subprocess.run(
-            ["docker", "build", "--target", "showcase", "-t", IMAGE, "."], stdout=log, stderr=log
-        )
-    image = (
-        run("docker", "image", "inspect", IMAGE, "--format", "{{.Id}}").strip()
-        if not result.returncode
-        else None
-    )
-    save(
-        "build.json",
-        {
-            "exit": result.returncode,
-            "image": IMAGE,
-            "image_id": image,
-            "log": str(PRIVATE / "build.log"),
-        },
-    )
-    print(json.dumps({"build_exit": result.returncode, "image_id": image}))
-    raise SystemExit(result.returncode)
-elif action == "upgrade":
+def upgrade_api():
     assert (
         json.loads((EVIDENCE / "before-data.json").read_text()) == fingerprint()
     ), "Data changed since baseline; inspect before upgrade"
-    output = compose(PRIVATE / "upgrade.json", "up", "-d", "--no-deps", "--no-build", "api")
-    (PRIVATE / "upgrade.log").write_text(output)
-    healthy = False
-    for _ in range(45):
-        row = status()[0]
-        if row["health"] == "healthy":
-            healthy = True
-            break
-        time.sleep(2)
-    unchanged = json.loads((EVIDENCE / "before-data.json").read_text()) == fingerprint()
-    if not healthy or not unchanged:
-        compose(PRIVATE / "rollback.json", "up", "-d", "--no-deps", "--no-build", "api")
-        raise RuntimeError("Upgrade failed health/preservation; previous API image restored")
-    save(
-        "after-upgrade.json",
-        {"healthy": healthy, "database_byte_fingerprints_unchanged": unchanged, "status": status()},
-    )
+    old_image = json.loads((EVIDENCE / "rollback.json").read_text())["old_image_id"]
+    try:
+        output = compose(PRIVATE / "upgrade.json", "up", "-d", "--no-deps", "--no-build", "api")
+        (PRIVATE / "upgrade.log").write_text(output)
+        healthy = False
+        for _ in range(45):
+            row = status()[0]
+            if row["health"] == "healthy":
+                healthy = True
+                break
+            time.sleep(2)
+        unchanged = json.loads((EVIDENCE / "before-data.json").read_text()) == fingerprint()
+        if not healthy or not unchanged:
+            raise RuntimeError("Upgrade health/preservation verification failed")
+        save(
+            "after-upgrade.json",
+            {
+                "healthy": healthy,
+                "database_byte_fingerprints_unchanged": unchanged,
+                "status": status(),
+            },
+        )
+    except Exception:
+        try:
+            compose(PRIVATE / "rollback.json", "up", "-d", "--no-deps", "--no-build", "api")
+            restored = False
+            for _ in range(45):
+                row = status()[0]
+                if row["image"] == old_image and row["health"] == "healthy":
+                    restored = True
+                    break
+                time.sleep(2)
+            if not restored:
+                raise RuntimeError("Previous API image/health not confirmed")
+        except Exception:
+            raise RuntimeError(
+                "Upgrade failed; rollback not verified; manual inspection required"
+            ) from None
+        raise RuntimeError(
+            "Upgrade failed; previous API image and health verified restored"
+        ) from None
     print(
         json.dumps(
             {
@@ -217,29 +171,125 @@ elif action == "upgrade":
             }
         )
     )
-elif action == "discover":
-    print(
-        run(
-            "find",
-            "/home/panda/.cache",
-            "/home/panda/.local",
-            "/opt",
-            "-maxdepth",
-            "5",
-            "-name",
-            "python",
-            "-o",
-            "-name",
-            "chrome",
-            "-o",
-            "-name",
-            "node",
+
+
+def main():
+    PRIVATE.mkdir(parents=True, exist_ok=True, mode=0o700)
+    EVIDENCE.mkdir(parents=True, exist_ok=True)
+    action = sys.argv[1]
+    if action == "baseline":
+        raw = run("docker", "inspect", API, binary=True)
+        (PRIVATE / "original-api-inspect.json").write_bytes(raw)
+        image = json.loads(raw)[0]["Image"]
+        run("docker", "tag", image, ROLLBACK)
+        backup = run(
+            "docker",
+            "exec",
+            PROJECT + "-postgres-1",
+            "pg_dump",
+            "-U",
+            "adaptive",
+            "-d",
+            "adaptive_showcase",
+            "--format=custom",
+            binary=True,
         )
-    )
-elif action == "browser-path":
-    source = Path("/home/panda/.local/state/adaptive-rag-production-20261113/browser-config.json")
-    destination = Path("/home/panda/.local/adaptive-rag-production-20261113")
-    destination.mkdir(mode=0o700)
-    os.chown(destination, 1000, 1000)
-    source.rename(destination / "browser-config.json")
-    print("BROWSER_CONFIG_ACCESS_FIXED; mode0600 unchanged; no token output")
+        with (PRIVATE / "postgres-before.dump").open("xb") as stream:
+            stream.write(backup)
+        (PRIVATE / "rollback.json").write_text(
+            json.dumps({"services": {"api": {"image": ROLLBACK}}})
+        )
+        (PRIVATE / "upgrade.json").write_text(json.dumps({"services": {"api": {"image": IMAGE}}}))
+        save("before-data.json", fingerprint())
+        save(
+            "rollback.json",
+            {
+                "old_image_id": image,
+                "rollback_tag": ROLLBACK,
+                "private_directory": str(PRIVATE),
+                "command": "docker compose --env-file /dev/null -p adaptive-rag-showcase -f compose.showcase.yml -f "
+                + str(PRIVATE / "rollback.json")
+                + " up -d --no-deps --no-build api",
+                "database_backup": str(PRIVATE / "postgres-before.dump"),
+                "initialize_will_not_run": True,
+                "status": status(),
+            },
+        )
+        print(
+            json.dumps(
+                {
+                    "baseline": "PASS",
+                    "db_revision": fingerprint()["alembic_revision"],
+                    "rollback": ROLLBACK,
+                    "backup_bytes": len(backup),
+                }
+            )
+        )
+    elif action == "build":
+        with (PRIVATE / "build.log").open("w") as log:
+            result = subprocess.run(
+                ["docker", "build", "--target", "showcase", "-t", IMAGE, "."],
+                stdout=log,
+                stderr=log,
+            )
+        image = (
+            run("docker", "image", "inspect", IMAGE, "--format", "{{.Id}}").strip()
+            if not result.returncode
+            else None
+        )
+        save(
+            "build.json",
+            {
+                "exit": result.returncode,
+                "image": IMAGE,
+                "image_id": image,
+                "log": str(PRIVATE / "build.log"),
+            },
+        )
+        print(json.dumps({"build_exit": result.returncode, "image_id": image}))
+        raise SystemExit(result.returncode)
+    elif action == "upgrade":
+        upgrade_api()
+    elif action == "discover":
+        print(
+            run(
+                "find",
+                "/home/panda/.cache",
+                "/home/panda/.local",
+                "/opt",
+                "-maxdepth",
+                "5",
+                "-name",
+                "python",
+                "-o",
+                "-name",
+                "chrome",
+                "-o",
+                "-name",
+                "node",
+            )
+        )
+    elif action == "browser-path":
+        source = Path(
+            "/home/panda/.local/state/adaptive-rag-production-20261113/browser-config.json"
+        )
+        destination = Path("/home/panda/.local/adaptive-rag-production-20261113")
+        destination.mkdir(mode=0o700)
+        os.chown(destination, 1000, 1000)
+        source.rename(destination / "browser-config.json")
+        print("BROWSER_CONFIG_ACCESS_FIXED; mode0600 unchanged; no token output")
+    elif action == "progress":
+        import re
+
+        result = []
+        for path in PRIVATE.glob("prod_20261114_suite01-*.log"):
+            content = path.read_text(errors="replace")
+            percentages = re.findall(r"\[\s*(\d+)%\]", content)
+            result.append(
+                {"name": path.name, "bytes": path.stat().st_size, "percent": percentages[-1:]}
+            )
+        print(json.dumps(result))
+
+
+if __name__ == "__main__":
+    main()
