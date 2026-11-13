@@ -1,0 +1,17 @@
+{
+  "phase": "Docker production upgrade and Agent end-to-end acceptance",
+  "base_head": "be2931f0898b49545b3b442b70761416e3a5fc7e",
+  "architecture_decisions": [
+    "Reuse existing worktree and preserved verified source; no new architecture or paid model dispatch.",
+    "Upgrade only formal API through Compose --no-deps; never rerun seed/initialize or recreate data services.",
+    "Keep all volumes and historical evidence; use immutable evidence and private rollback backup.",
+    "REAL_LLM_NOT_RUN without explicit finite paid authorization; MockTransport is not live acceptance."
+  ],
+  "tasks": [
+    {"id":"W1","dependencies":[],"passes":true,"status":"complete","acceptance_criteria":["Verified source ancestry, Git state, container ownership and image/volume baseline", "Private 0600 database backup, API configuration, rollback image and non-secret data fingerprints recorded"]},
+    {"id":"W2","dependencies":["W1"],"passes":false,"status":"pending","acceptance_criteria":["Latest API/frontend built and deployed exclusively at 8000", "Data service identities, mounts and all pre-upgrade database fingerprints preserved; all dependencies healthy"]},
+    {"id":"W3","dependencies":["W2"],"passes":false,"status":"pending","acceptance_criteria":["Actual HTTP/SSE/Chromium core workflows, memory, RAG citations, HITL/idempotency and ownership verified", "Missing data/dependency failure and trace/tool correspondence verified without security relaxation"]},
+    {"id":"W4","dependencies":["W3"],"passes":false,"status":"pending","acceptance_criteria":["Real Dev configuration and durable request/token/cost gates tested using MockTransport", "Related backend/frontend/browser regressions have no new failures; live model status reported separately"]},
+    {"id":"W5","dependencies":["W4"],"passes":false,"status":"pending","acceptance_criteria":["Unused owned old containers safely stopped/removed, all volumes preserved and unrelated tasks unaffected", "Chinese report, checkpoint and ordinary push/exact remote HEAD verification attempted and honestly reported"]}
+  ]
+}

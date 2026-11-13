@@ -1,0 +1,400 @@
+[
+  {
+    "id": "8d354f9adedbc931ea03124581d9b91d69df56acac20fc7097e9d9d873e4ce61",
+    "name": "/adaptive-rag-w1-20261113-api-1",
+    "image": "sha256:ae5c8f466b27884ba94b6e01fdbcf58325ac346fbd93823937929e3a0f9f6c58",
+    "image_ref": "adaptive-rag-ww-workbench:20261113",
+    "status": "running",
+    "health": "healthy",
+    "started": "2026-11-13T15:07:49.133008796Z",
+    "project": "adaptive-rag-w1-20261113",
+    "service": "api",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml,/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/research/docs/agent_engineering_upgrade/windows_workbench/.private/adaptive-rag-w1-20261113/compose.override.json",
+    "ports": {
+      "8000/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "18083"
+        }
+      ]
+    },
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-w1-20261113_db_secret",
+        "Destination": "/run/showcase-db",
+        "RW": false
+      },
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-w1-20261113_showcase_state",
+        "Destination": "/var/lib/showcase",
+        "RW": false
+      }
+    ]
+  },
+  {
+    "id": "ba7db0cc026aa3c292b61c925f8d13f27a51a40b8ced3ea42ee04f86ca0ec12f",
+    "name": "/p4b_ww_w4_20261113_01-postgres-1",
+    "image": "sha256:f377d590e5474681d4d7838635031a2b50647923b7abfa803ce9b5ff35d5c663",
+    "image_ref": "postgres:16-alpine",
+    "status": "exited",
+    "health": "unhealthy",
+    "started": "2026-11-13T13:15:41.379486664Z",
+    "project": "p4b_ww_w4_20261113_01",
+    "service": "postgres",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/research/docs/agent_engineering_upgrade/p4_dependency_integration/compose.integration.yml",
+    "ports": {
+      "5432/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "55953"
+        }
+      ]
+    },
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "p4b_ww_w4_20261113_01_pgdata",
+        "Destination": "/var/lib/postgresql/data",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "b4a6f40f0c0c0249ffd6d4aec6068f6432bedbdb4afd7c875dca7815395fd4d9",
+    "name": "/p4b_ww_w4_20261113_01-redis-1",
+    "image": "sha256:7f7d30b7fdd09467bac58198a1f166dd69789d348d4fe859cccb20e0cf287fbe",
+    "image_ref": "redis:7-alpine",
+    "status": "exited",
+    "health": "unhealthy",
+    "started": "2026-11-13T13:16:47.059962055Z",
+    "project": "p4b_ww_w4_20261113_01",
+    "service": "redis",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/research/docs/agent_engineering_upgrade/p4_dependency_integration/compose.integration.yml",
+    "ports": {
+      "6379/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "58995"
+        }
+      ]
+    },
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "p4b_ww_w4_20261113_01_redisdata",
+        "Destination": "/data",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "473ef206a24c273afc702490c197dd7693ec44b93f4e413032de2ce2055d262a",
+    "name": "/p4b_ww_w4_20261113_01-qdrant-1",
+    "image": "sha256:05fecce7dce45d1254e0468bc037e8210e187fd56fa847688b012293d5f08aae",
+    "image_ref": "qdrant/qdrant:v1.12.5",
+    "status": "exited",
+    "health": null,
+    "started": "2026-11-13T13:15:47.2149524Z",
+    "project": "p4b_ww_w4_20261113_01",
+    "service": "qdrant",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/research/docs/agent_engineering_upgrade/p4_dependency_integration/compose.integration.yml",
+    "ports": {
+      "6333/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "57961"
+        }
+      ]
+    },
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "p4b_ww_w4_20261113_01_qdrantdata",
+        "Destination": "/qdrant/storage",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "07e3426024c04890cf5dd667b4b6f90355dfb7f5d8a44fe2323e5f5340528494",
+    "name": "/adaptive-rag-w1-20261113-initialize-1",
+    "image": "sha256:2cf86bc6d5acc074e78d252d58eb77a599dbfbecbd28ed1b2bdad01480072a74",
+    "image_ref": "adaptive-rag-showcase-initialize",
+    "status": "exited",
+    "health": null,
+    "started": "2026-11-13T11:55:26.401232611Z",
+    "project": "adaptive-rag-w1-20261113",
+    "service": "initialize",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml,/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/research/docs/agent_engineering_upgrade/windows_workbench/.private/adaptive-rag-w1-20261113/compose.override.json",
+    "ports": {},
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-w1-20261113_db_secret",
+        "Destination": "/run/showcase-db",
+        "RW": false
+      },
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-w1-20261113_showcase_state",
+        "Destination": "/var/lib/showcase",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "d0a158f8064ec26b90d1f00003df7ab70e492f816aed1f37e9b17a99963ca809",
+    "name": "/adaptive-rag-w1-20261113-postgres-1",
+    "image": "sha256:f377d590e5474681d4d7838635031a2b50647923b7abfa803ce9b5ff35d5c663",
+    "image_ref": "postgres:16-alpine",
+    "status": "running",
+    "health": "healthy",
+    "started": "2026-11-13T15:07:49.195743482Z",
+    "project": "adaptive-rag-w1-20261113",
+    "service": "postgres",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml,/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/research/docs/agent_engineering_upgrade/windows_workbench/.private/adaptive-rag-w1-20261113/compose.override.json",
+    "ports": {},
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-w1-20261113_db_secret",
+        "Destination": "/run/showcase-db",
+        "RW": false
+      },
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-w1-20261113_pgdata",
+        "Destination": "/var/lib/postgresql/data",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "d6c7836c853d230ac95b8de222602fe3f4579e255dce1f07088a083e0d528ab4",
+    "name": "/adaptive-rag-w1-20261113-redis-1",
+    "image": "sha256:7f7d30b7fdd09467bac58198a1f166dd69789d348d4fe859cccb20e0cf287fbe",
+    "image_ref": "redis:7-alpine",
+    "status": "running",
+    "health": "healthy",
+    "started": "2026-11-13T15:07:49.161850244Z",
+    "project": "adaptive-rag-w1-20261113",
+    "service": "redis",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml,/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/research/docs/agent_engineering_upgrade/windows_workbench/.private/adaptive-rag-w1-20261113/compose.override.json",
+    "ports": {},
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-w1-20261113_redisdata",
+        "Destination": "/data",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "d8535d1a5b839c7e2755ac45da4c0f5b235c158b0001a4c6ef44a04241cfac61",
+    "name": "/adaptive-rag-w1-20261113-qdrant-1",
+    "image": "sha256:05fecce7dce45d1254e0468bc037e8210e187fd56fa847688b012293d5f08aae",
+    "image_ref": "qdrant/qdrant:v1.12.5",
+    "status": "running",
+    "health": "healthy",
+    "started": "2026-11-13T15:07:49.201311705Z",
+    "project": "adaptive-rag-w1-20261113",
+    "service": "qdrant",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml,/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/research/docs/agent_engineering_upgrade/windows_workbench/.private/adaptive-rag-w1-20261113/compose.override.json",
+    "ports": {},
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-w1-20261113_qdrantdata",
+        "Destination": "/qdrant/storage",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "20f97b93087de88c454e57dd4efb1cad5907d03169a2877c37e130f66f5de80a",
+    "name": "/adaptive-rag-w1-20261113-bootstrap-1",
+    "image": "sha256:79aa0f5df39c98dce5858ec949895905b22426396ac52eda2fe04c7148d4db36",
+    "image_ref": "adaptive-rag-showcase-bootstrap",
+    "status": "exited",
+    "health": null,
+    "started": "2026-11-13T11:55:20.046721346Z",
+    "project": "adaptive-rag-w1-20261113",
+    "service": "bootstrap",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml,/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/research/docs/agent_engineering_upgrade/windows_workbench/.private/adaptive-rag-w1-20261113/compose.override.json",
+    "ports": {},
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-w1-20261113_db_secret",
+        "Destination": "/run/showcase-db",
+        "RW": true
+      },
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-w1-20261113_showcase_state",
+        "Destination": "/var/lib/showcase",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "d2f534be92ad630effd0f8394ca5090ea935234b955430412afc3d8d734f95a7",
+    "name": "/adaptive-rag-showcase-api-1",
+    "image": "sha256:e2a216e7fd9d87612ec6039518e56ae7eca8997cc4b3d1c7ed83d58f5f353ca0",
+    "image_ref": "adaptive-rag-showcase-api",
+    "status": "running",
+    "health": "healthy",
+    "started": "2026-11-13T15:07:49.186493651Z",
+    "project": "adaptive-rag-showcase",
+    "service": "api",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml",
+    "ports": {
+      "8000/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "8000"
+        }
+      ]
+    },
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-showcase_db_secret",
+        "Destination": "/run/showcase-db",
+        "RW": false
+      },
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-showcase_showcase_state",
+        "Destination": "/var/lib/showcase",
+        "RW": false
+      }
+    ]
+  },
+  {
+    "id": "e011a228b908290ec4b1975a0b260b8a91aaec629b3dc3f2b31c54d04080c6f9",
+    "name": "/adaptive-rag-showcase-initialize-1",
+    "image": "sha256:2cf86bc6d5acc074e78d252d58eb77a599dbfbecbd28ed1b2bdad01480072a74",
+    "image_ref": "adaptive-rag-showcase-initialize",
+    "status": "exited",
+    "health": null,
+    "started": "2026-11-13T11:17:24.063849814Z",
+    "project": "adaptive-rag-showcase",
+    "service": "initialize",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml",
+    "ports": {},
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-showcase_db_secret",
+        "Destination": "/run/showcase-db",
+        "RW": false
+      },
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-showcase_showcase_state",
+        "Destination": "/var/lib/showcase",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "f57ce865f061a44d6048e156471e1b759233b20118e4fd001b6bc30562490949",
+    "name": "/adaptive-rag-showcase-postgres-1",
+    "image": "sha256:f377d590e5474681d4d7838635031a2b50647923b7abfa803ce9b5ff35d5c663",
+    "image_ref": "postgres:16-alpine",
+    "status": "running",
+    "health": "healthy",
+    "started": "2026-11-13T15:07:49.176349784Z",
+    "project": "adaptive-rag-showcase",
+    "service": "postgres",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml",
+    "ports": {},
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-showcase_db_secret",
+        "Destination": "/run/showcase-db",
+        "RW": false
+      },
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-showcase_pgdata",
+        "Destination": "/var/lib/postgresql/data",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "b68624430435fa051ad7c6f95557ddeeb662bc8030deea39681e1594621fc323",
+    "name": "/adaptive-rag-showcase-redis-1",
+    "image": "sha256:7f7d30b7fdd09467bac58198a1f166dd69789d348d4fe859cccb20e0cf287fbe",
+    "image_ref": "redis:7-alpine",
+    "status": "running",
+    "health": "healthy",
+    "started": "2026-11-13T15:07:49.15282376Z",
+    "project": "adaptive-rag-showcase",
+    "service": "redis",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml",
+    "ports": {},
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-showcase_redisdata",
+        "Destination": "/data",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "aba9073abd23a0c9633e25a8b131e66d503ae59ca69058e235353dd9dc264baf",
+    "name": "/adaptive-rag-showcase-qdrant-1",
+    "image": "sha256:05fecce7dce45d1254e0468bc037e8210e187fd56fa847688b012293d5f08aae",
+    "image_ref": "qdrant/qdrant:v1.12.5",
+    "status": "running",
+    "health": "healthy",
+    "started": "2026-11-13T15:07:49.191217336Z",
+    "project": "adaptive-rag-showcase",
+    "service": "qdrant",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml",
+    "ports": {},
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-showcase_qdrantdata",
+        "Destination": "/qdrant/storage",
+        "RW": true
+      }
+    ]
+  },
+  {
+    "id": "845102a552d8212cc9bbbd142dc1fc2f026c75ab5fb17c59495996df891313f8",
+    "name": "/adaptive-rag-showcase-bootstrap-1",
+    "image": "sha256:79aa0f5df39c98dce5858ec949895905b22426396ac52eda2fe04c7148d4db36",
+    "image_ref": "adaptive-rag-showcase-bootstrap",
+    "status": "exited",
+    "health": null,
+    "started": "2026-11-13T11:17:17.690606157Z",
+    "project": "adaptive-rag-showcase",
+    "service": "bootstrap",
+    "config_files": "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation/compose.showcase.yml",
+    "ports": {},
+    "mounts": [
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-showcase_db_secret",
+        "Destination": "/run/showcase-db",
+        "RW": true
+      },
+      {
+        "Type": "volume",
+        "Name": "adaptive-rag-showcase_showcase_state",
+        "Destination": "/var/lib/showcase",
+        "RW": true
+      }
+    ]
+  }
+]
