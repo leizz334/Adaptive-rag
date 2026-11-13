@@ -26,10 +26,10 @@
 
 ## Tasks
 
-- [ ] W1：只读基线、数据指纹、配置及回滚镜像记录，核对版本，任务独立提交。
-- [ ] W2：构建最新镜像；Compose up --no-deps 仅替换 API；健康和数据指纹验证，失败回滚。
-- [ ] W3：8000 实际 HTTP/SSE 与 Chromium，订单/Memory/RAG/HITL/Owner/异常/Trace 验证。
-- [ ] W4：现有 Real Dev 与预算 MockTransport 回归、前后端测试；真实付费标记未运行。
-- [ ] W5：确认无其他使用者后清理 18083 测试容器，P4B 保持停止，保留全部卷；中文报告、普通 Push、精确 HEAD 核验。
+- [x] W1：只读基线、数据指纹、配置及回滚镜像记录，核对版本，任务独立提交。
+- [x] W2：构建最新镜像；Compose up --no-deps 仅替换 API；健康和数据指纹验证，失败回滚。
+- [x] W3：8000 实际 HTTP/SSE 与 Chromium，订单/Memory/RAG/HITL/Owner/异常/Trace 验证。
+- [x] W4：现有 Real Dev 与预算 MockTransport 回归、前后端测试；真实付费标记未运行。
+- [x] W5：确认无其他使用者后清理 18083 测试容器，P4B 保持停止，保留全部卷；中文报告、普通 Push、精确 HEAD 核验。
 
 按用户已明确授权的顺序直接执行；无产品代码变更则不新增镜像实现测试。
