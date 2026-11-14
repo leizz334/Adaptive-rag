@@ -92,9 +92,12 @@ def load_runtime_config(
         raise RealDevConfigurationError(
             "DEEPSEEK_BASE_URL must be an HTTPS endpoint without credentials"
         )
-    model = os.environ.get("DEEPSEEK_MODEL", "deepseek-chat")
+    model = os.environ.get("DEEPSEEK_MODEL", "deepseek-flash")
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}", model):
         raise RealDevConfigurationError("Invalid DEEPSEEK_MODEL")
+    thinking_mode = os.environ.get("DEEPSEEK_THINKING_MODE", "disabled")
+    if thinking_mode not in {"enabled", "disabled"}:
+        raise RealDevConfigurationError("Invalid DEEPSEEK_THINKING_MODE")
     limits = BudgetLimits(
         max_requests=_positive("REAL_AGENT_MAX_REQUESTS", integer=True),
         max_tokens=_positive("REAL_AGENT_MAX_TOKENS", integer=True),
@@ -113,6 +116,8 @@ def load_runtime_config(
             deepseek_api_key=key,
             deepseek_base_url=endpoint,
             deepseek_model=model,
+            deepseek_thinking_mode=thinking_mode,
+            llm_max_retries=1,
             rate_limit_per_minute=60,
         )
     )

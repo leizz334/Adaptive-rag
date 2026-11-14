@@ -68,6 +68,8 @@ class DeepSeekProvider:
         }
         if response_format is not None:
             payload["response_format"] = response_format
+        if self._settings.deepseek_thinking_mode is not None:
+            payload["thinking"] = {"type": self._settings.deepseek_thinking_mode}
         enforce_request_budget(payload, self._settings.token_budget)
 
         @traced("llm.http_attempt", "chain")
@@ -143,6 +145,8 @@ class DeepSeekProvider:
         }
         if response_format is not None:
             payload["response_format"] = response_format
+        if self._settings.deepseek_thinking_mode is not None:
+            payload["thinking"] = {"type": self._settings.deepseek_thinking_mode}
         enforce_request_budget(payload, self._settings.token_budget)
 
         try:

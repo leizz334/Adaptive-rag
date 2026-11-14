@@ -1,0 +1,90 @@
+{
+  "ledger": {
+    "requests": 0,
+    "tokens": 0,
+    "usd": "0",
+    "pending": 0,
+    "uncertain": 0,
+    "completed": 0
+  },
+  "limits": {
+    "max_requests": 6,
+    "max_tokens": 10000,
+    "max_usd": "0.05",
+    "input_usd_per_million": "0.30",
+    "output_usd_per_million": "1.20",
+    "model": "deepseek-flash"
+  },
+  "retries": 1,
+  "thinking_mode": "disabled",
+  "app_source_match_count": 150,
+  "containers": [
+    {
+      "id": "263fb2a30ac6e3dd4ff383c00098a152d962e89d746775e7258eccd15f3d0131",
+      "name": "/adaptive-rag-real-agent-dev-api-1",
+      "image": "sha256:e13df9b2cfda3ceab2b969b0ec68e0678486e689b55a8fb866dd88c86e38513f",
+      "state": "running",
+      "health": "healthy",
+      "mounts": [
+        "adaptive-rag-real-agent-dev_db_secret",
+        null,
+        "adaptive-rag-real-agent-dev_real_budget",
+        "adaptive-rag-real-agent-dev_showcase_state"
+      ]
+    },
+    {
+      "id": "78f781690933a127062ec3d13c5c55d46e3d7c674d2cd51fb214911519d7c676",
+      "name": "/adaptive-rag-real-agent-dev-initialize-1",
+      "image": "sha256:e13df9b2cfda3ceab2b969b0ec68e0678486e689b55a8fb866dd88c86e38513f",
+      "state": "exited",
+      "health": null,
+      "mounts": [
+        "adaptive-rag-real-agent-dev_db_secret",
+        "adaptive-rag-real-agent-dev_showcase_state"
+      ]
+    },
+    {
+      "id": "7a6ee4f5a97ee2e303806c504044667f581528c60c38f2ed4b5d3f4a9e35d795",
+      "name": "/adaptive-rag-real-agent-dev-postgres-1",
+      "image": "sha256:f377d590e5474681d4d7838635031a2b50647923b7abfa803ce9b5ff35d5c663",
+      "state": "running",
+      "health": "healthy",
+      "mounts": [
+        "adaptive-rag-real-agent-dev_db_secret",
+        "adaptive-rag-real-agent-dev_pgdata"
+      ]
+    },
+    {
+      "id": "60def7c0d75ddc8bb5371e09ad057dc833f128e4ca2ff65378fd8d88084f4b09",
+      "name": "/adaptive-rag-real-agent-dev-redis-1",
+      "image": "sha256:7f7d30b7fdd09467bac58198a1f166dd69789d348d4fe859cccb20e0cf287fbe",
+      "state": "running",
+      "health": "healthy",
+      "mounts": [
+        "adaptive-rag-real-agent-dev_redisdata"
+      ]
+    },
+    {
+      "id": "1a986b160525b2bd570d2458df5cb0f53d3d693323b316eb38717ba21f5136d5",
+      "name": "/adaptive-rag-real-agent-dev-qdrant-1",
+      "image": "sha256:05fecce7dce45d1254e0468bc037e8210e187fd56fa847688b012293d5f08aae",
+      "state": "running",
+      "health": "healthy",
+      "mounts": [
+        "adaptive-rag-real-agent-dev_qdrantdata"
+      ]
+    },
+    {
+      "id": "47bf163c2650fc535348977cfa4f6159763979d41b23cbb8d190d3259c6a0f88",
+      "name": "/adaptive-rag-real-agent-dev-bootstrap-1",
+      "image": "sha256:e13df9b2cfda3ceab2b969b0ec68e0678486e689b55a8fb866dd88c86e38513f",
+      "state": "exited",
+      "health": null,
+      "mounts": [
+        "adaptive-rag-real-agent-dev_db_secret",
+        "adaptive-rag-real-agent-dev_real_budget",
+        "adaptive-rag-real-agent-dev_showcase_state"
+      ]
+    }
+  ]
+}

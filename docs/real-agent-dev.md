@@ -29,10 +29,15 @@ sudo docker compose -f compose.showcase.yml up -d --build
 | `REAL_AGENT_MAX_USD` | 按配置单价估计的费用预留上限，例如 `1` |
 | `REAL_AGENT_INPUT_USD_PER_MILLION` | 正数、有限的输入价格上界，USD/百万 Token，必须填写 |
 | `REAL_AGENT_OUTPUT_USD_PER_MILLION` | 正数、有限的输出价格上界，USD/百万 Token，必须填写 |
-| `REAL_AGENT_MODEL` | 可选，默认 `deepseek-chat`；须和单价对应 |
+| `REAL_AGENT_MODEL` | 可选，默认 `deepseek-flash`；须和官方现行单价对应 |
+| `REAL_AGENT_THINKING_MODE` | 默认 `disabled`，显式非思考模式适配现有短 JSON 分类、规划及回答；可明确设为 `enabled`，仍受同一输出和消费上限保护 |
 | `REAL_AGENT_PORT` | 可选，默认 `8001`；须未被占用 |
 
 Key 通过 Compose secret 挂载进容器，YAML 只保存文件引用。裸 Python 服务端入口也可读取 `DEEPSEEK_API_KEY` 或 `DEEPSEEK_API_KEY_FILE`，两者只能选一个。服务端显式要求 `REAL_AGENT_DEV_ENABLED=true`；独立 Compose overlay 会设置该标志，同时固定 `EXPERIENCE_MEMORY_MODE=off`、必需认证、私有 RAG 和 M2 Memory。
+
+仓库 `.env` 中的 Key 不会切换 Offline。Compose 的变量插值和容器环境注入是两件事；Real Dev 仍须显式提供上述 secret 文件路径、模型和预算。不要把 `.env` 整体挂进容器，也不要把 Key 放入命令参数或前端。Real Dev 每次 Provider 调用最多尝试一次；出现错误先检查证据，不自动消耗剩余额度重试。
+
+一次 Agent 用户请求可能包含分类、规划、生成、Faithfulness、改写等多次模型 HTTP 尝试，持久账本按每次尝试计数。保守 Token 预留包含完整 UTF-8 请求、协议边界余量和最大输出，可能明显高于供应商实际 usage；余额不足时会在发送下一次 HTTP 前拒绝，不应删账本或关闭安全节点来让小预算测试通过。
 
 端点使用默认官方根地址或 `/v1`。其他路径目前会被运行时传输门禁拒绝；`validate` 的基础 URL 检查尚未和此路径限制完全统一，因此不能仅凭 `validate` 的结果判断自定义路径可用。实际付费连通性、代理必需的网络路径和供应商自然语言质量本轮均未测试。
 

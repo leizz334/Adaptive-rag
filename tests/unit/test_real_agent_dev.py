@@ -37,6 +37,22 @@ def load(real_environment):
     return load_runtime_config(secret, state, budget)
 
 
+def test_real_dev_disables_automatic_paid_retries(real_environment):
+    assert load(real_environment).settings.llm_max_retries == 1
+
+
+def test_real_dev_defaults_to_explicit_non_thinking_json_mode(real_environment):
+    assert getattr(load(real_environment).settings, "deepseek_thinking_mode", None) == "disabled"
+
+
+def test_real_dev_rejects_invalid_thinking_mode(real_environment, monkeypatch):
+    from app.demo.real_dev import RealDevConfigurationError
+
+    monkeypatch.setenv("DEEPSEEK_THINKING_MODE", "invalid")
+    with pytest.raises(RealDevConfigurationError, match="Invalid DEEPSEEK_THINKING_MODE"):
+        load(real_environment)
+
+
 @pytest.mark.parametrize("value", [None, "false", "1"])
 def test_real_dev_requires_explicit_server_enable(real_environment, monkeypatch, value):
     from app.demo.real_dev import RealDevConfigurationError
