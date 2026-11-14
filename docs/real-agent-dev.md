@@ -24,6 +24,7 @@ sudo docker compose -f compose.showcase.yml up -d --build
 | 变量 | 含义/示例 |
 | --- | --- |
 | `REAL_AGENT_KEY_FILE` | 上述私有 Key 文件的绝对路径；不是 Key 内容 |
+| `REAL_AGENT_PAID_AUTHORIZED` | 默认 `false`。只有另获明确有限付费授权后，操作者才可在服务端设为 `true`；启动服务、切换前端或结算额度均不代表付费授权 |
 | `REAL_AGENT_MAX_REQUESTS` | HTTP 尝试总上限，例如 `20`，重试也计数 |
 | `REAL_AGENT_MAX_TOKENS` | 聚合保守 Token 预留上限，例如 `200000` |
 | `REAL_AGENT_MAX_USD` | 按配置单价估计的费用预留上限，例如 `1` |
@@ -46,14 +47,14 @@ Key 通过 Compose secret 挂载进容器，YAML 只保存文件引用。裸 Pyt
 下面的命令会继承明确列出的变量，不需要将 Key 内容传入命令行。应先在当前 shell 设置上述变量；不会修改宿主 `.env`。Compose 需支持 `!override`（当前验收版本 5.7.1）。
 
 ```bash
-sudo --preserve-env=REAL_AGENT_KEY_FILE,REAL_AGENT_MAX_REQUESTS,REAL_AGENT_MAX_TOKENS,REAL_AGENT_MAX_USD,REAL_AGENT_INPUT_USD_PER_MILLION,REAL_AGENT_OUTPUT_USD_PER_MILLION,REAL_AGENT_MODEL,REAL_AGENT_THINKING_MODE,REAL_AGENT_PORT \
+sudo --preserve-env=REAL_AGENT_KEY_FILE,REAL_AGENT_PAID_AUTHORIZED,REAL_AGENT_MAX_REQUESTS,REAL_AGENT_MAX_TOKENS,REAL_AGENT_MAX_USD,REAL_AGENT_INPUT_USD_PER_MILLION,REAL_AGENT_OUTPUT_USD_PER_MILLION,REAL_AGENT_MODEL,REAL_AGENT_THINKING_MODE,REAL_AGENT_PORT \
   docker compose -f compose.showcase.yml -f compose.agent-dev.yml config --quiet
 ```
 
 只有决定允许后续模型消费时才执行启动：
 
 ```bash
-sudo --preserve-env=REAL_AGENT_KEY_FILE,REAL_AGENT_MAX_REQUESTS,REAL_AGENT_MAX_TOKENS,REAL_AGENT_MAX_USD,REAL_AGENT_INPUT_USD_PER_MILLION,REAL_AGENT_OUTPUT_USD_PER_MILLION,REAL_AGENT_MODEL,REAL_AGENT_THINKING_MODE,REAL_AGENT_PORT \
+sudo --preserve-env=REAL_AGENT_KEY_FILE,REAL_AGENT_PAID_AUTHORIZED,REAL_AGENT_MAX_REQUESTS,REAL_AGENT_MAX_TOKENS,REAL_AGENT_MAX_USD,REAL_AGENT_INPUT_USD_PER_MILLION,REAL_AGENT_OUTPUT_USD_PER_MILLION,REAL_AGENT_MODEL,REAL_AGENT_THINKING_MODE,REAL_AGENT_PORT \
   docker compose -f compose.showcase.yml -f compose.agent-dev.yml up -d --build
 ```
 
@@ -63,10 +64,17 @@ sudo --preserve-env=REAL_AGENT_KEY_FILE,REAL_AGENT_MAX_REQUESTS,REAL_AGENT_MAX_T
 
 ## 预算行为和边界
 
-- 每次真正 HTTP 尝试之前，SQLite 事务原子预留一次请求、完整 UTF-8 请求和最大输出 Token 的保守上界，以及按配置单价的费用上界；正常 JSON、流式和重试都经过同一门禁。
+- 每次真正 HTTP 尝试之前，先检查独立的服务端付费授权，再由 SQLite 事务原子预留一次请求、完整 UTF-8 请求和最大输出 Token 的保守上界，以及按配置单价的费用上界；正常 JSON、流式和重试都经过同一门禁。授权默认关闭时，不创建消费记录、不发送模型HTTP。
 - 账本位于本项目独立 `real_budget` 命名卷的 `/var/lib/real-agent/budget.sqlite3`，只保存计数、预留与状态，不保存问题、回答、Header 或 Key。重启保留计数；更改单价、模型或上限不能静默重置旧账本。
 - 不确定、取消、中断或崩溃留下的 pending/uncertain 尝试保留预留，阻止后续自动消费。先人工核对供应商与账本；不要删除卷、改状态或重放来绕过门禁。需要新的消费额度或恢复方案时另行明确授权。
+- 原始 `attempts` 预留行、请求次数和限制指纹不覆盖。新增的预留证据/结算表只接受完整2xx成功协议响应的可信usage；在响应消费完成且关闭成功后，通过同一立即事务追加结算。快照的 `tokens/usd` 是实际usage按配置上界计价的有效占用，`reserved_tokens/reserved_usd` 保留累计原始预留，`settled` 标记已结算条数；请求次数永不退回。
+- JSON或SSE协议异常、usage缺失/矛盾/越界、非2xx、截断和流未完整结束均保持保守预留。SSE支持末条内容携带usage及兼容的独立usage事件，必须有完整结束标记；不存储提示词、回答正文、Authorization或Key，只留usage、来源和响应哈希等审计元数据。
+- v1账本只做兼容的增表迁移，不修改历史预留、原有消费或限制。旧请求若没有持久化的逐请求证据，不从报告自动回填返额。本轮真实账本只读，兼容迁移在副本中验证。
 - 费用是按操作者提供的保守价格上界估算，不是供应商结算账单。单价和模型要由操作者按官方现行规则维护；本轮没有使用真实 Key 或验证真实供应商费用。
 - 保留原上下文 Token 限制、每主体 Redis fail-closed 限流；Real Dev 默认每分钟 60 次入口配额，真实模型预算另行累计。没有将普通用户加入 docker 组，没有削弱认证或写操作确认。
 
-本轮只执行假 Key、MockTransport、配置解析和启动门禁测试，真实付费请求数为 0。Real Agent 的实际自然语言质量与付费链路连通性尚未验收；前端改动应先在独立 Offline 验证项目完成浏览器回归。
+## 前端模式与验收边界
+
+Offline与DeepSeek入口分别导航到固定的8000/8001完整页面；每次切换重新认证，不转移Bearer、会话、私有知识库或草稿。跨origin请求只用于不携带凭证的公开`/api/v1/runtime-status`探测，业务和认证API不开放跨origin权限。未启动、未授权、依赖或预算不可用均显示原因，不静默切换成Offline。
+
+Mock验收服务明确显示“Mock验证”，不代表真实DeepSeek。最新可用性完善阶段只使用假Key、MockTransport及隔离后端，真实模型业务验收为NOT_RUN；旧阶段的真实连通性证据继续保留。新的真实业务验证必须另外得到请求数、Token和费用上限授权。

@@ -1,0 +1,302 @@
+{
+  "root_run_id": "d55f175c-172b-4938-b587-855f937cd30d",
+  "session_id": "sess_2787046287de46828ea3409780772a6e",
+  "availability": {
+    "storage": "process_local",
+    "ttl_seconds": 900
+  },
+  "planner_steps": [
+    {
+      "step_id": 1,
+      "tool_name": "get_order",
+      "needs_retrieval": false,
+      "arguments": {
+        "order_id": "ORD95101"
+      }
+    }
+  ],
+  "tools": [
+    {
+      "name": "get_order",
+      "success": true,
+      "result": {
+        "status": "paid",
+        "total_cents": 6800,
+        "item_count": 1
+      }
+    }
+  ],
+  "retrieval": [],
+  "memory": {
+    "mode": "M2",
+    "message_count": 0,
+    "summary_used": false
+  },
+  "spans": [
+    {
+      "id": "d55f175c-172b-4938-b587-855f937cd30d",
+      "parent_id": null,
+      "name": "chat.turn",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 224.572,
+      "metadata": {
+        "app_trace_ref": "a2d294db2cc1df483aa9015b",
+        "user_ref": "de1f08e9ccfb0e289c405534",
+        "request_ref": "edb154dfee1d99142e281122",
+        "session_ref": "e78dbe3fd3dde6a0968da29a"
+      }
+    },
+    {
+      "id": "03f21c77-43f4-4772-9d71-34c63f81610f",
+      "parent_id": "d55f175c-172b-4938-b587-855f937cd30d",
+      "name": "session.load",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 29.323,
+      "metadata": {}
+    },
+    {
+      "id": "14d4e532-4a48-49b1-b6fb-69f096c2a513",
+      "parent_id": "03f21c77-43f4-4772-9d71-34c63f81610f",
+      "name": "confirmation.resolve",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.005,
+      "metadata": {}
+    },
+    {
+      "id": "1bd6337a-9db0-4d8a-aeb2-efccf04157cf",
+      "parent_id": "d55f175c-172b-4938-b587-855f937cd30d",
+      "name": "graph.invoke",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 182.184,
+      "metadata": {}
+    },
+    {
+      "id": "5472f646-ae62-4aa2-8283-2851767289b0",
+      "parent_id": "1bd6337a-9db0-4d8a-aeb2-efccf04157cf",
+      "name": "node.guardrail",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.01,
+      "metadata": {}
+    },
+    {
+      "id": "1cf3bf65-6fd0-4bcb-8f80-497f8ccc730c",
+      "parent_id": "1bd6337a-9db0-4d8a-aeb2-efccf04157cf",
+      "name": "node.intent",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.344,
+      "metadata": {}
+    },
+    {
+      "id": "d2ae6656-cbb7-44b7-bb4f-6521106d9602",
+      "parent_id": "1cf3bf65-6fd0-4bcb-8f80-497f8ccc730c",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 18.942,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 683,
+        "completion_tokens": 28,
+        "total_tokens": 711
+      }
+    },
+    {
+      "id": "61a70146-7970-47a7-bf2f-eceb30202e2d",
+      "parent_id": "d2ae6656-cbb7-44b7-bb4f-6521106d9602",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 18.837,
+      "metadata": {}
+    },
+    {
+      "id": "d9e840b0-28d5-48eb-86fe-e6740536f831",
+      "parent_id": "1bd6337a-9db0-4d8a-aeb2-efccf04157cf",
+      "name": "node.router",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.916,
+      "metadata": {}
+    },
+    {
+      "id": "dc52d574-9d2d-4922-9c75-c4ce96c338e1",
+      "parent_id": "d9e840b0-28d5-48eb-86fe-e6740536f831",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 19.766,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 212,
+        "completion_tokens": 29,
+        "total_tokens": 241
+      }
+    },
+    {
+      "id": "a80c2b07-28ac-4f2f-ae02-0743b0abaa3e",
+      "parent_id": "dc52d574-9d2d-4922-9c75-c4ce96c338e1",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.675,
+      "metadata": {}
+    },
+    {
+      "id": "e2108f69-c14d-4d73-8a7c-7484346f238c",
+      "parent_id": "1bd6337a-9db0-4d8a-aeb2-efccf04157cf",
+      "name": "node.planner",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 83.013,
+      "metadata": {}
+    },
+    {
+      "id": "c672dc9e-5879-4f1e-a4dc-06cea9d5d05f",
+      "parent_id": "e2108f69-c14d-4d73-8a7c-7484346f238c",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 49.947,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 1631,
+        "completion_tokens": 45,
+        "total_tokens": 1676
+      }
+    },
+    {
+      "id": "95ef8e59-082d-4566-a8f2-d51833537d0c",
+      "parent_id": "c672dc9e-5879-4f1e-a4dc-06cea9d5d05f",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 49.852,
+      "metadata": {}
+    },
+    {
+      "id": "1e958012-f013-403e-af3f-1bb1d5e3ecb1",
+      "parent_id": "1bd6337a-9db0-4d8a-aeb2-efccf04157cf",
+      "name": "node.executor",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 10.567,
+      "metadata": {}
+    },
+    {
+      "id": "bb4968d5-3524-417d-9261-c552b3695dfb",
+      "parent_id": "1e958012-f013-403e-af3f-1bb1d5e3ecb1",
+      "name": "tool.execute",
+      "kind": "tool",
+      "status": "ok",
+      "latency_ms": 10.326,
+      "metadata": {}
+    },
+    {
+      "id": "d648ce9b-2ff3-4977-bed9-58e9d7954346",
+      "parent_id": "1bd6337a-9db0-4d8a-aeb2-efccf04157cf",
+      "name": "node.generate",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.619,
+      "metadata": {}
+    },
+    {
+      "id": "f0e9ebcd-445a-4e54-b8c3-424eb6be685c",
+      "parent_id": "d648ce9b-2ff3-4977-bed9-58e9d7954346",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 19.141,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 587,
+        "completion_tokens": 83,
+        "total_tokens": 670
+      }
+    },
+    {
+      "id": "1b9e4f86-9a2b-49c3-85d5-789c1861a84c",
+      "parent_id": "f0e9ebcd-445a-4e54-b8c3-424eb6be685c",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.048,
+      "metadata": {}
+    },
+    {
+      "id": "b18b1d40-2041-430a-9dad-891f2a98057d",
+      "parent_id": "1bd6337a-9db0-4d8a-aeb2-efccf04157cf",
+      "name": "node.faithfulness",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 18.278,
+      "metadata": {}
+    },
+    {
+      "id": "686b974f-7879-4a59-941a-2bb1fe2e1563",
+      "parent_id": "b18b1d40-2041-430a-9dad-891f2a98057d",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 18.068,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 444,
+        "completion_tokens": 24,
+        "total_tokens": 468
+      }
+    },
+    {
+      "id": "fcec5e4b-b446-4d16-83e6-4dd42e6f2e01",
+      "parent_id": "686b974f-7879-4a59-941a-2bb1fe2e1563",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 17.983,
+      "metadata": {}
+    },
+    {
+      "id": "03c6ef41-1253-469d-8dcb-3e10cb0ee690",
+      "parent_id": "1bd6337a-9db0-4d8a-aeb2-efccf04157cf",
+      "name": "node.memory",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.021,
+      "metadata": {}
+    },
+    {
+      "id": "2c2bcd1b-9e56-4ceb-ac8b-c82797347ce2",
+      "parent_id": "d55f175c-172b-4938-b587-855f937cd30d",
+      "name": "session.persist",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 5.356,
+      "metadata": {}
+    },
+    {
+      "id": "502db422-5dc2-4c13-927c-dda00d98fadf",
+      "parent_id": "d55f175c-172b-4938-b587-855f937cd30d",
+      "name": "transaction.commit",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 5.184,
+      "metadata": {}
+    }
+  ],
+  "nodes": [
+    "guardrail",
+    "intent",
+    "router",
+    "planner",
+    "executor",
+    "generate",
+    "faithfulness",
+    "memory"
+  ]
+}

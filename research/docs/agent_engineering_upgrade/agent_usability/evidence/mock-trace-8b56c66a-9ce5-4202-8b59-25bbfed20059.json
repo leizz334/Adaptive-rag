@@ -1,0 +1,300 @@
+{
+  "root_run_id": "8b56c66a-9ce5-4202-8b59-25bbfed20059",
+  "session_id": "sess_2787046287de46828ea3409780772a6e",
+  "availability": {
+    "storage": "process_local",
+    "ttl_seconds": 900
+  },
+  "planner_steps": [
+    {
+      "step_id": 1,
+      "tool_name": "get_order_items",
+      "needs_retrieval": false,
+      "arguments": {
+        "order_id": "ORD95101"
+      }
+    }
+  ],
+  "tools": [
+    {
+      "name": "get_order_items",
+      "success": true,
+      "result": {
+        "item_count": 1
+      }
+    }
+  ],
+  "retrieval": [],
+  "memory": {
+    "mode": "M2",
+    "message_count": 2,
+    "summary_used": false
+  },
+  "spans": [
+    {
+      "id": "8b56c66a-9ce5-4202-8b59-25bbfed20059",
+      "parent_id": null,
+      "name": "chat.turn",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 194.601,
+      "metadata": {
+        "app_trace_ref": "ff659f601a824c1473754ecd",
+        "session_ref": "e78dbe3fd3dde6a0968da29a",
+        "user_ref": "de1f08e9ccfb0e289c405534",
+        "request_ref": "ca893fc0ce3c1993aca9e8a9"
+      }
+    },
+    {
+      "id": "b1afed55-f963-4c04-85e6-e18605be3813",
+      "parent_id": "8b56c66a-9ce5-4202-8b59-25bbfed20059",
+      "name": "session.load",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 6.752,
+      "metadata": {}
+    },
+    {
+      "id": "f3dfeb42-8fcd-4326-868c-56d601a50884",
+      "parent_id": "b1afed55-f963-4c04-85e6-e18605be3813",
+      "name": "confirmation.resolve",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.004,
+      "metadata": {}
+    },
+    {
+      "id": "54b9b699-4c49-4e95-b5cb-2e89659aa66a",
+      "parent_id": "8b56c66a-9ce5-4202-8b59-25bbfed20059",
+      "name": "graph.stream",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 178.554,
+      "metadata": {}
+    },
+    {
+      "id": "8314bf5e-44a7-4152-b465-6bdf00792122",
+      "parent_id": "54b9b699-4c49-4e95-b5cb-2e89659aa66a",
+      "name": "node.guardrail",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.009,
+      "metadata": {}
+    },
+    {
+      "id": "380c4d82-a3a0-49b5-93a2-86ec0a0eeac9",
+      "parent_id": "54b9b699-4c49-4e95-b5cb-2e89659aa66a",
+      "name": "node.intent",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.901,
+      "metadata": {}
+    },
+    {
+      "id": "be5bcb3f-79fe-4045-951f-6db5b8fcd5e4",
+      "parent_id": "380c4d82-a3a0-49b5-93a2-86ec0a0eeac9",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 19.684,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 700,
+        "completion_tokens": 28,
+        "total_tokens": 728
+      }
+    },
+    {
+      "id": "91821dd9-4bea-4879-b47d-d9fa0d9196f2",
+      "parent_id": "be5bcb3f-79fe-4045-951f-6db5b8fcd5e4",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.594,
+      "metadata": {}
+    },
+    {
+      "id": "cd9f84e6-805d-4dd8-8fbf-49397205c7db",
+      "parent_id": "54b9b699-4c49-4e95-b5cb-2e89659aa66a",
+      "name": "node.router",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 18.919,
+      "metadata": {}
+    },
+    {
+      "id": "d6b008b6-6b7a-413a-87b8-11578e03cfcf",
+      "parent_id": "cd9f84e6-805d-4dd8-8fbf-49397205c7db",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 18.796,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 229,
+        "completion_tokens": 29,
+        "total_tokens": 258
+      }
+    },
+    {
+      "id": "84f11d01-dd85-4707-a9c5-5e36d81ad4d3",
+      "parent_id": "d6b008b6-6b7a-413a-87b8-11578e03cfcf",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 18.719,
+      "metadata": {}
+    },
+    {
+      "id": "5df7c54d-91ef-438c-8544-9055acf160e1",
+      "parent_id": "54b9b699-4c49-4e95-b5cb-2e89659aa66a",
+      "name": "node.planner",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 85.314,
+      "metadata": {}
+    },
+    {
+      "id": "fe9b80fa-1696-443f-a862-5f05f4e3e583",
+      "parent_id": "5df7c54d-91ef-438c-8544-9055acf160e1",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 49.756,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 1872,
+        "completion_tokens": 46,
+        "total_tokens": 1918
+      }
+    },
+    {
+      "id": "5dfb0ae2-f7b8-4f15-a0fd-6edf0495ee39",
+      "parent_id": "fe9b80fa-1696-443f-a862-5f05f4e3e583",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 49.65,
+      "metadata": {}
+    },
+    {
+      "id": "cc966e23-5e5b-4b9d-a925-47c10959cab9",
+      "parent_id": "54b9b699-4c49-4e95-b5cb-2e89659aa66a",
+      "name": "node.executor",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 3.488,
+      "metadata": {}
+    },
+    {
+      "id": "d43f1543-f09b-4712-aaf5-c8cfaa49ff5e",
+      "parent_id": "cc966e23-5e5b-4b9d-a925-47c10959cab9",
+      "name": "tool.execute",
+      "kind": "tool",
+      "status": "ok",
+      "latency_ms": 3.301,
+      "metadata": {}
+    },
+    {
+      "id": "563bf02a-bdc6-4f4b-8ce3-bcdf603c557a",
+      "parent_id": "54b9b699-4c49-4e95-b5cb-2e89659aa66a",
+      "name": "node.generate",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.566,
+      "metadata": {}
+    },
+    {
+      "id": "d8d63766-6883-4a56-af80-cebf24aceb6f",
+      "parent_id": "563bf02a-bdc6-4f4b-8ce3-bcdf603c557a",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 18.722,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 525,
+        "completion_tokens": 83,
+        "total_tokens": 608
+      }
+    },
+    {
+      "id": "a93380b9-06ce-4d13-a6a2-945a1cc32212",
+      "parent_id": "d8d63766-6883-4a56-af80-cebf24aceb6f",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 18.647,
+      "metadata": {}
+    },
+    {
+      "id": "6de4a90d-e286-4ae9-b1a0-9b759755eae2",
+      "parent_id": "54b9b699-4c49-4e95-b5cb-2e89659aa66a",
+      "name": "node.faithfulness",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.042,
+      "metadata": {}
+    },
+    {
+      "id": "c18b1765-b88e-496c-8b67-3f744be88269",
+      "parent_id": "6de4a90d-e286-4ae9-b1a0-9b759755eae2",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 18.884,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 385,
+        "completion_tokens": 24,
+        "total_tokens": 409
+      }
+    },
+    {
+      "id": "595fcb7c-c980-4bc8-b1d9-856e0166ffb4",
+      "parent_id": "c18b1765-b88e-496c-8b67-3f744be88269",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 18.763,
+      "metadata": {}
+    },
+    {
+      "id": "2f8e798a-b827-4f5c-9865-e09f8381bc34",
+      "parent_id": "54b9b699-4c49-4e95-b5cb-2e89659aa66a",
+      "name": "node.memory",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.024,
+      "metadata": {}
+    },
+    {
+      "id": "f88ce9ad-0a43-439d-ab5b-400bfc9486a8",
+      "parent_id": "8b56c66a-9ce5-4202-8b59-25bbfed20059",
+      "name": "session.persist",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 2.969,
+      "metadata": {}
+    },
+    {
+      "id": "c6b7b2e5-4157-4102-95b1-3c1b056594f6",
+      "parent_id": "8b56c66a-9ce5-4202-8b59-25bbfed20059",
+      "name": "transaction.commit",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 4.083,
+      "metadata": {}
+    }
+  ],
+  "nodes": [
+    "guardrail",
+    "intent",
+    "router",
+    "planner",
+    "executor",
+    "generate",
+    "faithfulness",
+    "memory"
+  ]
+}

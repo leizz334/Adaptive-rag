@@ -13,7 +13,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import Response
 from starlette.staticfiles import StaticFiles
 
-from app.api.routes import admin, chat, health, identity, knowledge, workbench
+from app.api.routes import admin, chat, health, identity, knowledge, runtime, workbench
 from app.config.settings import Settings, get_settings
 from app.core.auth import Authenticator
 from app.core.error_codes import ErrorCode
@@ -73,6 +73,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(identity.router, prefix=prefix)
     app.include_router(knowledge.router, prefix=prefix)
     app.include_router(workbench.router, prefix=prefix)
+    app.include_router(runtime.router, prefix=prefix)
 
     @app.middleware("http")
     async def request_context(request: Request, call_next):

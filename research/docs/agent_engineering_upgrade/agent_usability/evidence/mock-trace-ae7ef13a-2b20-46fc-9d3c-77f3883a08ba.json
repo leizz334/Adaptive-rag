@@ -1,0 +1,245 @@
+{
+  "root_run_id": "ae7ef13a-2b20-46fc-9d3c-77f3883a08ba",
+  "session_id": "sess_f0774bc0350b4f25bd19d6021f457bdf",
+  "availability": {
+    "storage": "process_local",
+    "ttl_seconds": 900
+  },
+  "planner_steps": [
+    {
+      "step_id": 1,
+      "tool_name": "get_order",
+      "needs_retrieval": false,
+      "arguments": {
+        "order_id": "ORD95103"
+      }
+    },
+    {
+      "step_id": 2,
+      "tool_name": "cancel_order",
+      "needs_retrieval": false,
+      "arguments": {
+        "order_id": "ORD95103"
+      }
+    }
+  ],
+  "tools": [],
+  "retrieval": [],
+  "memory": {
+    "mode": "M2",
+    "message_count": 0,
+    "summary_used": false
+  },
+  "spans": [
+    {
+      "id": "ae7ef13a-2b20-46fc-9d3c-77f3883a08ba",
+      "parent_id": null,
+      "name": "chat.turn",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 121.85,
+      "metadata": {
+        "app_trace_ref": "9d623cbe47d002a76735dacf",
+        "user_ref": "de1f08e9ccfb0e289c405534",
+        "request_ref": "8a077c2ff738f5b1d8bc9f89",
+        "session_ref": "42d85aa2d3f71895a3765d8f"
+      }
+    },
+    {
+      "id": "80ff3e00-950a-49f8-99ab-19c350a871e2",
+      "parent_id": "ae7ef13a-2b20-46fc-9d3c-77f3883a08ba",
+      "name": "session.load",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 6.403,
+      "metadata": {}
+    },
+    {
+      "id": "5193b300-ff4e-482c-bd02-daadf80dca2e",
+      "parent_id": "80ff3e00-950a-49f8-99ab-19c350a871e2",
+      "name": "confirmation.resolve",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.004,
+      "metadata": {}
+    },
+    {
+      "id": "700bd24d-fa80-42d5-b357-5a9001dffc3b",
+      "parent_id": "ae7ef13a-2b20-46fc-9d3c-77f3883a08ba",
+      "name": "graph.invoke",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 103.643,
+      "metadata": {}
+    },
+    {
+      "id": "ff68d80e-799a-484e-8c5b-5eb9eaba0724",
+      "parent_id": "700bd24d-fa80-42d5-b357-5a9001dffc3b",
+      "name": "node.guardrail",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.009,
+      "metadata": {}
+    },
+    {
+      "id": "f4cd0970-11af-44ee-b5d6-f1d20c425315",
+      "parent_id": "700bd24d-fa80-42d5-b357-5a9001dffc3b",
+      "name": "node.intent",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.829,
+      "metadata": {}
+    },
+    {
+      "id": "5fb9b2b6-1b7c-47e9-bfc1-4788abb8c728",
+      "parent_id": "f4cd0970-11af-44ee-b5d6-f1d20c425315",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 19.693,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 678,
+        "completion_tokens": 29,
+        "total_tokens": 707
+      }
+    },
+    {
+      "id": "aee40279-0844-45ca-af5a-421942f6b205",
+      "parent_id": "5fb9b2b6-1b7c-47e9-bfc1-4788abb8c728",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.598,
+      "metadata": {}
+    },
+    {
+      "id": "ef74452d-96c6-4a57-8b23-fb36a3363e68",
+      "parent_id": "700bd24d-fa80-42d5-b357-5a9001dffc3b",
+      "name": "node.router",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 19.154,
+      "metadata": {}
+    },
+    {
+      "id": "df33bb8e-488b-44c8-87b2-e4634687ab4f",
+      "parent_id": "ef74452d-96c6-4a57-8b23-fb36a3363e68",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 19.039,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 207,
+        "completion_tokens": 29,
+        "total_tokens": 236
+      }
+    },
+    {
+      "id": "cb5dccbb-ef81-4c32-80ac-965818de4199",
+      "parent_id": "df33bb8e-488b-44c8-87b2-e4634687ab4f",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 18.957,
+      "metadata": {}
+    },
+    {
+      "id": "c75df7dc-83ca-43ff-8626-ca63a1d9edb0",
+      "parent_id": "700bd24d-fa80-42d5-b357-5a9001dffc3b",
+      "name": "node.planner",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 54.474,
+      "metadata": {}
+    },
+    {
+      "id": "cb29efa6-bf01-405c-8381-a7b6860bccfe",
+      "parent_id": "c75df7dc-83ca-43ff-8626-ca63a1d9edb0",
+      "name": "llm.deepseek",
+      "kind": "llm",
+      "status": "ok",
+      "latency_ms": 37.384,
+      "metadata": {
+        "usage_known": true,
+        "prompt_tokens": 1611,
+        "completion_tokens": 82,
+        "total_tokens": 1693
+      }
+    },
+    {
+      "id": "a1f2a634-3ba7-4c15-bdee-96aa96726a3c",
+      "parent_id": "cb29efa6-bf01-405c-8381-a7b6860bccfe",
+      "name": "llm.http_attempt",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 37.284,
+      "metadata": {}
+    },
+    {
+      "id": "219f12be-db32-4ce5-9b82-d7441960baaf",
+      "parent_id": "700bd24d-fa80-42d5-b357-5a9001dffc3b",
+      "name": "node.executor",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.007,
+      "metadata": {}
+    },
+    {
+      "id": "14adf71b-3160-4292-944c-eee192226fff",
+      "parent_id": "700bd24d-fa80-42d5-b357-5a9001dffc3b",
+      "name": "node.generate",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.015,
+      "metadata": {}
+    },
+    {
+      "id": "6f53a0ac-8ba6-4b1f-a61e-a40a6eb57aa4",
+      "parent_id": "700bd24d-fa80-42d5-b357-5a9001dffc3b",
+      "name": "node.faithfulness",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.005,
+      "metadata": {}
+    },
+    {
+      "id": "60b95340-1ffc-454b-a319-c80cbe8c033c",
+      "parent_id": "700bd24d-fa80-42d5-b357-5a9001dffc3b",
+      "name": "node.memory",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 0.02,
+      "metadata": {}
+    },
+    {
+      "id": "3b2b45a7-a4cc-4897-9919-2c62e9df1690",
+      "parent_id": "ae7ef13a-2b20-46fc-9d3c-77f3883a08ba",
+      "name": "session.persist",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 6.089,
+      "metadata": {}
+    },
+    {
+      "id": "ee5c240c-1317-4963-912e-5f7c2db926e5",
+      "parent_id": "ae7ef13a-2b20-46fc-9d3c-77f3883a08ba",
+      "name": "transaction.commit",
+      "kind": "chain",
+      "status": "ok",
+      "latency_ms": 4.159,
+      "metadata": {}
+    }
+  ],
+  "nodes": [
+    "guardrail",
+    "intent",
+    "router",
+    "planner",
+    "executor",
+    "generate",
+    "faithfulness",
+    "memory"
+  ]
+}
