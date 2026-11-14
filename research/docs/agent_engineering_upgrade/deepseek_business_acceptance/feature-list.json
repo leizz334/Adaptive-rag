@@ -1,0 +1,60 @@
+{
+  "phase": "Real DeepSeek business acceptance",
+  "base_head": "7e4f4c32626358107d3135d24ca2360a46c50e15",
+  "authorization": {
+    "additional_requests": 20,
+    "additional_effective_tokens": 50000,
+    "additional_usd": "0.05"
+  },
+  "architecture_decisions": [
+    "Reuse original real_budget ledger and raw attempts; no reset, replacement or historical refunds.",
+    "Keep Offline8000 containers and database unchanged.",
+    "Never send paid requests until durable budget gates can enforce all additional phase limits.",
+    "Default server paid authorization false; close paid gate/stop Real service at phase end.",
+    "New budget authorization mechanism requires user scope clarification because this phase forbids new features."
+  ],
+  "tasks": [
+    {
+      "id": "D1",
+      "dependencies": [],
+      "acceptance_criteria": [
+        "Snapshot original ledger/Key metadata/Offline environment; official price verification and provable budget calculation"
+      ],
+      "passes": true,
+      "status": "inspection_complete_budget_extension_blocked"
+    },
+    {
+      "id": "D2",
+      "dependencies": [
+        "D1"
+      ],
+      "acceptance_criteria": [
+        "Latest existing RealDev image on8001, same data and ledger, auth/dependencies verified without model calls"
+      ],
+      "passes": false,
+      "status": "pending"
+    },
+    {
+      "id": "D3",
+      "dependencies": [
+        "D2"
+      ],
+      "acceptance_criteria": [
+        "Real order/Memory/RAG/negative/HITL evidence or explicit BUDGET_BLOCKED/NOT_RUN; enforce new20/50000/.05 limits"
+      ],
+      "passes": false,
+      "status": "pending"
+    },
+    {
+      "id": "D4",
+      "dependencies": [
+        "D3"
+      ],
+      "acceptance_criteria": [
+        "Regression/browser verification, safe final shutdown, protected data, report and ordinary Push exact remoteHEAD"
+      ],
+      "passes": false,
+      "status": "pending"
+    }
+  ]
+}
