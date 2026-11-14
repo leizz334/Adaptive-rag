@@ -1,0 +1,159 @@
+{
+  "metadata": {
+    "mode": "deepseek",
+    "available": false,
+    "reason": "payment_not_authorized",
+    "message": "\u672c\u8f6e\u5c1a\u672a\u6388\u6743\u771f\u5b9e\u6a21\u578b\u6d88\u8d39\uff1b\u8bf7\u7531\u672c\u5730\u7ba1\u7406\u5458\u914d\u7f6e\u670d\u52a1\u7aef\u6388\u6743\u3002",
+    "verification_only": false
+  },
+  "ready": {
+    "ready": true,
+    "dependencies": [
+      {
+        "name": "database",
+        "ready": true,
+        "detail": ""
+      },
+      {
+        "name": "llm",
+        "ready": true,
+        "detail": "configured"
+      },
+      {
+        "name": "redis",
+        "ready": true,
+        "detail": ""
+      },
+      {
+        "name": "vector_store",
+        "ready": true,
+        "detail": "PrivateVectorStore"
+      }
+    ]
+  },
+  "identities": {
+    "a": {
+      "subject": "web_demo_a",
+      "roles": [
+        "user"
+      ]
+    },
+    "b": {
+      "subject": "web_demo_b",
+      "roles": [
+        "user"
+      ]
+    }
+  },
+  "real_containers": [
+    {
+      "name": "/adaptive-rag-real-agent-dev-api-1",
+      "id": "397b0c5e7ff5670ada00d6a7accf88c513f951ef12210317d92de2a10f85f035",
+      "image": "sha256:dea778f7e1250927dc57cf9a7cfde2f338a838283a7c0f1ed530e3017d999e9a",
+      "state": "running",
+      "started": "2026-11-14T13:48:24.592067334Z",
+      "health": "healthy",
+      "volumes": [
+        "adaptive-rag-real-agent-dev_db_secret",
+        "adaptive-rag-real-agent-dev_real_budget",
+        "adaptive-rag-real-agent-dev_showcase_state"
+      ],
+      "project": "adaptive-rag-real-agent-dev"
+    },
+    {
+      "name": "/adaptive-rag-real-agent-dev-initialize-1",
+      "id": "78f781690933a127062ec3d13c5c55d46e3d7c674d2cd51fb214911519d7c676",
+      "image": "sha256:e13df9b2cfda3ceab2b969b0ec68e0678486e689b55a8fb866dd88c86e38513f",
+      "state": "exited",
+      "started": "2026-11-14T08:54:31.802440881Z",
+      "health": null,
+      "volumes": [
+        "adaptive-rag-real-agent-dev_db_secret",
+        "adaptive-rag-real-agent-dev_showcase_state"
+      ],
+      "project": "adaptive-rag-real-agent-dev"
+    },
+    {
+      "name": "/adaptive-rag-real-agent-dev-postgres-1",
+      "id": "7a6ee4f5a97ee2e303806c504044667f581528c60c38f2ed4b5d3f4a9e35d795",
+      "image": "sha256:f377d590e5474681d4d7838635031a2b50647923b7abfa803ce9b5ff35d5c663",
+      "state": "running",
+      "started": "2026-11-14T13:48:24.572353794Z",
+      "health": "healthy",
+      "volumes": [
+        "adaptive-rag-real-agent-dev_db_secret",
+        "adaptive-rag-real-agent-dev_pgdata"
+      ],
+      "project": "adaptive-rag-real-agent-dev"
+    },
+    {
+      "name": "/adaptive-rag-real-agent-dev-redis-1",
+      "id": "60def7c0d75ddc8bb5371e09ad057dc833f128e4ca2ff65378fd8d88084f4b09",
+      "image": "sha256:7f7d30b7fdd09467bac58198a1f166dd69789d348d4fe859cccb20e0cf287fbe",
+      "state": "running",
+      "started": "2026-11-14T13:48:24.534274176Z",
+      "health": "healthy",
+      "volumes": [
+        "adaptive-rag-real-agent-dev_redisdata"
+      ],
+      "project": "adaptive-rag-real-agent-dev"
+    },
+    {
+      "name": "/adaptive-rag-real-agent-dev-qdrant-1",
+      "id": "1a986b160525b2bd570d2458df5cb0f53d3d693323b316eb38717ba21f5136d5",
+      "image": "sha256:05fecce7dce45d1254e0468bc037e8210e187fd56fa847688b012293d5f08aae",
+      "state": "running",
+      "started": "2026-11-14T13:48:24.596252199Z",
+      "health": "healthy",
+      "volumes": [
+        "adaptive-rag-real-agent-dev_qdrantdata"
+      ],
+      "project": "adaptive-rag-real-agent-dev"
+    },
+    {
+      "name": "/adaptive-rag-real-agent-dev-bootstrap-1",
+      "id": "47bf163c2650fc535348977cfa4f6159763979d41b23cbb8d190d3259c6a0f88",
+      "image": "sha256:e13df9b2cfda3ceab2b969b0ec68e0678486e689b55a8fb866dd88c86e38513f",
+      "state": "exited",
+      "started": "2026-11-14T08:54:23.988658045Z",
+      "health": null,
+      "volumes": [
+        "adaptive-rag-real-agent-dev_db_secret",
+        "adaptive-rag-real-agent-dev_real_budget",
+        "adaptive-rag-real-agent-dev_showcase_state"
+      ],
+      "project": "adaptive-rag-real-agent-dev"
+    }
+  ],
+  "current_source_hashes": {
+    "/app/app/providers/paid_budget.py": "1e4b6ac66bae3a2719608aa1bcd2be60a439d8b6cfc84a9ce9f0b9a9b9a7f117",
+    "/app/app/providers/usage_settlement.py": "d41f917b649d94b89e29e8d694ccdf12dc9870b7b6e47afd7f3e163b3f98fa1c",
+    "/app/app/demo/real_dev.py": "30a1526edc3d4855465ca460e19b19d4bbb3988a4e676adb77665848f5687be6"
+  },
+  "offline_container_ids_images_volumes_database_unchanged": true,
+  "wsl_restart_start_time_changes": [
+    {
+      "name": "/adaptive-rag-showcase-api-1",
+      "before": "2026-11-14T13:45:53.413825773Z",
+      "now": "2026-11-14T13:48:24.584475557Z"
+    },
+    {
+      "name": "/adaptive-rag-showcase-postgres-1",
+      "before": "2026-11-14T13:45:53.409887809Z",
+      "now": "2026-11-14T13:48:24.588138412Z"
+    },
+    {
+      "name": "/adaptive-rag-showcase-redis-1",
+      "before": "2026-11-14T13:45:53.398013846Z",
+      "now": "2026-11-14T13:48:24.54713126Z"
+    },
+    {
+      "name": "/adaptive-rag-showcase-qdrant-1",
+      "before": "2026-11-14T13:45:53.417883373Z",
+      "now": "2026-11-14T13:48:24.601456071Z"
+    }
+  ],
+  "lifecycle_mitigation": "foreground interactive WSL shell during test; no global settings changed",
+  "initialize_seed_not_run": true,
+  "paid_requests": 0
+}
