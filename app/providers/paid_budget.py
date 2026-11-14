@@ -1,7 +1,7 @@
 """Durable, conservative admission for explicitly enabled paid HTTP attempts.
 
-Reservations are never refunded. An interrupted attempt requires an operator's
-decision outside this component; restarting cannot silently replay it.
+Original reservations are immutable. Only complete, validated usage may reduce
+net occupancy; interrupted attempts keep their reservation and block admission.
 """
 
 from __future__ import annotations
@@ -23,6 +23,7 @@ import httpx
 
 from app.core.error_codes import ErrorCode
 from app.core.exceptions import AppError
+from app.providers.usage_settlement import UsageEvidence
 
 
 class BudgetBlocked(AppError):
@@ -60,6 +61,10 @@ class BudgetLimits:
 _SCHEMA = (
     "CREATE TABLE metadata (fingerprint TEXT NOT NULL)",
     "CREATE TABLE attempts (id INTEGER PRIMARY KEY, tokens INTEGER NOT NULL, usd TEXT NOT NULL, state TEXT NOT NULL CHECK(state IN ('pending','completed','uncertain')))",
+)
+_ADDITIVE_SCHEMA = (
+    "CREATE TABLE reservation_evidence (attempt_id INTEGER PRIMARY KEY REFERENCES attempts(id), input_tokens INTEGER NOT NULL, output_tokens INTEGER NOT NULL)",
+    "CREATE TABLE settlements (attempt_id INTEGER PRIMARY KEY REFERENCES attempts(id), prompt_tokens INTEGER NOT NULL, completion_tokens INTEGER NOT NULL, total_tokens INTEGER NOT NULL, usd TEXT NOT NULL, response_sha256 TEXT NOT NULL, source TEXT NOT NULL)",
 )
 
 
@@ -107,7 +112,7 @@ class AttemptLedger:
 
     def __init__(self, path: Path, limits: BudgetLimits) -> None:
         self.path = Path(os.path.abspath(path))
-        self.limits = limits
+        self._limits = limits
         self._fingerprint = hashlib.sha256(
             json.dumps(asdict(limits), sort_keys=True, default=str).encode()
         ).hexdigest()
@@ -131,8 +136,22 @@ class AttemptLedger:
                     for statement in _SCHEMA:
                         connection.execute(statement)
                     connection.execute("INSERT INTO metadata VALUES (?)", (self._fingerprint,))
+                    for statement in _ADDITIVE_SCHEMA:
+                        connection.execute(statement)
+                else:
+                    # Exact v1 schema was validated before this additive migration.
+                    for statement in _ADDITIVE_SCHEMA:
+                        if not connection.execute(
+                            "SELECT 1 FROM sqlite_master WHERE name=?", (statement.split()[2],)
+                        ).fetchone():
+                            connection.execute(statement)
+                self._snapshot(connection)
         except (OSError, sqlite3.Error, ValueError, DecimalException):
             raise BudgetBlocked() from None
+
+    @property
+    def limits(self) -> BudgetLimits:
+        return self._limits
 
     def _check_path(self) -> None:
         for component in (self.path, *self.path.parents):
@@ -164,7 +183,11 @@ class AttemptLedger:
                 schema = connection.execute(
                     "SELECT sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' ORDER BY name"
                 ).fetchall()
-                if schema != [(_SCHEMA[1],), (_SCHEMA[0],)]:
+                legacy = [(_SCHEMA[1],), (_SCHEMA[0],)]
+                current = [
+                    (statement,) for statement in (_SCHEMA[1], _SCHEMA[0], *_ADDITIVE_SCHEMA)
+                ]
+                if schema not in (legacy, current):
                     raise BudgetBlocked()
                 if connection.execute("SELECT fingerprint FROM metadata").fetchall() != [
                     (self._fingerprint,)
@@ -181,11 +204,20 @@ class AttemptLedger:
                 connection.close()
 
     def _snapshot(self, connection: sqlite3.Connection) -> dict[str, Any]:
-        rows = connection.execute("SELECT tokens, usd, state FROM attempts").fetchall()
+        rows = connection.execute("SELECT id, tokens, usd, state FROM attempts").fetchall()
+        evidence = {
+            row[0]: row[1:] for row in connection.execute("SELECT * FROM reservation_evidence")
+        }
+        settlements = {row[0]: row[1:] for row in connection.execute("SELECT * FROM settlements")}
+        ids = {row[0] for row in rows}
+        if evidence.keys() - ids or settlements.keys() - ids:
+            raise BudgetBlocked()
         total = Decimal(0)
         tokens = 0
+        reserved_total = Decimal(0)
+        reserved_tokens = 0
         states = {"pending": 0, "uncertain": 0, "completed": 0}
-        for count, raw_cost, state in rows:
+        for attempt, count, raw_cost, state in rows:
             cost = Decimal(raw_cost)
             if (
                 type(count) is not int
@@ -195,14 +227,149 @@ class AttemptLedger:
                 or state not in states
             ):
                 raise BudgetBlocked()
+            reserved_count, reserved_cost = count, cost
+            if attempt in evidence:
+                incoming, output = evidence[attempt]
+                if (
+                    type(incoming) is not int
+                    or incoming <= 0
+                    or type(output) is not int
+                    or output <= 0
+                    or incoming + output != count
+                    or self._cost(incoming, output) != cost
+                ):
+                    raise BudgetBlocked()
+            if attempt in settlements:
+                if state != "completed" or attempt not in evidence:
+                    raise BudgetBlocked()
+                prompt, completion, count, raw_net, digest, source = settlements[attempt]
+                cost = self._validated_settlement(
+                    prompt, completion, count, digest, source, evidence[attempt], reserved_cost
+                )
+                if str(cost) != raw_net:
+                    raise BudgetBlocked()
             with localcontext() as context:
                 context.prec = (
                     len(str(total)) + len(raw_cost) + abs(int(cost.as_tuple().exponent)) + 20
                 )
                 total += cost
+                reserved_total += reserved_cost
             tokens += count
+            reserved_tokens += reserved_count
             states[state] += 1
-        return {"requests": len(rows), "tokens": tokens, "usd": str(total), **states}
+        return {
+            "requests": len(rows),
+            "tokens": tokens,
+            "usd": str(total),
+            "reserved_tokens": reserved_tokens,
+            "reserved_usd": str(reserved_total),
+            "settled": len(settlements),
+            **states,
+        }
+
+    def _cost(self, incoming: int, output: int) -> Decimal:
+        with localcontext() as context:
+            context.prec = (
+                sum(
+                    len(value.as_tuple().digits) + abs(int(value.as_tuple().exponent))
+                    for value in (
+                        self.limits.input_usd_per_million,
+                        self.limits.output_usd_per_million,
+                    )
+                )
+                + len(str(incoming))
+                + len(str(output))
+                + 20
+            )
+            return (
+                incoming * self.limits.input_usd_per_million
+                + output * self.limits.output_usd_per_million
+            ) / Decimal(1_000_000)
+
+    def _validated_settlement(
+        self,
+        prompt: int,
+        completion: int,
+        total: int,
+        digest: str,
+        source: str,
+        evidence: tuple,
+        reserved_cost: Decimal,
+    ) -> Decimal:
+        if (
+            any(type(value) is not int for value in (prompt, completion, total))
+            or prompt <= 0
+            or completion < 0
+            or total != prompt + completion
+            or prompt > evidence[0]
+            or completion > evidence[1]
+            or not isinstance(digest, str)
+            or len(digest) != 64
+            or any(character not in "0123456789abcdef" for character in digest)
+            or source not in ("json", "sse")
+        ):
+            raise BudgetBlocked()
+        cost = self._cost(prompt, completion)
+        if cost > reserved_cost:
+            raise BudgetBlocked()
+        return cost
+
+    def settle(
+        self,
+        attempt: int,
+        *,
+        prompt_tokens: int,
+        completion_tokens: int,
+        total_tokens: int,
+        response_sha256: str,
+        source: str,
+    ) -> None:
+        """Atomically append trusted usage and complete a pending attempt.
+
+        Callers must have consumed and closed a successful provider response.
+        Exact replay is idempotent; conflicting evidence is always rejected.
+        Historical attempts without reservation evidence cannot be settled.
+        """
+        if type(attempt) is not int:
+            raise BudgetBlocked()
+        with self._transaction() as connection:
+            self._snapshot(connection)
+            row = connection.execute(
+                "SELECT a.usd,a.state,e.input_tokens,e.output_tokens FROM attempts a "
+                "JOIN reservation_evidence e ON a.id=e.attempt_id WHERE a.id=?",
+                (attempt,),
+            ).fetchone()
+            if row is None:
+                raise BudgetBlocked()
+            cost = self._validated_settlement(
+                prompt_tokens,
+                completion_tokens,
+                total_tokens,
+                response_sha256,
+                source,
+                row[2:],
+                Decimal(row[0]),
+            )
+            record = (
+                attempt,
+                prompt_tokens,
+                completion_tokens,
+                total_tokens,
+                str(cost),
+                response_sha256,
+                source,
+            )
+            previous = connection.execute(
+                "SELECT * FROM settlements WHERE attempt_id=?", (attempt,)
+            ).fetchone()
+            if previous is not None:
+                if previous != record:
+                    raise BudgetBlocked()
+                return
+            if row[1] != "pending":
+                raise BudgetBlocked()
+            connection.execute("INSERT INTO settlements VALUES (?,?,?,?,?,?,?)", record)
+            connection.execute("UPDATE attempts SET state='completed' WHERE id=?", (attempt,))
 
     def snapshot(self) -> dict[str, Any]:
         with self._transaction() as connection:
@@ -236,6 +403,11 @@ class AttemptLedger:
                 (tokens, str(cost)),
             )
             assert cursor.lastrowid is not None
+            output = json.loads(payload)["max_tokens"]
+            connection.execute(
+                "INSERT INTO reservation_evidence VALUES (?,?,?)",
+                (cursor.lastrowid, tokens - output, output),
+            )
             return cursor.lastrowid
 
     def _transition(self, attempt: int, state: str) -> None:
@@ -254,13 +426,22 @@ class AttemptLedger:
 
 
 class _BudgetStream(httpx.AsyncByteStream):
-    def __init__(self, ledger: AttemptLedger, attempt: int, inner: httpx.AsyncByteStream) -> None:
+    def __init__(
+        self,
+        ledger: AttemptLedger,
+        attempt: int,
+        inner: httpx.AsyncByteStream,
+        evidence: UsageEvidence,
+    ) -> None:
         self._ledger = ledger
         self._attempt = attempt
         self._inner = inner
         self._finished = False
         self._uncertain = False
         self._cancelled = False
+        self._exhausted = False
+        self._evidence = evidence
+        self._close_lock = asyncio.Lock()
 
     def _mark_uncertain(self) -> None:
         if not self._finished and not self._uncertain:
@@ -270,9 +451,9 @@ class _BudgetStream(httpx.AsyncByteStream):
     async def __aiter__(self) -> AsyncIterator[bytes]:
         try:
             async for chunk in self._inner:
+                self._evidence.feed(chunk)
                 yield chunk
-            self._ledger.complete(self._attempt)
-            self._finished = True
+            self._exhausted = True
         except asyncio.CancelledError:
             self._cancelled = True
             with suppress(BudgetBlocked):
@@ -286,6 +467,12 @@ class _BudgetStream(httpx.AsyncByteStream):
             raise BudgetBlocked() from None
 
     async def aclose(self) -> None:
+        async with self._close_lock:
+            await self._close()
+
+    async def _close(self) -> None:
+        if self._finished:
+            return
         try:
             await self._inner.aclose()
         except asyncio.CancelledError:
@@ -296,9 +483,27 @@ class _BudgetStream(httpx.AsyncByteStream):
         except Exception:
             self._mark_uncertain()
             raise BudgetBlocked() from None
-        if not self._finished and not self._cancelled:
+        if self._uncertain or self._cancelled:
+            return
+        if not self._exhausted:
             self._mark_uncertain()
             raise BudgetBlocked()
+        settlement = self._evidence.settlement()
+        try:
+            if settlement is None:
+                self._ledger.complete(self._attempt)
+            else:
+                try:
+                    self._ledger.settle(self._attempt, **settlement)
+                except BudgetBlocked:
+                    # Invalid supplier counts (e.g. above reservation) cannot
+                    # refund capacity. A corrupt ledger still fails completion.
+                    self._ledger.complete(self._attempt)
+            self._finished = True
+        except BudgetBlocked:
+            with suppress(BudgetBlocked):
+                self._mark_uncertain()
+            raise
 
 
 class BudgetedTransport(httpx.AsyncBaseTransport):
@@ -308,8 +513,10 @@ class BudgetedTransport(httpx.AsyncBaseTransport):
         inner: httpx.AsyncBaseTransport | None = None,
         *,
         allowed_base_url: str = "https://api.deepseek.com",
+        dispatch_enabled: bool = True,
     ) -> None:
         self._ledger = ledger
+        self._dispatch_enabled = dispatch_enabled is True
         self._base = httpx.URL(allowed_base_url)
         if (
             self._base.scheme != "https"
@@ -326,7 +533,8 @@ class BudgetedTransport(httpx.AsyncBaseTransport):
     async def handle_async_request(self, request: httpx.Request) -> httpx.Response:
         url = request.url
         if (
-            request.method != "POST"
+            not self._dispatch_enabled
+            or request.method != "POST"
             or (url.scheme, url.host, url.port)
             != (self._base.scheme, self._base.host, self._base.port)
             or url.path != self._base.path.rstrip("/") + "/chat/completions"
@@ -353,7 +561,16 @@ class BudgetedTransport(httpx.AsyncBaseTransport):
         return httpx.Response(
             response.status_code,
             headers=response.headers,
-            stream=_BudgetStream(self._ledger, attempt, response.stream),
+            stream=_BudgetStream(
+                self._ledger,
+                attempt,
+                response.stream,
+                UsageEvidence(
+                    model=self._ledger.limits.model,
+                    status=response.status_code,
+                    content_type=response.headers.get("content-type", ""),
+                ),
+            ),
             extensions=response.extensions,
         )
 

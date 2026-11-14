@@ -1,0 +1,138 @@
+{
+  "task": "P1",
+  "scope": "Budget settlement only; local fixtures, no paid HTTP, no Git writes, no Docker mutations",
+  "changed_files": [
+    "app/providers/paid_budget.py",
+    "app/providers/usage_settlement.py",
+    "tests/unit/test_usage_settlement.py"
+  ],
+  "interface": {
+    "dispatch_enabled": "BudgetedTransport keyword defaults True for compatibility; anything except literal True blocks before reserve/network",
+    "snapshot": "tokens/usd are net occupancy; reserved_tokens/reserved_usd preserve original reservation totals; requests never refunded; settled counts appended settlements",
+    "settle": "settle(attempt, *, prompt_tokens, completion_tokens, total_tokens, response_sha256, source); no HTTP endpoint; immediate transaction; exact duplicate idempotent, conflict rejected",
+    "legacy_complete": "complete(id) retains conservative full charge and cannot later be settled",
+    "migration": "Exact original metadata/attempts SQL remains unchanged; transactionally append reservation_evidence and settlements tables; legacy rows lack evidence and remain fully charged",
+    "schema_v2": [
+      "reservation_evidence(attempt_id PRIMARY KEY REFERENCES attempts(id), input_tokens INTEGER, output_tokens INTEGER)",
+      "settlements(attempt_id PRIMARY KEY REFERENCES attempts(id), prompt_tokens INTEGER, completion_tokens INTEGER, total_tokens INTEGER, usd TEXT, response_sha256 TEXT, source TEXT)"
+    ],
+    "trust": "Only HTTP2xx, exact configured model, single valid finished choice, coherent nonboolean integer usage within original input/output bounds; reject malformed/duplicate JSON fields, provider error metadata, truncated or ambiguous responses",
+    "sse": "Incremental bounded events require valid model/delta/finish and unique coherent final usage, followed by terminal DONE with no later data. Accept documented final choice+finish+usage (no new content) OR older separate usage-only choices[] after finish. Reject early/duplicate/conflicting/error/truncated/missing-terminal usage.",
+    "close": "No settlement until stream exhaustion AND successful inner close; close serialized, idempotent; cancellation/errors remain uncertain and block admission",
+    "privacy": "Persist only scalar token/cost/hash/source metadata; transient JSON buffer <=1MiB, SSE events <=64KiB; no prompts, responses, keys or headers persisted",
+    "json_message": "Require message dict with content key, assistant role when supplied, string content for stop; null content only with finish-matching typed native tool_calls/function_call. Reject malformed or missing content and call structures.",
+    "sse_delta": "Every nonempty choices event requires delta dict, optional assistant role and str-or-null content; streamed native tool/function fragments have typed nonboolean indices and string name/arguments fields. Empty final delta valid. Final usage can accompany finished empty choice delta or follow in a separate usage-only event."
+  },
+  "red": [
+    {
+      "command": "python -m pytest tests/unit/test_usage_settlement.py -q --tb=no",
+      "failed": 38,
+      "reason": "Missing settle method, audit fields and dispatch gate"
+    },
+    {
+      "command": "python -m pytest tests/unit/test_usage_settlement.py -q --tb=short",
+      "failed": 2,
+      "passed": 55,
+      "reason": "Nonzero/boolean choice index incorrectly settled"
+    },
+    {
+      "command": "python -m pytest tests/unit/test_usage_settlement.py::test_concurrent_response_close_cannot_double_finalize -q --tb=short",
+      "failed": 1,
+      "reason": "Concurrent close finalized twice"
+    },
+    {
+      "command": "python -m pytest tests/unit/test_usage_settlement.py::test_provider_error_metadata_never_releases_capacity -q --tb=short",
+      "failed": 2,
+      "reason": "2xx response with error metadata incorrectly settled"
+    },
+    {
+      "command": "python -m pytest tests/unit/test_usage_settlement.py -q --tb=short",
+      "failed": 12,
+      "passed": 63,
+      "reason": "Review found missing/malformed JSON message/content/native tool-call shape was incorrectly settled"
+    },
+    {
+      "command": "python -m pytest tests/unit/test_usage_settlement.py -q --tb=short",
+      "failed": 11,
+      "passed": 79,
+      "reason": "Review found missing/non-dict SSE delta, wrong role/content scalar types and malformed streamed function fragments incorrectly settled"
+    },
+    {
+      "command": "python -m pytest tests/unit/test_usage_settlement.py -q --tb=short",
+      "failed": 1,
+      "passed": 98,
+      "reason": "Documented DeepSeek final choice event containing valid finish and usage did not settle; separate-usage-only assumption was too restrictive"
+    }
+  ],
+  "green": [
+    {
+      "command": "wsl --cd /mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation /home/panda/.venvs/adaptive-rag-workbench/bin/python -m pytest tests/unit/test_paid_budget.py tests/unit/test_usage_settlement.py tests/unit/test_real_agent_dev.py -q --tb=short",
+      "passed": 162,
+      "warnings": 1,
+      "seconds": 8.88,
+      "note": "Final official DeepSeek inline-final-usage compatibility, JSON message and SSE delta validation;99 settlement cases plus30 existing budget+33RealDev cases"
+    },
+    {
+      "command": "wsl --cd /mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation /home/panda/.venvs/adaptive-rag-workbench/bin/python -m pytest tests/unit/test_paid_budget.py tests/unit/test_usage_settlement.py tests/unit/test_real_agent_dev.py -q --tb=short",
+      "passed": 153,
+      "warnings": 1,
+      "seconds": 11.98,
+      "note": "Final JSON message and SSE delta protocol validation; 90 settlement cases plus30 existing budget+33RealDev cases"
+    },
+    {
+      "command": "wsl --cd /mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation /home/panda/.venvs/adaptive-rag-workbench/bin/python -m pytest tests/unit/test_paid_budget.py tests/unit/test_usage_settlement.py tests/unit/test_real_agent_dev.py -q --tb=short",
+      "passed": 138,
+      "warnings": 1,
+      "seconds": 7.86,
+      "note": "Final review-driven JSON message validation; 75 settlement cases plus existing budget/RealDev cases"
+    },
+    {
+      "command": "wsl --cd /mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation /home/panda/.venvs/adaptive-rag-workbench/bin/python -m pytest tests/unit/test_paid_budget.py tests/unit/test_usage_settlement.py tests/unit/test_real_agent_dev.py -q --tb=short",
+      "passed": 123,
+      "warnings": 1,
+      "seconds": 7.25,
+      "note": "Final production code, all 60 settlement cases and existing budget/RealDev cases"
+    },
+    {
+      "command": "wsl --cd /mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation /home/panda/.venvs/adaptive-rag-workbench/bin/python -m pytest -q --tb=short",
+      "passed": 849,
+      "warnings": 1,
+      "seconds": 132.74,
+      "note": "Full-suite snapshot before final concurrent-close/error-metadata/message/delta/final-usage compatibility regressions; final targeted validation above covers those later changes. Root metadata/gate changes were present."
+    },
+    {
+      "command": "python -m ruff check app/providers/paid_budget.py app/providers/usage_settlement.py tests/unit/test_usage_settlement.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m mypy app/providers/paid_budget.py app/providers/usage_settlement.py --follow-imports=skip",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check -- app/providers/paid_budget.py",
+      "result": "PASS"
+    }
+  ],
+  "warning": "Dependency LangChainPendingDeprecationWarning for allowed_objects default; no test failures",
+  "legacy_copy_validation": {
+    "result": "PASS",
+    "source_copy_sha256_before_and_after": "e95855f75dd631385102fe21723fdbfb014dbd58577f0dd23936fbc74b318251",
+    "method": "Copy root-provided private legacy copy to TemporaryDirectory on native Linux; migrate only temporary copy and remove temporary directory afterward",
+    "original_attempt_rows_ids_tokens_usd_states_unchanged": true,
+    "original_fingerprint_unchanged": true,
+    "source_copy_unchanged": true,
+    "requests": 3,
+    "completed": 3,
+    "net_and_reserved_tokens": 8986,
+    "net_and_reserved_usd": "0.0037866",
+    "settled": 0,
+    "native_file_directory_modes": "0600/0700"
+  },
+  "real_paid_business": "NOT_RUN; no paid authorization",
+  "blockers": [],
+  "official_reference": {
+    "url": "https://api-docs.deepseek.com/api/create-chat-completion/",
+    "checked": "2026-11-14",
+    "basis": "stream_options.include_usage and final content chunk description; last choice event before DONE carries usage without a separate usage-only chunk"
+  }
+}

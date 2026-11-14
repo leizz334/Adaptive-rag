@@ -1,18 +1,64 @@
 {
-  "phase":"Agent usability P1-P3",
-  "base_head":"fde159a459d66c064456bffc2630fa49b64ca40b",
-  "paid_authorization":{"requests":0,"tokens":0,"usd":"0"},
-  "architecture_decisions":[
+  "phase": "Agent usability P1-P3",
+  "base_head": "fde159a459d66c064456bffc2630fa49b64ca40b",
+  "paid_authorization": {
+    "requests": 0,
+    "tokens": 0,
+    "usd": "0"
+  },
+  "architecture_decisions": [
     "Original reservations/attempt IDs/fingerprint are immutable; append auditable settlement metadata only for trustworthy complete supplier usage.",
     "Legacy attempts lack durable per-request usage; preserve conservative charges and original production ledger unchanged; test upgrades on copies.",
     "REAL_AGENT_PAID_AUTHORIZED defaults false at server startup and blocks before reserve/network. Frontend never enables it or reads Key.",
     "Modes use fixed8000/8001 origins with full page navigation and reauthentication; readonly public metadata CORS only, never proxy Bearer/session/private data.",
     "No live paid request this phase; real business cases remain NOT_RUN, MockTransport cases and actual Chromium are separate evidence."
   ],
-  "tasks":[
-    {"id":"P1","dependencies":[],"passes":false,"status":"in_progress","acceptance_criteria":["Audit preserves legacy reservations/consumption and request count while net token/cost settles only trusted successful usage", "Concurrency/restart/retry/atomicity/JSON/SSE/uncertain/error safety regressions pass"]},
-    {"id":"P2","dependencies":["P1"],"passes":false,"status":"pending","acceptance_criteria":["Server-only default-deny paid gate and safe metadata verified", "Order/Memory/privateRAG/errors/HITL tested with MockTransport; actual paid model NOT_RUN explicitly"]},
-    {"id":"P3","dependencies":["P2"],"passes":false,"status":"pending","acceptance_criteria":["Mode entry and explicit unavailable reasons, independent Bearer/history/data perorigin, no Shadow", "Frontend tests/build and Chromium switching/isolation E2E pass; Offline8000 no regression"]},
-    {"id":"DELIVERY","dependencies":["P3"],"passes":false,"status":"pending","acceptance_criteria":["Original.env/ledger/volumes/Stash/history preserved, any deployment reversible and Mock services stopped", "Chinese report, scoped commits, normal push and exact remote HEAD verification"]}
+  "tasks": [
+    {
+      "id": "P1",
+      "dependencies": [],
+      "passes": true,
+      "status": "complete",
+      "acceptance_criteria": [
+        "Audit preserves legacy reservations/consumption and request count while net token/cost settles only trusted successful usage",
+        "Concurrency/restart/retry/atomicity/JSON/SSE/uncertain/error safety regressions pass"
+      ]
+    },
+    {
+      "id": "P2",
+      "dependencies": [
+        "P1"
+      ],
+      "passes": false,
+      "status": "pending",
+      "acceptance_criteria": [
+        "Server-only default-deny paid gate and safe metadata verified",
+        "Order/Memory/privateRAG/errors/HITL tested with MockTransport; actual paid model NOT_RUN explicitly"
+      ]
+    },
+    {
+      "id": "P3",
+      "dependencies": [
+        "P2"
+      ],
+      "passes": false,
+      "status": "pending",
+      "acceptance_criteria": [
+        "Mode entry and explicit unavailable reasons, independent Bearer/history/data perorigin, no Shadow",
+        "Frontend tests/build and Chromium switching/isolation E2E pass; Offline8000 no regression"
+      ]
+    },
+    {
+      "id": "DELIVERY",
+      "dependencies": [
+        "P3"
+      ],
+      "passes": false,
+      "status": "pending",
+      "acceptance_criteria": [
+        "Original.env/ledger/volumes/Stash/history preserved, any deployment reversible and Mock services stopped",
+        "Chinese report, scoped commits, normal push and exact remote HEAD verification"
+      ]
+    }
   ]
 }
