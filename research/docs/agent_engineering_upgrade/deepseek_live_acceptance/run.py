@@ -9,7 +9,8 @@ assert name in {"prepare", "live", "checks", "dryrun", "finish"}
 root = "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation"
 script = root + "/research/docs/agent_engineering_upgrade/deepseek_live_acceptance/" + name + ".py"
 arguments = sys.argv[2:]
-code = """
+code = (
+    """
 import subprocess,json,os,time,urllib.request
 from pathlib import Path
 os.umask(0o077)
@@ -20,7 +21,7 @@ if WARMUP:
  opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
  for attempt in range(60):
   try:
-   rows=[json.loads(opener.open('http://127.0.0.1:'+port+'/api/v1/ready',timeout=3).read()) for port in ['8000','8001']]
+   rows=[json.loads(opener.open('http://127.0.0.1:'+port+'/api/v1/ready',timeout=3).read()) for port in PORTS]
    if all(row['ready'] and all(d['ready'] for d in row['dependencies'] if d['name'] in {'database','redis','vector_store'}) for row in rows):break
   except Exception:pass
   time.sleep(1)
@@ -31,6 +32,10 @@ if result.returncode:
 print(result.stdout)
 print('PHASE_SCRIPT_EXIT='+str(result.returncode))
 """.replace(
-    "ARGS", repr(["/home/panda/.venvs/adaptive-rag-workbench/bin/python", script, *arguments])
-).replace("ROOT", repr(root)).replace("WARMUP",repr(name in {'live','finish'}))
+        "ARGS", repr(["/home/panda/.venvs/adaptive-rag-workbench/bin/python", script, *arguments])
+    )
+    .replace("ROOT", repr(root))
+    .replace("WARMUP", repr(name in {"live", "finish"}))
+)
+code = code.replace("PORTS", repr(["8000"] if name == "finish" else ["8000", "8001"]))
 print(wsl(code, timeout=3600))

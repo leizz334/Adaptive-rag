@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import subprocess
+import textwrap
 from pathlib import Path
 
 import httpx
@@ -25,7 +26,6 @@ def docker(*args):
 
 
 baseline = json.loads((OUT / "D1-baseline.json").read_text())
-assert hashlib.sha256((ROOT / ".env").read_bytes()).hexdigest() == baseline["env_sha256"]
 startup = json.loads((OUT / "D2-startup.json").read_text())
 owned = startup["containers"]
 rows = json.loads(docker("inspect", *[r["id"] for r in owned]))
@@ -36,40 +36,70 @@ for before in owned:
         current["Image"] == before["image"]
         and [m.get("Name") for m in current["Mounts"]] == before["mounts"]
     )
-code = """
-import json
+try:
+    assert hashlib.sha256((ROOT / ".env").read_bytes()).hexdigest() == baseline["env_sha256"]
+    budget_volume = PROJECT + "_real_budget"
+    state_volume = PROJECT + "_showcase_state"
+    names = set(docker("volume", "ls", "--format", "{{.Name}}").splitlines())
+    assert {budget_volume, state_volume} <= names
+
+    def readonly(*arguments):
+        return docker(
+            "run",
+            "--rm",
+            "--network",
+            "none",
+            "--read-only",
+            "--cap-drop",
+            "ALL",
+            "-v",
+            budget_volume + ":/ledger:ro",
+            "-v",
+            state_volume + ":/var/lib/showcase:ro",
+            "--entrypoint",
+            "python",
+            owned[0]["image"],
+            *arguments,
+        )
+
+    code = """
+import json,sqlite3
+from decimal import Decimal
 from pathlib import Path
-from app.demo.real_dev import load_runtime_config
-from app.providers.paid_budget import AttemptLedger
-c=load_runtime_config()
-b=AttemptLedger(c.budget_path,c.limits)
-print(json.dumps({'ledger':b.snapshot(),'mode':oct(Path(c.budget_path).stat().st_mode&0o777),'key_file_mode':oct(Path('/run/secrets/deepseek_api_key').stat().st_mode&0o777)}))
+path=Path('/ledger/budget.sqlite3')
+with sqlite3.connect('file:/ledger/budget.sqlite3?mode=ro',uri=True) as connection:
+ assert connection.execute('PRAGMA quick_check').fetchall()==[('ok',)]
+ rows=connection.execute('SELECT tokens,usd,state FROM attempts').fetchall()
+ states={state:sum(r[2]==state for r in rows) for state in ['completed','pending','uncertain']}
+ ledger={'requests':len(rows),'tokens':sum(r[0] for r in rows),'usd':str(sum((Decimal(r[1]) for r in rows),Decimal(0))),**states}
+print(json.dumps({'ledger':ledger,'mode':oct(path.stat().st_mode&0o777)}))
 """
-receipt = json.loads(docker("exec", PROJECT + "-api-1", "python", "-c", code))
-tokens = json.loads(
-    docker(
-        "exec",
-        PROJECT + "-api-1",
-        "python",
-        "-c",
-        'import json;from app.demo.docker import read_credentials;print(json.dumps(read_credentials()["tokens"]))',
+    receipt = json.loads(readonly("-c", textwrap.dedent(code)))
+    receipt["verified_with_services_stopped"] = all(not row["State"]["Running"] for row in rows)
+    receipt["key_file_mode"] = oct((PRIVATE / "deepseek.key").stat().st_mode & 0o777)
+    tokens = json.loads(
+        readonly(
+            "-c",
+            'import json;from app.demo.docker import read_credentials;print(json.dumps(read_credentials()["tokens"]))',
+        )
     )
-)
-secrets = {value.encode() for value in tokens.values()}
-secrets.add(
-    (dotenv_values(ROOT / ".env", encoding="utf-8-sig").get("DEEPSEEK_API_KEY") or "").encode()
-)
-assert all(secrets)
-matches = []
-for path in HERE.rglob("*"):
-    if path.is_file() and ".private" not in path.parts and "__pycache__" not in path.parts:
-        if any(secret in path.read_bytes() for secret in secrets):
-            matches.append(str(path.relative_to(ROOT)))
-assert not matches, "Secret matches detected; do not publish phase evidence"
-volumes = docker("volume", "ls", "--format", "{{.Name}}").splitlines()
-running = [r["Id"] for r in rows if r["State"]["Running"]]
-if running:
-    docker("stop", *running)
+    secrets = {value.encode() for value in tokens.values()}
+    secrets.add(
+        (dotenv_values(ROOT / ".env", encoding="utf-8-sig").get("DEEPSEEK_API_KEY") or "").encode()
+    )
+    assert all(secrets)
+    matches = []
+    for path in HERE.rglob("*"):
+        if path.is_file() and ".private" not in path.parts and "__pycache__" not in path.parts:
+            if any(secret in path.read_bytes() for secret in secrets):
+                matches.append(str(path.relative_to(ROOT)))
+    assert not matches, "Secret matches detected; do not publish phase evidence"
+    volumes = docker("volume", "ls", "--format", "{{.Name}}").splitlines()
+finally:
+    # Ownership has already been verified. Scan/read failures must still stop paid services.
+    running = [r["Id"] for r in rows if r["State"]["Running"]]
+    if running:
+        docker("stop", *running)
 stopped = json.loads(docker("inspect", *[r["id"] for r in owned]))
 assert all(not r["State"]["Running"] for r in stopped)
 assert docker("volume", "ls", "--format", "{{.Name}}").splitlines() == volumes
