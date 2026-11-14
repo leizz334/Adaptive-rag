@@ -9,6 +9,7 @@ import { SearchDialog } from "./components/SearchDialog";
 import { Sidebar } from "./components/Sidebar";
 import { KnowledgePanel } from "./components/KnowledgePanel";
 import { CredentialGate } from "./components/CredentialGate";
+import { ModeSelector } from "./components/ModeSelector";
 import type { ActionProposal } from "./types";
 
 const SUGGESTIONS = [
@@ -71,7 +72,7 @@ export function Workbench({ identity, onDisconnect }: { identity: Identity; onDi
       <header className="topbar">
         <button className="icon-button open-sidebar" aria-label="打开侧栏" title="打开侧栏" onClick={() => { setSidebarCollapsed(false); setSidebarOpen(true); }}>{sidebarCollapsed ? <PanelLeftOpen size={20} /> : <Menu size={20} />}</button>
         <span className="model-title">Adaptive RAG <small>智能助手</small></span>
-        <div className="topbar-right"><span className="identity-label" title="服务端认证主体">{identity.subject}</span><button className="text-button" onClick={onDisconnect}>切换身份</button><span className={`connection-pill ${healthy === false ? "offline" : ""}`}><span />{healthy === null ? "连接中" : healthy ? "已连接" : "服务未连接"}</span><button className="icon-button help-button" title="说明" aria-label="说明" onClick={() => window.open("https://github.com/leizz334/Adaptive-rag", "_blank", "noopener,noreferrer")}><CircleHelp size={19} /></button></div>
+        <div className="topbar-right"><ModeSelector compact busy={chat.busy || chat.listBusy} onLeave={onDisconnect} /><span className="identity-label" title="服务端认证主体">{identity.subject}</span><button className="text-button" onClick={onDisconnect}>切换身份</button><span className={`connection-pill ${healthy === false ? "offline" : ""}`}><span />{healthy === null ? "连接中" : healthy ? "已连接" : "服务未连接"}</span><button className="icon-button help-button" title="说明" aria-label="说明" onClick={() => window.open("https://github.com/leizz334/Adaptive-rag", "_blank", "noopener,noreferrer")}><CircleHelp size={19} /></button></div>
       </header>
       {healthy === false && <div className="service-banner" role="status"><strong>暂时无法连接服务</strong><span>请确认后端已启动后重试。</span></div>}
       <nav className="workspace-tabs" aria-label="工作台视图">{([["chat","对话工作台"],["knowledge","私有知识库"]] as const).map(([key,label]) => <button key={key} role="tab" aria-selected={tab === key} onClick={() => setTab(key)}>{label}</button>)}</nav>
@@ -92,8 +93,15 @@ export function Workbench({ identity, onDisconnect }: { identity: Identity; onDi
 
 function App() {
   const [identity, setIdentity] = useState<Identity | null>(null);
-  const disconnect = () => { clearCredential(); setIdentity(null); };
-  useEffect(() => { window.addEventListener("credential-expired", disconnect); return () => window.removeEventListener("credential-expired", disconnect); }, []);
-  return identity ? <Workbench key={identity.subject} identity={identity} onDisconnect={disconnect} /> : <CredentialGate onAuthenticated={setIdentity} />;
+  const [generation, setGeneration] = useState(0);
+  const disconnect = () => { clearCredential(); setIdentity(null); setGeneration(value => value + 1); };
+  useEffect(() => {
+    const onPageShow = (event: PageTransitionEvent) => { if (event.persisted) disconnect(); };
+    window.addEventListener("credential-expired", disconnect);
+    window.addEventListener("pagehide", disconnect);
+    window.addEventListener("pageshow", onPageShow);
+    return () => { window.removeEventListener("credential-expired", disconnect); window.removeEventListener("pagehide", disconnect); window.removeEventListener("pageshow", onPageShow); };
+  }, []);
+  return identity ? <Workbench key={`${generation}:${identity.subject}`} identity={identity} onDisconnect={disconnect} /> : <CredentialGate key={generation} onAuthenticated={setIdentity} onLeave={disconnect} />;
 }
 export default App;

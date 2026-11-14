@@ -19,7 +19,12 @@ from app.config.settings import Settings
 from app.demo.docker import SECRET_DIR, STATE_DIR, bootstrap, runtime_settings
 from app.main import create_app
 from app.providers.deepseek import DeepSeekProvider
-from app.providers.paid_budget import AttemptLedger, BudgetedTransport, BudgetLimits, _request_reservation
+from app.providers.paid_budget import (
+    AttemptLedger,
+    BudgetedTransport,
+    BudgetLimits,
+    _request_reservation,
+)
 from app.services.container import build_container
 
 BUDGET_DIR = Path("/var/lib/real-agent")
@@ -147,7 +152,9 @@ def create_application(config: RuntimeConfig, *, transport: httpx.AsyncBaseTrans
         ledger = AttemptLedger(config.budget_path, config.limits)
         ledger.ensure_ready()
         guarded = BudgetedTransport(
-            ledger, transport, allowed_base_url=config.settings.deepseek_base_url,
+            ledger,
+            transport,
+            allowed_base_url=config.settings.deepseek_base_url,
             dispatch_enabled=paid_authorized,
         )
         from app.core.constants import PROMPT_VERSION_INTENT
@@ -155,25 +162,42 @@ def create_application(config: RuntimeConfig, *, transport: httpx.AsyncBaseTrans
 
         minimum_payload = dict(
             model=config.settings.deepseek_model,
-            messages=[{"role":"system","content":INTENT_SYSTEM},{"role":"user","content":INTENT_USER.format(query="",prompt_version=PROMPT_VERSION_INTENT)}],
-            temperature=0.0,max_tokens=256,response_format={"type":"json_object"},
+            messages=[
+                {"role": "system", "content": INTENT_SYSTEM},
+                {
+                    "role": "user",
+                    "content": INTENT_USER.format(query="", prompt_version=PROMPT_VERSION_INTENT),
+                },
+            ],
+            temperature=0.0,
+            max_tokens=256,
+            response_format={"type": "json_object"},
         )
         if config.settings.deepseek_thinking_mode is not None:
-            minimum_payload["thinking"]={"type":config.settings.deepseek_thinking_mode}
-        encoded = httpx.Request("POST", "https://api.deepseek.com/chat/completions", json=minimum_payload).content
+            minimum_payload["thinking"] = {"type": config.settings.deepseek_thinking_mode}
+        encoded = httpx.Request(
+            "POST", "https://api.deepseek.com/chat/completions", json=minimum_payload
+        ).content
         minimum_tokens, minimum_usd = _request_reservation(encoded, config.limits)
 
         def admission_status():
             if not paid_authorized:
-                return {"available":False,"reason":"payment_not_authorized"}
+                return {"available": False, "reason": "payment_not_authorized"}
             try:
-                snapshot=ledger.snapshot()
-                if snapshot['pending'] or snapshot['uncertain']:
-                    return {"available":False,"reason":"budget_not_ready"}
-                exhausted=(snapshot['requests']>=config.limits.max_requests or snapshot['tokens']+minimum_tokens>config.limits.max_tokens or Decimal(snapshot['usd'])+minimum_usd>config.limits.max_usd)
-                return {"available":not exhausted,"reason":"budget_exhausted" if exhausted else "ready"}
+                snapshot = ledger.snapshot()
+                if snapshot["pending"] or snapshot["uncertain"]:
+                    return {"available": False, "reason": "budget_not_ready"}
+                exhausted = (
+                    snapshot["requests"] >= config.limits.max_requests
+                    or snapshot["tokens"] + minimum_tokens > config.limits.max_tokens
+                    or Decimal(snapshot["usd"]) + minimum_usd > config.limits.max_usd
+                )
+                return {
+                    "available": not exhausted,
+                    "reason": "budget_exhausted" if exhausted else "ready",
+                }
             except Exception:
-                return {"available":False,"reason":"budget_not_ready"}
+                return {"available": False, "reason": "budget_not_ready"}
 
         app.state.real_agent_admission = admission_status
         async with httpx.AsyncClient(

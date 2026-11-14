@@ -5,6 +5,15 @@ const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 let credential = "";
 let credentialScope = new AbortController();
 const responseSignals = new WeakMap<Response, AbortSignal>();
+let pendingRequests = 0;
+const activityListeners = new Set<() => void>();
+export const getPendingRequests = () => pendingRequests;
+export function subscribeRequestActivity(listener: () => void) { activityListeners.add(listener); return () => { activityListeners.delete(listener); }; }
+async function trackRequest<T>(request: () => Promise<T>): Promise<T> {
+  pendingRequests++; activityListeners.forEach(listener => listener());
+  try { return await request(); }
+  finally { pendingRequests--; activityListeners.forEach(listener => listener()); }
+}
 export interface Identity { subject: string; roles: string[] }
 export class ApiError extends Error {
   constructor(public code: string, public status = 0, public traceId = "") {
@@ -26,8 +35,10 @@ function headers(token = credential): Headers {
 }
 function assertBase() {
   if (!API_BASE) return;
-  const url = new URL(API_BASE, window.location.origin);
-  if (url.protocol !== "https:" && !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)) throw new ApiError("PROTOCOL_ERROR");
+  try {
+    const url = new URL(API_BASE, window.location.origin);
+    if (url.origin !== window.location.origin || url.username || url.password || url.search || url.hash || !["http:", "https:"].includes(url.protocol)) throw new Error("Unsafe API base");
+  } catch { throw new ApiError("PROTOCOL_ERROR"); }
 }
 async function checked(path: string, init: RequestInit = {}, token = credential): Promise<Response> {
   assertBase();
@@ -36,7 +47,7 @@ async function checked(path: string, init: RequestInit = {}, token = credential)
   const combined = AbortSignal.any([scope.signal, ...(init.signal ? [init.signal] : []), AbortSignal.timeout(120_000)]);
   let response: Response;
   try {
-    response = await fetch(`${API_BASE}/api/v1${path}`, { ...init, headers: authHeaders, signal: combined });
+    response = await fetch(`${API_BASE}/api/v1${path}`, { ...init, headers: authHeaders, signal: combined, credentials: "omit", redirect: "error" });
   } catch (error) {
     if (init.signal?.aborted || scope.signal.aborted) throw error;
     throw new ApiError(error instanceof DOMException && error.name === "TimeoutError" ? "TIMEOUT" : "NETWORK_ERROR");
@@ -52,7 +63,8 @@ async function checked(path: string, init: RequestInit = {}, token = credential)
   }
   return response;
 }
-export async function authenticate(token: string): Promise<Identity> {
+export function authenticate(token: string): Promise<Identity> { return trackRequest(() => authenticateCredential(token)); }
+async function authenticateCredential(token: string): Promise<Identity> {
   clearCredential();
   if (!/^[A-Za-z0-9_-]{43,128}$/.test(token)) throw new ApiError("UNAUTHORIZED", 401);
   const scope = credentialScope;
@@ -65,8 +77,10 @@ export async function authenticate(token: string): Promise<Identity> {
   return value;
 }
 export async function requestJson<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const response = await checked(path, init);
-  try { return await response.json() as T; } catch (error) { throw bodyError(error, response, init.signal ?? undefined); }
+  return trackRequest(async () => {
+    const response = await checked(path, init);
+    try { return await response.json() as T; } catch (error) { throw bodyError(error, response, init.signal ?? undefined); }
+  });
 }
 function bodyError(error: unknown, response: Response, userSignal?: AbortSignal): unknown {
   if (error instanceof ApiError || userSignal?.aborted) return error;
@@ -76,7 +90,7 @@ function bodyError(error: unknown, response: Response, userSignal?: AbortSignal)
   return new ApiError(error instanceof SyntaxError ? "PROTOCOL_ERROR" : "NETWORK_ERROR");
 }
 export async function checkHealth(signal?: AbortSignal): Promise<boolean> {
-  try { return (await fetch(`${API_BASE}/api/v1/health`, { signal })).ok; } catch { return false; }
+  try { assertBase(); return (await fetch(`${API_BASE}/api/v1/health`, { signal, credentials: "omit", redirect: "error" })).ok; } catch { return false; }
 }
 export async function getCapabilities(signal?: AbortSignal): Promise<Capabilities | null> {
   try { return await requestJson<Capabilities>("/capabilities", { signal }); } catch { return null; }
@@ -91,7 +105,10 @@ function chatEnvelope(value: unknown): ChatResponse {
 export async function chatHttp(payload: ChatRequest, signal: AbortSignal): Promise<ChatResponse> {
   return chatEnvelope(await requestJson<unknown>("/chat", { method: "POST", body: JSON.stringify(payload), signal }));
 }
-export async function streamChat(payload: ChatRequest, onEvent: (event: StreamEvent) => void, signal: AbortSignal): Promise<void> {
+export function streamChat(payload: ChatRequest, onEvent: (event: StreamEvent) => void, signal: AbortSignal): Promise<void> {
+  return trackRequest(() => consumeChatStream(payload, onEvent, signal));
+}
+async function consumeChatStream(payload: ChatRequest, onEvent: (event: StreamEvent) => void, signal: AbortSignal): Promise<void> {
   const response = await checked("/chat/stream", { method: "POST", body: JSON.stringify(payload), signal });
   if (!response.body || !response.headers.get("content-type")?.includes("text/event-stream")) throw new ApiError("PROTOCOL_ERROR");
   const reader = response.body.getReader();

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { authenticate, clearCredential, requestJson, streamChat } from "./api";
 
-afterEach(() => { clearCredential(); vi.unstubAllGlobals(); });
+afterEach(() => { clearCredential(); vi.unstubAllGlobals(); vi.unstubAllEnvs(); });
 describe("verified credential transport", () => {
   it("binds the returned subject and sends bearer only in headers", async () => {
     const fetcher = vi.fn().mockResolvedValueOnce(new Response(JSON.stringify({ subject: "owner-a", roles: ["user"] })))
@@ -80,4 +80,40 @@ it("rejects a malformed HTTP chat envelope before the view reads nested fields",
     .mockResolvedValueOnce(new Response(JSON.stringify({answer:'partial'}))));
   await authenticate('x'.repeat(43));
   await expect(chatHttp({message:'hi'},new AbortController().signal)).rejects.toMatchObject({code:'PROTOCOL_ERROR'});
+});
+
+describe("business API origin isolation", () => {
+  it.each(["http://127.0.0.1:8001", "https://other.example", "//other.example", "http://local:secret@127.0.0.1:8000"])('blocks a configured cross-origin or userinfo base %s before sending a credential', async base => {
+    vi.stubGlobal("window", {location:{origin:"http://127.0.0.1:8000"}});
+    vi.stubEnv("VITE_API_BASE", base);
+    vi.resetModules();
+    const api = await import("./api");
+    const fetcher = vi.fn(); vi.stubGlobal("fetch", fetcher);
+    await expect(api.authenticate("x".repeat(43))).rejects.toMatchObject({code:"PROTOCOL_ERROR"});
+    expect(fetcher).not.toHaveBeenCalled();
+    api.clearCredential();
+  });
+
+  it("keeps default Vite proxy calls same-origin and refuses redirects", async () => {
+    vi.stubGlobal("window", {location:{origin:"http://127.0.0.1:5173"}});
+    vi.stubEnv("VITE_API_BASE", ""); vi.resetModules();
+    const api = await import("./api");
+    const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify({subject:"local",roles:[]})));
+    vi.stubGlobal("fetch", fetcher);
+    await api.authenticate("x".repeat(43));
+    expect(fetcher.mock.calls[0]?.[0]).toBe("/api/v1/auth/me");
+    expect(fetcher.mock.calls[0]?.[1]).toMatchObject({redirect:"error",credentials:"omit"});
+    api.clearCredential();
+  });
+
+  it("accepts a configured same-origin base without widening credential access", async () => {
+    vi.stubGlobal("window", {location:{origin:"http://127.0.0.1:8000"}});
+    vi.stubEnv("VITE_API_BASE", "http://127.0.0.1:8000"); vi.resetModules();
+    const api = await import("./api");
+    const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify({subject:"local",roles:[]})));
+    vi.stubGlobal("fetch", fetcher);
+    await expect(api.authenticate("x".repeat(43))).resolves.toMatchObject({subject:"local"});
+    expect(fetcher.mock.calls[0]?.[0]).toBe("http://127.0.0.1:8000/api/v1/auth/me");
+    api.clearCredential();
+  });
 });

@@ -15,4 +15,5 @@ it("offers only chat and private knowledge tabs while keeping session navigation
   expect(html).toContain('aria-label="会话列表"');
   expect(html).toContain('aria-label="输入消息"');
   expect(html).toContain('aria-label="响应模式"');
+  expect(html).toContain('aria-label="运行模式"');
 });
