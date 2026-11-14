@@ -1,7 +1,11 @@
 {
   "phase": "DeepSeek live connectivity and Agent acceptance",
   "base_head": "025f8b96ce0a9f117c471006b845b754962f81d7",
-  "authorized_limits": {"model_http_attempts":6,"reserved_tokens":10000,"estimated_usd":"0.05"},
+  "authorized_limits": {
+    "model_http_attempts": 6,
+    "reserved_tokens": 10000,
+    "estimated_usd": "0.05"
+  },
   "architecture_decisions": [
     "Keep original Offline8000 containers/config/data; only restore their existing stopped lifecycle to meet user-required running state.",
     "Reuse existing RealDev/provider/LangGraph and security; private native Linux secret and durable ledger; no budget reset, no paid retries, no security-node bypass.",
@@ -10,9 +14,51 @@
     "Report scenario and API success separately; insufficient limits or uncertain billing stop further paid work; never label Mock as live."
   ],
   "tasks": [
-    {"id":"D1","dependencies":[],"passes":false,"status":"in_progress","acceptance_criteria":["Key present without disclosure, loading cause identified, official price and safe DNS/TLS probes recorded", "Git/stash/.env and original containers protected"]},
-    {"id":"D2","dependencies":["D1"],"passes":false,"status":"pending","acceptance_criteria":["MockTransport proves exact aggregate limits and safe startup; actual isolated RealDev uses DeepSeekProvider and authenticated required backends", "No model request before gates and official pricing verification"]},
-    {"id":"D3","dependencies":["D2"],"passes":false,"status":"pending","acceptance_criteria":["At least one real model HTTP success or diagnosed external blocker", "Every requested scenario honestly classified with request/token/cost/latency/Trace evidence; all aggregate ceilings preserved"]},
-    {"id":"D4","dependencies":["D3"],"passes":false,"status":"pending","acceptance_criteria":["Necessary fixes and relevant regression verified; RealDev stopped and ledger/data preserved; Offline8000 healthy", "Chinese report, task checkpoints and ordinary push/exact remote HEAD verification"]}
+    {
+      "id": "D1",
+      "dependencies": [],
+      "passes": true,
+      "status": "complete",
+      "acceptance_criteria": [
+        "Key present without disclosure, loading cause identified, official price and safe DNS/TLS probes recorded",
+        "Git/stash/.env and original containers protected"
+      ]
+    },
+    {
+      "id": "D2",
+      "dependencies": [
+        "D1"
+      ],
+      "passes": false,
+      "status": "pending",
+      "acceptance_criteria": [
+        "MockTransport proves exact aggregate limits and safe startup; actual isolated RealDev uses DeepSeekProvider and authenticated required backends",
+        "No model request before gates and official pricing verification"
+      ]
+    },
+    {
+      "id": "D3",
+      "dependencies": [
+        "D2"
+      ],
+      "passes": false,
+      "status": "pending",
+      "acceptance_criteria": [
+        "At least one real model HTTP success or diagnosed external blocker",
+        "Every requested scenario honestly classified with request/token/cost/latency/Trace evidence; all aggregate ceilings preserved"
+      ]
+    },
+    {
+      "id": "D4",
+      "dependencies": [
+        "D3"
+      ],
+      "passes": false,
+      "status": "pending",
+      "acceptance_criteria": [
+        "Necessary fixes and relevant regression verified; RealDev stopped and ledger/data preserved; Offline8000 healthy",
+        "Chinese report, task checkpoints and ordinary push/exact remote HEAD verification"
+      ]
+    }
   ]
 }
