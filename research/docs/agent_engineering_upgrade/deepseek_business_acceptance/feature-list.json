@@ -3,15 +3,17 @@
   "base_head": "7e4f4c32626358107d3135d24ca2360a46c50e15",
   "authorization": {
     "additional_requests": 20,
-    "additional_effective_tokens": 50000,
-    "additional_usd": "0.05"
+    "additional_effective_tokens": null,
+    "additional_usd": "0.05",
+    "grant_id": "business-20261115-20usd005",
+    "explicit_scope_approval": "2026-11-15 user task; same-ledger audited additional authorization permitted"
   },
   "architecture_decisions": [
     "Reuse original real_budget ledger and raw attempts; no reset, replacement or historical refunds.",
     "Keep Offline8000 containers and database unchanged.",
     "Never send paid requests until durable budget gates can enforce all additional phase limits.",
     "Default server paid authorization false; close paid gate/stop Real service at phase end.",
-    "New budget authorization mechanism requires user scope clarification because this phase forbids new features."
+    "User explicitly approved audited same-ledger grants on2026-11-15; preserve original fingerprint/limits and historical rows. Selected grant controls new request/cost caps; no cumulative token cap for this grant."
   ],
   "tasks": [
     {
@@ -35,15 +37,27 @@
       "status": "startup_auth_gate_verified_paid_disabled"
     },
     {
-      "id": "D3",
+      "id": "BG",
       "dependencies": [
         "D2"
       ],
       "acceptance_criteria": [
-        "Real order/Memory/RAG/negative/HITL evidence or explicit BUDGET_BLOCKED/NOT_RUN; enforce new20/50000/.05 limits"
+        "Additive durable same-ledger grant preserves all historical data/fingerprint; original sends cannot bypass grant selection",
+        "20request/.05USD atomic worst-case admission; nullable new cumulativeToken cap; idempotent auth, restart, uncertain, settlements and concurrency tests pass"
+      ],
+      "passes": true,
+      "status": "complete"
+    },
+    {
+      "id": "D3",
+      "dependencies": [
+        "BG"
+      ],
+      "acceptance_criteria": [
+        "Real order/Memory/RAG/negative/HITL evidence or honest FAIL/NOT_RUN; enforce new20HTTP/.05USD with no cumulativeToken cap"
       ],
       "passes": false,
-      "status": "awaiting_budget_extension_scope_confirmation"
+      "status": "in_progress"
     },
     {
       "id": "D4",

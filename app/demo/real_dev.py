@@ -21,6 +21,7 @@ from app.main import create_app
 from app.providers.deepseek import DeepSeekProvider
 from app.providers.paid_budget import (
     AttemptLedger,
+    BudgetBlocked,
     BudgetedTransport,
     BudgetLimits,
     _request_reservation,
@@ -39,6 +40,7 @@ class RuntimeConfig:
     settings: Settings = field(repr=False)
     limits: BudgetLimits
     budget_path: Path
+    authorization_id: str | None = None
 
 
 def _positive(name: str, *, integer: bool = False):
@@ -126,7 +128,12 @@ def load_runtime_config(
             rate_limit_per_minute=60,
         )
     )
-    return RuntimeConfig(settings, limits, budget_dir / "budget.sqlite3")
+    authorization_id = os.environ.get("REAL_AGENT_AUTHORIZATION_ID", "")
+    if authorization_id and not re.fullmatch(
+        r"[A-Za-z0-9][A-Za-z0-9._:-]{0,127}", authorization_id
+    ):
+        raise RealDevConfigurationError("Invalid REAL_AGENT_AUTHORIZATION_ID")
+    return RuntimeConfig(settings, limits, budget_dir / "budget.sqlite3", authorization_id or None)
 
 
 def bootstrap_real(
@@ -149,7 +156,9 @@ def create_application(config: RuntimeConfig, *, transport: httpx.AsyncBaseTrans
 
     @asynccontextmanager
     async def lifespan(application):
-        ledger = AttemptLedger(config.budget_path, config.limits)
+        ledger = AttemptLedger(
+            config.budget_path, config.limits, authorization_id=config.authorization_id
+        )
         ledger.ensure_ready()
         guarded = BudgetedTransport(
             ledger,
@@ -178,7 +187,7 @@ def create_application(config: RuntimeConfig, *, transport: httpx.AsyncBaseTrans
         encoded = httpx.Request(
             "POST", "https://api.deepseek.com/chat/completions", json=minimum_payload
         ).content
-        minimum_tokens, minimum_usd = _request_reservation(encoded, config.limits)
+        _request_reservation(encoded, config.limits)
 
         def admission_status():
             if not paid_authorized:
@@ -187,15 +196,11 @@ def create_application(config: RuntimeConfig, *, transport: httpx.AsyncBaseTrans
                 snapshot = ledger.snapshot()
                 if snapshot["pending"] or snapshot["uncertain"]:
                     return {"available": False, "reason": "budget_not_ready"}
-                exhausted = (
-                    snapshot["requests"] >= config.limits.max_requests
-                    or snapshot["tokens"] + minimum_tokens > config.limits.max_tokens
-                    or Decimal(snapshot["usd"]) + minimum_usd > config.limits.max_usd
-                )
-                return {
-                    "available": not exhausted,
-                    "reason": "budget_exhausted" if exhausted else "ready",
-                }
+                try:
+                    ledger.check_capacity(encoded)
+                except BudgetBlocked:
+                    return {"available": False, "reason": "budget_exhausted"}
+                return {"available": True, "reason": "ready"}
             except Exception:
                 return {"available": False, "reason": "budget_not_ready"}
 

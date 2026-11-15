@@ -66,6 +66,11 @@ _ADDITIVE_SCHEMA = (
     "CREATE TABLE reservation_evidence (attempt_id INTEGER PRIMARY KEY REFERENCES attempts(id), input_tokens INTEGER NOT NULL, output_tokens INTEGER NOT NULL)",
     "CREATE TABLE settlements (attempt_id INTEGER PRIMARY KEY REFERENCES attempts(id), prompt_tokens INTEGER NOT NULL, completion_tokens INTEGER NOT NULL, total_tokens INTEGER NOT NULL, usd TEXT NOT NULL, response_sha256 TEXT NOT NULL, source TEXT NOT NULL)",
 )
+_AUTHORIZATION_SCHEMA = (
+    "CREATE TABLE authorizations (id INTEGER PRIMARY KEY, identifier TEXT NOT NULL UNIQUE, max_requests INTEGER NOT NULL, max_tokens INTEGER, max_usd TEXT NOT NULL, start_after INTEGER NOT NULL, closed INTEGER NOT NULL, fingerprint TEXT NOT NULL)",
+    "CREATE TABLE attempt_authorizations (attempt_id INTEGER PRIMARY KEY REFERENCES attempts(id), authorization_id INTEGER NOT NULL REFERENCES authorizations(id))",
+    "CREATE TABLE authorization_closures (authorization_id INTEGER PRIMARY KEY REFERENCES authorizations(id))",
+)
 
 
 def _request_reservation(payload: bytes, limits: BudgetLimits) -> tuple[int, Decimal]:
@@ -110,9 +115,14 @@ class AttemptLedger:
     permission semantics are intentionally unsupported by this runtime helper.
     """
 
-    def __init__(self, path: Path, limits: BudgetLimits) -> None:
+    def __init__(
+        self, path: Path, limits: BudgetLimits, *, authorization_id: str | None = None
+    ) -> None:
         self.path = Path(os.path.abspath(path))
         self._limits = limits
+        if authorization_id is not None:
+            self._validate_identifier(authorization_id)
+        self._authorization_id = authorization_id
         self._fingerprint = hashlib.sha256(
             json.dumps(asdict(limits), sort_keys=True, default=str).encode()
         ).hexdigest()
@@ -187,7 +197,14 @@ class AttemptLedger:
                 current = [
                     (statement,) for statement in (_SCHEMA[1], _SCHEMA[0], *_ADDITIVE_SCHEMA)
                 ]
-                if schema not in (legacy, current):
+                authorized = [
+                    (statement,)
+                    for statement in sorted(
+                        (*_SCHEMA, *_ADDITIVE_SCHEMA, *_AUTHORIZATION_SCHEMA),
+                        key=lambda statement: statement.split()[2],
+                    )
+                ]
+                if schema not in (legacy, current, authorized):
                     raise BudgetBlocked()
                 if connection.execute("SELECT fingerprint FROM metadata").fetchall() != [
                     (self._fingerprint,)
@@ -205,6 +222,7 @@ class AttemptLedger:
 
     def _snapshot(self, connection: sqlite3.Connection) -> dict[str, Any]:
         rows = connection.execute("SELECT id, tokens, usd, state FROM attempts").fetchall()
+        grants, mapping = self._authorization_records(connection, rows)
         evidence = {
             row[0]: row[1:] for row in connection.execute("SELECT * FROM reservation_evidence")
         }
@@ -257,7 +275,20 @@ class AttemptLedger:
             tokens += count
             reserved_tokens += reserved_count
             states[state] += 1
-        return {
+            if attempt in mapping:
+                usage = grants[mapping[attempt]]["usage"]
+                usage["requests"] += 1
+                usage["tokens"] += count
+                usage["reserved_tokens"] += reserved_count
+                with localcontext() as context:
+                    context.prec = (
+                        len(usage["usd"]) + len(raw_cost) + abs(int(cost.as_tuple().exponent)) + 20
+                    )
+                    usage["usd"] = str(Decimal(usage["usd"]) + cost)
+                    usage["reserved_usd"] = str(Decimal(usage["reserved_usd"]) + reserved_cost)
+                usage["settled"] += int(attempt in settlements)
+                usage[state] += 1
+        snapshot = {
             "requests": len(rows),
             "tokens": tokens,
             "usd": str(total),
@@ -266,6 +297,209 @@ class AttemptLedger:
             "settled": len(settlements),
             **states,
         }
+        if grants or self._authorization_id is not None:
+            selected = next(
+                (
+                    grant
+                    for grant in grants.values()
+                    if grant["identifier"] == self._authorization_id
+                ),
+                None,
+            )
+            snapshot["authorization"] = (
+                {
+                    **{key: value for key, value in selected.items() if key != "usage"},
+                    **selected["usage"],
+                }
+                if selected is not None
+                else None
+            )
+        return snapshot
+
+    @staticmethod
+    def _validate_identifier(identifier: str) -> None:
+        if (
+            not isinstance(identifier, str)
+            or not 1 <= len(identifier) <= 128
+            or any(
+                character
+                not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.:-"
+                for character in identifier
+            )
+        ):
+            raise BudgetBlocked()
+
+    @staticmethod
+    def _validate_authorization_limits(
+        max_requests: int, max_tokens: int | None, max_usd: Decimal
+    ) -> None:
+        if (
+            type(max_requests) is not int
+            or not 0 < max_requests < 2**63
+            or (
+                max_tokens is not None
+                and (type(max_tokens) is not int or not 0 < max_tokens < 2**63)
+            )
+            or not isinstance(max_usd, Decimal)
+            or not max_usd.is_finite()
+            or max_usd <= 0
+        ):
+            raise BudgetBlocked()
+
+    def _grant_fingerprint(self, record: tuple) -> str:
+        return hashlib.sha256(
+            json.dumps((self._fingerprint, *record), default=str).encode()
+        ).hexdigest()
+
+    def _authorization_records(
+        self, connection: sqlite3.Connection, attempts: list[tuple]
+    ) -> tuple[dict[int, dict[str, Any]], dict[int, int]]:
+        if not connection.execute(
+            "SELECT 1 FROM sqlite_master WHERE name='authorizations'"
+        ).fetchone():
+            return {}, {}
+        grants = {}
+        closures = {
+            row[0]
+            for row in connection.execute("SELECT authorization_id FROM authorization_closures")
+        }
+        ids = {row[0] for row in attempts}
+        highest = max(ids, default=0)
+        previous_start = 0
+        open_seen = False
+        for row in connection.execute("SELECT * FROM authorizations ORDER BY id"):
+            number, identifier, requests, tokens, raw_usd, start, closed, fingerprint = row
+            self._validate_identifier(identifier)
+            self._validate_authorization_limits(requests, tokens, Decimal(raw_usd))
+            if (
+                type(number) is not int
+                or number <= 0
+                or type(start) is not int
+                or not previous_start <= start <= highest
+                or closed not in (0, 1)
+                or bool(closed) != (number in closures)
+                or open_seen
+                or fingerprint != self._grant_fingerprint(row[:6])
+            ):
+                raise BudgetBlocked()
+            previous_start = start
+            open_seen = closed == 0
+            grants[number] = {
+                "id": identifier,
+                "identifier": identifier,
+                "max_requests": requests,
+                "max_tokens": tokens,
+                "max_usd": raw_usd,
+                "start_after": start,
+                "closed": bool(closed),
+                "usage": {
+                    "requests": 0,
+                    "tokens": 0,
+                    "usd": "0",
+                    "reserved_tokens": 0,
+                    "reserved_usd": "0",
+                    "settled": 0,
+                    "pending": 0,
+                    "uncertain": 0,
+                    "completed": 0,
+                },
+            }
+        if not grants:
+            raise BudgetBlocked()
+        if closures - grants.keys():
+            raise BudgetBlocked()
+        mapping = dict(connection.execute("SELECT * FROM attempt_authorizations"))
+        expected = {}
+        for attempt, _, _, state in attempts:
+            eligible = [
+                number for number, grant in grants.items() if attempt > grant["start_after"]
+            ]
+            if eligible:
+                number = eligible[-1]
+                expected[attempt] = number
+                if grants[number]["closed"] and state != "completed":
+                    raise BudgetBlocked()
+        if mapping != expected:
+            raise BudgetBlocked()
+        return grants, mapping
+
+    def authorize(
+        self,
+        identifier: str,
+        *,
+        max_requests: int,
+        max_usd: Decimal,
+        max_tokens: int | None = None,
+    ) -> None:
+        """Append explicit additional authority without changing original limits.
+
+        This is an administrative operation, never part of runtime startup.
+        Exact replay is harmless, including replay after permanent closure.
+        """
+        self._validate_identifier(identifier)
+        self._validate_authorization_limits(max_requests, max_tokens, max_usd)
+        with self._transaction() as connection:
+            snapshot = self._snapshot(connection)
+            exists = connection.execute(
+                "SELECT 1 FROM sqlite_master WHERE name='authorizations'"
+            ).fetchone()
+            if exists:
+                previous = connection.execute(
+                    "SELECT max_requests,max_tokens,max_usd FROM authorizations WHERE identifier=?",
+                    (identifier,),
+                ).fetchone()
+                if previous is not None:
+                    if (previous[0], previous[1], Decimal(previous[2])) != (
+                        max_requests,
+                        max_tokens,
+                        max_usd,
+                    ):
+                        raise BudgetBlocked()
+                    return
+                if connection.execute("SELECT 1 FROM authorizations WHERE closed=0").fetchone():
+                    raise BudgetBlocked()
+            if snapshot["pending"] or snapshot["uncertain"]:
+                raise BudgetBlocked()
+            if not exists:
+                for statement in _AUTHORIZATION_SCHEMA:
+                    connection.execute(statement)
+            number = connection.execute(
+                "SELECT COALESCE(MAX(id),0)+1 FROM authorizations"
+            ).fetchone()[0]
+            start = connection.execute("SELECT COALESCE(MAX(id),0) FROM attempts").fetchone()[0]
+            record = (number, identifier, max_requests, max_tokens, str(max_usd), start)
+            connection.execute(
+                "INSERT INTO authorizations VALUES (?,?,?,?,?,?,0,?)",
+                (*record, self._grant_fingerprint(record)),
+            )
+
+    def authorization_snapshot(self) -> dict[str, Any] | None:
+        return self.snapshot().get("authorization")
+
+    def close_authorization(self, identifier: str) -> None:
+        self._validate_identifier(identifier)
+        with self._transaction() as connection:
+            snapshot = self._snapshot(connection)
+            if not connection.execute(
+                "SELECT 1 FROM sqlite_master WHERE name='authorizations'"
+            ).fetchone():
+                raise BudgetBlocked()
+            row = connection.execute(
+                "SELECT closed FROM authorizations WHERE identifier=?", (identifier,)
+            ).fetchone()
+            if row is None:
+                raise BudgetBlocked()
+            if row[0]:
+                return
+            if snapshot["pending"] or snapshot["uncertain"]:
+                raise BudgetBlocked()
+            connection.execute(
+                "INSERT INTO authorization_closures SELECT id FROM authorizations WHERE identifier=?",
+                (identifier,),
+            )
+            connection.execute(
+                "UPDATE authorizations SET closed=1 WHERE identifier=?", (identifier,)
+            )
 
     def _cost(self, incoming: int, output: int) -> Decimal:
         with localcontext() as context:
@@ -380,24 +614,46 @@ class AttemptLedger:
         if snapshot["pending"] or snapshot["uncertain"]:
             raise BudgetBlocked()
 
+    def _check_capacity(self, snapshot: dict[str, Any], tokens: int, cost: Decimal) -> None:
+        if snapshot["pending"] or snapshot["uncertain"] or tokens > 2**63 - 1:
+            raise BudgetBlocked()
+        usage = snapshot
+        max_requests, max_tokens, max_usd = (
+            self.limits.max_requests,
+            self.limits.max_tokens,
+            self.limits.max_usd,
+        )
+        if "authorization" in snapshot:
+            usage = snapshot["authorization"]
+            if usage is None or usage["closed"]:
+                raise BudgetBlocked()
+            max_requests, max_tokens, max_usd = (
+                usage["max_requests"],
+                usage["max_tokens"],
+                Decimal(usage["max_usd"]),
+            )
+        with localcontext() as context:
+            context.prec = (
+                len(usage["usd"]) + len(str(cost)) + abs(int(cost.as_tuple().exponent)) + 20
+            )
+            total = Decimal(usage["usd"]) + cost
+        if (
+            usage["requests"] + 1 > max_requests
+            or (max_tokens is not None and usage["tokens"] + tokens > max_tokens)
+            or total > max_usd
+        ):
+            raise BudgetBlocked()
+
+    def check_capacity(self, payload: bytes) -> None:
+        """Inspect admission for this payload without allocating an attempt."""
+        tokens, cost = _request_reservation(payload, self.limits)
+        with self._transaction() as connection:
+            self._check_capacity(self._snapshot(connection), tokens, cost)
+
     def reserve(self, payload: bytes) -> int:
         tokens, cost = _request_reservation(payload, self.limits)
         with self._transaction() as connection:
-            snapshot = self._snapshot(connection)
-            with localcontext() as context:
-                context.prec = (
-                    len(snapshot["usd"]) + len(str(cost)) + abs(int(cost.as_tuple().exponent)) + 20
-                )
-                total = Decimal(snapshot["usd"]) + cost
-            if (
-                snapshot["pending"]
-                or snapshot["uncertain"]
-                or snapshot["requests"] + 1 > self.limits.max_requests
-                or snapshot["tokens"] + tokens > self.limits.max_tokens
-                or total > self.limits.max_usd
-                or tokens > 2**63 - 1
-            ):
-                raise BudgetBlocked()
+            self._check_capacity(self._snapshot(connection), tokens, cost)
             cursor = connection.execute(
                 "INSERT INTO attempts(tokens, usd, state) VALUES (?, ?, 'pending')",
                 (tokens, str(cost)),
@@ -408,10 +664,16 @@ class AttemptLedger:
                 "INSERT INTO reservation_evidence VALUES (?,?,?)",
                 (cursor.lastrowid, tokens - output, output),
             )
+            if self._authorization_id is not None:
+                connection.execute(
+                    "INSERT INTO attempt_authorizations VALUES (?,(SELECT id FROM authorizations WHERE identifier=?))",
+                    (cursor.lastrowid, self._authorization_id),
+                )
             return cursor.lastrowid
 
     def _transition(self, attempt: int, state: str) -> None:
         with self._transaction() as connection:
+            self._snapshot(connection)
             cursor = connection.execute(
                 "UPDATE attempts SET state=? WHERE id=? AND state='pending'", (state, attempt)
             )

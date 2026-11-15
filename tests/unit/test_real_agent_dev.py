@@ -41,6 +41,84 @@ def test_real_dev_disables_automatic_paid_retries(real_environment):
     assert load(real_environment).settings.llm_max_retries == 1
 
 
+def test_real_dev_selects_existing_authorization_only_from_server_environment(
+    real_environment, monkeypatch
+):
+    monkeypatch.setenv("REAL_AGENT_AUTHORIZATION_ID", "business-20261115-20usd005")
+    assert load(real_environment).authorization_id == "business-20261115-20usd005"
+
+
+@pytest.mark.parametrize("identifier", ["bad id", "../escape", "x" * 129, "a\nb"])
+def test_real_dev_rejects_invalid_authorization_identifier(
+    real_environment, monkeypatch, identifier
+):
+    from app.demo.real_dev import RealDevConfigurationError
+
+    monkeypatch.setenv("REAL_AGENT_AUTHORIZATION_ID", identifier)
+    with pytest.raises(RealDevConfigurationError, match="REAL_AGENT_AUTHORIZATION_ID"):
+        load(real_environment)
+
+
+async def test_real_dev_selected_grant_ignores_legacy_token_cap_and_close_blocks(
+    real_environment, monkeypatch
+):
+    from dataclasses import replace
+    from decimal import Decimal
+    from types import SimpleNamespace
+
+    import httpx
+
+    import app.demo.real_dev as runtime
+    from app.providers.paid_budget import AttemptLedger, BudgetBlocked
+
+    monkeypatch.setenv("REAL_AGENT_PAID_AUTHORIZED", "true")
+    monkeypatch.setenv("REAL_AGENT_AUTHORIZATION_ID", "unit-grant")
+    config = load(real_environment)
+    config = replace(config, limits=replace(config.limits, max_tokens=1))
+    admin = AttemptLedger(config.budget_path, config.limits)
+    admin.authorize("unit-grant", max_requests=2, max_usd=Decimal("1"), max_tokens=None)
+    sent = []
+
+    def respond(request):
+        sent.append(request)
+        return httpx.Response(
+            200,
+            json={
+                "model": "deepseek-chat",
+                "choices": [{"message": {"content": "hello"}, "finish_reason": "stop"}],
+                "usage": {"prompt_tokens": 2, "completion_tokens": 1, "total_tokens": 3},
+            },
+        )
+
+    async def build(settings, seed=False, *, llm_provider=None):
+        async def close():
+            pass
+
+        return SimpleNamespace(
+            llm=llm_provider,
+            engine=SimpleNamespace(dialect=SimpleNamespace(name="postgresql")),
+            redis=object(),
+            vector_store=type("PrivateVectorStore", (), {})(),
+            aclose=close,
+        )
+
+    monkeypatch.setattr(runtime, "build_container", build)
+    app = runtime.create_application(config, transport=httpx.MockTransport(respond))
+    async with app.router.lifespan_context(app):
+        assert app.state.real_agent_admission() == {"available": True, "reason": "ready"}
+        result = await app.state.container.llm.generate(
+            [{"role": "user", "content": "hello"}], max_tokens=8
+        )
+        assert result.content == "hello"
+        admin.close_authorization("unit-grant")
+        assert not app.state.real_agent_admission()["available"]
+        with pytest.raises(BudgetBlocked):
+            await app.state.container.llm.generate(
+                [{"role": "user", "content": "hello"}], max_tokens=8
+            )
+    assert len(sent) == 1
+
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize("authorized", [False, True])
 async def test_real_dev_payment_authorization_is_server_only_and_defaults_off(
