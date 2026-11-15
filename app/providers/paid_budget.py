@@ -687,6 +687,20 @@ class AttemptLedger:
         self._transition(attempt, "uncertain")
 
 
+class _DecodedEntityStream(httpx.AsyncByteStream):
+    """Expose the same decoded entity to accounting and the provider client."""
+
+    def __init__(self, response: httpx.Response) -> None:
+        self._response = response
+
+    async def __aiter__(self) -> AsyncIterator[bytes]:
+        async for chunk in self._response.aiter_bytes():
+            yield chunk
+
+    async def aclose(self) -> None:
+        await self._response.aclose()
+
+
 class _BudgetStream(httpx.AsyncByteStream):
     def __init__(
         self,
@@ -818,15 +832,19 @@ class BudgetedTransport(httpx.AsyncBaseTransport):
         except Exception:
             self._ledger.uncertain(attempt)
             raise BudgetBlocked() from None
-        # Some injected transports return already-buffered responses. Build a
-        # fresh response so HTTPX still consumes the accounting stream once.
+        # Account for decoded entities, matching the provider's JSON/SSE parser.
+        # Retaining wire encoding/length headers would decode this entity twice
+        # or advertise the compressed byte length to downstream consumers.
+        headers = response.headers.copy()
+        headers.pop("content-encoding", None)
+        headers.pop("content-length", None)
         return httpx.Response(
             response.status_code,
-            headers=response.headers,
+            headers=headers,
             stream=_BudgetStream(
                 self._ledger,
                 attempt,
-                response.stream,
+                _DecodedEntityStream(response),
                 UsageEvidence(
                     model=self._ledger.limits.model,
                     status=response.status_code,
