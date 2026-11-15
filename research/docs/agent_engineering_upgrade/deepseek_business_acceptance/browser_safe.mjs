@@ -27,6 +27,7 @@ try {
   await expect(page.locator('.mode-selector summary')).not.toContainText('Mock');
   const result={offlineLogin:'PASS',real8001Login:'PASS',independentCredentialGate:'PASS',explicitServerPaidGateReason:'PASS',modelChatRequests:chats,paidRequests:0};
   expect(chats).toBe(0);
-  writeFileSync(new URL('./evidence/D2-browser-safe.json',import.meta.url),JSON.stringify(result,null,2),{flag:'wx'});
+  const output=process.argv.includes('--final')?'./evidence/B4-browser-paid-closed.json':'./evidence/D2-browser-safe.json';
+  writeFileSync(new URL(output,import.meta.url),JSON.stringify(result,null,2),{flag:'wx'});
   console.log(JSON.stringify(result));
 } finally {await browser.close();}

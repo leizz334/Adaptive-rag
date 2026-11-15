@@ -77,4 +77,18 @@ sudo --preserve-env=REAL_AGENT_KEY_FILE,REAL_AGENT_PAID_AUTHORIZED,REAL_AGENT_MA
 
 Offline与DeepSeek入口分别导航到固定的8000/8001完整页面；每次切换重新认证，不转移Bearer、会话、私有知识库或草稿。跨origin请求只用于不携带凭证的公开`/api/v1/runtime-status`探测，业务和认证API不开放跨origin权限。未启动、未授权、依赖或预算不可用均显示原因，不静默切换成Offline。
 
-Mock验收服务明确显示“Mock验证”，不代表真实DeepSeek。最新可用性完善阶段只使用假Key、MockTransport及隔离后端，真实模型业务验收为NOT_RUN；旧阶段的真实连通性证据继续保留。新的真实业务验证必须另外得到请求数、Token和费用上限授权。
+Mock验收服务明确显示“Mock验证”，不代表真实DeepSeek。2026-11-14可用性完善阶段仅使用假Key、MockTransport及隔离后端，当时真实业务验收为NOT_RUN；旧证据保留。2026-11-15真实验收见下文。后续真实验证须另获请求次数、费用上限及累计Token策略的明确授权。
+
+## 同账本追加授权（2026-11-15）
+
+本轮真实验收结果见 `research/docs/agent_engineering_upgrade/deepseek_business_acceptance/REPORT.zh-CN.md`。已实现显式、可审计的追加授权；保留原配置和 metadata 指纹，不改写历史请求、预留或结算。原配置 `REAL_AGENT_MAX_*` 继续用于原指纹兼容校验；新增额度由授权表决定，不能直接改大原配置。
+
+可信本地管理员在已有账本上调用 `AttemptLedger.authorize(identifier, max_requests=..., max_usd=Decimal(...), max_tokens=None)`，随后以服务端 `REAL_AGENT_AUTHORIZATION_ID` 选择该 ID。`None` 表示该授权没有累计 Token 上限，仍保留单请求接口限制和每次发送前的完整最坏费用预留。授权 ID 不含 Key；启动不自动新增授权。
+
+每一授权只使用其映射的新请求计数。相同 ID/额度的重复调用幂等且不补满；不同参数、重叠授权、未知/关闭 ID 均拒绝。出现 pending/uncertain 时不得创建新授权绕过未确认消费。关闭通过追加见证与状态交叉验证，不能重新开同一个 ID。
+
+`REAL_AGENT_PAID_AUTHORIZED` 与授权选择均仅由服务端配置。改变宿主环境变量不会改变已经运行的进程，需要 Compose 正常替换 API 容器。测试结束应先以 false 配置替换 API，再关闭账本授权；不确定状态导致启动失败时，明确停止 Real API，保留原账本供核对，不清理记录。
+
+2026-11-15 的 `business-20261115-20usd005` 已使用20次并永久关闭；没有累计Token上限。后续新额度需要新的明确授权与审计 ID，不能把重复执行旧 authorize 当作充值。本轮HITL因次数耗尽未运行，不会自动追加或补测。
+
+压缩供应商响应现在由预算观察层和 Provider 共用 HTTPX 解压后的实体；审计哈希针对同一解压内容。旧请求的预留和已有哈希不变，不事后补结算或返额。

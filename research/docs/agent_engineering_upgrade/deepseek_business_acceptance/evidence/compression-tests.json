@@ -47,5 +47,23 @@
       "stdout": "........................................................................ [ 33%]\n........................................................................ [ 66%]\n........................................................................ [ 99%]\n.                                                                        [100%]\n=============================== warnings summary ===============================\ntests/unit/test_real_agent_dev.py::test_real_dev_disables_automatic_paid_retries\n  /home/panda/.venvs/adaptive-rag-workbench/lib/python3.12/site-packages/langgraph/checkpoint/base/__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.\n    from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n217 passed, 1 warning in 14.25s\n",
       "stderr": ""
     }
-  ]
+  ],
+  "diagnosis": {
+    "httpx_version": "0.28.1",
+    "library_source_inspected": [
+      "httpx.Response.aiter_bytes",
+      "httpx.Response.aiter_raw",
+      "httpx.Response.aclose"
+    ],
+    "verified_dataflow": "Response.stream supplies raw wire bytes; Response.aiter_bytes decodes entities before provider parsing. The prior accounting observer fed the raw stream to the JSON/SSE usage parser.",
+    "local_reproduction": "Both gzip and deflate JSON/SSE returned correct provider content but completed=1 and settled=0 before fix; four RED cases.",
+    "production_cause": "Encoding of the five past real responses was not retained; compression is a proven local defect explaining the symptom, not confirmed evidence about those five responses.",
+    "historical_spend": "No ledger reads, mutations, or backfill performed.",
+    "future_digest": "SHA256 is over decoded entity bytes observed by both accounting and provider."
+  },
+  "full_suite": {
+    "returncode": 0,
+    "stdout": "........................................................................ [  7%]\n........................................................................ [ 15%]\n........................................................................ [ 22%]\n........................................................................ [ 30%]\n........................................................................ [ 38%]\n........................................................................ [ 45%]\n........................................................................ [ 53%]\n........................................................................ [ 60%]\n........................................................................ [ 68%]\n........................................................................ [ 76%]\n........................................................................ [ 83%]\n........................................................................ [ 91%]\n........................................................................ [ 98%]\n...........                                                              [100%]\n=============================== warnings summary ===============================\n../../../../../../home/panda/.venvs/adaptive-rag-workbench/lib/python3.12/site-packages/langgraph/checkpoint/base/__init__.py:18\n  /home/panda/.venvs/adaptive-rag-workbench/lib/python3.12/site-packages/langgraph/checkpoint/base/__init__.py:18: LangChainPendingDeprecationWarning: The default value of `allowed_objects` will change in a future version. Pass an explicit value (e.g., allowed_objects='messages' or allowed_objects='core') to suppress this warning.\n    from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n947 passed, 1 warning in 152.75s (0:02:32)\n",
+    "stderr": ""
+  }
 }
