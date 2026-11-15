@@ -1,0 +1,644 @@
+{
+  "scenario": "order",
+  "status": "FAIL",
+  "authorization_id": "business-20261115-20usd005",
+  "started_at": "2026-11-15T01:33:37.813196+00:00",
+  "provider": "DeepSeekProvider",
+  "verification_only": false,
+  "billing_statement_verified": false,
+  "preflight": {
+    "capabilities": {
+      "database": "postgresql",
+      "cache": "redis",
+      "vector_store": "PrivateVectorStore",
+      "retriever": "bm25",
+      "reranker": "lexical",
+      "llm": "deepseek",
+      "degraded": true
+    },
+    "runtime_status": {
+      "mode": "deepseek",
+      "available": true,
+      "reason": "ready",
+      "message": "服务可用。",
+      "verification_only": false
+    },
+    "ledger": {
+      "lifetime": {
+        "requests": 3,
+        "tokens": 8986,
+        "usd": "0.0037866",
+        "reserved_tokens": 8986,
+        "reserved_usd": "0.0037866",
+        "settled": 0,
+        "pending": 0,
+        "uncertain": 0,
+        "completed": 3,
+        "authorization": {
+          "id": "business-20261115-20usd005",
+          "identifier": "business-20261115-20usd005",
+          "max_requests": 20,
+          "max_tokens": null,
+          "max_usd": "0.05",
+          "start_after": 3,
+          "closed": false,
+          "requests": 0,
+          "tokens": 0,
+          "usd": "0",
+          "reserved_tokens": 0,
+          "reserved_usd": "0",
+          "settled": 0,
+          "pending": 0,
+          "uncertain": 0,
+          "completed": 0
+        }
+      },
+      "grant": {
+        "id": "business-20261115-20usd005",
+        "identifier": "business-20261115-20usd005",
+        "max_requests": 20,
+        "max_tokens": null,
+        "max_usd": "0.05",
+        "start_after": 3,
+        "closed": false,
+        "requests": 0,
+        "tokens": 0,
+        "usd": "0",
+        "reserved_tokens": 0,
+        "reserved_usd": "0",
+        "settled": 0,
+        "pending": 0,
+        "uncertain": 0,
+        "completed": 0
+      },
+      "paid_authorized": true
+    }
+  },
+  "sql": {
+    "order": {
+      "order_id": "ORD95101",
+      "user_id": "web_demo_a",
+      "status": "paid",
+      "total_cents": 6800
+    },
+    "items": [
+      {
+        "name": "演示帆布包",
+        "quantity": 2,
+        "customized": false,
+        "unit_price_cents": 3400
+      }
+    ],
+    "order_audit": 0,
+    "audit": 0,
+    "idempotency": 0,
+    "action_key": false
+  },
+  "error_type": "AssertionError",
+  "reason": "provider usage/settlement evidence incomplete",
+  "requests": [
+    {
+      "label": "query",
+      "request": {
+        "message": "请查询 ORD95101 的订单状态和金额。"
+      },
+      "path": "/chat",
+      "ledger_before": {
+        "lifetime": {
+          "requests": 3,
+          "tokens": 8986,
+          "usd": "0.0037866",
+          "reserved_tokens": 8986,
+          "reserved_usd": "0.0037866",
+          "settled": 0,
+          "pending": 0,
+          "uncertain": 0,
+          "completed": 3,
+          "authorization": {
+            "id": "business-20261115-20usd005",
+            "identifier": "business-20261115-20usd005",
+            "max_requests": 20,
+            "max_tokens": null,
+            "max_usd": "0.05",
+            "start_after": 3,
+            "closed": false,
+            "requests": 0,
+            "tokens": 0,
+            "usd": "0",
+            "reserved_tokens": 0,
+            "reserved_usd": "0",
+            "settled": 0,
+            "pending": 0,
+            "uncertain": 0,
+            "completed": 0
+          }
+        },
+        "grant": {
+          "id": "business-20261115-20usd005",
+          "identifier": "business-20261115-20usd005",
+          "max_requests": 20,
+          "max_tokens": null,
+          "max_usd": "0.05",
+          "start_after": 3,
+          "closed": false,
+          "requests": 0,
+          "tokens": 0,
+          "usd": "0",
+          "reserved_tokens": 0,
+          "reserved_usd": "0",
+          "settled": 0,
+          "pending": 0,
+          "uncertain": 0,
+          "completed": 0
+        },
+        "paid_authorized": true
+      },
+      "browser": {
+        "origin": "http://127.0.0.1:8001/",
+        "chromium": true,
+        "mode_switch": true,
+        "fresh_credentials": true,
+        "rendered": true
+      },
+      "http_status": 200,
+      "response": {
+        "answer": "订单 ORD95101 的查询结果如下：\n\n1. 订单状态：已支付（paid）。该订单于 2026-11-10 创建并完成支付；目前尚未发货，也没有物流单号。\n2. 订单金额：合计 6800 分（即 68.00 元）。明细为：演示帆布包（SKU-WEB-BAG）2 件，单价 3400 分，小计 6800 分。\n\n以上信息来自实时订单查询结果。如需进一步了解发货进度或修改订单，请提供具体需求，或转人工客服处理。",
+        "session_id": "sess_bc438ff472cf496582c73af27df17b6b",
+        "trace_id": "tr_45b4d54325a04cd681cc03f9ffb0b3a4",
+        "root_run_id": "d597433e-9600-434a-a4a5-277e24a8479f",
+        "intent": "order_inquiry",
+        "complexity": "tool_required",
+        "strategy": "agent",
+        "citations": [],
+        "pending_action": null,
+        "refused": false,
+        "error_code": null,
+        "token_usage": {
+          "prompt_tokens": 571,
+          "completion_tokens": 154,
+          "total_tokens": 725
+        },
+        "latency": {
+          "intent_ms": 933.2896930009156,
+          "routing_ms": 902.7557059998799,
+          "retrieval_ms": 0,
+          "rerank_ms": 0,
+          "tool_ms": 8.634980998976971,
+          "llm_ms": 1313.8198480010033,
+          "total_ms": 4372.287868000058
+        }
+      },
+      "answer": {
+        "answer": "订单 ORD95101 的查询结果如下：\n\n1. 订单状态：已支付（paid）。该订单于 2026-11-10 创建并完成支付；目前尚未发货，也没有物流单号。\n2. 订单金额：合计 6800 分（即 68.00 元）。明细为：演示帆布包（SKU-WEB-BAG）2 件，单价 3400 分，小计 6800 分。\n\n以上信息来自实时订单查询结果。如需进一步了解发货进度或修改订单，请提供具体需求，或转人工客服处理。",
+        "session_id": "sess_bc438ff472cf496582c73af27df17b6b",
+        "trace_id": "tr_45b4d54325a04cd681cc03f9ffb0b3a4",
+        "root_run_id": "d597433e-9600-434a-a4a5-277e24a8479f",
+        "intent": "order_inquiry",
+        "complexity": "tool_required",
+        "strategy": "agent",
+        "citations": [],
+        "pending_action": null,
+        "refused": false,
+        "error_code": null,
+        "token_usage": {
+          "prompt_tokens": 571,
+          "completion_tokens": 154,
+          "total_tokens": 725
+        },
+        "latency": {
+          "intent_ms": 933.2896930009156,
+          "routing_ms": 902.7557059998799,
+          "retrieval_ms": 0,
+          "rerank_ms": 0,
+          "tool_ms": 8.634980998976971,
+          "llm_ms": 1313.8198480010033,
+          "total_ms": 4372.287868000058
+        }
+      },
+      "latency_ms": 6184,
+      "ledger_after": {
+        "lifetime": {
+          "requests": 8,
+          "tokens": 30949,
+          "usd": "0.0123879",
+          "reserved_tokens": 30949,
+          "reserved_usd": "0.0123879",
+          "settled": 0,
+          "pending": 0,
+          "uncertain": 0,
+          "completed": 8,
+          "authorization": {
+            "id": "business-20261115-20usd005",
+            "identifier": "business-20261115-20usd005",
+            "max_requests": 20,
+            "max_tokens": null,
+            "max_usd": "0.05",
+            "start_after": 3,
+            "closed": false,
+            "requests": 5,
+            "tokens": 21963,
+            "usd": "0.0086013",
+            "reserved_tokens": 21963,
+            "reserved_usd": "0.0086013",
+            "settled": 0,
+            "pending": 0,
+            "uncertain": 0,
+            "completed": 5
+          }
+        },
+        "grant": {
+          "id": "business-20261115-20usd005",
+          "identifier": "business-20261115-20usd005",
+          "max_requests": 20,
+          "max_tokens": null,
+          "max_usd": "0.05",
+          "start_after": 3,
+          "closed": false,
+          "requests": 5,
+          "tokens": 21963,
+          "usd": "0.0086013",
+          "reserved_tokens": 21963,
+          "reserved_usd": "0.0086013",
+          "settled": 0,
+          "pending": 0,
+          "uncertain": 0,
+          "completed": 5
+        },
+        "paid_authorized": true
+      },
+      "actual_model_http_requests": 5,
+      "settled_requests": 0,
+      "settled_tokens": 21963,
+      "settled_usage_cost_usd": "0.0086013",
+      "grant_request_delta": 5,
+      "trace_http_status": 200,
+      "trace": {
+        "root_run_id": "d597433e-9600-434a-a4a5-277e24a8479f",
+        "session_id": "sess_bc438ff472cf496582c73af27df17b6b",
+        "availability": {
+          "storage": "process_local",
+          "ttl_seconds": 900
+        },
+        "planner_steps": [
+          {
+            "step_id": 1,
+            "tool_name": "get_order",
+            "needs_retrieval": false,
+            "arguments": {
+              "order_id": "ORD95101"
+            }
+          }
+        ],
+        "tools": [
+          {
+            "name": "get_order",
+            "success": true,
+            "result": {
+              "status": "paid",
+              "total_cents": 6800,
+              "item_count": 1
+            }
+          }
+        ],
+        "retrieval": [],
+        "memory": {
+          "mode": "M2",
+          "message_count": 0,
+          "summary_used": false
+        },
+        "spans": [
+          {
+            "id": "d597433e-9600-434a-a4a5-277e24a8479f",
+            "parent_id": null,
+            "name": "chat.turn",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 4373.431,
+            "metadata": {
+              "app_trace_ref": "2561ef54df8d1e77f219a2b0",
+              "user_ref": "45f53c2eae7969343cec312f",
+              "request_ref": "89872cd4be1bba371d335e7a",
+              "session_ref": "e8e4a0b643bd7e30cd27c74c"
+            }
+          },
+          {
+            "id": "d1c8be34-0cab-4a4d-80eb-c66554c1f0a8",
+            "parent_id": "d597433e-9600-434a-a4a5-277e24a8479f",
+            "name": "session.load",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 17.057,
+            "metadata": {}
+          },
+          {
+            "id": "ec69920e-1111-4ab0-9a14-2926915246a0",
+            "parent_id": "d1c8be34-0cab-4a4d-80eb-c66554c1f0a8",
+            "name": "confirmation.resolve",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 0.005,
+            "metadata": {}
+          },
+          {
+            "id": "57cd2ecb-0f99-43be-ba00-b2502d9100e2",
+            "parent_id": "d597433e-9600-434a-a4a5-277e24a8479f",
+            "name": "graph.invoke",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 4342.669,
+            "metadata": {}
+          },
+          {
+            "id": "9b9d48ba-1a6d-46df-886f-6adc5741e272",
+            "parent_id": "57cd2ecb-0f99-43be-ba00-b2502d9100e2",
+            "name": "node.guardrail",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 0.011,
+            "metadata": {}
+          },
+          {
+            "id": "8e262d37-ae31-43a7-b54d-6786d51d92c6",
+            "parent_id": "57cd2ecb-0f99-43be-ba00-b2502d9100e2",
+            "name": "node.intent",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 933.334,
+            "metadata": {}
+          },
+          {
+            "id": "0c7e0a14-5ae7-466a-bbb2-0a79fb2b3015",
+            "parent_id": "8e262d37-ae31-43a7-b54d-6786d51d92c6",
+            "name": "llm.deepseek",
+            "kind": "llm",
+            "status": "ok",
+            "latency_ms": 932.855,
+            "metadata": {
+              "usage_known": true,
+              "prompt_tokens": 693,
+              "completion_tokens": 51,
+              "total_tokens": 744
+            }
+          },
+          {
+            "id": "9db9aa04-3142-4e95-a9eb-f9968a7da6a4",
+            "parent_id": "0c7e0a14-5ae7-466a-bbb2-0a79fb2b3015",
+            "name": "llm.http_attempt",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 932.75,
+            "metadata": {}
+          },
+          {
+            "id": "1c9733c7-550b-4477-92fe-39d963cae9c4",
+            "parent_id": "57cd2ecb-0f99-43be-ba00-b2502d9100e2",
+            "name": "node.router",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 902.799,
+            "metadata": {}
+          },
+          {
+            "id": "b11e6e79-c567-4773-8543-f42d2a2c35ec",
+            "parent_id": "1c9733c7-550b-4477-92fe-39d963cae9c4",
+            "name": "llm.deepseek",
+            "kind": "llm",
+            "status": "ok",
+            "latency_ms": 902.457,
+            "metadata": {
+              "usage_known": true,
+              "prompt_tokens": 191,
+              "completion_tokens": 50,
+              "total_tokens": 241
+            }
+          },
+          {
+            "id": "887311fd-6725-4758-8cf1-026c7a337da4",
+            "parent_id": "b11e6e79-c567-4773-8543-f42d2a2c35ec",
+            "name": "llm.http_attempt",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 902.363,
+            "metadata": {}
+          },
+          {
+            "id": "4654c14a-ea95-48e9-94e5-2aa3ad9eff38",
+            "parent_id": "57cd2ecb-0f99-43be-ba00-b2502d9100e2",
+            "name": "node.planner",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 604.279,
+            "metadata": {}
+          },
+          {
+            "id": "a585b18f-29b3-4056-bf2d-78be28657086",
+            "parent_id": "4654c14a-ea95-48e9-94e5-2aa3ad9eff38",
+            "name": "llm.deepseek",
+            "kind": "llm",
+            "status": "ok",
+            "latency_ms": 599.175,
+            "metadata": {
+              "usage_known": true,
+              "prompt_tokens": 1597,
+              "completion_tokens": 74,
+              "total_tokens": 1671
+            }
+          },
+          {
+            "id": "a329d549-3725-4651-847c-b5103a0219ab",
+            "parent_id": "a585b18f-29b3-4056-bf2d-78be28657086",
+            "name": "llm.http_attempt",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 599.08,
+            "metadata": {}
+          },
+          {
+            "id": "d1a87b1a-7304-41c5-b367-2f1121201d1b",
+            "parent_id": "57cd2ecb-0f99-43be-ba00-b2502d9100e2",
+            "name": "node.executor",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 8.666,
+            "metadata": {}
+          },
+          {
+            "id": "67ad079f-b814-4e04-a42c-2b68824c6c2c",
+            "parent_id": "d1a87b1a-7304-41c5-b367-2f1121201d1b",
+            "name": "tool.execute",
+            "kind": "tool",
+            "status": "ok",
+            "latency_ms": 8.387,
+            "metadata": {}
+          },
+          {
+            "id": "520e4e70-6bea-4a3e-8c7a-9295f6f274d3",
+            "parent_id": "57cd2ecb-0f99-43be-ba00-b2502d9100e2",
+            "name": "node.generate",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 1313.927,
+            "metadata": {}
+          },
+          {
+            "id": "9c3c2cae-c3b4-444a-9faf-0e2bee3911fd",
+            "parent_id": "520e4e70-6bea-4a3e-8c7a-9295f6f274d3",
+            "name": "llm.deepseek",
+            "kind": "llm",
+            "status": "ok",
+            "latency_ms": 1313.148,
+            "metadata": {
+              "usage_known": true,
+              "prompt_tokens": 571,
+              "completion_tokens": 154,
+              "total_tokens": 725
+            }
+          },
+          {
+            "id": "1ecba13e-dbd7-4e8a-86df-0575da62d03c",
+            "parent_id": "9c3c2cae-c3b4-444a-9faf-0e2bee3911fd",
+            "name": "llm.http_attempt",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 1313.076,
+            "metadata": {}
+          },
+          {
+            "id": "06036d6a-6993-49eb-a582-a67b25b6c97c",
+            "parent_id": "57cd2ecb-0f99-43be-ba00-b2502d9100e2",
+            "name": "node.faithfulness",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 566.561,
+            "metadata": {}
+          },
+          {
+            "id": "83047cb0-68a8-4946-b9fb-60a8c91f80d4",
+            "parent_id": "06036d6a-6993-49eb-a582-a67b25b6c97c",
+            "name": "llm.deepseek",
+            "kind": "llm",
+            "status": "ok",
+            "latency_ms": 566.219,
+            "metadata": {
+              "usage_known": true,
+              "prompt_tokens": 522,
+              "completion_tokens": 7,
+              "total_tokens": 529
+            }
+          },
+          {
+            "id": "60718e42-4158-45fa-bc1d-d815ca1eefb5",
+            "parent_id": "83047cb0-68a8-4946-b9fb-60a8c91f80d4",
+            "name": "llm.http_attempt",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 566.121,
+            "metadata": {}
+          },
+          {
+            "id": "4032208c-8da0-4a2b-becb-1af03ecc53b3",
+            "parent_id": "57cd2ecb-0f99-43be-ba00-b2502d9100e2",
+            "name": "node.memory",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 0.036,
+            "metadata": {}
+          },
+          {
+            "id": "cbca522a-8198-43ff-b648-a5590432c68e",
+            "parent_id": "d597433e-9600-434a-a4a5-277e24a8479f",
+            "name": "session.persist",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 5.303,
+            "metadata": {}
+          },
+          {
+            "id": "59e72419-94a6-417a-a885-85f774d9bf15",
+            "parent_id": "d597433e-9600-434a-a4a5-277e24a8479f",
+            "name": "transaction.commit",
+            "kind": "chain",
+            "status": "ok",
+            "latency_ms": 6.175,
+            "metadata": {}
+          }
+        ],
+        "nodes": [
+          "guardrail",
+          "intent",
+          "router",
+          "planner",
+          "executor",
+          "generate",
+          "faithfulness",
+          "memory"
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 3574,
+        "completion_tokens": 336,
+        "total_tokens": 3910
+      },
+      "usage_known_spans": 5,
+      "estimated_trace_usage_cost_usd": "0.0014754"
+    }
+  ],
+  "actual_model_http_requests": 5,
+  "actual_model_http_requests_known": true,
+  "actual_usage": {
+    "prompt_tokens": 3574,
+    "completion_tokens": 336,
+    "total_tokens": 3910
+  },
+  "settled_usage_cost_usd": "0.0086013",
+  "final_ledger": {
+    "lifetime": {
+      "requests": 8,
+      "tokens": 30949,
+      "usd": "0.0123879",
+      "reserved_tokens": 30949,
+      "reserved_usd": "0.0123879",
+      "settled": 0,
+      "pending": 0,
+      "uncertain": 0,
+      "completed": 8,
+      "authorization": {
+        "id": "business-20261115-20usd005",
+        "identifier": "business-20261115-20usd005",
+        "max_requests": 20,
+        "max_tokens": null,
+        "max_usd": "0.05",
+        "start_after": 3,
+        "closed": false,
+        "requests": 5,
+        "tokens": 21963,
+        "usd": "0.0086013",
+        "reserved_tokens": 21963,
+        "reserved_usd": "0.0086013",
+        "settled": 0,
+        "pending": 0,
+        "uncertain": 0,
+        "completed": 5
+      }
+    },
+    "grant": {
+      "id": "business-20261115-20usd005",
+      "identifier": "business-20261115-20usd005",
+      "max_requests": 20,
+      "max_tokens": null,
+      "max_usd": "0.05",
+      "start_after": 3,
+      "closed": false,
+      "requests": 5,
+      "tokens": 21963,
+      "usd": "0.0086013",
+      "reserved_tokens": 21963,
+      "reserved_usd": "0.0086013",
+      "settled": 0,
+      "pending": 0,
+      "uncertain": 0,
+      "completed": 5
+    },
+    "paid_authorized": true
+  }
+}

@@ -4,7 +4,7 @@ import sys
 
 from research.docs.agent_engineering_upgrade.docker_production_acceptance.ops import wsl
 
-assert sys.argv[1] in {"environment", "acceptance", "regression"}
+assert sys.argv[1] in {"environment", "acceptance", "regression", "operations", "finalize"}
 root = "/mnt/d/Code/Adaptive-rag/.worktrees/p3-experience-validation"
 argv = [
     "/home/panda/.venvs/adaptive-rag-workbench/bin/python",

@@ -1,25 +1,16 @@
-# Real DeepSeek business acceptance execution plan
+# Real DeepSeek business acceptance ? approved continuation
 
-Goal: verify existing real8001 Agent within newly authorized20HTTP/50000effectiveTokens/.05USD while preserving original ledger and Offline8000.
+Current date2026-11-15. Reuse original fixed worktree/branch and same real_budget ledger. No project initializer repeated.
 
-Scope: user D1-D4 specification. No new feature, worktree, history replacement, Key disclosure or Experience frontend.
+Authorization: original2026-11-14 scope question resolved explicitly2026-11-15. New grant business-20261115-20usd005: max20 actualmodelHTTP including retries, maxUSD.05, cumulativeToken capNone. Previous50000-token proposal superseded. Original fingerprint, model/prices and historical charges unchanged.
 
-- [ ] D1: snapshot containers/volumes, private Key readability and mode, original ledger rows/fingerprint/hash, official model/price bounds. Test a copy with requested cumulative limits: direct mismatch must fail safely. Record scope clarification for missing topup mechanism.
-- [ ] D2: use current verified local image containing settlement, start existing Real dependencies and replace only Real API through Compose with authorizationfalse and original limits; no initialize/seed. Verify readiness/auth/provider/source hashes. Offline containers/DB unchanged.
-- [ ] D3: only after all durable new-budget gates proven, execute sequential order, same-session Memory, private synthetic RAG, nonexistent order, synthetic HITL confirmation/idempotency. Capture ledger before/after and Trace per scenario. No blind retries; remaining scenarios BUDGET_BLOCKED/NOT_RUN if admission fails.
-- [ ] D4: relevant pytest/HTTP-SSE/browser regressions without incidental paid requests. Disable gate and/or stop Real services; verify original data/Key/Offline untouched. Chinese report, task commits and ordinary Push exact remoteHEAD.
+- [x] D1: Readonly snapshot Key0600/officialendpoint/currentprices/original3rows+fingerprint/volumes/Offline. Direct old configcapchange safely rejected oncopy.
+- [x] D2: Existing Real dependencycontainers reused; RealAPI-only latestimage replacement; no initialize/seed; auth/readiness verified andpaidfalse.
+- [x] BG: TDD additive authorizations/attempt mappings/permanentclosure witness. Explicit trustedadmin authorize only; runtime selectsID anddefaultpaidfalse. Same-ledger atomic worstcasefee checks; repeatIDidempotent/no refill; unknown/closed/noIDblocked; uncertaintiesglobal; noToken cap forselectedgrant.
+- [x] D3: Twenty actualmodelHTTP consumed. ActualChromiumorder/toolSQLPASS andMemorySSEPASS; RAG/doc/citationPASS andnegativePASS; HITLNOT_RUN because20HTTP exhaustedpredispatch. PreserveoriginalorderaccountingFAIL/RAGredactedIDharnessFAIL withhash-linked separate businessreviews; no paidreruns or Gold/privacyweakening.
+- [x] Compressionfix: RED4 localgzip/deflate observerfailure; publicHTTPXdecodedentityadapter. No old5completedrefund. Ninecompressionlifecycle cases+full947pytestPASS. Finalfuture15realresponses settled; first5stillconservative. Oldwireencodingunknown andsupplierbillunverified explicitly.
+- [ ] D4: Closepaidflag byComposerecreation thenpermanentgrantclose; alreadyverified8healthy/22volumes/OfflineallDB+IDs+images+StartedAtunchanged, old3rows/fingerprint/.env/Key/Stash/6239files preserved. Finalreport andnormalPush exactremoteHEAD receipt pending.
 
-Review focus: immutable old charges; concurrent sends cannot overrun phase limits; restarting retains usage; frontend/browser cannot accidentally create extra paid calls; final server cannot remain paid-enabled.
+Modifiedapplication: paid_budget.py, real_dev.py, compose.agent-dev.yml only. ExistingLangGraph,Memory,RAG,Tools,Owner,HITL,Redislimiting andExperienceActiveOFF unchanged. No newfrontendfeature orresearchphase.
 
-Operational actions need no extra approval. Any app-code fix requires a minimal failing test first. Budget-extension behavior is currently outside scope pending explicit user answer.
-
-
-## Approved continuation 2026-11-15
-
-- [ ] BG: additive authorization and attempt mappings preserve original metadata fingerprint and all historical reservations/settlements. `AttemptLedger(..., authorization_id=None)` supports explicit admin `authorize(id,max_requests,max_usd,max_tokens=None)`, exact duplicates idempotent, conflicts/overlaps/uncertain blocked, permanent close; `authorization_snapshot` separate from lifetime counts; `check_capacity(payload)` under the same durable admission rules. Legacy sends cannot bypass any grant. Model/prices original and immutable.
-- [ ] Runtime: optional server-only REAL_AGENT_AUTHORIZATION_ID selects existing grant (never creates). Runtime readiness uses check_capacity, not old cumulative caps. Compose passes only ID; Key remains private. TDD config parsing and actual MockTransport no-old-token-cap behavior.
-- [ ] Revalidate original ledger/env/Offline and take fresh read-only backup. Build latest API image without touching8000. Apply explicit grant ONLY after mocks/review pass, select ID, enable paid. New20HTTP/.05USD and no cumulativeToken cap; each outbound payload still reserves full conservative worst-case tokens*price.
-- [ ] Run one-shot sequential actual order/Memory/RAG/negative/HITL scenario driver, retaining started markers/evidence and never blind replay. State references may cause extra model sends;20 hardcap remains even if some cases NOT_RUN.
-- [ ] Close server paid gate and explicit grant; no sustained paid access. Run no-paid browser/regressions; preserve environment/history/volumes; report real results, scoped commits, ordinary Push exactHEAD.
-
-Files: app/providers/paid_budget.py (and optional focusedbudget_authorization module), tests/unit/test_budget_authorization.py; app/demo/real_dev.py and tests/unit/test_real_agent_dev.py; compose.agent-dev.yml; current phase acceptance/environment/regression scripts, state and report. No other feature or frontend changes planned.
+Evidence: grant-tests.json; compression-tests.json(947fullPASS); BG-final-tests.json(220targetedPASS beforecompression); B3rawandbusinessreview records; B4-final-summary/privacy/static/frontend/review. Newgrant20used/.0125115ledgercharge/13791usageTokens/.0053856usageestimate; no paidmodelcall afterclosure. NeverturnHITLNOT_RUN intoPASS.
