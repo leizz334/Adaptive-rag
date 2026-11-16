@@ -117,10 +117,20 @@ def main():
         baseline = json.loads((STATE / "preservation.json").read_text(encoding="utf-8"))
         changed = [name for name, digest in baseline["tracked_non_interview"].items() if not (ROOT / name).is_file() or hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != digest]
         for name, digest in baseline["existing_interview"].items():
-            if name.endswith("/README.md"):
-                continue  # Only an additive navigation entry is authorized.
-            if not (ROOT / name).is_file() or hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != digest:
-                changed.append(name)
+            normalized = name.replace("\\", "/")
+            if normalized.endswith("/README.md"):
+                original_readme = subprocess.check_output(
+                    ["git", "show", f"{manifest['base_head']}:{normalized}"], cwd=ROOT
+                ).decode("utf-8").replace("\r\n", "\n")
+                current_readme = (ROOT / normalized).read_text(encoding="utf-8").replace("\r\n", "\n")
+                without_entry = re.sub(
+                    r"\n## 2026 年 360 题答案库\n\n[^\n]+\n", "", current_readme, count=1
+                )
+                if without_entry != original_readme:
+                    changed.append(normalized)
+                continue
+            if not (ROOT / normalized).is_file() or hashlib.sha256((ROOT / normalized).read_bytes()).hexdigest() != digest:
+                changed.append(normalized)
         stash = subprocess.check_output(["git", "stash", "list", "--format=%H"], cwd=ROOT, text=True).splitlines()
         preservation = {"changed_protected_paths": changed, "stash_unchanged": stash == baseline["stash"], "source_question_unchanged": hashlib.sha256(source.read_bytes()).hexdigest() == baseline["question_sha256"]}
         if changed or not preservation["stash_unchanged"]:
