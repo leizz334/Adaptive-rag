@@ -63,14 +63,15 @@ flowchart TD
 | --- | --- | --- |
 | Skill 按需加载 | Intent 输入 Token 减少 **42.2%** | 3 个配对请求，提供技能目录描述与预载完整正文对比 |
 | 会话上下文工程 | 全链路输入与输出 Token 减少 **7.0%** | 同一组 7 例，20,713 → 19,259，优化版独立复测 |
-| RAG 检索 | **P@1 89.2%，Recall@3 94.6%** | 65 个标注问题，Recall 对每题相关文档计算后取均值 |
+| RAG 隔离检索 | **P@1 89.2%，Recall@3 96.2%，MRR 0.932** | 65 个标注问题，混合检索 + Cross-Encoder，[四路复测](eval/rag_refresh/README.md) |
+| RAG 真实生成 | **事实覆盖 64/65，忠实度裁决 65/65** | 同一 65 题的自然停止组，Recall@3 94.6%。事实覆盖要求裁判判对且检索证据充分。[复测口径](eval/rag_refresh/README.md) |
 
 ## 快速启动
 
 准备 Python 3.11 和 Node.js 22.12+。首次创建环境时运行 `conda create -n adaptive-rag python=3.11 -y`，已有环境可直接激活。
 
 ```bash
-git clone --depth 1 --single-branch --branch release/ecommerce-support-agent https://github.com/leizz334/Adaptive-RAG-Agent.git
+git clone --depth 1 --single-branch --branch main https://github.com/leizz334/Adaptive-RAG-Agent.git
 cd Adaptive-RAG-Agent
 conda activate adaptive-rag
 python -m pip install -e ".[dev]"
@@ -127,6 +128,8 @@ python -m eval.reproduce agent --verify
 python -m eval.reproduce skills --verify
 python -m eval.reproduce memory --verify
 python -m eval.reproduce rag --verify
+python -m eval.rag_refresh.ranking --verify --output eval/rag_refresh/evidence/ranking
+python -m eval.rag_refresh.analyze eval/rag_refresh/evidence/generation --verify
 ```
 
 历史回执可在本地复算，无需 API 密钥。[真实模型评测命令](eval/README.md) · [PostgreSQL 集成测试](docs/configuration.md#postgresql-验证)
