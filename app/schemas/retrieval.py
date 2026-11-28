@@ -18,6 +18,8 @@ class RetrievedChunk(BaseModel):
     chunk_index: int = 0
     policy_version: str = "v1"
     metadata: dict[str, str] = Field(default_factory=dict)
+    retrieval_hops: list[int] = Field(default_factory=list)
+    retrieval_score: float | None = None
 
 
 class Citation(BaseModel):

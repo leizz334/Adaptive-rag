@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "steps": [
+    {"step_id": 1, "goal": "读取订单的付款证据", "tool_name": "get_order", "arguments": {"order_id": "order_id"}},
+    {"step_id": 2, "goal": "在付款已验证后取得订单商品明细", "tool_name": "get_order_items", "arguments": {"order_id": "order_id"}, "depends_on": [1], "condition": {"source_step_id": 1, "field": "paid_at", "op": "is_paid"}}
+  ]
+}

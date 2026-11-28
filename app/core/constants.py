@@ -1,6 +1,6 @@
 """Project-wide constants, including prompt version tags."""
 
-PROMPT_VERSION_INTENT = "intent_v3"
+PROMPT_VERSION_INTENT = "intent_v4"
 PROMPT_VERSION_COMPLEXITY = "complexity_v1"
 PROMPT_VERSION_PLANNER = "planner_v1"
 PROMPT_VERSION_ANSWER = "answer_v1"

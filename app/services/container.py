@@ -5,10 +5,7 @@ from __future__ import annotations
 import logging
 
 from app.config.settings import Settings
-from app.infra.rate_limit import InMemoryRateLimiter, RedisRateLimiter
-from app.infra.redis_client import connect_redis
-from app.mcp.adapter import merge_mcp_tools
-from app.mcp.runtime import LOCAL_CATALOG
+from app.core.redis_client import connect_redis
 from app.providers.base import LLMProvider
 from app.providers.deepseek import DeepSeekProvider
 from app.providers.embeddings import build_embedding_provider
@@ -21,8 +18,10 @@ from app.retrieval.ingest import ingest_knowledge
 from app.retrieval.reranker import DocumentReranker
 from app.retrieval.vector import VectorRetriever
 from app.services.chat_service import ChatService
+from app.services.rate_limit import InMemoryRateLimiter, RedisRateLimiter
 from app.services.seed import seed_demo_data
 from app.tools.factory import build_tool_registry
+from app.tools.mcp_compat import LOCAL_CATALOG, merge_mcp_tools
 
 logger = logging.getLogger(__name__)
 
@@ -71,40 +70,7 @@ async def build_infrastructure(settings: Settings):
 
 async def build_retrieval(settings: Settings, redis):
     """Build the knowledge ingestion and hybrid retrieval components."""
-    if settings.embedding_configured:
-        from app.core.exceptions import RateLimitError
-
-        if not await RedisRateLimiter(
-            redis, limit=settings.rate_limit_per_minute, fail_closed=True
-        ).allow("bootstrap:knowledge_embedding"):
-            raise RateLimitError()
     embedder = build_embedding_provider(settings)
-    if settings.knowledge_mode == "private":
-        import asyncio
-
-        from app.core.exceptions import ToolPermissionError
-        from app.retrieval.private import PrivateKnowledgeRetriever, PrivateVectorStore
-
-        if settings.use_sqlite or not settings.qdrant_url or redis is None:
-            raise ToolPermissionError("private knowledge requires PostgreSQL, Qdrant and Redis")
-        private_store = PrivateVectorStore(
-            settings.qdrant_url,
-            settings.qdrant_collection + "_private_v1",
-            getattr(embedder, "dim", settings.embedding_dim),
-        )
-        await asyncio.to_thread(private_store.ensure_collection)
-        private_retriever = PrivateKnowledgeRetriever(
-            private_store,
-            embedder,
-            redis,
-            rrf_k=settings.rrf_k,
-            ttl=settings.retrieval_cache_ttl_seconds,
-        )
-        return (
-            private_retriever,
-            DocumentReranker(CrossEncoderRerankProvider(settings)),
-            private_store,
-        )
     cache = (
         RedisRetrievalCache(redis, ttl_seconds=settings.retrieval_cache_ttl_seconds)
         if redis is not None
@@ -125,30 +91,16 @@ async def build_retrieval(settings: Settings, redis):
     return retriever, reranker, store
 
 
-async def build_container(
-    settings: Settings, seed: bool = False, *, llm_provider: LLMProvider | None = None
-) -> AppContainer:
+async def build_container(settings: Settings, seed: bool = False) -> AppContainer:
     """Compose runtime services from independently testable infrastructure builders."""
     llm: LLMProvider = (
-        llm_provider
-        if llm_provider is not None
-        else DeepSeekProvider(settings)
-        if settings.llm_configured
-        else OfflineLLMProvider()
+        DeepSeekProvider(settings) if settings.llm_configured else OfflineLLMProvider()
     )
     engine, session_factory, redis = await build_infrastructure(settings)
-    # Only explicitly offline tests without any Redis configuration may use local quota.
-    local_test_only = (
-        settings.app_env == "testing"
-        and not settings.redis_url
-        and not settings.llm_configured
-        and not settings.embedding_api_key.get_secret_value()
-        and settings.knowledge_mode == "public"
-    )
     rate_limiter = (
-        InMemoryRateLimiter(limit=settings.rate_limit_per_minute)
-        if local_test_only
-        else RedisRateLimiter(redis, limit=settings.rate_limit_per_minute, fail_closed=True)
+        RedisRateLimiter(redis, limit=settings.rate_limit_per_minute)
+        if redis is not None
+        else InMemoryRateLimiter(limit=settings.rate_limit_per_minute)
     )
     retriever, reranker, store = await build_retrieval(settings, redis)
     registry = build_tool_registry(retriever)

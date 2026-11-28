@@ -17,7 +17,7 @@ pip install -e ".[docs]"     # Unstructured 解析 PDF/Office/HTML/图片
 
 ## 代码规范
 
-项目使用 Python 3.11+，统一采用 Ruff 进行格式化、导入排序和静态检查，并用 mypy 做类型检查。新增模块应包含模块级文档字符串；公开的类、函数和异步接口应使用 Google 风格 docstring，说明用途、参数、返回值及异常。
+项目使用 Python 3.11+。修改后运行回归测试并检查新增代码的格式、导入和类型。
 
 ```bash
 ruff format .
@@ -27,6 +27,6 @@ python -m compileall -q app eval
 pytest -q
 ```
 
-CI 会在 Python 3.11 与 3.12 上依次跑 Ruff、mypy 与 pytest，并要求 `app` / `eval` 的覆盖率不低于 70%。
+评测脚本与历史数据的复算命令见 [评测说明](eval/README.md)。
 
 提交前请确保不提交 `.env`、密钥、数据库文件和评测生成物。业务逻辑应放在分层目录中，通过 schema 传递数据，避免在路由层直接访问基础设施。

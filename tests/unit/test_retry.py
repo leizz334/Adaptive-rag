@@ -2,8 +2,8 @@ import pytest
 
 from app.core.exceptions import LLMProviderError
 from app.core.retry import with_exponential_backoff
-from app.infra.rate_limit import InMemoryRateLimiter
 from app.repositories.order_repository import escape_like
+from app.services.rate_limit import InMemoryRateLimiter
 
 
 @pytest.mark.asyncio

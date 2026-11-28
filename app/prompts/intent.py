@@ -1,6 +1,7 @@
 """Intent classification prompt."""
 
-PROMPT_VERSION = "intent_v3"
+PROMPT_VERSION = "intent_v5"
+INTENT_OUTPUT_TOKENS = 512
 
 INTENT_SYSTEM_V1 = """你是意图分类器。只输出 JSON。
 从下列标签中选一个：
@@ -69,6 +70,25 @@ complaint, human_handoff, out_of_scope
 INTENT_USER = """prompt_version={prompt_version}
 用户问题：{query}
 
+在同一个 JSON 中附上 goal_signals，最多 8 项。每项的 quote 必须原样摘录用户本轮原文。category 选择：
+- action：本轮实际请求，每个目标单列。读 kind 可选 order_status, order_payment, order_amount, order_items,
+  shipment, tracking_number, refund_status, inventory, product_detail, product_price, policy。
+  明确要求办理才使用 cancel, return_request, refund_request 和 operation:"write"。询问规则用 policy，
+  询问已有状态或某订单是否符合条件属于读取。否定、方才的动作、犹豫或条件未定不能当作立即办理。
+  明确要求逐一查询时，quote 保留编号列表、逐一或分别等原词和查询字段。编号有多个备选时保留原话。
+  按商品名称查目录时，名称查找、标价和现货属于商品，即使后续句用“它”省略名称。
+- field：另一处短语补充某个 action 所需字段。使用同一 kind 和 fields 列表；字段要求不单列业务动作。
+- constraint：回答范围、只展示已查到的字段、格式和否定要求。明确排除的 kind 可标 negated:true。
+- dependency：只摘录决定是否执行另一动作的前置事实。依赖动作仍为 action。同一工具取得事实后仅决定怎么回复属于 constraint。
+  存在独立前置和后续动作时可附 dependency_hints，最多 3 个对象。每个对象给互相区别、可逐字核查的
+  condition_quote 与 action_quote。若先查事实、确认结果后再查，标注决定后续执行的事实，保留原文条件词和否定。
+- background：把解释下面查询用途的独立开场句也列出。引用完整背景句，保留其中的编号，后面每笔查询各列 action。
+- unresolved：真实请求但证据不支持或缺少目标编号。填写能确定的 kind。只有完整独立的只读请求才标 operation:"read", independent:true；如该句注明找不到编号，保留这部分原文。
+如果 action 只要求特定证据，也可填写 fields。可用字段 status, paid_at, total_cents, items, items.customized,
+events, tracking_no, refunds, inventory, name, description, price_cents。扫描地点、预计送达、特定商品属性
+分别用 scan_location, estimated_delivery_at, product_attribute，保留请求以便核实证据是否可得。
+不要把收货城市当扫描地、把用户计划当查询，也不要给否定或条件写操作添加读目标。实体由代码关联，不抄写会话指代提示。
+
 输出 JSON：
-{{"label":"...","confidence":0.0,"rationale":"...","prompt_version":"{prompt_version}"}}
+{{"label":"...","confidence":0.0,"rationale":"...","prompt_version":"{prompt_version}","goal_signals":[],"dependency_hints":[]}}
 """

@@ -1,197 +1,141 @@
-# Adaptive-RAG · Agent 业务工作台
+# Adaptive-RAG Agent
 
-一个围绕**知识问答、订单工具和人工确认**构建的可运行Agent工程项目。用React工作台查看多轮对话、真实来源、LangGraph执行轨迹和业务操作，展示从请求到业务终态的证据链。
+面向电商客服的对话工作台。它能从政策文档检索并引用来源，查询订单、物流、退款和商品，在同一会话里理解追问，并在取消订单等写操作前请求用户确认。
 
-**默认是受控LLM演示，零付费请求。** 真实DeepSeek评测另有冻结证据；完整语义质量尚未认证，Experience收益未建立。项目用于工程学习与面试展示，不直接宣称生产就绪。
+**技术栈**　FastAPI · LangGraph · SQLAlchemy · PostgreSQL / SQLite · React / TypeScript
 
-[快速启动](#ubuntu快速启动) · [Docker验收](research/docs/agent_engineering_upgrade/s1_full_docker/S1_DOCKER_FINAL_REPORT.md) · [8分钟演示稿](research/docs/agent_engineering_upgrade/s1_showcase_release/DEMO_SCRIPT.md) · [最终验收](research/docs/agent_engineering_upgrade/s1_showcase_release/S1_RELEASE_FINAL_REPORT.md) · [工程难点](research/docs/agent_engineering_upgrade/s1_showcase_release/ENGINEERING_HIGHLIGHTS.md)
+## 项目演示
 
-## 可以实际演示什么
+使用仓库自带的合成商品、订单和政策数据。界面演示使用离线 Provider。工具的实际执行结果和调用轨迹可在评测回执中复查。
 
-| 场景 | 可见能力 | 验证方式 |
-|---|---|---|
-| 多轮订单查询 | 上下文指代、M2历史/摘要使用、实时订单工具、HTTP/SSE、真实节点/计划/结果 | 服务端session、实际工具调用与SQL事实 |
-| 私有知识库问答 | txt/md入库/更新/删除、BM25/Dense/Hybrid检索、引用与原文、跨主体隔离 | 浏览器CRUD/问答及越权反例 |
-| 取消订单 | Planner提案、HITL确认/撤销、真实业务执行、同Action幂等重放 | 订单终态和取消审计仅1次 |
-| Experience历史 | 原则来源/失败类型、条件、审核/兼容状态、E0/E1/E2对照 | 只读合成历史，NOT_ESTABLISHED，无Active开关 |
+![订单及物流查询和待确认卡片](docs/assets/demo-order-and-confirmation.png)
 
-![真实工作台：订单查询与Agent Execution](research/docs/agent_engineering_upgrade/s1_showcase_release/evidence/workbench_release.png)
+![知识问答及来源引用](docs/assets/demo-knowledge-citation.png)
 
-上图来自实际浏览器与真实依赖，模型为受控OfflineLLMProvider。截图只作界面说明，验收使用真实浏览器E2E和数据库检查。
+[订单查询的实际 SSE 事件和工具计数](docs/assets/demo-order-sse-trace.json)
 
 ## 系统架构
 
 ```mermaid
-flowchart LR
-  UI[React / TypeScript / Vite] --> API[FastAPI / Bearer主体绑定]
-  API --> Agent[LangGraph Agent]
-  Agent --> Tools[Tools / Owner / HITL / 幂等]
-  Tools --> PG[(PostgreSQL 业务与会话)]
-  Agent --> Memory[M2 最近历史与增量摘要]
-  Agent --> RAG[RAG / Hybrid RRF / Rerank]
-  RAG --> PG
-  RAG --> Q[(Qdrant 私有向量)]
-  RAG --> Redis[(Redis 缓存与全局限流)]
-  API --> Redis
-  API --> Trace[受保护真实执行快照]
-  Trace --> UI
+flowchart TD
+    Web["React 工作台"] --> API["FastAPI · JSON / SSE"]
+    API --> Context["ChatService · 会话、确认票据、上下文"]
+    Context --> Intent["LangGraph · 护栏、意图、任务目标和路由"]
+    Intent -->|知识问答| RAG["Adaptive-RAG · BM25 / 向量 / 受限多跳"]
+    Intent -->|业务请求| Plan["Hybrid Planner · Direct / Skill / Dynamic"]
+    Intent -->|直接答复或澄清| Answer
+    Plan --> Gate["计划校验 · 条件、归属、用户确认与幂等"]
+    Gate --> Tools["注册工具 · 订单、物流、售后、商品"]
+    Plan -->|待确认提案| Answer
+    Tools --> DB[("SQLite / PostgreSQL")]
+    Tools --> Answer["证据核验与回答"]
+    RAG --> Answer
+    Answer --> Memory["结构化会话记忆 · 原始消息与增量更新"]
+    Memory --> DB
+    Memory --> API
 ```
 
-```mermaid
-flowchart LR
-  S((START)) --> G[Guardrail]
-  G --> I[Intent]
-  I --> R[Adaptive Router]
-  R -->|direct| A[Generate]
-  R -->|single/multi| K[Retrieve]
-  R -->|agent| P[Planner]
-  R -->|refuse| F[Refuse]
-  K --> A
-  P --> E[Executor]
-  E --> A
-  A --> C[Faithfulness]
-  C --> M[Memory]
-  F --> M
-  M --> Z((END))
-```
+[模块与调用链](docs/architecture.md) · [API](docs/api.md) · [配置](docs/configuration.md)
 
-图为主流程；guardrail拒绝和上下文澄清分支见[完整实际工作流](research/docs/agent_engineering_upgrade/s1_showcase_release/ARCHITECTURE_OVERVIEW.md)。Plan不等于执行，Memory不覆盖实时工具事实，回答不代替业务终态。
+## 技术亮点
 
-## 技术栈与代码入口
+- **路由与 Hybrid Planner**。LangGraph 根据意图和任务目标选择知识问答或工具规划。明确的只读业务目标可直接生成最小工具计划。动态规划默认输出 JSON，也支持 DeepSeek 原生 Function Calling。
+- **Agent Skills**。发现 `SKILL.md` 时只读元数据，激活后加载指令和所需参考资料。取消和退货流程可生成待确认提案。条件查询由真实上游字段决定后续步骤。
+- **Adaptive-RAG**。BM25 与可选向量检索通过 RRF 合并，支持精排。复杂问答按证据充分性进行有限的查询改写和多跳检索，回答附政策来源。
+- **结构化会话记忆**。保存原始消息，按任务记录实体来源、限制条件和证据引用，为不同节点筛选上下文。业务状态由当轮工具实时读取。
+- **执行约束**。统一验证计划、工具参数和可用证据。订单读取校验归属，写入需要确认票据，重复操作由幂等机制保护。
 
-| 模块 | 技术/职责 | 入口 |
-|---|---|---|
-| Web工作台 | React19、TypeScript、Vite、Markdown、Vitest/Playwright | [frontend](frontend/) |
-| API/身份 | FastAPI、Pydantic、Bearer哈希注册表与服务端subject绑定 | [app/api](app/api/) / [auth](app/core/auth.py) |
-| Agent编排 | LangGraph状态机、Router/Planner/Tools/核验 | [graph.py](app/agents/graph.py) |
-| 数据与业务 | SQLAlchemy、PostgreSQL、HITL行锁、幂等/审计 | [repositories](app/repositories/) / [tools](app/tools/) |
-| RAG | BM25、Dense、Hybrid+RRF、Reranker；私有ACL全链路 | [retrieval](app/retrieval/) |
-| Memory/Experience | M2上下文；原P3审核/Shadow；当前只读历史面板 | [memory](app/memory/) / [experience](app/experience/) |
-| 可观测性 | 实际节点span、有限工具/检索/Memory元数据 | [observability](app/observability/) |
-| 启动交付 | 每run隔离资源、健康/认证核验、停止保留卷 | [showcase.py](scripts/showcase.py) |
+## 实验结果
 
-受控演示使用Hash Embedding与lexical重排，**不冒充真实神经检索质量**。真实Embedding/Reranker验证见P4-D。
+同一批 **15 组配对**使用真实 DeepSeek、冻结请求和合成业务数据。表中是已验收源码的历史实测，本发布版通过源码归档回归验证。严格通过同时检查实际业务结果、应执行的工具及回答中的必要事实。
 
-## Ubuntu快速启动
+| 指标 | 原始 Agent | 最终 Agent |
+| --- | ---: | ---: |
+| 严格任务通过 | 6/15 | 12/15 |
+| 实际工具选择准确率 | 55.3% | 84.2% |
+| 实际工具参数准确率 | 29.2% | 75.0% |
+| 实际证据字段覆盖 | 8/26 | 20/26 |
+| 模型请求次数 | 68 | 40 |
 
-全Docker路径（宿主只需Docker Engine和Compose，无需Python/Node）：在包含`compose.showcase.yml`的仓库版本中运行：
+共冻结 123 条，真实请求覆盖 15 个主批配对用例和 4 个独立专项用例。其余 104 条未做付费模型验证。专项结果单列，样本不足以外推线上成功率。 [评分规则、数据与复算](eval/README.md)
+
+| 独立测量 | 实测结果 | 口径 |
+| --- | --- | --- |
+| Skill 按需加载 | Intent 输入 Token 减少 **42.2%** | 3 个配对请求，提供技能目录描述与预载完整正文对比 |
+| 会话上下文工程 | 全链路输入与输出 Token 减少 **7.0%** | 同一组 7 例，20,713 → 19,259，优化版独立复测 |
+| RAG 检索 | **P@1 89.2%，Recall@3 94.6%** | 65 个标注问题，Recall 对每题相关文档计算后取均值 |
+
+## 快速启动
+
+准备 Python 3.11 和 Node.js 22.12+。首次创建环境时运行 `conda create -n adaptive-rag python=3.11 -y`，已有环境可直接激活。
 
 ```bash
-docker compose -f compose.showcase.yml up -d --build
-docker compose -f compose.showcase.yml ps -a
+git clone --depth 1 --single-branch --branch release/ecommerce-support-agent https://github.com/leizz334/Adaptive-RAG-Agent.git
+cd Adaptive-RAG-Agent
+conda activate adaptive-rag
+python -m pip install -e ".[dev]"
+cp -n .env.example .env
+python -m scripts.seed_demo
+npm --prefix frontend ci
+npm --prefix frontend run build
+python -m uvicorn app.asgi:app --host 127.0.0.1 --port 8002
 ```
 
-API健康后访问`http://127.0.0.1:8000`。开发Token在独立私有卷中随机生成，不打印到启动日志；需本机操作者显式读取。Docker凭证有效期30天，停止保留卷、恢复不重置数据或静默轮换凭证。详见[Docker启动、取凭证与恢复](research/docs/agent_engineering_upgrade/s1_full_docker/DOCKER_DEPLOYMENT_GUIDE.md)。**Ubuntu已通过真实容器、7项浏览器E2E和重启持久化验收；Windows Docker Desktop：NOT_RUN。** 此路径保持OfflineLLMProvider、付费请求0、Experience Active关闭。 验收使用干净Git源码及已验证Docker缓存；冷缓存独立下载尝试因网络停滞中断，未宣称通过。
+Windows PowerShell 使用 `if (!(Test-Path .env)) { Copy-Item .env.example .env }` 创建配置，使用 `npm.cmd` 执行 npm 命令。
 
-在私密本机终端显式读取A主体开发凭证（输出为秘密，勿录屏或提交）：
+打开 [工作台](http://127.0.0.1:8002/) 或 [OpenAPI](http://127.0.0.1:8002/docs)。默认使用 SQLite、仓库政策文档及离线 Provider，无需 API 密钥和模型权重。示例会话使用身份 `u_demo`。配置 `DEEPSEEK_API_KEY` 后会使用真实模型并产生费用。
+
+| 场景 | 在工作台输入 |
+| --- | --- |
+| 查订单和多轮追问 | 先发「查一下订单 ORD10001 的状态」，再在同一会话发「运单号是多少？」 |
+| 政策及来源 | 开新会话问「定制商品支持七天无理由退货吗？」 |
+| 用户确认 | 开新会话发「取消订单 ORD10003」，检查确认卡片后再确认或拒绝 |
+
+前端开发时保持后端运行，在另一个终端执行 `npm --prefix frontend run dev`，打开 [Vite 工作台](http://127.0.0.1:5173/)。[Docker 与外部服务配置](docs/configuration.md)
+
+## 项目结构
+
+```text
+app/
+  api/          FastAPI 路由、JSON 与 SSE
+  agents/       LangGraph、目标解析、规划与执行
+  skills/       技能包、发现、准入与条件工作流
+  memory/       会话任务记忆、实体选择与上下文预算
+  retrieval/    文档入库、混合检索、精排与多跳检索
+  tools/        业务工具、权限检查和目标契约
+  services/     对话流程和服务装配
+  repositories/ 数据模型、会话及订单持久化
+  schemas/      API、计划、检索和业务数据契约
+  prompts/     模型提示词
+  providers/   模型、向量和精排后端
+  config/      环境配置
+  core/        公共类型和组件
+frontend/      React 工作台
+alembic/       数据库迁移
+knowledge/     合成政策文档
+eval/          冻结数据、评分器、脱敏回执和复现入口
+tests/         回归、集成与安全用例
+```
+
+## 测试与评测
 
 ```bash
-docker compose -f compose.showcase.yml exec -T api python -c 'from app.demo.docker import read_credentials; print(read_credentials()["tokens"]["a"])'
+python -m pytest -q
+npm --prefix frontend test
+npm --prefix frontend run build
+python -m eval.reproduce agent --verify
+python -m eval.reproduce skills --verify
+python -m eval.reproduce memory --verify
+python -m eval.reproduce rag --verify
 ```
 
-将其粘贴到页面“本地开发凭证”。Docker Snap的NNP兼容限制、内部网络边界及完整测试见[Docker最终报告](research/docs/agent_engineering_upgrade/s1_full_docker/S1_DOCKER_FINAL_REPORT.md)。
+历史回执可在本地复算，无需 API 密钥。[真实模型评测命令](eval/README.md) · [PostgreSQL 集成测试](docs/configuration.md#postgresql-验证)
 
-Windows + WSL Docker 使用同一个 Offline Compose；普通 WSL 用户使用 `sudo docker`，保持 WSL 会话开启。当前工作台只保留对话、会话和私有知识库。Offline 不能代替真实模型推理，政策问题需先上传当前用户的相关资料；仓库公共政策不会自动进入私有库。
+## 已知限制
 
-需要真实 DeepSeek 时，使用独立、显式启用的 [Real Agent Dev](docs/real-agent-dev.md)：单独项目/端口/预算卷，Key 文件只在服务端挂载，必须配置有限请求、Token 和费用上限。默认 Offline 不受影响。本轮没有执行真实付费请求。
+- 模拟业务数据和政策用于演示，离线 Provider 用于验证链路。少量真实模型配对仍有物流、退款和条件查询漏查。
+- API 从请求接收 `user_id`。公开部署需要由可信认证层绑定身份。待确认票据保存在单进程内，跨副本需共享机制。
+- PostgreSQL 行锁、事务和 SSE 使用实际回环服务验证。可选 Redis / Qdrant 与多副本部署的验证范围见配置文档。
+- 受限 ReAct 默认关闭。4 个真实开启专项用例均未触发重规划，因此没有建立收益证据。
 
-以下为已交付的宿主启动器路径：
-
-需要Python3.11+、Node20.19+或22.12+、Docker Engine及Compose；本机验证使用Python3.12/Node22。确认当前用户可以访问本机Docker。新克隆：
-
-```bash
-git clone --branch codex/s1-showcase-release https://github.com/leizz334/Adaptive-rag.git
-cd Adaptive-rag
-python3 -m venv .venv
-.venv/bin/python -m pip install -e '.[dev]'
-npm ci --prefix frontend
-npm run build --prefix frontend
-.venv/bin/python -m scripts.showcase init --run-id interview_01
-.venv/bin/python -m scripts.showcase serve --run-id interview_01
-```
-
-已有仓库复用当前`.venv`，不要覆盖`.env`或重复init已有run。启动器会为新run创建真实PG/Redis/Qdrant和合成业务数据，执行空库迁移，默认拒绝外部模型网络。FastAPI同源提供已构建前端。
-
-另一终端：
-
-```bash
-.venv/bin/python -m scripts.showcase info --run-id interview_01
-.venv/bin/python -m scripts.showcase status --run-id interview_01
-```
-
-`info`输出页面URL和忽略的0600私有凭证文件路径。请在本机私下读取`tokens.a`，仅粘贴到页面“本地开发凭证”框；`tokens.b`是另一个合成主体。不要把Token放VITE变量、URL、日志或提交。后端无正式登录/发证HTTP，页面不伪造生产登录。status核查真实依赖和Bearer主体，不能用health200代替完整就绪。
-
-停止与恢复：
-
-```bash
-.venv/bin/python -m scripts.showcase stop --run-id interview_01
-.venv/bin/python -m scripts.showcase start --run-id interview_01
-.venv/bin/python -m scripts.showcase serve --run-id interview_01
-```
-
-开发凭证有效期为24小时；start/serve保留原凭证，不会绕过到期或覆盖文件。到期后用新run演示。stop只操作经过身份/标签核验的本run进程与容器，保留数据卷。**不执行down -v或prune。** 旧根`docker-compose.yml`是API镜像示例，不是已验完整演示路径；缺少认证/Redis等时应安全拒绝启动。[详细启动与恢复](research/docs/agent_engineering_upgrade/s1_showcase_release/STARTUP.md)。`.env.example`仅作配置参考，不替代初始化，也不要覆盖现有环境文件。
-
-## 三个演示与浏览器验收
-
-1. 查询“ORD95101的状态和金额”，追问“这单的商品明细和是否定制”；打开Execution查看实际工具、Memory计数、节点耗时。
-2. 私有知识库上传唯一合成政策，问答查看实际citation/片段；切B主体验证不可见与拒绝，再演示完整更新/删除。
-3. 请求取消未取消的ORD95102，查看Planner与HITL后确认、同Action重放；数据库仅1次写入。另用ORD95104撤销pending。
-
-每个场景的步骤/预期/实际证据见[演示验收](research/docs/agent_engineering_upgrade/s1_showcase_release/DEMO_ACCEPTANCE.md)。已取消订单不重置，下一轮可选尚未取消的ORD95103/95105/95106/95107或新run。
-
-```bash
-cd frontend
-npx playwright install chromium --only-shell
-cd ..
-.venv/bin/python -m scripts.showcase browser --run-id interview_01 --cancel-order ORD95102
-```
-
-这是真实Chromium、真实API/数据库测试，无route mock、单worker/重试0，会执行本run的合成取消。每轮原始报告隔离保存在私有目录，公开只输出安全汇总。
-
-后台 Experience Memory、审核和历史实验完整保留；普通用户工作台不再提供 Experience 实验页面。[旧页面截图仅作为历史归档](research/docs/agent_engineering_upgrade/s1_showcase_release/evidence/experience_release.png)。
-
-## 工程难点
-
-- **完整私有ACL**：入库/Chunk、BM25/Qdrant/Hybrid、重排/引用、Redis缓存、更新/删除都绑定服务端主体，不只给向量查询加过滤。
-- **写操作可靠性**：持久HITL、PostgreSQL行锁、幂等指纹/审计；以业务终态判断，不把“模型说执行”当成功。
-- **故障与取消**：Redis共享原子限流，敏感操作故障fail-closed；SSE/网络超时不自动重放；身份切换中止旧请求，迟到401不清除新身份。
-- **可解释与保密**：真实Trace只读、精确Owner/session/root授权；限定参数/结果字段、片段脱敏，无原始Prompt/State/summary/凭据。
-- **可核验评测**：固定源码/Gold/评分器、逐请求预算账本，区分工具代理、业务状态、语义真值与组件收益；保留RED与历史未通过项。
-
-[工程难点与代码证据](research/docs/agent_engineering_upgrade/s1_showcase_release/ENGINEERING_HIGHLIGHTS.md)。
-
-## 测试与真实模型结果
-
-| 证据 | 结论与范围 |
-|---|---|
-| S1-Web工程基线 | 934 pytest PASS +1历史SKIP；19前端测试；6真实浏览器场景；Ruff/Mypy通过 |
-| 历史回归 | 214案例，202 PASS、12既有非PASS；新增严格PASS→FAIL为0 |
-| 真实DeepSeek P4-C/D | 开发/独立集、真实工具/SQL/HTTP/SSE和预算记录已执行；质量结论PARTIAL，不能等同总体语义成功 |
-| S1-EX真实E0/E1/E2 | 4组完整配对，60请求/54,845Token；工具/业务执行代理三臂均4/4，有界回答均2/3可评分；收益NOT_ESTABLISHED |
-| S1-Release当前交付 | **951 pytest PASS +1历史SKIP、22前端测试、7真实浏览器场景**；类型/构建、Ruff/Mypy、214历史回归通过，详见[最终报告](research/docs/agent_engineering_upgrade/s1_showcase_release/S1_RELEASE_FINAL_REPORT.md) |
-| S1-Docker全栈交付 | **965 pytest PASS +1历史SKIP、22前端测试、7真实浏览器场景**；Ubuntu一键Compose/重启持久化通过，Windows NOT_RUN；[证据与限制](research/docs/agent_engineering_upgrade/s1_full_docker/S1_DOCKER_FINAL_REPORT.md) |
-
-[真实模型C](research/docs/agent_engineering_upgrade/p4_real_llm_e2e/P4-C_FINAL_REPORT.md) · [消融D](research/docs/agent_engineering_upgrade/p4_ablation_evaluation/P4-D_FINAL_REPORT.md) · [安全F](research/docs/agent_engineering_upgrade/p4_security_remediation/P4-F_FINAL_REPORT.md) · [Experience S1-EX](research/docs/agent_engineering_upgrade/s1_experience_optimization/S1-EX_FINAL_REPORT.md)
-
-本阶段不重跑已完成付费实验，不修改历史Gold或原始分数。完整开放语义人工审核仍NOT_ASSESSED，AI结构标签不冒充人工审批。截图和受控LLM工程结果不代替真实模型质量结果。
-
-开发检查：
-
-```bash
-npm test --prefix frontend
-npm run typecheck --prefix frontend
-npm run build --prefix frontend
-.venv/bin/ruff check app tests eval alembic research scripts/showcase.py
-.venv/bin/mypy
-.venv/bin/python -m research.docs.agent_engineering_upgrade.p4_final_acceptance.offline pytest tests -q
-```
-
-真实依赖全量回归需要单独全新验证项目和既有run-id参数，见[完整验证命令](research/docs/agent_engineering_upgrade/s1_showcase_release/VERIFYING.md)；不要对演示或用户数据库执行破坏性迁移回环。
-
-## 已知限制与后续学习
-
-凭证仅页面内存，刷新后重新认证；可读取本人最近50个服务端会话、每会话最近100条user/assistant文本。历史不恢复旧引用/Trace/人工确认权限，超出数量明确受限；页面删除只隐藏，不删除SQL历史。无生产登录/发证或组织共享。私有文档至多100篇/主体、10000字符/篇，只支持txt/md完整更新；Trace是128条/15分钟单进程快照，重启/worker切换可能404。Memory M3偏好原型不作为已上线能力，Experience Active关闭。TLS、凭证轮换、备份擦除等完整生产条件未认证。
-
-后续S2建议学习事务/异步取消、独立语义评测、身份与运维边界，详见[工程说明](research/docs/agent_engineering_upgrade/s1_showcase_release/ENGINEERING_HIGHLIGHTS.md)。本交付不自动启动S2/S3/P5。
-
-项目使用[MIT License](LICENSE)。
+[MIT License](LICENSE)

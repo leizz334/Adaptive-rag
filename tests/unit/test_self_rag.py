@@ -10,6 +10,8 @@ import pytest
 from app.config.settings import Settings
 from app.core.exceptions import LLMProviderError
 from app.providers.fake import FakeLLMProvider
+from app.providers.reranker import CrossEncoderRerankProvider, LexicalRerankProvider
+from app.retrieval.reranker import DocumentReranker
 from app.retrieval.self_rag import SelfRAGLoop
 from app.schemas.retrieval import RetrievedChunk
 
@@ -150,3 +152,113 @@ async def test_loop_returns_empty_when_nothing_retrieved_and_grading_fails() -> 
     loop = _loop(llm=_RaisingLLM(), retriever=retriever, hops=1)
 
     assert await loop.retrieve("退货", top_k=3) == []
+
+
+class _EvidenceRewriter:
+    async def rewrite(self, query: str, *, missing_aspect: str = "") -> list[str]:
+        return ["follow-up"] if missing_aspect else []
+
+
+class _EvidenceModel:
+    def __init__(self, *, fail_global: bool = False, malformed_global: bool = False) -> None:
+        self.calls: list[list[tuple[str, str]]] = []
+        self.fail_global = fail_global
+        self.malformed_global = malformed_global
+
+    def predict(self, pairs, *, show_progress_bar):
+        self.calls.append(pairs)
+        if len(self.calls) == 3:
+            if self.fail_global:
+                raise RuntimeError("inference failed")
+            if self.malformed_global:
+                return [float("nan")] * len(pairs)
+        relevance = {"refund": 3.0, "shipping": 2.0, "unrelated": 1.0}
+        return [relevance[content] for _, content in pairs]
+
+
+def _evidence_loop(settings, model=None, *, empty=False, sufficient=False):
+    data = {
+        "original question": [_chunk("noise", "unrelated"), _chunk("shipping", "shipping")],
+        "follow-up": [_chunk("refund", "refund"), _chunk("shipping", "shipping")],
+    }
+    provider = (
+        CrossEncoderRerankProvider(settings, model=model) if model else LexicalRerankProvider()
+    )
+    return SelfRAGLoop(
+        retriever=_StubRetriever({} if empty else data),
+        reranker=DocumentReranker(provider),
+        rewriter=_EvidenceRewriter(),
+        llm=FakeLLMProvider(canned={"": _SUFFICIENT if sufficient else _NOT_SUFFICIENT}),
+        settings=settings,
+    )
+
+
+async def test_global_rerank_scores_the_full_cross_hop_union_before_capping():
+    settings = Settings(enable_global_rerank=True, max_retrieval_hops=2, rerank_top_n=1)
+    model = _EvidenceModel()
+    result = await _evidence_loop(settings, model).retrieve("original question", top_k=2)
+
+    assert [chunk.chunk_id for chunk in result] == ["refund", "shipping"]
+    assert [chunk.score for chunk in result] == [3.0, 2.0]
+    assert [chunk.retrieval_hops for chunk in result] == [[2], [1, 2]]
+    assert [chunk.source for chunk in result] == ["bm25", "bm25"]
+    assert result[1].retrieval_score == 1.0
+    assert model.calls[-1] == [
+        ("original question", "unrelated"),
+        ("original question", "shipping"),
+        ("original question", "refund"),
+    ]
+
+
+async def test_global_rerank_disabled_keeps_the_original_accumulation_order():
+    settings = Settings(enable_global_rerank=False, max_retrieval_hops=2, rerank_top_n=1)
+    model = _EvidenceModel()
+    result = await _evidence_loop(settings, model).retrieve("original question", top_k=2)
+    assert [chunk.chunk_id for chunk in result] == ["shipping", "refund"]
+    assert len(model.calls) == 2
+
+
+async def test_single_round_skips_global_rerank():
+    settings = Settings(enable_global_rerank=True, max_retrieval_hops=3, rerank_top_n=1)
+    model = _EvidenceModel()
+    result = await _evidence_loop(settings, model, sufficient=True).retrieve(
+        "original question", top_k=2
+    )
+    assert [chunk.chunk_id for chunk in result] == ["shipping"]
+    assert len(model.calls) == 1
+
+
+async def test_global_rerank_with_fewer_candidates_than_the_limit():
+    settings = Settings(enable_global_rerank=True, max_retrieval_hops=2, rerank_top_n=5)
+    model = _EvidenceModel()
+    result = await _evidence_loop(settings, model).retrieve("original question", top_k=2)
+    assert [chunk.chunk_id for chunk in result] == ["refund", "shipping", "noise"]
+
+
+async def test_global_rerank_skips_an_empty_candidate_set():
+    settings = Settings(enable_global_rerank=True, max_retrieval_hops=2)
+    model = _EvidenceModel()
+    result = await _evidence_loop(settings, model, empty=True).retrieve(
+        "original question", top_k=2
+    )
+    assert result == []
+    assert model.calls == []
+
+
+@pytest.mark.parametrize("failure", ["inference", "invalid_scores", "lexical"])
+async def test_global_rerank_failure_preserves_the_previous_result(failure, caplog):
+    settings = Settings(enable_global_rerank=True, max_retrieval_hops=2, rerank_top_n=1)
+    model = (
+        None
+        if failure == "lexical"
+        else _EvidenceModel(
+            fail_global=failure == "inference", malformed_global=failure == "invalid_scores"
+        )
+    )
+    baseline_settings = settings.model_copy(update={"enable_global_rerank": False})
+    expected = await _evidence_loop(baseline_settings, model).retrieve("original question", top_k=2)
+    if model:
+        model.calls.clear()
+    result = await _evidence_loop(settings, model).retrieve("original question", top_k=2)
+    assert result == expected
+    assert "global_rerank_failed" in caplog.messages

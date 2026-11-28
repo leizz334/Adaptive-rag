@@ -342,7 +342,7 @@ async def eval_generation() -> dict:
             if rag_judge.status == FaithfulnessStatus.UNSUPPORTED:
                 from app.agents.nodes.faithfulness import self_correct_answer
 
-                checked, checked_judge, _ = await self_correct_answer(
+                corrected, checked_judge, _ = await self_correct_answer(
                     llm=llm,
                     checker=checker,
                     query=row["query"],
@@ -351,6 +351,7 @@ async def eval_generation() -> dict:
                     tool_results_text="",
                     first_result=rag_judge,
                 )
+                checked = corrected.answer
             keywords = row.get("gold_answer_contains") or []
             judgments["naive"].append(naive_judge)
             judgments["rag"].append(rag_judge)

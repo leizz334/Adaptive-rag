@@ -1,7 +1,7 @@
 """Provider protocols and shared response types."""
 
 from collections.abc import AsyncIterator
-from typing import Protocol
+from typing import Any, Protocol
 
 from app.schemas.common import TokenUsage
 
@@ -13,13 +13,22 @@ class ChatMessageDict(dict):
 class LLMResponse:
     """A single chat-completion result.
 
-    Attributes:
-        content: The assistant message text.
-        usage: Token accounting for the call; defaults to an empty breakdown.
-        model: Identifier of the model that produced the response.
+    Native tool calls retain the provider's message format, including the
+    encoded arguments. Cache counts are optional because some APIs omit them.
+    Raw request and response bodies are available only with explicit capture.
     """
 
-    __slots__ = ("content", "usage", "model", "finish_reason")
+    __slots__ = (
+        "content",
+        "usage",
+        "model",
+        "finish_reason",
+        "tool_calls",
+        "prompt_cache_hit_tokens",
+        "prompt_cache_miss_tokens",
+        "raw_request",
+        "raw_response",
+    )
 
     def __init__(
         self,
@@ -27,11 +36,22 @@ class LLMResponse:
         usage: TokenUsage | None = None,
         model: str = "",
         finish_reason: str | None = None,
+        *,
+        tool_calls: list[dict[str, Any]] | None = None,
+        prompt_cache_hit_tokens: int | None = None,
+        prompt_cache_miss_tokens: int | None = None,
+        raw_request: dict[str, Any] | None = None,
+        raw_response: dict[str, Any] | None = None,
     ) -> None:
         self.content = content
         self.usage = usage or TokenUsage()
         self.model = model
         self.finish_reason = finish_reason
+        self.tool_calls = tool_calls or []
+        self.prompt_cache_hit_tokens = prompt_cache_hit_tokens
+        self.prompt_cache_miss_tokens = prompt_cache_miss_tokens
+        self.raw_request = raw_request
+        self.raw_response = raw_response
 
 
 class LLMProvider(Protocol):

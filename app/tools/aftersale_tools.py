@@ -6,6 +6,7 @@ from app.core.enums import ToolRisk
 from app.schemas.agent import ToolResult
 from app.tools.base import Tool, ToolContext
 from app.tools.deps import RepositoryBackedTool
+from app.tools.order_tools import OrderIdInput as ReadOrderIdInput
 
 
 class OrderIdInput(BaseModel):
@@ -34,17 +35,14 @@ class RefundCreateInput(BaseModel):
 class GetRefundStatusTool(RepositoryBackedTool, Tool):
     name = "get_refund_status"
     description = (
-        "只读查询某订单已有退款单列表（单号、状态、金额）。"
-        "何时用：退款到哪了、退款单状态、退了多少钱。"
-        "何时不用：尚未申请、用户要新提交退款时用 create_refund_request；查订单是否支付用 get_order。"
-        "优先使用本工具当已申请、只查进度；尚未申请不要用本工具代替提交。"
-        "参数 order_id：例 ORD1001，不是 refund_id（rf_…）或 user_id。"
-        "返回 refunds[{refund_id, status, amount_cents}]；空列表表示尚无退款单，不要说已经退款成功。"
+        "按订单号只读查询已有退款单。返回 refunds[{refund_id,status,amount_cents}]，金额单位为分。"
+        "空列表表示未查到退款单。requested 表示申请已提交，金额依退款单记录。"
+        "缺少实际到账时间、支付渠道和流水信息。查订单金额或支付记录用 get_order。"
     )
     risk = ToolRisk.READ
-    input_model = OrderIdInput
+    input_model = ReadOrderIdInput
 
-    async def execute(self, parsed: OrderIdInput, context: ToolContext) -> ToolResult:
+    async def execute(self, parsed: ReadOrderIdInput, context: ToolContext) -> ToolResult:
         await self.repository.get_visible_order(parsed.order_id, context.user_id)
         refunds = await self.repository.get_refunds(parsed.order_id)
         return ToolResult(
@@ -90,7 +88,7 @@ class CreateReturnRequestTool(RepositoryBackedTool, Tool):
     name = "create_return_request"
     description = (
         "提交退货申请（write，须用户确认后才真正执行）。只建退货单，不会自动退款。"
-        "何时用：用户要退货/换货、把商品寄回。"
+        "何时用：用户要求建立退货申请并寄回商品。没有换货单或换货履约功能。"
         "何时不用：只要退款不寄回用 create_refund_request；未发货取消用 cancel_order；问「能不能退」先用 search_knowledge 或 get_order_items（看 customized）。"
         "优先：未发货取消 → cancel_order；只要退款 → create_refund_request；要退货寄回 → 本工具。"
         "参数 order_id 例 ORD1001；reason 1–200 字，如「尺码不合适」。"

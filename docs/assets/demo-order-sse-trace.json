@@ -1,0 +1,74 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/chat/stream",
+    "body": {
+      "message": "订单 ORD10001 的订单状态和物流进度分别是什么？",
+      "user_id": "u_demo"
+    }
+  },
+  "selected_sse_events": [
+    {
+      "event": "started",
+      "trace_id": "<trace-id>"
+    },
+    {
+      "event": "node",
+      "node": "apply_guardrail"
+    },
+    {
+      "event": "node",
+      "node": "classify_intent",
+      "intent": "order_inquiry"
+    },
+    {
+      "event": "node",
+      "node": "route_complexity",
+      "strategy": "agent"
+    },
+    {
+      "event": "node",
+      "node": "plan_tasks"
+    },
+    {
+      "event": "node",
+      "node": "execute_tools"
+    },
+    {
+      "event": "node",
+      "node": "generate_answer"
+    },
+    {
+      "event": "node",
+      "node": "check_faithfulness"
+    },
+    {
+      "event": "node",
+      "node": "compact_memory"
+    },
+    {
+      "event": "answer",
+      "data": {
+        "answer": "ORD10001 订单状态：已发货。\nORD10001 物流状态：仓库处理中（<synthetic-timestamp>） → 运输中（<synthetic-timestamp>）。",
+        "trace_id": "<trace-id>",
+        "intent": "order_inquiry",
+        "complexity": "tool_required",
+        "strategy": "agent",
+        "citations": [],
+        "token_usage": {
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "total_tokens": 0
+        }
+      }
+    },
+    {
+      "event": "done",
+      "trace_id": "<trace-id>"
+    }
+  ],
+  "successful_tool_calls_delta_from_metrics": {
+    "get_order": 1,
+    "track_shipment": 1
+  }
+}

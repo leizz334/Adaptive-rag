@@ -3,7 +3,7 @@
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, SecretStr, model_validator
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,26 +20,17 @@ class Settings(BaseSettings):
     )
 
     app_env: Literal["development", "testing", "production"] = "development"
-    app_name: str = "adaptive-rag-cs"
     log_level: str = "INFO"
     api_v1_prefix: str = "/api/v1"
-    auth_mode: Literal["required", "legacy_test"] = "required"
-    auth_credentials: SecretStr = SecretStr("")
-
-    @model_validator(mode="after")
-    def restrict_legacy_auth(self):
-        if self.auth_mode != "required" and self.knowledge_mode == "private":
-            raise ValueError("private knowledge requires verified authentication")
-        if self.auth_mode == "legacy_test" and self.app_env != "testing":
-            raise ValueError("legacy_test authentication is restricted to testing")
-        return self
 
     deepseek_api_key: SecretStr = SecretStr("")
     deepseek_base_url: str = "https://api.deepseek.com"
-    deepseek_model: str = "deepseek-chat"
-    deepseek_thinking_mode: Literal["enabled", "disabled"] | None = None
+    deepseek_model: str = "deepseek-flash"
     llm_timeout_seconds: float = 30.0
     llm_max_retries: int = 3
+    planner_mode: Literal["json", "function_calling"] = "json"
+    react_enabled: bool = False
+    skill_runtime_mode: Literal["instructions", "workflows", "conditional"] = "conditional"
     llm_judge_max_tokens: int = Field(default=512, ge=256, le=2048)
 
     embedding_api_key: SecretStr = SecretStr("")
@@ -67,6 +58,8 @@ class Settings(BaseSettings):
     rrf_k: int = 60
     rerank_top_n: int = 5
     max_retrieval_hops: int = 3
+    enable_global_rerank: bool = False
+    generation_top_n: int = Field(default=6, ge=1)
 
     token_budget: int = 128_000
     compress_soft_ratio: float = 0.50
@@ -86,7 +79,6 @@ class Settings(BaseSettings):
     db_max_overflow: int = 10
     db_pool_timeout: int = 30
     admin_api_token: SecretStr = SecretStr("")
-    knowledge_mode: Literal["public", "private"] = "public"
     knowledge_dir: str = "knowledge"
     unstructured_enabled: bool = True
     unstructured_strategy: str = "auto"

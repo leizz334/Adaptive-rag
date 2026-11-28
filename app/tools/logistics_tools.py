@@ -15,19 +15,18 @@ class TrackInput(BaseModel):
         min_length=3,
         max_length=32,
         pattern=r"^[A-Za-z0-9_-]+$",
-        description="订单号，如 ORD1001；不要填运单号 tracking_no",
+        description="订单号，3–32 位字母、数字、_ 或 -。仅提供运单号时先询问订单号",
+        examples=["ORD10001"],
     )
 
 
 class TrackShipmentTool(RepositoryBackedTool, Tool):
     name = "track_shipment"
     description = (
-        "按订单号查询物流事件与运单号（仓库/在途/签收）。"
-        "何时用：快递到哪了、物流轨迹、运单号、是否签收、催物流。"
-        "何时不用：问支付/金额/订单状态用 get_order；问配送政策时效用 search_knowledge；仓库截单用 mcp_warehouse_cutoff。"
-        "优先使用 track_shipment 当强调物流轨迹；强调订单状态/金额则用 get_order。"
-        "参数 order_id：例 ORD1001；不要把运单号（如 SF123456）填进 order_id。"
-        "返回 tracking_no、city、events[{status, at, tracking_no?}]，status 为 warehouse/in_transit/delivered；events 为空表示尚未出库，不能据此说已签收。"
+        "查询运单号和订单中的物流里程碑。返回 order_id、tracking_no、city、events[{status,at,tracking_no?}]。"
+        "city 是收件城市。warehouse 根据付款时间生成，in_transit 根据发货时间生成，delivered 根据签收时间生成。"
+        "结果没有快递扫描地点、实时所在城市或预计送达时间。空 events 或空运单号表示对应数据未记录。"
+        "查询支付、订单金额或状态用 get_order，查询通用配送规则用 search_knowledge。"
     )
     risk = ToolRisk.READ
     input_model = TrackInput

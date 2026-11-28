@@ -2,8 +2,6 @@
 
 import json
 
-from sqlalchemy.dialects.postgresql import insert as pg_insert
-from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.error_codes import ErrorCode
@@ -28,28 +26,19 @@ class IdempotencyRepository:
         return json.loads(row.response_json)
 
     async def put(self, key: str, fingerprint: str, response: dict) -> None:
-        dialect = self._session.get_bind().dialect.name
-        if dialect in {"postgresql", "sqlite"}:
-            insert = pg_insert if dialect == "postgresql" else sqlite_insert
-            statement = (
-                insert(IdempotencyRow)
-                .values(
-                    key=key,
-                    fingerprint=fingerprint,
-                    response_json=json.dumps(response, ensure_ascii=False),
+        existing = await self._session.get(IdempotencyRow, key)
+        if existing is not None:
+            if existing.fingerprint != fingerprint:
+                raise AppError(
+                    "idempotency key reused with different payload",
+                    error_code=ErrorCode.IDEMPOTENCY_CONFLICT,
+                    http_status=409,
                 )
-                .on_conflict_do_nothing(index_elements=["key"])
-            )
-            await self._session.execute(statement)
-            # A competing transaction has committed before ON CONFLICT returns.
-            await self.get_if_matches(key, fingerprint)
             return
-        existing = await self.get_if_matches(key, fingerprint)
-        if existing is None:
-            self._session.add(
-                IdempotencyRow(
-                    key=key,
-                    fingerprint=fingerprint,
-                    response_json=json.dumps(response, ensure_ascii=False),
-                )
+        self._session.add(
+            IdempotencyRow(
+                key=key,
+                fingerprint=fingerprint,
+                response_json=json.dumps(response, ensure_ascii=False),
             )
+        )

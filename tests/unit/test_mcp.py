@@ -1,8 +1,7 @@
 import pytest
 
-from app.mcp.adapter import merge_mcp_tools
-from app.mcp.runtime import LOCAL_CATALOG, call_mcp_tool
 from app.tools.base import ToolContext
+from app.tools.mcp_compat import LOCAL_CATALOG, call_mcp_tool, merge_mcp_tools
 from app.tools.registry import ToolRegistry
 
 

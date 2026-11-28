@@ -7,12 +7,10 @@ import logging
 import time
 from collections.abc import AsyncIterator
 from contextlib import suppress
-from dataclasses import dataclass, replace
-from datetime import UTC, timedelta
+from dataclasses import dataclass
 from typing import cast
 
 from langsmith import tracing_context
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.agents.graph import build_graph
@@ -21,20 +19,18 @@ from app.config.settings import Settings
 from app.core.exceptions import AppError, GuardrailError, InvalidRequestError, RateLimitError
 from app.core.ids import new_id
 from app.core.request_scope import request_session
-from app.core.time import utcnow
-from app.infra.rate_limit import RateLimiter
 from app.memory.context import ContextBuilder, SelectedContext
 from app.memory.long_term import PreferenceMemory, current_memory_identity
-from app.memory.summary_state import prepare_summary
+from app.memory.summary_state import prepare_summary, record_completed_turn
 from app.observability.metrics import REQUEST_LATENCY, REQUESTS, ROUTING, STAGE_LATENCY, TOKEN_USAGE
 from app.observability.tracing import TraceRecorder, trace_turn, traced
 from app.providers.base import LLMProvider
-from app.repositories.models import PendingConfirmationRow
 from app.repositories.session_repository import SessionRepository
 from app.retrieval.hybrid import HybridRetriever
 from app.retrieval.reranker import DocumentReranker
 from app.schemas.chat import ActionProposal, ChatRequest, ChatResponse
 from app.schemas.common import LatencyBreakdown, TokenUsage
+from app.services.rate_limit import RateLimiter
 from app.tools.factory import build_tool_registry
 from app.tools.registry import ToolRegistry
 
@@ -63,9 +59,6 @@ class ChatService:
         tracer: TraceRecorder | None = None,
         memory_store: PreferenceMemory | None = None,
     ) -> None:
-        from app.observability.workbench import WorkbenchStore
-
-        self.workbench_store = WorkbenchStore()
         self._settings = settings
         self._memory_store = memory_store
         self._tracer = tracer or TraceRecorder.from_settings(settings)
@@ -90,12 +83,10 @@ class ChatService:
         started = time.perf_counter()
         session_id = request.session_id or new_id("sess_")
         async with request_session(self._session_factory) as db:
-            db.info["knowledge_subject"] = request.user_id
             state = await self._initial_state(db, request, session_id, trace_id)
             result = await self._invoke(state)
-            self._capture_workbench(result)
             response = self._to_response(result, session_id=session_id, trace_id=trace_id)
-            await self._persist(db, request, response, summary=result.get("summary") or "")
+            await self._persist(db, request, response, state=result)
             await self._commit(db)
         self._remember_pending(request, response)
         self._observe(response, started)
@@ -108,7 +99,6 @@ class ChatService:
         started = time.perf_counter()
         session_id = request.session_id or new_id("sess_")
         async with request_session(self._session_factory) as db:
-            db.info["knowledge_subject"] = request.user_id
             state = await self._initial_state(db, request, session_id, trace_id)
             yield {"event": "started", "trace_id": trace_id}
             queue: asyncio.Queue[dict | None] = asyncio.Queue()
@@ -166,9 +156,8 @@ class ChatService:
             if holder["error"] is not None:
                 raise holder["error"]
             merged: AgentState = holder["merged"]
-            self._capture_workbench(merged)
             response = self._to_response(merged, session_id=session_id, trace_id=trace_id)
-            await self._persist(db, request, response, summary=merged.get("summary") or "")
+            await self._persist(db, request, response, state=merged)
             await self._commit(db)
         self._remember_pending(request, response)
         self._observe(response, started)
@@ -192,26 +181,33 @@ class ChatService:
         session_id: str,
         trace_id: str,
     ) -> AgentState:
-        confirmed_action = await self._load_confirmation(db, request, session_id)
+        confirmed_action = self._resolve_confirmation(request, session_id)
         sessions = SessionRepository(db)
         session_row = await sessions.get_or_create(session_id, request.user_id)
-        history = await sessions.recent_messages(
-            session_id,
-            limit=20
-            if self._settings.memory_mode == "M0"
-            else self._settings.memory_recent_messages,
-        )
         summary, summary_orders, summary_text = "", [], ""
+        memory = None
         if self._settings.memory_mode in {"M2", "M3"}:
-            history, summary, summary_orders, summary_text = await prepare_summary(
+            history, summary, summary_orders, summary_text, sources = await prepare_summary(
                 sessions, session_row, self._settings
             )
+            if self._settings.memory_mode == "M2":
+                memory = sources
+        else:
+            history = await sessions.recent_messages(
+                session_id,
+                limit=20
+                if self._settings.memory_mode == "M0"
+                else self._settings.memory_recent_messages,
+            )
         context = ContextBuilder(self._settings).build(
-            request.message, history, summary_orders=summary_orders, summary=summary_text
+            request.message,
+            history,
+            summary_orders=summary_orders,
+            summary=summary_text,
+            memory=memory,
         )
         if confirmed_action is not None:
             context = SelectedContext(request.message)
-        context = replace(context, owner_user_id=request.user_id, session_id=session_id)
         preferences = {}
         identity = current_memory_identity()
         if (
@@ -222,7 +218,7 @@ class ChatService:
             and identity.user_id == request.user_id
         ):
             preferences = {r.key: r.value for r in self._memory_store.recall(identity)}
-        state: AgentState = {
+        return {
             "trace_id": trace_id,
             "session_id": session_id,
             "user_id": request.user_id,
@@ -245,51 +241,7 @@ class ChatService:
             "idempotency_key": request.idempotency_key,
         }
 
-        self._capture_workbench(state, initial=True)
-        return state
-
-    def _capture_workbench(self, state, *, initial=False):
-        from app.observability.workbench import capture_state
-
-        capture_state(state, self._settings.memory_mode, self.workbench_store, initial=initial)
-
-    async def _persist_pending(
-        self, db: AsyncSession, request: ChatRequest, response: ChatResponse
-    ) -> None:
-        action = response.pending_action
-        if action is not None:
-            db.add(
-                PendingConfirmationRow(
-                    action_id=action.action_id,
-                    session_id=response.session_id,
-                    user_id=request.user_id,
-                    action_json=action.model_dump_json(),
-                    expires_at=utcnow() + timedelta(minutes=15),
-                )
-            )
-
     @traced("confirmation.resolve")
-    async def _load_confirmation(
-        self, db: AsyncSession, request: ChatRequest, session_id: str
-    ) -> ActionProposal | None:
-        if not request.confirm_action_id:
-            return None
-        # The lock spans business execution and idempotency commit. A second
-        # worker then observes the first committed response rather than writing twice.
-        pending = await db.scalar(
-            select(PendingConfirmationRow)
-            .where(PendingConfirmationRow.action_id == request.confirm_action_id)
-            .with_for_update()
-        )
-        if (
-            pending is None
-            or pending.expires_at.replace(tzinfo=UTC) <= utcnow()
-            or pending.session_id != session_id
-            or pending.user_id != request.user_id
-        ):
-            raise InvalidRequestError("待确认操作不存在或已过期，请重新发起。")
-        return ActionProposal.model_validate_json(pending.action_json)
-
     def _resolve_confirmation(self, request: ChatRequest, session_id: str) -> ActionProposal | None:
         if not request.confirm_action_id:
             return None
@@ -350,13 +302,21 @@ class ChatService:
         request: ChatRequest,
         response: ChatResponse,
         *,
-        summary: str = "",
+        state: AgentState,
     ) -> None:
-        await self._persist_pending(db, request, response)
         sessions = SessionRepository(db)
-        await sessions.append_message(response.session_id, "user", request.message)
+        row = (
+            await sessions.lock_owned(response.session_id, request.user_id)
+            if self._settings.memory_mode == "M2"
+            else None
+        )
+        message = await sessions.append_message(response.session_id, "user", request.message)
         await sessions.append_message(response.session_id, "assistant", response.answer)
-        if summary or self._settings.memory_mode in {"M2", "M3"}:
+        summary = state.get("summary") or ""
+        if row is not None:
+            await db.flush()
+            await record_completed_turn(sessions, row, message, summary, state, self._settings)
+        elif summary or self._settings.memory_mode == "M3":
             await sessions.save_summary(response.session_id, summary)
 
     def _to_response(

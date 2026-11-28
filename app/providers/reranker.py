@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import math
 from threading import Lock
 from typing import Any
 
 from app.config.settings import Settings
+from app.core.exceptions import RetrievalError
 from app.providers.device import resolve_torch_device
 
 logger = logging.getLogger(__name__)
@@ -114,10 +116,24 @@ class CrossEncoderRerankProvider:
         model = self._ensure_model()
         if model is None:
             return await self._fallback.rerank(query, documents, top_n=top_n)
+        return (await self._rank(model, query, documents))[:top_n]
+
+    async def rerank_cross_encoder(
+        self, query: str, documents: list[str]
+    ) -> list[tuple[int, float]]:
+        """Score the full batch, requiring the actual model for global reranking."""
+        model = self._ensure_model()
+        if model is None:
+            raise RetrievalError("cross_encoder_unavailable")
+        ranked = await self._rank(model, query, documents)
+        if len(ranked) != len(documents) or any(not math.isfinite(score) for _, score in ranked):
+            raise RetrievalError("invalid_cross_encoder_scores")
+        return ranked
+
+    async def _rank(self, model: Any, query: str, documents: list[str]) -> list[tuple[int, float]]:
         pairs = [(query, document) for document in documents]
         scores = await asyncio.to_thread(self._predict, model, pairs)
-        ranked = sorted(enumerate(scores), key=lambda item: item[1], reverse=True)
-        return [(index, score) for index, score in ranked[:top_n]]
+        return sorted(enumerate(scores), key=lambda item: item[1], reverse=True)
 
     @staticmethod
     def _predict(model: Any, pairs: list[tuple[str, str]]) -> list[float]:

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any, Protocol
 
 from pydantic import BaseModel, ValidationError
@@ -67,7 +68,24 @@ class Tool:
         try:
             return self.input_model.model_validate(arguments)
         except ValidationError as exc:
-            raise InvalidRequestError(f"invalid arguments for {self.name}: {exc}") from exc
+            if self.risk != ToolRisk.READ:
+                raise InvalidRequestError(f"invalid arguments for {self.name}: {exc}") from exc
+            problems = []
+            for error in exc.errors(include_url=False, include_context=False, include_input=False):
+                location = error["loc"]
+                name = str(location[0]) if location else ""
+                field = self.input_model.model_fields.get(name)
+                problem = error["msg"]
+                if field is not None:
+                    problem = f"{name}: {problem}"
+                    if field.description:
+                        problem += f"。{field.description}"
+                    if field.examples:
+                        example = json.dumps(field.examples[0], ensure_ascii=False)
+                        problem += f"。例如 {example}"
+                problems.append(problem)
+            details = "。".join(problems)
+            raise InvalidRequestError(f"invalid arguments for {self.name}: {details}") from exc
 
     @traced("tool.execute", "tool")
     async def run(self, arguments: dict[str, Any], context: ToolContext) -> ToolResult:
@@ -101,6 +119,25 @@ class Tool:
     async def execute(self, parsed: BaseModel, context: ToolContext) -> ToolResult:
         """Perform the tool's work. Subclasses must override this."""
         raise NotImplementedError
+
+    def model_catalog_description(self) -> str:
+        """Render the read tool's argument schema in the planner's text catalog."""
+        if self.risk != ToolRisk.READ:
+            return self.description
+        schema = self.input_model.model_json_schema()
+        required = set(schema.get("required", []))
+        parameters = []
+        for name, rule in schema.get("properties", {}).items():
+            types = [option["type"] for option in rule.get("anyOf", [rule]) if "type" in option]
+            details = [" | ".join(types) or "JSON", "必填" if name in required else "可选"]
+            if examples := rule.get("examples"):
+                details.append(f"例 {json.dumps(examples[0], ensure_ascii=False)}")
+            if description := rule.get("description"):
+                details.append(description)
+            parameters.append(f"{name}（{'，'.join(details)}）")
+        if not parameters:
+            return self.description
+        return f"{self.description} 参数 {'、'.join(parameters)}。"
 
     def openai_schema(self) -> dict[str, Any]:
         """Return the OpenAI function-calling schema for this tool."""

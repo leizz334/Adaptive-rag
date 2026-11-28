@@ -1,7 +1,7 @@
 [project]
 name = "adaptive-rag-cs"
 version = "0.1.0"
-description = "Adaptive-RAG multi-agent e-commerce customer service"
+description = "Adaptive-RAG e-commerce support agent"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -9,6 +9,7 @@ dependencies = [
     "uvicorn[standard]>=0.32.0,<0.33",
     "pydantic>=2.9.0,<3",
     "pydantic-settings>=2.6.0,<3",
+    "PyYAML>=6.0,<7",
     "httpx>=0.27.0,<0.29",
     "sqlalchemy>=2.0.36,<2.1",
     "greenlet>=3.1.0,<4",
@@ -22,9 +23,7 @@ dependencies = [
     "langsmith>=0.14.7,<0.15",
     "jieba>=0.42.1",
     "rank-bm25>=0.2.2",
-    "orjson>=3.10.0,<4",
     "python-json-logger>=2.0.7,<4",
-    "tenacity>=9.0.0,<10",
     "prometheus-client>=0.21.0,<0.22",
     "sse-starlette>=2.1.0,<3",
 ]
@@ -56,6 +55,14 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 include = ["app*", "eval*"]
 
+[tool.setuptools.package-data]
+"app.skills" = [
+    "definitions/*/SKILL.md",
+    "definitions/*/workflow.json",
+    "definitions/*/references/**/*",
+    "definitions/*/assets/**/*",
+]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
@@ -67,7 +74,6 @@ filterwarnings = [
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-extend-exclude = ["research/docs/agent_engineering_upgrade/evidence"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]

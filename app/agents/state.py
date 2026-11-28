@@ -4,10 +4,19 @@ from typing import Any, TypedDict
 
 from app.core.enums import QueryComplexity, RetrievalStrategy
 from app.memory.context import SelectedContext
-from app.schemas.agent import AgentPlan, ComplexityResult, IntentResult, ToolResult
+from app.schemas.agent import (
+    AgentPlan,
+    ComplexityResult,
+    IntentResult,
+    ToolResult,
+    WorkflowActionStatus,
+    WorkflowStepStatus,
+)
 from app.schemas.chat import ActionProposal, ChatMessage
 from app.schemas.common import LatencyBreakdown, TokenUsage
+from app.schemas.goals import TaskGoal
 from app.schemas.retrieval import Citation, RetrievedChunk
+from app.skills.selector import SkillSelection
 
 
 class AgentState(TypedDict, total=False):
@@ -28,13 +37,20 @@ class AgentState(TypedDict, total=False):
     messages: list[ChatMessage]
     summary: str
     intent: IntentResult | None
+    task_goals: list[TaskGoal]
+    skill_selection: SkillSelection
     complexity: ComplexityResult | None
     strategy: RetrievalStrategy | None
     query_complexity: QueryComplexity | None
     rewritten_queries: list[str]
     retrieved_chunks: list[RetrievedChunk]
+    generation_chunks: list[RetrievedChunk]
     plan: AgentPlan | None
     tool_results: list[ToolResult]
+    tool_result_steps: list[int]
+    workflow_step_statuses: dict[int, WorkflowStepStatus]
+    workflow_action_status: WorkflowActionStatus | None
+    workflow_error: str | None
     pending_action: ActionProposal | None
     confirmed_action: ActionProposal | None
     confirm_action_id: str | None
@@ -44,6 +60,7 @@ class AgentState(TypedDict, total=False):
     refused: bool
     error: str | None
     step_count: int
+    react_read_only: bool
     token_usage: TokenUsage
     latency: LatencyBreakdown
     extra: dict[str, Any]

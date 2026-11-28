@@ -2,8 +2,14 @@
 
 from __future__ import annotations
 
-from app.agents.answer_evidence import safe_answer
-from app.agents.nodes.generate import AnswerPayload, _extractive_fallback
+from app.agents.goal_answers import bounded_read_answer, compound_read_evidence
+from app.agents.nodes.generate import (
+    AnswerPayload,
+    _extractive_fallback,
+    _offline_answer,
+    evidence_citations,
+    format_evidence,
+)
 from app.agents.state import AgentState
 from app.core.enums import RetrievalStrategy
 from app.core.exceptions import LLMOutputError, LLMProviderError
@@ -17,6 +23,13 @@ from app.providers.json_parser import parse_model
 from app.schemas.retrieval import RetrievedChunk
 
 
+def _complete_factual_answer(state: AgentState, answer: str) -> dict:
+    facts = compound_read_evidence(state)
+    if facts and not all(line in answer for line in facts.splitlines()):
+        return {"final_answer": facts, "citations": []}
+    return {}
+
+
 @traced("answer.self_correct", "chain")
 async def self_correct_answer(
     *,
@@ -27,11 +40,9 @@ async def self_correct_answer(
     chunks: list[RetrievedChunk],
     tool_results_text: str,
     first_result: FaithfulnessResult,
-) -> tuple[str, FaithfulnessResult, bool]:
-    """LLM rewrite once, then extractive fallback. Returns (answer, judge, corrected)."""
-    evidence = (
-        "\n\n".join(f"[{c.chunk_id}] {c.title}\n{c.content}" for c in chunks[:6]) or "(无检索结果)"
-    )
+) -> tuple[AnswerPayload, FaithfulnessResult, bool]:
+    """LLM rewrite once using the supplied context, then extractive fallback."""
+    evidence = format_evidence(chunks)
     try:
         response = await llm.generate(
             [
@@ -43,7 +54,7 @@ async def self_correct_answer(
                         answer=answer,
                         critique=first_result.rationale
                         or ",".join(first_result.hallucinated_spans),
-                        evidence=evidence,
+                        evidence=evidence or "(无检索结果)",
                         tool_results=tool_results_text or "(无)",
                     ),
                 },
@@ -52,27 +63,30 @@ async def self_correct_answer(
             max_tokens=500,
             response_format={"type": "json_object"},
         )
-        rewritten = parse_model(response.content, AnswerPayload).answer
+        rewritten = parse_model(response.content, AnswerPayload)
         judged = await checker.check(
             query=query,
-            answer=rewritten,
+            answer=rewritten.answer,
             chunks=chunks,
             tool_results_text=tool_results_text,
+            max_chunks=None,
         )
         if judged.supported:
             return rewritten, judged, True
     except (LLMProviderError, LLMOutputError):
         pass
-    patched = _extractive_fallback(query, evidence, tool_results_text)
-    return (
-        patched,
-        FaithfulnessResult(
-            status=FaithfulnessStatus.INSUFFICIENT_EVIDENCE,
-            supported=False,
-            rationale="rewrite_unverified",
-        ),
-        True,
+    patched = AnswerPayload(
+        answer=_extractive_fallback(chunks, tool_results_text),
+        citation_chunk_ids=[chunks[0].chunk_id] if chunks else [],
     )
+    judged = await checker.check(
+        query=query,
+        answer=patched.answer,
+        chunks=chunks,
+        tool_results_text=tool_results_text,
+        max_chunks=None,
+    )
+    return patched, judged, True
 
 
 @traced("node.faithfulness", "chain")
@@ -81,13 +95,14 @@ async def faithfulness_node(
 ) -> dict:
     answer = state.get("final_answer") or ""
     if (
-        (state.get("refused") and not (state.get("extra") or {}).get("generated_refusal"))
+        state.get("refused")
         or (state.get("selected_context") and state["selected_context"].needs_clarification)
         or state.get("pending_action")
         or (state.get("extra") or {}).get("missing_order_id")
+        or bounded_read_answer(state) is not None
     ):
         return {}
-    chunks = state.get("retrieved_chunks") or []
+    chunks = state.get("generation_chunks", state.get("retrieved_chunks") or [])
     tools = state.get("tool_results") or []
     if isinstance(llm, OfflineLLMProvider) or state.get("strategy") == RetrievalStrategy.DIRECT:
         return {}
@@ -103,14 +118,11 @@ async def faithfulness_node(
         answer=answer,
         chunks=chunks,
         tool_results_text=tool_text,
+        max_chunks=None if "generation_chunks" in state else 8,
     )
-    extra = {
-        **(state.get("extra") or {}),
-        "faithfulness": result.model_dump(),
-        "self_corrected": False,
-    }
+    extra = {"faithfulness": result.model_dump(), "self_corrected": False}
     if result.supported:
-        return {"extra": extra}
+        return {"extra": extra, **_complete_factual_answer(state, answer)}
     if result.status == FaithfulnessStatus.INSUFFICIENT_EVIDENCE:
         return {
             "final_answer": "现有证据不足，暂时无法给出可靠答复。请补充信息或转人工。",
@@ -119,9 +131,10 @@ async def faithfulness_node(
             "extra": extra,
         }
     if result.status in {FaithfulnessStatus.JUDGE_ERROR, FaithfulnessStatus.INVALID_OUTPUT}:
+        fallback_answer, citation_ids = _offline_answer(state, chunks=chunks)
         return {
-            "final_answer": safe_answer(tools),
-            "citations": [],
+            "final_answer": fallback_answer,
+            "citations": evidence_citations(chunks, citation_ids),
             "extra": extra,
         }
     HALLUCINATION_FLAGS.inc()
@@ -134,12 +147,17 @@ async def faithfulness_node(
         tool_results_text=tool_text,
         first_result=result,
     )
-    extra = {**extra, "faithfulness": judged.model_dump(), "self_corrected": corrected}
+    extra = {"faithfulness": judged.model_dump(), "self_corrected": corrected}
     if not judged.supported:
         return {
-            "final_answer": safe_answer(tools),
+            "final_answer": "现有证据不足，暂时无法给出可靠答复。请补充信息或转人工。",
             "citations": [],
             "refused": True,
             "extra": extra,
         }
-    return {"final_answer": patched, "extra": extra}
+    return {
+        "final_answer": patched.answer,
+        "citations": evidence_citations(chunks, patched.citation_chunk_ids),
+        "extra": extra,
+        **_complete_factual_answer(state, patched.answer),
+    }

@@ -16,9 +16,19 @@ from contextvars import ContextVar
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from functools import wraps
+from typing import get_args
 from uuid import uuid4
 
 from anyio import CancelScope
+
+from app.schemas.agent import (
+    PlanningReason,
+    PlanningStrategy,
+    SkillMode,
+    WorkflowActionStatus,
+    WorkflowStepStatus,
+)
+from app.schemas.goals import GoalKind
 
 logger = logging.getLogger(__name__)
 _active: ContextVar = ContextVar("agent_trace", default=None)
@@ -36,6 +46,98 @@ _NUMERIC = {
     "usage_known",
     "committed",
     "success",
+    "planner_llm_calls",
+    "planning_required_goals",
+    "planning_covered_goals",
+    "planning_deduplicated_calls",
+    "planned_tool_count",
+    "tool_attempt_count",
+    "successful_tool_count",
+    "observed_goal_count",
+    "missing_goal_count",
+    "unavailable_field_count",
+    "skill_metadata_count",
+    "skill_context_chars",
+    "skill_resource_chars",
+    "skill_invalid_count",
+    "workflow_step_id",
+    "workflow_source_step_id",
+    "context_tokens",
+    "context_candidates",
+    "context_dropped",
+    "react_round",
+}
+_TRACE_LABELS = {
+    "planning_strategy": frozenset(get_args(PlanningStrategy)),
+    "planning_reason": frozenset(get_args(PlanningReason)),
+    "skill_mode": frozenset(get_args(SkillMode)),
+    "skill_selection_reason": frozenset(
+        {
+            "no_match",
+            "conflict",
+            "grounded_goal",
+            "grounded_action",
+            "grounded_dependency",
+            "model_candidate",
+            "needs_clarification",
+            "load_failed",
+            "invalid_workflow",
+            "direct_precedence",
+            "workflow_disabled",
+        }
+    ),
+    "planner_model_mode": frozenset({"json", "function_calling", "none"}),
+    "workflow_step_status": frozenset(get_args(WorkflowStepStatus)),
+    "workflow_condition_outcome": frozenset({"true", "false", "unknown", "unavailable"}),
+    "workflow_action_status": frozenset(get_args(WorkflowActionStatus)),
+    "workflow_error": frozenset({"invalid_plan"}),
+    "context_node": frozenset({"intent", "planner", "executor", "answer"}),
+    "react_stop_reason": frozenset(
+        {
+            "evidence_complete",
+            "unverified_catalog",
+            "tool_budget",
+            "repeated_call",
+            "invalid_next_step",
+            "tool_failed",
+            "no_progress",
+            "round_limit",
+        }
+    ),
+}
+_SKILL_NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
+_SKILL_RESOURCE = re.compile(r"(?:references|assets)(?:/[a-zA-Z0-9][a-zA-Z0-9_.-]{0,80}){1,4}\Z")
+_GOAL_KINDS = frozenset(goal.value for goal in GoalKind)
+_TOOL_NAMES = frozenset(
+    {
+        "get_order",
+        "get_order_items",
+        "track_shipment",
+        "get_refund_status",
+        "check_inventory",
+        "get_product_detail",
+        "search_knowledge",
+        "cancel_order",
+        "create_return_request",
+        "create_refund_request",
+        "search_products",
+        "recommend_products",
+        "get_coupon",
+        "get_warranty",
+        "escalate_to_human",
+        "mcp_store_hours",
+        "mcp_warehouse_cutoff",
+        "mcp_remote_echo",
+    }
+)
+_TRACE_LISTS = {
+    "goal_kinds": _GOAL_KINDS,
+    "missing_evidence_kinds": _GOAL_KINDS,
+    "planned_tools": _TOOL_NAMES,
+    "executed_tools": _TOOL_NAMES,
+    "context_sections": frozenset(
+        {"entity", "task", "history", "plan", "permissions", "tool_evidence"}
+    ),
 }
 
 
@@ -43,11 +145,34 @@ def reference(value: str) -> str:
     return hmac.new(_salt, value.encode(), hashlib.sha256).hexdigest()[:24]
 
 
+def _is_skill_name(value: object) -> bool:
+    return type(value) is str and len(value) <= 64 and bool(_SKILL_NAME.fullmatch(value))
+
+
 def safe_metadata(metadata: dict) -> dict:
     result = {}
     for key, value in metadata.items():
         if key in _NUMERIC and type(value) in (int, float, bool) and math.isfinite(value):
             result[key] = value
+        elif key in _TRACE_LABELS and type(value) is str and value in _TRACE_LABELS[key]:
+            result[key] = value
+        elif key == "skill_name" and _is_skill_name(value):
+            result[key] = value
+        elif key in {"skill_candidates", "skill_eligible", "skill_names"} and isinstance(
+            value, list | tuple
+        ):
+            result[key] = [item for item in value[:48] if _is_skill_name(item)]
+        elif (
+            key in {"skill_resource", "skill_resource_path"}
+            and type(value) is str
+            and len(value) <= 160
+            and _SKILL_RESOURCE.fullmatch(value)
+        ):
+            result[key] = value
+        elif key in _TRACE_LISTS and isinstance(value, list | tuple):
+            result[key] = [
+                item for item in value[:48] if type(item) is str and item in _TRACE_LISTS[key]
+            ]
         elif (
             key in {"app_trace_ref", "session_ref", "user_ref", "request_ref"}
             and isinstance(value, str)
@@ -132,10 +257,6 @@ class TraceRecorder:
             _parent.reset(parent)
             _active.reset(token)
             try:
-                if "workbench_store" in run:
-                    from app.observability.workbench import finalize_snapshot
-
-                    finalize_snapshot(run)
                 self.sink(run["spans"])
             except Exception:
                 self.export_errors += 1
@@ -158,9 +279,7 @@ def span(name: str, kind: str = "chain", **metadata):
         yield None
         return
     item = Span(name, kind, str(uuid4()), run["root"], _parent.get())
-    item.metadata = {
-        k: v for k, v in metadata.items() if k in _NUMERIC and type(v) in (int, float, bool)
-    }
+    item.metadata = safe_metadata(metadata)
     if kind == "llm":
         item.metadata["usage_known"] = False
     run["spans"].append(item)

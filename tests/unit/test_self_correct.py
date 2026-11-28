@@ -41,7 +41,7 @@ async def test_self_correct_rewrites_unsupported_answer() -> None:
     first = FaithfulnessResult(
         supported=False, hallucinated_spans=["随时退"], rationale="unsupported"
     )
-    answer, judged, corrected = await self_correct_answer(
+    payload, judged, corrected = await self_correct_answer(
         llm=llm,
         checker=checker,
         query="定制杯能七天无理由吗",
@@ -52,4 +52,4 @@ async def test_self_correct_rewrites_unsupported_answer() -> None:
     )
     assert corrected is True
     assert judged.supported is True
-    assert "定制" in answer
+    assert "定制" in payload.answer

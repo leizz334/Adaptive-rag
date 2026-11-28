@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+from app.core.exceptions import RetrievalError
 from app.observability.tracing import traced
 from app.providers.base import RerankProvider
+from app.providers.reranker import CrossEncoderRerankProvider
 from app.schemas.retrieval import RetrievedChunk
 
 
@@ -31,3 +33,21 @@ class DocumentReranker:
             chunk.source = "rerank"
             results.append(chunk)
         return results
+
+    @traced("retrieval.rerank.global", "retriever")
+    async def rerank_global(self, query: str, chunks: list[RetrievedChunk]) -> list[RetrievedChunk]:
+        if not isinstance(self._provider, CrossEncoderRerankProvider):
+            raise RetrievalError("cross_encoder_unavailable")
+        ranked = await self._provider.rerank_cross_encoder(
+            query, [chunk.content for chunk in chunks]
+        )
+        return [
+            chunks[index].model_copy(
+                update={
+                    "score": score,
+                    "rank": rank,
+                    "retrieval_score": chunks[index].score,
+                }
+            )
+            for rank, (index, score) in enumerate(ranked, start=1)
+        ]

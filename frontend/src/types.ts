@@ -19,7 +19,6 @@ export interface ChatResponse {
   answer: string;
   session_id: string;
   trace_id: string;
-  root_run_id?: string | null;
   intent: string | null;
   complexity: string | null;
   strategy: Strategy | null;
@@ -33,7 +32,7 @@ export interface ChatResponse {
 export interface ChatRequest {
   message: string;
   session_id?: string;
-  idempotency_key?: string;
+  user_id: string;
   confirm_action_id?: string;
 }
 
@@ -52,8 +51,7 @@ export type StreamEvent =
   | { event: "node"; node: string; intent?: string; strategy?: Strategy }
   | { event: "token"; text: string }
   | { event: "answer"; data: ChatResponse }
-  | { event: "done"; trace_id: string }
-  | { event: "error"; error_code: string; trace_id: string };
+  | { event: "done"; trace_id: string };
 
 export interface Message {
   id: string;
@@ -65,15 +63,9 @@ export interface Message {
   strategy?: Strategy | null;
   traceId?: string;
   latencyMs?: number;
-  rootRunId?: string | null;
-  nodes?: string[];
-  errorCode?: string;
 }
 
 export interface Conversation {
-  historyLoaded?: boolean;
-  historical?: boolean;
-  truncated?: boolean;
   id: string;
   title: string;
   updatedAt: number;

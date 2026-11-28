@@ -13,7 +13,8 @@ class SearchInput(BaseModel):
     query: str = Field(
         min_length=1,
         max_length=80,
-        description="商品关键词，如「降噪耳机」；不要填 sku 或订单号",
+        description="1–80 字的商品名称、品类或标签关键词。查询 SKU 用 get_product_detail",
+        examples=["降噪耳机"],
     )
 
 
@@ -22,7 +23,8 @@ class SkuInput(BaseModel):
         min_length=2,
         max_length=32,
         pattern=r"^[A-Za-z0-9_-]+$",
-        description="商品 SKU，如 SKU-A1；不要填商品中文名或 order_id",
+        description="用户给出的或目录返回的商品 SKU，2–32 位字母、数字、_ 或 -",
+        examples=["SKU-HEADSET"],
     )
 
 
@@ -30,24 +32,24 @@ class RecommendInput(BaseModel):
     category: str | None = Field(
         default=None,
         max_length=32,
-        description="可选品类，如「数码」；不要填 sku",
+        description="最多 32 字的商品品类，提供时优先于 query",
+        examples=["数码"],
     )
     query: str = Field(
         default="",
         max_length=80,
-        description="可选需求描述，如「送女朋友的礼物」；可与 category 二选一",
+        description="最多 80 字的目录关键词，未提供 category 时使用",
+        examples=["耳机"],
     )
 
 
 class SearchProductsTool(RepositoryBackedTool, Tool):
     name = "search_products"
     description = (
-        "按关键词搜索商品目录，最多返回约 5 条匹配商品。"
-        "何时用：用户给出具体商品名、品类词或属性词要找货，如「无线耳机」「跑步鞋」。"
-        "何时不用：已知 sku 用 get_product_detail；「推荐/不知道买什么」用 recommend_products；政策问题用 search_knowledge。"
-        "优先使用 search_products 当有明确关键词；模糊需求或推荐语气则用 recommend_products。"
-        "参数 query：1–80 字搜索词，不是 sku。例 query=「降噪耳机」，不要填 SKU-A1 或 ORD1001。"
-        "返回 products[]：sku、name、category、price_cents（分）、inventory；后续详情用返回的 sku 调 get_product_detail。"
+        "按商品名、品类或标签做关键词包含匹配。返回最多 5 个 products，"
+        "每项有 sku、name、category、price_cents（分）、inventory、tags、description。"
+        "查询不会匹配 SKU 或 description。空列表表示此次关键词未匹配，可缩短关键词。"
+        "用结果中的 SKU 区分同名商品。已有 SKU 时查详情用 get_product_detail，仅查库存用 check_inventory。"
     )
     risk = ToolRisk.READ
     input_model = SearchInput
@@ -64,12 +66,10 @@ class SearchProductsTool(RepositoryBackedTool, Tool):
 class GetProductDetailTool(RepositoryBackedTool, Tool):
     name = "get_product_detail"
     description = (
-        "按 SKU 查询单品详情：名称、品类、价格、库存、标签、描述。"
-        "何时用：已知 sku，问规格、价格、介绍、这件是什么。"
-        "何时不用：还不知道 sku 时先 search_products；只要库存数量用 check_inventory；保修条款用 get_warranty。"
-        "优先：仅问有没有货 → check_inventory；还要价格/规格/介绍 → 本工具（已含 inventory）。"
-        "参数 sku：2–32 位字母数字_-，例 SKU-A1；不要把商品中文名或 order_id 当 sku。"
-        "返回 sku、name、category、price_cents（分）、inventory、tags、description。"
+        "按 SKU 查单品价格、库存和目录说明。返回 sku、name、category、price_cents（分）、inventory、tags、description。"
+        "材料、尺寸、功能等属性以该商品 description 或 tags 的明文为依据。缺少独立规格字段，"
+        "未明确记载的属性应答无法核实。结果已含库存，仅查库存用 check_inventory。"
+        "商品名先用 search_products 找 SKU，保修摘要用 get_warranty。"
     )
     risk = ToolRisk.READ
     input_model = SkuInput
@@ -84,12 +84,10 @@ class GetProductDetailTool(RepositoryBackedTool, Tool):
 class RecommendProductsTool(RepositoryBackedTool, Tool):
     name = "recommend_products"
     description = (
-        "按品类或需求推荐最多 3 个商品，适合不确定买什么的场景。"
-        "何时用：用户说推荐、随便看看、按场景/预算选、不知道买哪款。"
-        "何时不用：已有明确搜索词用 search_products；已知 sku 用 get_product_detail。"
-        "优先使用 search_products 当用户给出具体商品关键词；否则用本工具。"
-        "参数 category 可选品类如「数码」；query 可选需求如「送女朋友的礼物」。至少填一个，都空则按「热销」召回。不要填 sku。"
-        "返回 products 最多 3 条，字段同 search_products；不是个性化实时推荐。"
+        "用户希望浏览推荐时按品类或目录关键词取最多 3 项，products 字段同 search_products。"
+        "优先使用 category，再用 query；都为空时按「热销」做关键词检索。"
+        "按名称、品类或标签匹配，没有预算筛选、销量排行或个性化。空列表表示本次未匹配。"
+        "用户在找明确商品名称时使用 search_products，已有 SKU 时用 get_product_detail。"
     )
     risk = ToolRisk.READ
     input_model = RecommendInput
@@ -107,12 +105,8 @@ class RecommendProductsTool(RepositoryBackedTool, Tool):
 class CheckInventoryTool(RepositoryBackedTool, Tool):
     name = "check_inventory"
     description = (
-        "按 SKU 只查询库存数量，不含价格与规格。"
-        "何时用：已知 sku，只问有货吗、库存多少。"
-        "何时不用：还要价格/规格/介绍用 get_product_detail；不知 sku 先 search_products。"
-        "优先：仅库存 → 本工具；同时要价格或详情 → get_product_detail（无需再调本工具）。"
-        "参数 sku：例 SKU-A1，不是商品中文名。"
-        "返回 {sku, inventory}；0 表示无货，不要编造补货日期。"
+        "按 SKU 仅查目录库存数量，返回 {sku,inventory}，0 表示无货。缺少补货日期或分仓数据。"
+        "同时查价格或属性用 get_product_detail，其结果已含 inventory。商品名先用 search_products 找 SKU。"
     )
     risk = ToolRisk.READ
     input_model = SkuInput

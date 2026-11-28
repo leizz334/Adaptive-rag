@@ -1,0 +1,114 @@
+{
+  "schema_version": "agent-scenarios-v2.1",
+  "labeling": "Frozen before P6 implementation. Synthetic dialogue preludes are persisted through SessionRepository in both arms. Only target turns use the model, except the pending-task opener. The same current business assertions apply to P5.1 and P6.",
+  "history_segments": {
+    "routine": [
+      ["user", "顺便问一下，网页里从哪儿能看到累计积分？"],
+      ["assistant", "可以从个人中心进入积分记录，那里会显示累计和使用情况。"],
+      ["user", "自提和送货上门是同一套流程吗？"],
+      ["assistant", "两种履约方式的操作不同，是否支持自提以店铺和结算页面为准。"],
+      ["user", "我遇到活动，不确定优惠券能不能叠用，应该到哪儿核对？"],
+      ["assistant", "可在结算前核对优惠券详情和活动条款。"],
+      ["user", "网页显示的位置我找到了，先不用处理优惠券了。"],
+      ["assistant", "好的，这里不办理任何优惠券相关操作。"],
+      ["user", "如果商品页的规格文字显示不全，要怎样查看完整说明？"],
+      ["assistant", "可以打开商品详情中的规格和说明。缺失的规格可以请客服核实。"],
+      ["user", "还有，开票问题我已经自己看明白了，不用再查。"],
+      ["assistant", "知道了，这次不查询发票。"],
+      ["user", "我这边再整理一下，等会儿接着问。"],
+      ["assistant", "可以。您准备好后继续在这里发消息就行。"]
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "p6_old_order_fresh_state",
+      "family": "context_long",
+      "user_goal": "Resolve a historical order from user evidence and read its current state after a fulfillment change.",
+      "turns": [{"message": "回到前面那笔等寄出的订单，现在发货了没有？", "state_changes": {"ORD10003": "shipped"}, "expected_pending": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10003"}}]}}],
+      "expected": {"orders": {"ORD10003": "shipped"}, "allowed_mutations": ["ORD10003"], "observations": [{"name": "get_order", "arguments": {"order_id": "ORD10003", "status": "shipped"}}]}
+    },
+    {
+      "id": "p6_old_catalog_reference",
+      "family": "context_long",
+      "user_goal": "Use the historic exact SKU to obtain current price and inventory for the named product.",
+      "turns": [{"message": "回到前面聊的那款耳机，帮我核对现在的售价和还剩几件。", "expected_pending": false, "trajectory": {"required": [{"name": "get_product_detail", "arguments": {"sku": "SKU-HEADSET"}}]}}],
+      "expected": {"observations": [{"name": "get_product_detail", "arguments": {"sku": "SKU-HEADSET", "price_cents": 29900, "inventory": 42}}]}
+    },
+    {
+      "id": "p6_order_reference_replacement",
+      "family": "context_correction",
+      "user_goal": "Apply a current order correction without reusing the formerly requested order.",
+      "turns": [{"message": "我核对过了，不是 ORD10001，是 ORD10002。把这笔的实付金额告诉我。", "expected_pending": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10002"}}]}}],
+      "expected": {"observations": [{"name": "get_order", "arguments": {"order_id": "ORD10002", "total_cents": 3900}}]}
+    },
+    {
+      "id": "p6_two_scoped_order_reads",
+      "family": "context_correction",
+      "user_goal": "Keep the explicitly matched fields of two current order requests separate.",
+      "turns": [{"message": "两张单分开看。ORD10001 只查实付金额；ORD10002 只查运单号。", "expected_pending": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10001"}}, {"name": "track_shipment", "arguments": {"order_id": "ORD10002"}}]}}],
+      "expected": {"observations": [{"name": "get_order", "arguments": {"order_id": "ORD10001", "total_cents": 29900}}, {"name": "track_shipment", "arguments": {"order_id": "ORD10002", "tracking_no": "YT998877"}}]}
+    },
+    {
+      "id": "p6_pending_refund_read",
+      "family": "context_continuation",
+      "user_goal": "Resume a previously requested non-mutating refund lookup when the user supplies its missing order ID.",
+      "turns": [
+        {"message": "我想查一张订单的退款进度，先等我把单号找出来。", "expected_pending": false, "trajectory": {}},
+        {"message": "找到了，单号是 ORD10002。", "expected_pending": false, "trajectory": {"required": [{"name": "get_refund_status", "arguments": {"order_id": "ORD10002"}}]}}
+      ],
+      "expected": {"observations": [{"name": "get_refund_status", "arguments": {"refunds": []}}]}
+    },
+    {
+      "id": "p6_retained_payment_gate",
+      "family": "context_constraint",
+      "user_goal": "Resolve a historical order, check its payment evidence, and preserve the prohibition on releasing its item details without payment.",
+      "turns": [{"message": "那张单只有在付款已经成功时才列商品明细；没付的话只说明付款状态。", "expected_pending": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10003"}}]}}],
+      "expected": {"orders": {"ORD10003": "created"}, "observations": [{"name": "get_order", "arguments": {"order_id": "ORD10003", "status": "created", "paid_at": null}}]}
+    },
+    {
+      "id": "p6_compressed_scope_constraint",
+      "family": "context_constraint",
+      "user_goal": "Continue the exact old reconciliation question while citing only the previously requested total.",
+      "turns": [{"message": "接着做前面那张单的对账，按之前限定的范围给我结果。", "expected_pending": false, "trajectory": {"required": [{"name": "get_order", "arguments": {"order_id": "ORD10001"}}]}}],
+      "expected": {"observations": [{"name": "get_order", "arguments": {"order_id": "ORD10001", "total_cents": 29900}}]}
+    }
+  ],
+  "oracles": {
+    "p6_old_order_fresh_state": {
+      "cohort": "context_long",
+      "prelude": {"lead": [["user", "我自己的 ORD10003 已经付款，在等商家寄出，等会儿还要查这一笔。"], ["assistant", "当时页面显示已付款但还没有发货。之后需要重新核对最新状态。"]], "segment": "routine"},
+      "turns": {"1": {"intent": ["order_inquiry", "logistics"], "goals": [["order_status", "ORD10003"]], "entity": {"order_id": "ORD10003"}, "answer_any": ["已发货", "已寄出", "已经发货", "已出库"], "forbidden_answer_fragments": ["尚未发货", "还没发货", "仍待发货", "还未发货", "未发货"]}}
+    },
+    "p6_old_catalog_reference": {
+      "cohort": "context_long",
+      "prelude": {"lead": [["user", "先记一下我正在看的降噪耳机 Pro，货号 SKU-HEADSET。我会回来问价格和库存。"], ["assistant", "好的，您问的是 SKU-HEADSET，价格和库存需要按实时查询结果核对。"]], "segment": "routine"},
+      "turns": {"1": {"intent": ["product_consult"], "goals": [["product_price", "SKU-HEADSET"], ["inventory", "SKU-HEADSET"]], "entity": {"sku": "SKU-HEADSET"}, "answer_contains": ["299", "42"]}}
+    },
+    "p6_order_reference_replacement": {
+      "cohort": "context_correction",
+      "prelude": {"lead": [["user", "我先问一下 ORD10001 的金额，单号我要回去再看一眼。"], ["assistant", "可以，请以您核对后提供的编号为准。"]]},
+      "turns": {"1": {"intent": ["order_inquiry"], "goals": [["order_amount", "ORD10002"]], "entity": {"order_id": "ORD10002"}, "answer_contains": ["39"], "forbidden_answer_fragments": ["299"]}}
+    },
+    "p6_two_scoped_order_reads": {
+      "cohort": "context_correction",
+      "prelude": {"lead": [["user", "刚才追踪的是 ORD10003，先暂停一下。我马上换两张单来对。"], ["assistant", "好的，我会以您接下来提供的单号为准。"]]},
+      "turns": {"1": {"intent": ["order_inquiry", "logistics"], "goals": [["order_amount", "ORD10001"], ["tracking_number", "ORD10002"]], "entities": ["ORD10001", "ORD10002"], "answer_contains": ["299", "YT998877"], "forbidden_answer_fragments": ["SF1234567890"]}}
+    },
+    "p6_pending_refund_read": {
+      "cohort": "context_continuation",
+      "prelude": {"segment": "routine"},
+      "turns": {"1": {"intent": ["refund"]}, "2": {"intent": ["refund"], "goals": [["refund_status", "ORD10002"]], "entity": {"order_id": "ORD10002"}, "answer_any": ["暂无", "没有", "没有查到", "未查询到", "未查到", "没有找到", "未找到", "无退款"]}}
+    },
+    "p6_retained_payment_gate": {
+      "cohort": "context_constraint",
+      "fixture": "unpaid_tee",
+      "prelude": {"lead": [["user", "这张订单是 ORD10003。请等我补充想核对的内容。"], ["assistant", "好的，可以在这里接着说要核对什么。"]]},
+      "turns": {"1": {"intent": ["order_inquiry"], "goals": [["order_items", "ORD10003"]], "entity": {"order_id": "ORD10003"}, "dependencies": [{"predicate": "is_paid", "entity_id": "ORD10003", "target": ["order_items", "ORD10003"], "outcome": "false"}], "answer_any": ["未付款", "没付款", "尚未支付", "还未支付", "未支付"], "forbidden_answer_fragments": ["纯棉T恤", "SKU-TEE"]}}
+    },
+    "p6_compressed_scope_constraint": {
+      "cohort": "context_constraint",
+      "prelude": {"lead": [["user", "等会对一下 ORD10001。这个核对只需要实付总金额，商品明细、物流和收件信息都不要列。"], ["assistant", "好的，接着对账时只核实总金额，不列商品、物流或收件资料。"]], "segment": "routine"},
+      "turns": {"1": {"intent": ["order_inquiry"], "goals": [["order_amount", "ORD10001"]], "entity": {"order_id": "ORD10001"}, "answer_contains": ["299"], "forbidden_answer_fragments": ["降噪耳机", "SF1234567890", "上海"]}}
+    }
+  }
+}

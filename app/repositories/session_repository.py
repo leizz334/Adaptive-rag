@@ -33,11 +33,13 @@ class SessionRepository:
         rows = list(reversed(result.scalars().all()))
         return [ChatMessage(role=row.role, content=row.content) for row in rows]  # type: ignore[arg-type]
 
-    async def append_message(self, session_id: str, role: str, content: str) -> None:
-        self._session.add(MessageRow(session_id=session_id, role=role, content=content))
+    async def append_message(self, session_id: str, role: str, content: str) -> MessageRow:
+        message = MessageRow(session_id=session_id, role=role, content=content)
+        self._session.add(message)
         row = await self._session.get(SessionRow, session_id)
         if row is not None:
             row.updated_at = utcnow()
+        return message
 
     async def recent_message_rows(self, session_id: str, *, limit: int = 8) -> list[MessageRow]:
         rows = (
@@ -73,6 +75,28 @@ class SessionRepository:
                 MessageRow.session_id == session_id, MessageRow.id == message_id
             )
         )
+
+    async def source_messages(self, session_id: str, ids: list[int]) -> list[MessageRow]:
+        if not ids:
+            return []
+        rows = await self._session.scalars(
+            select(MessageRow).where(MessageRow.session_id == session_id, MessageRow.id.in_(ids))
+        )
+        return list(rows)
+
+    async def lock_owned(self, session_id: str, user_id: str) -> SessionRow:
+        row = await self._session.scalar(
+            select(SessionRow)
+            .where(SessionRow.session_id == session_id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+        if row is None:
+            # A rejected tool can roll back an as-yet uncommitted first-turn session.
+            return await self.get_or_create(session_id, user_id)
+        if row.user_id != user_id:
+            raise InvalidRequestError("session not found")
+        return row
 
     async def save_summary(self, session_id: str, summary: str) -> None:
         row = await self._session.get(SessionRow, session_id)
